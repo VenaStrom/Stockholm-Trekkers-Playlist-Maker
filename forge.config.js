@@ -13,7 +13,7 @@ module.exports = {
       config: {
         options: {
           name: 'Stockholm Trekkers Playlist Generator App',
-          iconUrl: '',
+          iconUrl: 'https://raw.githubusercontent.com/viggoStrom/Stockholm-Trekkers-Playlist-Maker/main/assets/stockholm-trekkers.ico',
           setupIcon: '/assets/stockholm-trekkers.ico',
         },
       },
