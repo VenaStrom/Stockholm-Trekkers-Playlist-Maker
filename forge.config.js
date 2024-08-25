@@ -13,8 +13,8 @@ module.exports = {
       config: {
         options: {
           name: 'Stockholm Trekkers Playlist Generator App',
-          iconUrl: 'https://www.stockholmtrekkers.se/wp-content/uploads/2024/04/Skold_webbplats-300x300.png',
-          setupIcon: '/assets/stockholm-trekkers-60.png',
+          iconUrl: '',
+          setupIcon: '/assets/stockholm-trekkers.ico',
         },
       },
     },
