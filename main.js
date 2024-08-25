@@ -10,7 +10,9 @@ const createWindow = () => {
         webPreferences: {
             preload: path.join(__dirname, "preload.js")
         },
-        icon: path.join(__dirname, "assets/stockholm-trekkers-60.png") // Add the path to your icon file here
+        icon: path.join(__dirname, "assets/stockholm-trekkers-60.png"),
+        frame: false,
+        titleBarStyle: "hidden",
     });
 
     win.maximize();
