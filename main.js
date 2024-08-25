@@ -7,12 +7,13 @@ const createWindow = () => {
     const win = new BrowserWindow({
         width: 1920,
         height: 1080,
-        fullscreen: true,
         webPreferences: {
             preload: path.join(__dirname, "preload.js")
-        }
+        },
+        icon: path.join(__dirname, "assets/stockholm-trekkers-60.png") // Add the path to your icon file here
     });
 
+    win.maximize();
     win.loadFile("html/index.html");
 };
 
