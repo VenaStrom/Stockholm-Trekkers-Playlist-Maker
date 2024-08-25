@@ -13,6 +13,7 @@ const createWindow = () => {
         icon: path.join(__dirname, "assets/stockholm-trekkers-60.png"),
         frame: false,
         titleBarStyle: "hidden",
+        titleBarOverlay: {color: "#1e1e1e", symbolColor: "#f2f2f2"},
     });
 
     win.maximize();
