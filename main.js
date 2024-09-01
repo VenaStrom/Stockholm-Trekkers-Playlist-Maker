@@ -13,7 +13,7 @@ const createWindow = () => {
         icon: path.join(__dirname, "assets/stockholm-trekkers-60.png"),
         frame: false,
         titleBarStyle: "hidden",
-        titleBarOverlay: {color: "#1e1e1e", symbolColor: "#f2f2f2"},
+        titleBarOverlay: { color: "#1e1e1e", symbolColor: "#f2f2f2" },
     });
 
     win.maximize();
@@ -31,3 +31,7 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit();
 });
+
+
+// Load the backend scripts
+require("./scripts/downloadAssets");
