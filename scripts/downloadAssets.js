@@ -4,6 +4,14 @@ const path = require("node:path")
 
 const downloadStatus = {
     "fileCount": 0,
+    "atFile": 0,
+    "status": "",
+    "currentFile": {
+        "size": 0,
+        "received": 0,
+        "percent": 0,
+        "MB": 0
+    }
 }
 
 const downloadPauses = (force = false) => {
@@ -23,13 +31,16 @@ const downloadPauses = (force = false) => {
 
     const fileIDs = JSON.parse(fs.readFileSync(path.join(__dirname, "fileIDs.json")))
     const videos = fileIDs.videos;
+    downloadStatus.fileCount = videos.length;
     let index = 0;
 
     const endOfDownload = () => {
         if (index + 1 < videos.length) {
             index++;
+            downloadStatus.atFile = index;
             getVideo(videos[index]);
         } else {
+            downloadStatus.status = "completed";
             console.log("all videos downloaded");
         }
     };
@@ -53,12 +64,25 @@ const downloadPauses = (force = false) => {
 
             item.on("updated", (event, state) => {
                 if (state === "interrupted") {
+                    downloadStatus.status = "interrupted";
                     console.log("download is interrupted but can be resumed");
                 } else if (state === "progressing") {
                     if (item.isPaused()) {
+                        downloadStatus.status = "paused";
                         console.log(`download of ${fileID.name} is paused`);
                     } else {
-                        console.log(`${fileID.name} received ${(item.getReceivedBytes() / item.getTotalBytes() * 100).toFixed(0)}% ${(item.getReceivedBytes() / 1024 / 1024).toFixed(0)} MB`);
+                        const received = item.getReceivedBytes();
+                        const total = item.getTotalBytes();
+                        const percent = (received / total * 100).toFixed(0);
+                        const MB = (received / 1024 / 1024).toFixed(0);
+                        
+                        downloadStatus.status = "progressing";
+                        downloadStatus.currentFile.size = total;
+                        downloadStatus.currentFile.received = received;
+                        downloadStatus.currentFile.percent = percent;
+                        downloadStatus.currentFile.MB = MB;
+
+                        console.log(`${fileID.name} received ${percent}% ${MB} MB`);
                     };
                 };
             });
@@ -70,12 +94,8 @@ const downloadPauses = (force = false) => {
                     console.log(`download failed with state: ${state}`);
                 };
 
-                if (index + 1 < videos.length) {
-                    index++;
-                    getVideo(videos[index]);
-                } else {
-                    console.log("all videos downloaded");
-                };
+                endOfDownload();
+
                 downloadWindow.close();
             });
         });
