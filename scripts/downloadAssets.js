@@ -2,73 +2,69 @@ const { BrowserWindow, session } = require("electron");
 const fs = require("fs");
 const path = require("node:path")
 
+
 const downloadPauses = (force = false) => {
 
-    if (!fs.existsSync("./assets/videos")) {
-        fs.mkdirSync("./assets/videos", { recursive: true });
-    }
-
-    if (
-        !force
-        &&
-        fs.existsSync("./assets/videos/pause_2_h.mp4")
-        &&
-        fs.existsSync("./assets/videos/pause_15_min_arsmote.mp4")
-        &&
-        fs.existsSync("./assets/videos/pause_1_min_emergency.mp4")
-        &&
-        fs.existsSync("./assets/videos/pause_1_min_covid.mp4")
-        &&
-        fs.existsSync("./assets/videos/pause_1_min_countdown.mp4")
-    ) {
-        console.log("pauses already downloaded");
-        return;
-    }
+    const videoFolder = path.join(__dirname, "../assets/videos/")
 
     if (force) {
         console.log("force downloading...");
+        fs.rmSync(videoFolder, { recursive: true });
     } else {
         console.log("downloading...");
     }
 
-    // Set download location
-    session.defaultSession.on("will-download", (event, item, webContents) => {
-        item.setSavePath(path.join(__dirname, "assets/videos/" + item.getFilename()));
-    });
-
-    const downloadWindow = new BrowserWindow({
-        // show: false
-    });
-
-    downloadWindow.on("closed", () => {
-        BrowserWindow.getAllWindows().forEach(window => {
-            window.close();
-        });
-    });
-
-    const fileIDsJSON = fs.readFileSync("../assets/videos/fileIDs.json")
-    const fileIDs = JSON.parse(fileIDsJSON);
-
-    const downloadPause = (id) => {
-        console.log("downloading: " + id);
-
-        downloadWindow.loadURL(fileIDs.urlFormat + id)
-        downloadWindow.webContents.on("did-finish-load", () => {
-            downloadWindow.webContents.executeJavaScript(`
-                try {
-                    const downloadButton = document.querySelector("uc-download-link");
-                    inputElement.click();
-                } catch (error) {
-                console.log(error); 
-                }`);
-        });
+    if (!fs.existsSync(videoFolder)) {
+        fs.mkdirSync(videoFolder, { recursive: true });
     }
 
-    fileIDs.videoIDs.forEach(id => {
-        // console.log(id);
-        downloadPause(id);
-    });
-};
+    const fileIDs = JSON.parse(fs.readFileSync(path.join(__dirname, "fileIDs.json")))
 
+    fileIDs.videos.forEach((fileID) => {
+        if (fs.existsSync(videoFolder + fileID.name) && !force) {
+            console.log(fileID.name + " already downloaded");
+            return;
+        } else {
+            console.log("downloading " + fileID.name);
+        }
+
+        const downloadWindow = new BrowserWindow({
+            // show: false
+        });
+
+        session.defaultSession.on("will-download", (event, item, webContents) => {
+            item.setSavePath(videoFolder + item.getFilename());
+            // item.setSavePath(videoFolder + fileID.name);
+
+            item.on("updated", (event, state) => {
+                if (state === "interrupted") {
+                    console.log("download is interrupted but can be resumed");
+                } else if (state === "progressing") {
+                    if (item.isPaused()) {
+                        console.log(`download of ${fileID.name} is paused`);
+                    } else {
+                        console.log(`${fileID.name} received ${(item.getReceivedBytes() / item.getTotalBytes() * 100).toFixed(0)}% ${(item.getReceivedBytes() / 1024 / 1024).toFixed(0)} MB`);
+                    }
+                }
+            });
+
+            item.once("done", (event, state) => {
+                if (state === "completed") {
+                    console.log(`download of ${fileID.name} completed successfully`);
+                } else {
+                    console.log(`download failed with state: ${state}`);
+                }
+                downloadWindow.close();
+            });
+        });
+
+
+        downloadWindow.loadURL(fileIDs.urlTemplate + fileID.id);
+
+        downloadWindow.webContents.on("did-finish-load", () => {
+            downloadWindow.webContents.executeJavaScript(`try{document.getElementById("uc-download-link").click();} catch (error) {console.log(error);}`);
+        });
+    });
+}
 
 module.exports = { downloadPauses };
