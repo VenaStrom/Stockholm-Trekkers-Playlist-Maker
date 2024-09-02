@@ -3,7 +3,7 @@ const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 
 module.exports = {
   packagerConfig: {
-    icon: '/assets/stockholm-trekkers.ico',
+    icon: '/assets/images/stockholm-trekkers.ico',
     asar: true,
   },
   rebuildConfig: {},
@@ -13,8 +13,8 @@ module.exports = {
       config: {
         options: {
           name: 'Stockholm Trekkers Playlist Generator App',
-          iconUrl: 'https://raw.githubusercontent.com/viggoStrom/Stockholm-Trekkers-Playlist-Maker/main/assets/stockholm-trekkers.ico',
-          setupIcon: '/assets/stockholm-trekkers.ico',
+          iconUrl: 'https://raw.githubusercontent.com/viggoStrom/Stockholm-Trekkers-Playlist-Maker/main/assets/images/stockholm-trekkers.ico',
+          setupIcon: './assets/images/stockholm-trekkers.ico',
         },
       },
     },

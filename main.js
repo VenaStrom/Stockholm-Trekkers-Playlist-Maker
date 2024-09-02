@@ -10,9 +10,9 @@ const createWindow = () => {
         width: 1920,
         height: 1080,
         webPreferences: {
-            preload: path.join(__dirname, "preload.js")
+            preload: path.join(__dirname, "scripts/preload.js")
         },
-        icon: path.join(__dirname, "assets/stockholm-trekkers-60.png"),
+        icon: path.join(__dirname, "assets/images/stockholm-trekkers-60.png"),
         frame: false,
         titleBarStyle: "hidden",
         titleBarOverlay: { color: "#1e1e1e", symbolColor: "#f2f2f2" },
@@ -25,7 +25,7 @@ const createWindow = () => {
     });
 
     mainWindow.maximize();
-    mainWindow.loadFile("html/index.html");
+    mainWindow.loadFile("./html/index.html");
     mainWindow.focus();
 };
 
