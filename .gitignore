@@ -1,3 +1,5 @@
 node_modules/
 out/
-assets/video/
+assets/video/!fileIDs.txt
+assets/video/*.mp4
+assets/video/*.mkv
