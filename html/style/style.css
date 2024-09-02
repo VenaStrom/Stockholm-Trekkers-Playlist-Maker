@@ -13,6 +13,7 @@
     padding: 0;
     box-sizing: border-box;
 
+    src: local("assets/BAHNSCHRIFT.TTF");
     font-family: "Bahnschrift", "Verdana", sans-serif;
     color: var(--text-color);
 }

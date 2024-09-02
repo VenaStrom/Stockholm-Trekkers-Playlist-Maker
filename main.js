@@ -6,7 +6,7 @@ const { downloadPauses } = require("./scripts/downloadAssets");
 
 const createWindow = () => {
 
-    const win = new BrowserWindow({
+    const mainWindow = new BrowserWindow({
         width: 1920,
         height: 1080,
         webPreferences: {
@@ -18,14 +18,15 @@ const createWindow = () => {
         titleBarOverlay: { color: "#1e1e1e", symbolColor: "#f2f2f2" },
     });
 
-    win.on("closed", () => {
+    mainWindow.on("closed", () => {
         BrowserWindow.getAllWindows().forEach(window => {
             window.close();
         });
     });
 
-    win.maximize();
-    win.loadFile("html/index.html");
+    mainWindow.maximize();
+    mainWindow.loadFile("html/index.html");
+    mainWindow.focus();
 };
 
 app.whenReady().then(() => {
