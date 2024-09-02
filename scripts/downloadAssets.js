@@ -1,20 +1,25 @@
-const { BrowserWindow, session } = require("electron");
+const { BrowserWindow, session, ipcMain } = require("electron");
 const fs = require("fs");
 const path = require("node:path")
 
-const downloadStatus = {
-    "fileCount": 0,
-    "atFile": 0,
-    "status": "",
-    "currentFile": {
-        "size": 0,
-        "received": 0,
-        "percent": 0,
-        "MB": 0
-    }
-}
 
 const downloadPauses = (force = false) => {
+    const downloadStatus = {
+        "fileCount": 0,
+        "atFile": 0,
+        "status": "",
+        "currentFile": {
+            "size": 0,
+            "received": 0,
+            "percent": 0,
+            "MB": 0
+        }
+    }
+    
+    ipcMain.handle("get-download-status", () => {
+        console.log("sending download status");
+        return downloadStatus;
+    });
 
     const videoFolder = path.join(__dirname, "../assets/videos/")
 
@@ -37,7 +42,7 @@ const downloadPauses = (force = false) => {
     const endOfDownload = () => {
         if (index + 1 < videos.length) {
             index++;
-            downloadStatus.atFile = index;
+            downloadStatus.atFile = index + 1;
             getVideo(videos[index]);
         } else {
             downloadStatus.status = "completed";
@@ -75,7 +80,7 @@ const downloadPauses = (force = false) => {
                         const total = item.getTotalBytes();
                         const percent = (received / total * 100).toFixed(0);
                         const MB = (received / 1024 / 1024).toFixed(0);
-                        
+
                         downloadStatus.status = "progressing";
                         downloadStatus.currentFile.size = total;
                         downloadStatus.currentFile.received = received;

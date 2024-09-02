@@ -1,9 +1,7 @@
 
 const { app, BrowserWindow } = require("electron");
+if (require("electron-squirrel-startup")) app.quit();
 const path = require("node:path");
-
-if (require('electron-squirrel-startup')) app.quit();
-
 const { downloadPauses } = require("./scripts/downloadAssets");
 
 const createWindow = () => {
