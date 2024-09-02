@@ -3,6 +3,7 @@ const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 
 module.exports = {
   packagerConfig: {
+    name: 'Stockholm Trekkers Playlist Generator',
     icon: '/assets/images/stockholm-trekkers.ico',
     asar: true,
   },
@@ -11,8 +12,12 @@ module.exports = {
     {
       name: '@electron-forge/maker-squirrel',
       config: {
+        name: 'Stockholm Trekkers Playlist Generator',
+        authors: 'Viggo Ström',
+        description: 'Make playlists for Stockholm Trekkers by selecting clips and exporting them to your USB-drive.',
+
         options: {
-          name: 'Stockholm Trekkers Playlist Generator App',
+          name: 'Stockholm Trekkers Playlist Generator',
           iconUrl: 'https://raw.githubusercontent.com/viggoStrom/Stockholm-Trekkers-Playlist-Maker/main/assets/images/stockholm-trekkers.ico',
           setupIcon: './assets/images/stockholm-trekkers.ico',
         },
