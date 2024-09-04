@@ -2,7 +2,7 @@
 const { app, BrowserWindow } = require("electron");
 if (require("electron-squirrel-startup")) app.quit();
 const path = require("node:path");
-const { downloadPauses } = require("./scripts/downloadAssets");
+const { setUpHandlers } = require("./scripts/downloadAssets");
 
 const createWindow = () => {
 
@@ -18,6 +18,8 @@ const createWindow = () => {
         titleBarOverlay: { color: "#1e1e1e", symbolColor: "#f2f2f2" },
     });
 
+    // mainWindow.openDevTools();
+
     mainWindow.on("closed", () => {
         BrowserWindow.getAllWindows().forEach(window => {
             window.close();
@@ -32,7 +34,7 @@ const createWindow = () => {
 app.whenReady().then(() => {
     createWindow();
 
-    downloadPauses();
+    // downloadPauses();
 
     app.on("activate", () => {
         if (BrowserWindow.getAllWindows().length === 0) createWindow();

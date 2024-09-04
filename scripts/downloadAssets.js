@@ -2,7 +2,6 @@ const { BrowserWindow, session, ipcMain } = require("electron");
 const fs = require("fs");
 const path = require("node:path")
 
-
 const downloadPauses = (force = false) => {
     const downloadStatus = {
         "fileCount": 0,
@@ -12,12 +11,10 @@ const downloadPauses = (force = false) => {
             "size": 0,
             "received": 0,
             "percent": 0,
-            "MB": 0
         }
     }
-    
+
     ipcMain.handle("get-download-status", () => {
-        console.log("sending download status");
         return downloadStatus;
     });
 
@@ -60,11 +57,10 @@ const downloadPauses = (force = false) => {
         }
 
         const downloadWindow = new BrowserWindow({
-            // show: false
+            show: false
         });
 
         session.defaultSession.on("will-download", (event, item, webContents) => {
-            // item.setSavePath(videoFolder + item.getFilename());
             item.setSavePath(videoFolder + fileID.name);
 
             item.on("updated", (event, state) => {
@@ -85,7 +81,6 @@ const downloadPauses = (force = false) => {
                         downloadStatus.currentFile.size = total;
                         downloadStatus.currentFile.received = received;
                         downloadStatus.currentFile.percent = percent;
-                        downloadStatus.currentFile.MB = MB;
 
                         console.log(`${fileID.name} received ${percent}% ${MB} MB`);
                     };
@@ -115,4 +110,14 @@ const downloadPauses = (force = false) => {
     getVideo(videos[index]);
 };
 
-module.exports = { downloadPauses };
+
+const setUpHandlers = () => {
+    ipcMain.handle("start-download", () => {
+        downloadPauses();
+        return;
+    });
+    
+    console.log("handlers set up");
+};
+
+module.exports = { setUpHandlers };

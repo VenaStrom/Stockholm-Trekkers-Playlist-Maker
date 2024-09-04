@@ -98,10 +98,15 @@ body {
                 border-radius: .2rem;
             }
 
+            &>#bottom-status-text {
+                margin-top: 0.5rem;
+                font-size: 0.8rem;
+                font-weight: 400;
+            }
+
             &>#download-progress-bar {
                 background-image: linear-gradient(var(--accent-high-contrast-color), var(--accent-high-contrast-color));
                 background-repeat: no-repeat;
-                background-size: 12%;
             }
         }
     }
