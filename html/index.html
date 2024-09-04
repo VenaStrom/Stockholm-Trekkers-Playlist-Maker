@@ -18,17 +18,23 @@
             <p class="smaller">Playlist Maker</p>
         </div>
     </header>
-    
+
     <main>
-        
+
         <h1>Welcome to</h1>
         <p>Stockholm Trekkers Playlist Maker</p>
-        
-        <div class="info-box">
+
+        <div class="round-box confirm-download-window">
+            <p>To use this app, some video files have to be downloaded. The files are around 2 GB.</p>
+            <button>Start download</button>
+            <script defer src="js/download/startDownload.js"></script>
+        </div>
+
+        <div class="round-box download-progress-window" style="display: none;">
             <p id="top-status-text">Some additional content needs to be downloaded, please wait...</p>
             <div class="progress-bar" id="download-progress-bar" style="background-size: 0%;"></div>
             <p id="bottom-status-text"></p>
-            <script src="js/downloadStatus.js"></script>
+            <script defer src="js/download/progressBar.js"></script>
         </div>
     </main>
 

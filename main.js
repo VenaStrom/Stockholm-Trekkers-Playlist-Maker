@@ -2,7 +2,7 @@
 const { app, BrowserWindow } = require("electron");
 if (require("electron-squirrel-startup")) app.quit();
 const path = require("node:path");
-const { setUpHandlers } = require("./scripts/downloadAssets");
+const { setUpHandlers: setUpDownloadHandlers } = require("./scripts/downloadAssets");
 
 const createWindow = () => {
 
@@ -34,7 +34,7 @@ const createWindow = () => {
 app.whenReady().then(() => {
     createWindow();
 
-    // downloadPauses();
+    setUpDownloadHandlers();
 
     app.on("activate", () => {
         if (BrowserWindow.getAllWindows().length === 0) createWindow();

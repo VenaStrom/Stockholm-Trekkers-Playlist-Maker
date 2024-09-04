@@ -7,11 +7,15 @@ const updateInfoBox = async () => {
     const status = await downloadStatus.get();
     const currentFile = status.currentFile;
 
-
-    if (status.status === "progressing") {
-        topStatusText.textContent = `Some additional content needs to be downloaded, please wait... (${status.atFile}/${status.fileCount})`;
+    if (status.status === "") {
+        return;
+    } else if (status.status === "progressing") {
+        topStatusText.textContent = `Some additional content needs to be downloaded, please wait...`;
+        topStatusText.textContent += ` (${status.atFile}/${status.fileCount})`;
         progressBar.style.backgroundSize = currentFile.percent + "%";
-        bottomStatusText.textContent = `Downloading ${(currentFile.received / 1024 / 1024).toFixed(2)} / ${(currentFile.size / 1024 / 1024).toFixed(0)} MB`;
+        const receivedMB = (currentFile.received / 1024 / 1024).toFixed(2);
+        const totalMB = (currentFile.size / 1024 / 1024).toFixed(0);
+        bottomStatusText.textContent = `Downloading ${receivedMB} / ${totalMB} MB`;
     } else if (status.status === "paused") {
         bottomStatusText.textContent = "Download paused";
     } else if (status.status === "interrupted") {
@@ -21,7 +25,7 @@ const updateInfoBox = async () => {
         progressBar.style.backgroundSize = "100%";
     } else {
         bottomStatusText.textContent = "Download not started";
-    }
-}
+    };
+};
 
-setInterval(updateInfoBox,100);
+setInterval(updateInfoBox, 100);

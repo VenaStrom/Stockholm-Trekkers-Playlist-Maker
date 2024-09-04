@@ -2,22 +2,19 @@ const { BrowserWindow, session, ipcMain } = require("electron");
 const fs = require("fs");
 const path = require("node:path")
 
+const downloadStatus = {
+    "fileCount": 0,
+    "atFile": 0,
+    "status": "",
+    "currentFile": {
+        "size": 0,
+        "received": 0,
+        "percent": 0,
+    },
+};
+
 const downloadPauses = (force = false) => {
-    const downloadStatus = {
-        "fileCount": 0,
-        "atFile": 0,
-        "status": "",
-        "currentFile": {
-            "size": 0,
-            "received": 0,
-            "percent": 0,
-        }
-    }
-
-    ipcMain.handle("get-download-status", () => {
-        return downloadStatus;
-    });
-
+    
     const videoFolder = path.join(__dirname, "../assets/videos/")
 
     if (force) {
@@ -25,13 +22,13 @@ const downloadPauses = (force = false) => {
         fs.rmSync(videoFolder, { recursive: true });
     } else {
         console.log("looking for files...");
-    }
+    };
 
     if (!fs.existsSync(videoFolder)) {
         fs.mkdirSync(videoFolder, { recursive: true });
-    }
+    };
 
-    const fileIDs = JSON.parse(fs.readFileSync(path.join(__dirname, "fileIDs.json")))
+    const fileIDs = JSON.parse(fs.readFileSync(path.join(__dirname, "fileIDs.json")));
     const videos = fileIDs.videos;
     downloadStatus.fileCount = videos.length;
     let index = 0;
@@ -44,7 +41,7 @@ const downloadPauses = (force = false) => {
         } else {
             downloadStatus.status = "completed";
             console.log("all videos downloaded");
-        }
+        };
     };
 
     const getVideo = (fileID) => {
@@ -54,7 +51,7 @@ const downloadPauses = (force = false) => {
             return;
         } else {
             console.log("downloading " + fileID.name);
-        }
+        };
 
         const downloadWindow = new BrowserWindow({
             show: false
@@ -115,6 +112,10 @@ const setUpHandlers = () => {
     ipcMain.handle("start-download", () => {
         downloadPauses();
         return;
+    });
+
+    ipcMain.handle("get-download-status", () => {
+        return downloadStatus;
     });
     
     console.log("handlers set up");
