@@ -120,12 +120,10 @@ body {
             margin-bottom: 1rem;
         }
 
-        &>.round-box {
+        &>.confirm-download {
             &>.progress-bar {
                 width: 70%;
                 height: 1rem;
-
-                margin-top: .3rem;
 
                 border: var(--accent-color-low-contrast), 4px solid;
                 border-radius: .2rem;
