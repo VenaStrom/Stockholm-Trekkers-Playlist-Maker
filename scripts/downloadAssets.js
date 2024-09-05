@@ -1,6 +1,7 @@
 const { BrowserWindow, session, ipcMain } = require("electron");
 const fs = require("fs");
 const path = require("node:path")
+const raiseError = require("./raiseError.js");
 
 const downloadStatus = {
     "fileCount": 0,
@@ -13,8 +14,29 @@ const downloadStatus = {
     },
 };
 
+const filesExists = () => {
+
+    const fileIDs = JSON.parse(fs.readFileSync(path.join(__dirname, "fileIDs.json")));
+    const videos = fileIDs.videos;
+
+    let fileCount = 0;
+
+    videos.forEach(video => {
+        if (fs.existsSync(path + video.name)) {
+            fileCount++;
+        }
+    });
+
+    if (fileCount === videos.length) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
 const downloadPauses = (force = false) => {
-    
+    console.warn("should only be running once");
+
     const videoFolder = path.join(__dirname, "../assets/videos/")
 
     if (force) {
@@ -31,20 +53,27 @@ const downloadPauses = (force = false) => {
     const fileIDs = JSON.parse(fs.readFileSync(path.join(__dirname, "fileIDs.json")));
     const videos = fileIDs.videos;
     downloadStatus.fileCount = videos.length;
+    downloadStatus.atFile = 1;
     let index = 0;
+
+    const downloadWindow = new BrowserWindow({
+        show: false
+    });
 
     const endOfDownload = () => {
         if (index + 1 < videos.length) {
             index++;
-            downloadStatus.atFile = index + 1;
             getVideo(videos[index]);
         } else {
             downloadStatus.status = "completed";
             console.log("all videos downloaded");
+            downloadWindow.close();
         };
     };
 
     const getVideo = (fileID) => {
+        downloadStatus.atFile++;
+
         if (fs.existsSync(videoFolder + fileID.name) && !force) {
             console.log(fileID.name + " already downloaded");
             endOfDownload();
@@ -53,10 +82,6 @@ const downloadPauses = (force = false) => {
             console.log("downloading " + fileID.name);
         };
 
-        const downloadWindow = new BrowserWindow({
-            show: false
-        });
-
         session.defaultSession.on("will-download", (event, item, webContents) => {
             item.setSavePath(videoFolder + fileID.name);
 
@@ -64,10 +89,14 @@ const downloadPauses = (force = false) => {
                 if (state === "interrupted") {
                     downloadStatus.status = "interrupted";
                     console.log("download is interrupted but can be resumed");
+                    raiseError("download is interrupted");
+
                 } else if (state === "progressing") {
                     if (item.isPaused()) {
                         downloadStatus.status = "paused";
                         console.log(`download of ${fileID.name} is paused`);
+                        raiseError(`download of ${fileID.name} is paused`);
+
                     } else {
                         const received = item.getReceivedBytes();
                         const total = item.getTotalBytes();
@@ -87,13 +116,14 @@ const downloadPauses = (force = false) => {
             item.once("done", (event, state) => {
                 if (state === "completed") {
                     console.log(`download of ${fileID.name} completed successfully`);
+                    downloadWindow.loadURL("about:blank");
+                    setTimeout(() => {
+                        endOfDownload();
+                    }, 100);
                 } else {
                     console.log(`download failed with state: ${state}`);
+                    raiseError(`download failed with state: ${state}`);
                 };
-
-                endOfDownload();
-
-                downloadWindow.close();
             });
         });
 
@@ -117,7 +147,11 @@ const setUpHandlers = () => {
     ipcMain.handle("get-download-status", () => {
         return downloadStatus;
     });
-    
+
+    ipcMain.handle("check-for-local-files", () => {
+        return filesExists();
+    });
+
     console.log("handlers set up");
 };
 

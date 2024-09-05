@@ -18,7 +18,7 @@ const createWindow = () => {
         titleBarOverlay: { color: "#1e1e1e", symbolColor: "#f2f2f2" },
     });
 
-    // mainWindow.openDevTools();
+    mainWindow.openDevTools();
 
     mainWindow.on("closed", () => {
         BrowserWindow.getAllWindows().forEach(window => {
