@@ -1,9 +1,9 @@
 
-const fileExists = async () => {
-    return await download.filesExists()
+const fileExist = async () => {
+    return await download.filesExist()
 };
 
-fileExists().then((exists) => {
+fileExist().then((exists) => {
     if (exists) {
         fileExistsBox.textContent = "The necessary files are present. Loading app..."
     } else {
