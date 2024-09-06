@@ -155,28 +155,35 @@ const downloadPauses = (force = false) => {
         fs.mkdirSync(videoFolder, { recursive: true });
     };
 
-    const downloadIDs = JSON.parse(fs.readFileSync(path.join(__dirname, "fileIDs.json")));
-    const videoIDs = downloadIDs.videos;
+    const downloadRef = JSON.parse(fs.readFileSync(path.join(__dirname, "fileIDs.json")));
+    const videoIDs = downloadRef.videos;
+    let index = 0;
 
-    const browsers = {};
+    const browser = new BrowserWindow({
+        // show: false,
+    });
+
+    const endOfDownload = () => {
+        index++;
+
+        if (index >= videoIDs.length) {
+
+        }
+    }
 
     const getOneVideo = (video) => {
-
         // If the video is already downloaded and we're not forcing, skip it
         if (fs.existsSync(videoFolder + video.name) && !force) {
             console.log(video.name + " already downloaded");
+            endOfDownload();
             return;
         } else {
             console.log("downloading " + video.name);
         };
 
-        // Make a new browser window for each video to parallelize
-        browsers[video.name] = new BrowserWindow({
-            // show: false,
-        });
 
         // Sets where the downloaded file will end up and what to do when the download is under way and when it's done
-        browsers[video.name].webContents.session.on("will-download", (event, item, webContents) => {
+        browser.webContents.session.on("will-download", (event, item, webContents) => {
 
             item.setSavePath(videoFolder + video.name);
 
@@ -204,6 +211,7 @@ const downloadPauses = (force = false) => {
             item.once("done", (event, state) => {
                 if (state === "completed") {
                     console.log(`download of ${video.name} completed successfully`);
+                    endOfDownload();
                 } else {
                     console.log(`download failed with state: ${state}`);
                     raiseError(`download failed with state: ${state}`);
@@ -211,10 +219,12 @@ const downloadPauses = (force = false) => {
             });
         });
 
-        browsers[video.name].loadURL(downloadIDs.urlTemplate + video.id);
+        browsers[video.name].loadURL(downloadRef.urlTemplate + video.id);
         browsers[video.name].webContents.on("did-finish-load", () => {
             // Inject error raising script into loaded document TODO 
-            // browsers[video.name].webContents.executeJavaScript("")
+            const absPathOfRaiseError = path.join(__dirname, "../html/js/raiseError.js");
+            const script = fs.readFileSync(absPathOfRaiseError, "utf-8");
+            browsers[video.name].webContents.executeJavaScript(script);
 
             // Clicks the download button on the loaded page
             // This will break if Google changes how Drive works 
