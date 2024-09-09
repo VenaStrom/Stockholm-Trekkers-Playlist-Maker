@@ -7,22 +7,38 @@ const downloadStatus = {
     "fileCount": 0,
     "atFile": 0,
     "status": "",
-    "currentFile": {
-        "name": "",
-        "size": 0,
-        "received": 0,
-        "percent": 0,
-    },
+    "name": "",
+    "size": 0,
+    "received": 0,
+    "percent": 0,
+};
+
+const updateStatus = (
+    atFile = downloadStatus.atFile,
+    status = downloadStatus.status,
+    name = downloadStatus.name,
+    size = downloadStatus.size,
+    received = downloadStatus.received,
+    percent = downloadStatus.percent,
+    fileCount = downloadStatus.fileCount
+) => {
+    downloadStatus.atFile = atFile;
+    downloadStatus.status = status;
+    downloadStatus.name = name;
+    downloadStatus.size = size;
+    downloadStatus.received = received;
+    downloadStatus.percent = percent;
+    downloadStatus.fileCount = fileCount;
 };
 
 const filesExist = () => {
-    const fileIDs = JSON.parse(fs.readFileSync(path.join(__dirname, "fileIDs.json")));
-    const videos = fileIDs.videos;
+    const downloadRefs = JSON.parse(fs.readFileSync(path.join(__dirname, "fileIDs.json")));
+    const videos = downloadRefs.videos;
 
     let fileCount = 0;
 
-    videos.forEach(video => {
-        if (fs.existsSync(path + video.name)) {
+    videos.forEach(file => {
+        if (fs.existsSync(path + file.name)) {
             fileCount++;
         }
     });
@@ -30,117 +46,10 @@ const filesExist = () => {
     return fileCount === videos.length;
 };
 
-// const downloadPauses = (force = false) => {
-//     const videoFolder = path.join(__dirname, "../assets/videos/")
-
-//     // If force downloading, delete the folder just to make sure
-//     if (force) {
-//         console.log("force downloading...");
-//         fs.rmSync(videoFolder, { recursive: true });
-//     } else {
-//         console.log("looking for files...");
-//     };
-
-//     // Check if the folder exists and make it if it doesn't
-//     if (!fs.existsSync(videoFolder)) {
-//         fs.mkdirSync(videoFolder, { recursive: true });
-//     };
-
-//     const downloadIDs = JSON.parse(fs.readFileSync(path.join(__dirname, "fileIDs.json")));
-//     const videoIDs = downloadIDs.videos;
-//     downloadStatus.fileCount = videoIDs.length;
-//     downloadStatus.atFile = 1;
-//     let index = 0;
-
-//     const downloadWindows = {};
-
-//     const endOfDownload = () => {
-//         if (index + 1 < videoIDs.length) {
-//             index++;
-//             getVideo(videoIDs[index]);
-//         } else {
-//             downloadStatus.status = "completed";
-//             console.log("all videos downloaded");
-
-//             Object.keys(downloadWindows).forEach(key => {
-//                 const window = downloadWindows[key];
-//                 window.close();
-//             });
-//         };
-//     };
-
-//     const getVideo = (fileID) => {
-//         downloadStatus.atFile++;
-
-//         if (fs.existsSync(videoFolder + fileID.name) && !force) {
-//             console.log(fileID.name + " already downloaded");
-//             endOfDownload();
-//             return;
-//         } else {
-//             console.log("downloading " + fileID.name);
-//         };
-
-//         downloadWindows[fileID.name] = new BrowserWindow({
-//             show: false
-//         });
-
-//         session.defaultSession.on("will-download", (event, item, webContents) => {
-//             item.setSavePath(videoFolder + fileID.name);
-
-//             item.on("updated", (event, state) => {
-//                 if (state === "interrupted") {
-//                     downloadStatus.status = "interrupted";
-//                     console.log("download is interrupted but can be resumed");
-//                     raiseError("download is interrupted");
-
-//                 } else if (state === "progressing") {
-//                     if (item.isPaused()) {
-//                         downloadStatus.status = "paused";
-//                         console.log(`download of ${fileID.name} is paused`);
-//                         raiseError(`download of ${fileID.name} is paused`);
-
-//                     } else {
-//                         const received = item.getReceivedBytes();
-//                         const total = item.getTotalBytes();
-//                         const percent = (received / total * 100).toFixed(0);
-//                         const MB = (received / 1024 / 1024).toFixed(0);
-
-//                         downloadStatus.status = "progressing";
-//                         downloadStatus.currentFile.size = total;
-//                         downloadStatus.currentFile.received = received;
-//                         downloadStatus.currentFile.percent = percent;
-
-//                         console.log(`${fileID.name} received ${percent}% ${MB} MB`);
-//                     };
-//                 };
-//             });
-
-//             item.once("done", (event, state) => {
-//                 if (state === "completed") {
-//                     console.log(`download of ${fileID.name} completed successfully`);
-//                     downloadWindows[fileID.name].loadURL("about:blank");
-//                     setTimeout(() => {
-//                         endOfDownload();
-//                     }, 100);
-//                 } else {
-//                     console.log(`download failed with state: ${state}`);
-//                     raiseError(`download failed with state: ${state}`);
-//                 };
-//             });
-//         });
-
-//         downloadWindows[fileID.name].loadURL(downloadIDs.urlTemplate + fileID.id);
-
-//         downloadWindows[fileID.name].webContents.on("did-finish-load", () => {
-//             downloadWindows[fileID.name].webContents.executeJavaScript(`try{document.getElementById("uc-download-link").click();} catch (error) {console.log(error);}`);
-//         });
-//     };
-
-//     getVideo(videoIDs[index]);
-// };
-
 const downloadPauses = (force = false) => {
     const videoFolder = path.join(__dirname, "../assets/videos/")
+
+    // updateStatus(status = "setting things up")
 
     // If force downloading, delete the folder just to make sure
     if (force) {
@@ -156,46 +65,57 @@ const downloadPauses = (force = false) => {
     };
 
     const downloadRef = JSON.parse(fs.readFileSync(path.join(__dirname, "fileIDs.json")));
-    const videoIDs = downloadRef.videos;
+    const fileIDs = downloadRef.videos;
     let index = 0;
+
+    // updateStatus(fileCount = fileIDs.length);
 
     const browser = new BrowserWindow({
         // show: false,
     });
 
-    const endOfDownload = () => {
+    const getNextFile = () => {
         index++;
 
-        if (index >= videoIDs.length) {
-
+        if (index >= fileIDs.length - 1) {
+            console.log("all videos downloaded");
+            setTimeout(() => { browser.close(); }, 1000);
         }
+
+        setTimeout(() => { getFile(fileIDs[index]); }, 1000);
     }
 
-    const getOneVideo = (video) => {
-        // If the video is already downloaded and we're not forcing, skip it
-        if (fs.existsSync(videoFolder + video.name) && !force) {
-            console.log(video.name + " already downloaded");
-            endOfDownload();
+    const getFile = (file) => {
+        if (!file) {
+            console.error("no file");
             return;
+        }
+
+        // If the video is already downloaded and we're not forcing, skip it
+        if (fs.existsSync(videoFolder + file.name) && !force) {
+            console.log(file.name + " already downloaded");
+            getNextFile();
+            return;
+
         } else {
-            console.log("downloading " + video.name);
+            console.log("downloading " + file.name);
         };
 
 
         // Sets where the downloaded file will end up and what to do when the download is under way and when it's done
         browser.webContents.session.on("will-download", (event, item, webContents) => {
 
-            item.setSavePath(videoFolder + video.name);
+            item.setSavePath(videoFolder + file.name);
 
             item.on("updated", (event, state) => {
                 if (state === "interrupted") {
-                    console.log("download is interrupted but can be resumed");
+                    console.warn("download is interrupted but can be resumed");
                     raiseError("download is interrupted");
 
                 } else if (state === "progressing") {
                     if (item.isPaused()) {
-                        console.log(`download of ${video.name} is paused`);
-                        raiseError(`download of ${video.name} is paused`);
+                        console.warn(`download of ${file.name} is paused`);
+                        raiseError(`download of ${file.name} is paused`);
 
                     } else {
                         const received = item.getReceivedBytes();
@@ -203,38 +123,41 @@ const downloadPauses = (force = false) => {
                         const percent = (received / total * 100).toFixed(0);
                         const MB = (received / 1024 / 1024).toFixed(0);
 
-                        console.log(`${video.name} received ${percent}% ${MB} MB`);
+                        console.log(`${file.name} received ${percent}% ${MB} MB`);
                     };
                 };
             });
 
             item.once("done", (event, state) => {
                 if (state === "completed") {
-                    console.log(`download of ${video.name} completed successfully`);
-                    endOfDownload();
+                    console.log(`download of ${file.name} completed successfully`);
+                    getNextFile();
+
                 } else {
-                    console.log(`download failed with state: ${state}`);
+                    console.error(`download failed with state: ${state}`);
                     raiseError(`download failed with state: ${state}`);
                 };
             });
         });
 
-        browsers[video.name].loadURL(downloadRef.urlTemplate + video.id);
-        browsers[video.name].webContents.on("did-finish-load", () => {
-            // Inject error raising script into loaded document TODO 
-            const absPathOfRaiseError = path.join(__dirname, "../html/js/raiseError.js");
-            const script = fs.readFileSync(absPathOfRaiseError, "utf-8");
-            browsers[video.name].webContents.executeJavaScript(script);
+        setTimeout(() => {
+            browser.loadURL(downloadRef.urlTemplate + file.id);
+            browser.webContents.on("did-finish-load", () => {
+                // Inject error raising script into loaded document 
+                // Might not work but eh, worth a shot 
+                const absPathOfRaiseError = path.join(__dirname, "../html/js/raiseError.js");
+                const script = fs.readFileSync(absPathOfRaiseError, "utf-8");
+                browser.webContents.executeJavaScript(script);
 
-            // Clicks the download button on the loaded page
-            // This will break if Google changes how Drive works 
-            browsers[video.name].webContents.executeJavaScript(`try{document.getElementById("uc-download-link").click();} catch (error) {console.error(error); raiseError(error);}`);
-        });
+                // Clicks the download button on the loaded page
+                // This will break if Google changes how Drive works 
+                // Theres a try-catch block in there but that's only gonna do so much
+                browser.webContents.executeJavaScript(`try{document.getElementById("uc-download-link").click();} catch (error) {console.error(error); raiseError(error);}`);
+            });
+        }, 500);
     };
 
-    videoIDs.forEach(video => {
-        getOneVideo(video);
-    });
+    getFile(fileIDs[index]);
 };
 
 
