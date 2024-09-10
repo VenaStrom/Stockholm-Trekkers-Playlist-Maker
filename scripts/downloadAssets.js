@@ -80,9 +80,10 @@ const downloadPauses = (force = false) => {
         if (index >= fileIDs.length - 1) {
             console.log("all videos downloaded");
             setTimeout(() => { browser.close(); }, 1000);
-        }
 
-        setTimeout(() => { getFile(fileIDs[index]); }, 1000);
+        } else {
+            getFile(fileIDs[index]);
+        }
     }
 
     const getFile = (file) => {
@@ -102,45 +103,45 @@ const downloadPauses = (force = false) => {
         };
 
 
-        // Sets where the downloaded file will end up and what to do when the download is under way and when it's done
-        browser.webContents.session.on("will-download", (event, item, webContents) => {
+        setTimeout(() => {
+            // Sets where the downloaded file will end up and what to do when the download is under way and when it's done
+            browser.webContents.session.on("will-download", (event, item, webContents) => {
 
-            item.setSavePath(videoFolder + file.name);
+                item.setSavePath(videoFolder + file.name);
 
-            item.on("updated", (event, state) => {
-                if (state === "interrupted") {
-                    console.warn("download is interrupted but can be resumed");
-                    raiseError("download is interrupted");
+                item.on("updated", (event, state) => {
+                    if (state === "interrupted") {
+                        console.warn("download is interrupted but can be resumed");
+                        raiseError("download is interrupted");
 
-                } else if (state === "progressing") {
-                    if (item.isPaused()) {
-                        console.warn(`download of ${file.name} is paused`);
-                        raiseError(`download of ${file.name} is paused`);
+                    } else if (state === "progressing") {
+                        if (item.isPaused()) {
+                            console.warn(`download of ${file.name} is paused`);
+                            raiseError(`download of ${file.name} is paused`);
+
+                        } else {
+                            const received = item.getReceivedBytes();
+                            const total = item.getTotalBytes();
+                            const percent = (received / total * 100).toFixed(0);
+                            const MB = (received / 1024 / 1024).toFixed(0);
+
+                            console.log(`${file.name} received ${percent}% ${MB} MB`);
+                        };
+                    };
+                });
+
+                item.once("done", (event, state) => {
+                    if (state === "completed") {
+                        console.log(`download of ${file.name} completed successfully`);
+                        getNextFile();
 
                     } else {
-                        const received = item.getReceivedBytes();
-                        const total = item.getTotalBytes();
-                        const percent = (received / total * 100).toFixed(0);
-                        const MB = (received / 1024 / 1024).toFixed(0);
-
-                        console.log(`${file.name} received ${percent}% ${MB} MB`);
+                        console.error(`download failed with state: ${state}`);
+                        raiseError(`download failed with state: ${state}`);
                     };
-                };
+                });
             });
 
-            item.once("done", (event, state) => {
-                if (state === "completed") {
-                    console.log(`download of ${file.name} completed successfully`);
-                    getNextFile();
-
-                } else {
-                    console.error(`download failed with state: ${state}`);
-                    raiseError(`download failed with state: ${state}`);
-                };
-            });
-        });
-
-        setTimeout(() => {
             browser.loadURL(downloadRef.urlTemplate + file.id);
             browser.webContents.on("did-finish-load", () => {
                 // Inject error raising script into loaded document 
