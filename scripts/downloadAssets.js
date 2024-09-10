@@ -3,6 +3,14 @@ const fs = require("fs");
 const path = require("node:path")
 const raiseError = require("./raiseError.js");
 
+const logStatus = {
+    start: "[STARTED] ",
+    end: "[FINISHED] ",
+    info: "[INFO] ",
+    error: "[ERROR] ",
+    download: "[DOWNLOADING] ",
+};
+
 const downloadStatus = {
     "fileCount": 0,
     "atFile": 0,
@@ -53,10 +61,10 @@ const downloadPauses = (force = false) => {
 
     // If force downloading, delete the folder just to make sure
     if (force) {
-        console.log("force downloading...");
+        console.log(logStatus.info + "force downloading...");
         fs.rmSync(videoFolder, { recursive: true });
     } else {
-        console.log("looking for files...");
+        console.log(logStatus.info + "looking for files...");
     };
 
     // Check if the video folder exists and make it if it doesn't
@@ -78,7 +86,7 @@ const downloadPauses = (force = false) => {
         index++;
 
         if (index >= fileIDs.length - 1) {
-            console.log("all videos downloaded");
+            console.log(logStatus.end + "all videos downloaded");
             setTimeout(() => { browser.close(); }, 1000);
 
         } else {
@@ -88,68 +96,61 @@ const downloadPauses = (force = false) => {
 
     const getFile = (file) => {
         if (!file) {
-            console.error("no file");
+            console.error(logStatus.error + "no file");
             return;
         }
 
         // If the video is already downloaded and we're not forcing, skip it
         if (fs.existsSync(videoFolder + file.name) && !force) {
-            console.log(file.name + " already downloaded");
+            console.log(logStatus.info + file.name + " already downloaded");
             getNextFile();
             return;
 
         } else {
-            console.log("downloading " + file.name);
+            console.log(logStatus.start + file.name);
         };
 
+        // Sets where the downloaded file will end up and what to do when the download is under way and when it's done
+        browser.webContents.session.once("will-download", (event, item, webContents) => {
 
-        setTimeout(() => {
-            // Sets where the downloaded file will end up and what to do when the download is under way and when it's done
-            browser.webContents.session.on("will-download", (event, item, webContents) => {
+            item.setSavePath(videoFolder + file.name);
 
-                item.setSavePath(videoFolder + file.name);
+            item.on("updated", (event, state) => {
+                if (state === "interrupted") {
+                    console.warn(logStatus.error + "download is interrupted but can be resumed");
+                    raiseError("download is interrupted");
 
-                item.on("updated", (event, state) => {
-                    if (state === "interrupted") {
-                        console.warn("download is interrupted but can be resumed");
-                        raiseError("download is interrupted");
-
-                    } else if (state === "progressing") {
-                        if (item.isPaused()) {
-                            console.warn(`download of ${file.name} is paused`);
-                            raiseError(`download of ${file.name} is paused`);
-
-                        } else {
-                            const received = item.getReceivedBytes();
-                            const total = item.getTotalBytes();
-                            const percent = (received / total * 100).toFixed(0);
-                            const MB = (received / 1024 / 1024).toFixed(0);
-
-                            console.log(`${file.name} received ${percent}% ${MB} MB`);
-                        };
-                    };
-                });
-
-                item.once("done", (event, state) => {
-                    if (state === "completed") {
-                        console.log(`download of ${file.name} completed successfully`);
-                        getNextFile();
+                } else if (state === "progressing") {
+                    if (item.isPaused()) {
+                        console.warn(logStatus.error + `download of ${file.name} is paused`);
+                        raiseError(`download of ${file.name} is paused`);
 
                     } else {
-                        console.error(`download failed with state: ${state}`);
-                        raiseError(`download failed with state: ${state}`);
+                        const received = item.getReceivedBytes();
+                        const total = item.getTotalBytes();
+                        const percent = (received / total * 100).toFixed(0);
+                        const MB = (received / 1024 / 1024).toFixed(0);
+
+                        console.log(logStatus.download + `${file.name} received ${percent}% ${MB} MB`);
                     };
-                });
+                };
             });
 
+            item.once("done", (event, state) => {
+                if (state === "completed") {
+                    console.log(logStatus.end + `download of ${file.name} completed successfully`);
+                    getNextFile();
+
+                } else {
+                    console.error(logStatus.download + `download failed with state: ${state}`);
+                    raiseError(`download failed with state: ${state}`);
+                };
+            });
+        });
+
+        setTimeout(() => {
             browser.loadURL(downloadRef.urlTemplate + file.id);
             browser.webContents.on("did-finish-load", () => {
-                // Inject error raising script into loaded document 
-                // Might not work but eh, worth a shot 
-                const absPathOfRaiseError = path.join(__dirname, "../html/js/raiseError.js");
-                const script = fs.readFileSync(absPathOfRaiseError, "utf-8");
-                browser.webContents.executeJavaScript(script);
-
                 // Clicks the download button on the loaded page
                 // This will break if Google changes how Drive works 
                 // Theres a try-catch block in there but that's only gonna do so much
@@ -176,7 +177,7 @@ const setUpHandlers = () => {
         return filesExist();
     });
 
-    console.log("handlers set up");
+    console.log(logStatus.info + "handlers set up");
 };
 
 module.exports = { setUpHandlers };
