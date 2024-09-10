@@ -57,7 +57,7 @@ const filesExist = () => {
 const downloadPauses = (force = false) => {
     const videoFolder = path.join(__dirname, "../assets/videos/")
 
-    // updateStatus(status = "setting things up")
+    updateStatus(status = "setting things up")
 
     // If force downloading, delete the folder just to make sure
     if (force) {
@@ -76,7 +76,8 @@ const downloadPauses = (force = false) => {
     const fileIDs = downloadRef.videos;
     let index = 0;
 
-    // updateStatus(fileCount = fileIDs.length);
+    updateStatus(fileCount = fileIDs.length);
+    updateStatus(atFile = index);
 
     const browser = new BrowserWindow({
         // show: false,
@@ -88,6 +89,7 @@ const downloadPauses = (force = false) => {
         if (index >= fileIDs.length - 1) {
             console.log(logStatus.end + "all videos downloaded");
             setTimeout(() => { browser.close(); }, 1000);
+            updateStatus(status = "completed");
 
         } else {
             getFile(fileIDs[index]);
@@ -110,6 +112,12 @@ const downloadPauses = (force = false) => {
             console.log(logStatus.start + file.name);
         };
 
+        updateStatus(
+            status = "downloading",
+            atFile = index,
+            name = file.name,
+        );
+
         // Sets where the downloaded file will end up and what to do when the download is under way and when it's done
         browser.webContents.session.once("will-download", (event, item, webContents) => {
 
@@ -126,12 +134,17 @@ const downloadPauses = (force = false) => {
                         raiseError(`download of ${file.name} is paused`);
 
                     } else {
-                        const received = item.getReceivedBytes();
-                        const total = item.getTotalBytes();
-                        const percent = (received / total * 100).toFixed(0);
-                        const MB = (received / 1024 / 1024).toFixed(0);
+                        const receivedMB = (item.getReceivedBytes() / 1024 / 1024).toFixed(2);
+                        const fileSizeMB = (item.getTotalBytes() / 1024 / 1024).toFixed(0);
+                        const percent = (item.getReceivedBytes() / item.getTotalBytes() * 100).toFixed(0);
 
-                        console.log(logStatus.download + `${file.name} received ${percent}% ${MB} MB`);
+                        updateStatus(
+                            size = fileSizeMB,
+                            received = receivedMB,
+                            percent = percent,
+                        );
+
+                        console.log(logStatus.download + `${file.name} received ${percent}% ${receivedMB} / ${fileSizeMB} MB`);
                     };
                 };
             });
