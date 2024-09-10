@@ -68,10 +68,10 @@ const downloadPauses = (force = false) => {
     const getNextFile = () => {
         index++;
 
-        if (index >= fileIDs.length - 1) {
+        if (index >= fileIDs.length) {
             console.log(logStatus.end + "all videos downloaded");
-            setTimeout(() => { browser.close(); }, 1000);
             downloadStatus.status = "completed";
+            setTimeout(() => { browser.close(); }, 1000);
 
         } else {
             getFile(fileIDs[index]);
@@ -109,11 +109,17 @@ const downloadPauses = (force = false) => {
                     raiseError("download is interrupted");
                     downloadStatus.status = "failed";
 
+                    // Delete the file if it's interrupted
+                    fs.rmSync(videoFolder + file.name);
+
                 } else if (state === "progressing") {
                     if (item.isPaused()) {
                         console.warn(logStatus.error + `download of ${file.name} is paused`);
                         raiseError(`download of ${file.name} is paused`);
                         downloadStatus.status = "failed";
+
+                        // Delete the file if it's paused
+                        fs.rmSync(videoFolder + file.name);
 
                     } else {
                         const receivedMB = (item.getReceivedBytes() / 1024 / 1024).toFixed(2);
@@ -138,6 +144,9 @@ const downloadPauses = (force = false) => {
                     console.error(logStatus.download + `download failed with state: ${state}`);
                     raiseError(`download failed with state: ${state}`);
                     downloadStatus.status = "failed";
+
+                    // Delete the file if it fails
+                    fs.rmSync(videoFolder + file.name);
                 };
             });
         });

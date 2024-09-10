@@ -29,7 +29,7 @@ confirmDownloadWindow.querySelector("button").addEventListener("click", () => {
 });
 
 // Progress
-const progressBar = progressWindow.querySelector("progress-bar");
+const progressBar = progressWindow.querySelector("#progress-bar");
 const topStatusText = progressWindow.querySelectorAll("p")[0];
 const bottomStatusText = progressWindow.querySelectorAll("p")[1];
 const progressUpdate = setInterval(() => {
@@ -40,10 +40,10 @@ const progressUpdate = setInterval(() => {
 
         } else if (status.status === "downloading") {
             topStatusText.textContent = "Downloading video files, please wait... (" + status.atFile + "/" + status.fileCount + ")";
-            bottomStatusText.textContent = `Downloading ${status.name} - ${status.received} / ${status.size} MB (${status.percent}%)`;
+            bottomStatusText.textContent = `Downloading ${status.received} / ${status.size} MB (${status.percent}%)`;
 
             progressBar.style.backgroundSize = status.percent + "%";
-
+            console.log(progressBar);
         } else if (status.status === "completed") {
             clearInterval(progressUpdate);
             topStatusText.textContent = "Downloads completed. Moving on...";
