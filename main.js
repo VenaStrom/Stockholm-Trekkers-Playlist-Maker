@@ -1,5 +1,5 @@
 
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, nativeTheme } = require("electron");
 if (require("electron-squirrel-startup")) app.quit();
 const path = require("node:path");
 const { setUpHandlers: setUpDownloadHandlers } = require("./scripts/downloadAssets");
@@ -10,7 +10,7 @@ const createWindow = () => {
         width: 1920,
         height: 1080,
         webPreferences: {
-            preload: path.join(__dirname, "scripts/preload.js")
+            preload: path.join(__dirname, "scripts/preload.js"),
         },
         icon: path.join(__dirname, "assets/images/stockholm-trekkers-60.png"),
         frame: false,
@@ -19,6 +19,7 @@ const createWindow = () => {
     });
 
     mainWindow.openDevTools();
+    
 
     mainWindow.on("closed", () => {
         BrowserWindow.getAllWindows().forEach(window => {

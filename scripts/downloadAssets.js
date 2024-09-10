@@ -21,24 +21,6 @@ const downloadStatus = {
     "percent": 0,
 };
 
-const updateStatus = (
-    atFile = downloadStatus.atFile,
-    status = downloadStatus.status,
-    name = downloadStatus.name,
-    size = downloadStatus.size,
-    received = downloadStatus.received,
-    percent = downloadStatus.percent,
-    fileCount = downloadStatus.fileCount
-) => {
-    downloadStatus.atFile = atFile;
-    downloadStatus.status = status;
-    downloadStatus.name = name;
-    downloadStatus.size = size;
-    downloadStatus.received = received;
-    downloadStatus.percent = percent;
-    downloadStatus.fileCount = fileCount;
-};
-
 const filesExist = () => {
     const downloadRefs = JSON.parse(fs.readFileSync(path.join(__dirname, "fileIDs.json")));
     const videos = downloadRefs.videos;
@@ -57,7 +39,7 @@ const filesExist = () => {
 const downloadPauses = (force = false) => {
     const videoFolder = path.join(__dirname, "../assets/videos/")
 
-    updateStatus(status = "setting things up")
+    downloadStatus.status = "starting";
 
     // If force downloading, delete the folder just to make sure
     if (force) {
@@ -76,11 +58,11 @@ const downloadPauses = (force = false) => {
     const fileIDs = downloadRef.videos;
     let index = 0;
 
-    updateStatus(fileCount = fileIDs.length);
-    updateStatus(atFile = index);
+    downloadStatus.fileCount = fileIDs.length;
+    downloadStatus.atFile = index;
 
     const browser = new BrowserWindow({
-        // show: false,
+        show: false,
     });
 
     const getNextFile = () => {
@@ -89,7 +71,7 @@ const downloadPauses = (force = false) => {
         if (index >= fileIDs.length - 1) {
             console.log(logStatus.end + "all videos downloaded");
             setTimeout(() => { browser.close(); }, 1000);
-            updateStatus(status = "completed");
+            downloadStatus.status = "completed";
 
         } else {
             getFile(fileIDs[index]);
@@ -112,11 +94,9 @@ const downloadPauses = (force = false) => {
             console.log(logStatus.start + file.name);
         };
 
-        updateStatus(
-            status = "downloading",
-            atFile = index,
-            name = file.name,
-        );
+        downloadStatus.status = "downloading";
+        downloadStatus.atFile = index;
+        downloadStatus.name = file.name;
 
         // Sets where the downloaded file will end up and what to do when the download is under way and when it's done
         browser.webContents.session.once("will-download", (event, item, webContents) => {
@@ -127,26 +107,24 @@ const downloadPauses = (force = false) => {
                 if (state === "interrupted") {
                     console.warn(logStatus.error + "download is interrupted but can be resumed");
                     raiseError("download is interrupted");
-                    updateStatus(status = "failed");
-                    
+                    downloadStatus.status = "failed";
+
                 } else if (state === "progressing") {
                     if (item.isPaused()) {
                         console.warn(logStatus.error + `download of ${file.name} is paused`);
                         raiseError(`download of ${file.name} is paused`);
-                        updateStatus(status = "failed");
+                        downloadStatus.status = "failed";
 
                     } else {
                         const receivedMB = (item.getReceivedBytes() / 1024 / 1024).toFixed(2);
                         const fileSizeMB = (item.getTotalBytes() / 1024 / 1024).toFixed(0);
                         const percent = (item.getReceivedBytes() / item.getTotalBytes() * 100).toFixed(0);
 
-                        updateStatus(
-                            size = fileSizeMB,
-                            received = receivedMB,
-                            percent = percent,
-                        );
+                        downloadStatus.size = fileSizeMB;
+                        downloadStatus.received = receivedMB;
+                        downloadStatus.percent = percent;
 
-                        console.log(logStatus.download + `${file.name} received ${percent}% ${receivedMB} / ${fileSizeMB} MB`);
+                        console.log(logStatus.download + `${file.name} received ${receivedMB} / ${fileSizeMB} MB ${percent}%`);
                     };
                 };
             });
@@ -159,7 +137,7 @@ const downloadPauses = (force = false) => {
                 } else {
                     console.error(logStatus.download + `download failed with state: ${state}`);
                     raiseError(`download failed with state: ${state}`);
-                    updateStatus(status = "failed");
+                    downloadStatus.status = "failed";
                 };
             });
         });

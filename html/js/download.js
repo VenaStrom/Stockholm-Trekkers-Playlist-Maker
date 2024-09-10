@@ -17,6 +17,7 @@ download.filesExist().then((filesExist) => {
     } else {
         // Show download confirmation
         confirmDownloadWindow.classList.remove("hidden");
+        checkingForFilesWindow.classList.add("hidden");
     }
 });
 
@@ -33,14 +34,21 @@ const topStatusText = progressWindow.querySelectorAll("p")[0];
 const bottomStatusText = progressWindow.querySelectorAll("p")[1];
 const progressUpdate = setInterval(() => {
     download.status().then((status) => {
-        if (status.status === "downloading") {
-            progressBar.value = status.percent;
+        if (status.status === "starting") {
+            topStatusText.textContent = "Settings things up, please wait...";
+            bottomStatusText.textContent = "Download will start soon.";
+
+        } else if (status.status === "downloading") {
             topStatusText.textContent = "Downloading video files, please wait... (" + status.atFile + "/" + status.fileCount + ")";
-            bottomStatusText.textContent = `Downloading ${status.name} ${status.received} / ${status.size} MB (${status.percent}%)`;
+            bottomStatusText.textContent = `Downloading ${status.name} - ${status.received} / ${status.size} MB (${status.percent}%)`;
+
+            progressBar.style.backgroundSize = status.percent + "%";
 
         } else if (status.status === "completed") {
             clearInterval(progressUpdate);
             topStatusText.textContent = "Downloads completed. Moving on...";
+
+            progressBar.style.backgroundSize = "100%";
 
             setTimeout(() => {
                 switchPage();
@@ -56,4 +64,4 @@ const progressUpdate = setInterval(() => {
 }, 100);
 
 // Switch page
-const switchPage = () => {};
+const switchPage = () => { };

@@ -23,10 +23,6 @@
     color: var(--text-color);
 }
 
-.hidden {
-    display: none;
-}
-
 img {
     user-select: none;
 }
@@ -156,4 +152,8 @@ body {
     &>footer {
         height: var(--footer-height);
     }
+}
+
+.hidden {
+    display: none;
 }
