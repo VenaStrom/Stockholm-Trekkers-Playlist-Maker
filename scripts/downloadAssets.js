@@ -127,11 +127,13 @@ const downloadPauses = (force = false) => {
                 if (state === "interrupted") {
                     console.warn(logStatus.error + "download is interrupted but can be resumed");
                     raiseError("download is interrupted");
-
+                    updateStatus(status = "failed");
+                    
                 } else if (state === "progressing") {
                     if (item.isPaused()) {
                         console.warn(logStatus.error + `download of ${file.name} is paused`);
                         raiseError(`download of ${file.name} is paused`);
+                        updateStatus(status = "failed");
 
                     } else {
                         const receivedMB = (item.getReceivedBytes() / 1024 / 1024).toFixed(2);
@@ -157,6 +159,7 @@ const downloadPauses = (force = false) => {
                 } else {
                     console.error(logStatus.download + `download failed with state: ${state}`);
                     raiseError(`download failed with state: ${state}`);
+                    updateStatus(status = "failed");
                 };
             });
         });

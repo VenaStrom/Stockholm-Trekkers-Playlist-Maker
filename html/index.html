@@ -7,7 +7,11 @@
     <title>Stockholm Trekkers Playlist Maker</title>
 
     <link rel="shortcut icon" href="../assets/stockholm-trekkers-60.png" type="image/x-icon">
+    <link rel="shortcut icon" href="../assets/images/stockholm-trekkers.ico" type="image/x-icon">
     <link rel="stylesheet" href="style/style.css">
+
+    <script src="js/raiseError.js"></script>
+    <script defer src="js/download.js"></script>
 </head>
 
 <body>
@@ -17,9 +21,6 @@
             <p>Stockholm Trekkers</p>
             <p class="smaller">Playlist Maker</p>
         </div>
-
-        <script src="js/raiseError.js"></script>
-        <script defer src="js/download/DOMs.js"></script>
     </header>
 
     <main>
@@ -27,23 +28,19 @@
         <h1>Welcome to</h1>
         <p>Stockholm Trekkers Playlist Maker</p>
 
-        <div class="round-box local-file-check">
+        <div class="round-box hidden" id="checking-for-files">
             <p>Checking for necessary files...</p>
-
-            <script defer src="js/download/shouldDownload.js"></script>
         </div>
 
-        <div class="round-box confirm-download-window" style="display: none;">
+        <div class="round-box hidden" id="confirm-download">
             <p>To use this app, some video files need to be downloaded. The files are around 2 GB.</p>
             <button>Start download</button>
-            <script defer src="js/download/startDownload.js"></script>
         </div>
 
-        <div class="round-box download-progress-window" style="display: none;">
-            <p id="top-status-text">Downloading video files, please wait...</p>
-            <div class="progress-bar" id="download-progress-bar" style="background-size: 0%;"></div>
-            <p id="bottom-status-text">Downloading 0.00 / 0 MB (0%)</p>
-            <script defer src="js/download/progressBar.js"></script>
+        <div class="round-box hidden" id="progress-window">
+            <p class="download-status">Downloading video files, please wait...</p>
+            <div id="progress-bar" style="background-size: 0%;"></div>
+            <p class="download-status">Downloading 0.00 / 0 MB (0%)</p>
         </div>
     </main>
 

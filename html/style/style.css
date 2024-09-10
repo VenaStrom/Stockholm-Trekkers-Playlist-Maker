@@ -3,9 +3,15 @@
     --background-color: #2b2b2b;
     --accent-color-low-contrast: #1e1e1e;
     --accent-color-high-contrast: #ffd700;
+    --warning-color: #780000;
 
     --header-height: 4rem;
     --footer-height: 3rem;
+}
+
+@font-face {
+    font-family: "Bahnschrift";
+    src: url("../../assets/fonts/BAHNSCHRIFT.TTF") format("truetype");
 }
 
 * {
@@ -13,9 +19,12 @@
     padding: 0;
     box-sizing: border-box;
 
-    src: local("assets/BAHNSCHRIFT.TTF");
     font-family: "Bahnschrift", "Verdana", sans-serif;
     color: var(--text-color);
+}
+
+.hidden {
+    display: none;
 }
 
 img {
@@ -51,7 +60,6 @@ button {
 
     margin: 0.5rem;
     padding: 1rem 2rem;
-    padding-bottom: 0.8rem;
 
     border: var(--accent-color-low-contrast), 0.34rem solid;
     border-radius: 1rem;
@@ -123,8 +131,8 @@ body {
             margin-bottom: 1rem;
         }
 
-        &>.download-progress-window {
-            &>.progress-bar {
+        &>#progress-window {
+            &>#progress-bar {
                 justify-self: flex-end;
 
                 width: 70%;
@@ -134,11 +142,13 @@ body {
                 border-radius: .35rem;
 
                 background-color: var(--accent-color-low-contrast);
-            }
 
-            &>#download-progress-bar {
                 background-image: linear-gradient(var(--accent-color-high-contrast), var(--accent-color-high-contrast));
                 background-repeat: no-repeat;
+            }
+            
+            &>.warning {
+                background-image: linear-gradient(var(--warning-color), var(--warning-color));
             }
         }
     }
