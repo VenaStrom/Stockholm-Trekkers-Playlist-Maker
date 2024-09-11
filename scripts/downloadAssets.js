@@ -28,7 +28,7 @@ const filesExist = () => {
     let fileCount = 0;
 
     videos.forEach(file => {
-        if (fs.existsSync(path + file.name)) {
+        if (fs.existsSync(path.join(__dirname, "../assets/videos", file.name))) {
             fileCount++;
         }
     });

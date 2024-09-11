@@ -7,6 +7,7 @@ const progressWindow = document.getElementById("progress-window");
 // Show "checking for files" window
 checkingForFilesWindow.classList.remove("hidden");
 download.filesExist().then((filesExist) => {
+    console.log(filesExist);
     if (filesExist) {
         checkingForFilesWindow.querySelector("p").textContent = "Files found. Moving on...";
 
