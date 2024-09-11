@@ -1,0 +1,37 @@
+{
+    "name": "<<DATE>>",
+    "files": [
+        {
+            "fileName": "<<FILENAME>>",
+            "filePath": "<<FILEPATH>>",
+            "startTime": "<<INT[hhmm]>>",
+            "leadingCountdown": "<<BOOLEAN>>",
+            "leadingEmergency": "<<BOOLEAN>>",
+            "trailingPauseCount": "<<NUMBER>>"
+        },
+        {
+            "fileName": "<<FILENAME>>",
+            "filePath": "<<FILEPATH>>",
+            "startTime": "<<INT[hhmm]>>",
+            "leadingCountdown": "<<BOOLEAN>>",
+            "leadingEmergency": "<<BOOLEAN>>",
+            "trailingPauseCount": "<<NUMBER>>"
+        },
+        {
+            "fileName": "<<FILENAME>>",
+            "filePath": "<<FILEPATH>>",
+            "startTime": "<<INT[hhmm]>>",
+            "leadingCountdown": "<<BOOLEAN>>",
+            "leadingEmergency": "<<BOOLEAN>>",
+            "trailingPauseCount": "<<NUMBER>>"
+        },
+        {
+            "fileName": "<<FILENAME>>",
+            "filePath": "<<FILEPATH>>",
+            "startTime": "<<INT[hhmm]>>",
+            "leadingCountdown": "<<BOOLEAN>>",
+            "leadingEmergency": "<<BOOLEAN>>",
+            "trailingPauseCount": "<<NUMBER>>"
+        }
+    ]
+}
