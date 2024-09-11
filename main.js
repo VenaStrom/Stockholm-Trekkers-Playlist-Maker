@@ -28,7 +28,7 @@ const createWindow = () => {
     });
 
     mainWindow.maximize();
-    mainWindow.loadFile("./html/index.html");
+    mainWindow.loadFile("./html/pages/download.html");
     mainWindow.focus();
 };
 
