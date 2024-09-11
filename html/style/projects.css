@@ -1,0 +1,8 @@
+body>main {
+    &>header {
+        &>h1 {
+            justify-self: center;
+            align-self: center;
+        }
+    }
+}

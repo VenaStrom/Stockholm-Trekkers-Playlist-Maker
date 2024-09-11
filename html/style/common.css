@@ -88,6 +88,8 @@ body {
         flex-flow: row nowrap;
         align-items: center;
 
+        margin-bottom: 2rem;
+
         &>.logo {
             height: calc(var(--header-height) * 0.8);
 
