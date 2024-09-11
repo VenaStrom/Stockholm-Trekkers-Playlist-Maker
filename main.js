@@ -2,7 +2,7 @@
 const { app, BrowserWindow, nativeTheme } = require("electron");
 if (require("electron-squirrel-startup")) app.quit();
 const path = require("node:path");
-const { setUpHandlers: setUpDownloadHandlers } = require("./scripts/downloadAssets");
+const { setUpHandlers: setUpDownloadHandlers } = require("./scripts/download/downloadAssets.js");
 
 const createWindow = () => {
 
@@ -19,7 +19,7 @@ const createWindow = () => {
     });
 
     // mainWindow.openDevTools();
-    
+
 
     mainWindow.on("closed", () => {
         BrowserWindow.getAllWindows().forEach(window => {

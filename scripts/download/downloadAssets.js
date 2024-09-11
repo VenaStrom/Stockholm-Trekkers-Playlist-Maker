@@ -2,7 +2,7 @@ const { BrowserWindow, session, ipcMain } = require("electron");
 const fs = require("fs");
 const path = require("node:path")
 const { Worker } = require("worker_threads");
-const raiseError = require("./raiseError.js");
+const raiseError = require("../raiseError.js");
 
 const logStatus = {
     start: "[STARTED] ",
@@ -23,7 +23,7 @@ const downloadStatus = {
 };
 
 const downloadPauses = (force = false) => {
-    const videoFolder = path.join(__dirname, "../assets/videos/")
+    const videoFolder = path.join(__dirname, "../../assets/videos/")
 
     downloadStatus.status = "starting";
 
@@ -40,8 +40,8 @@ const downloadPauses = (force = false) => {
         fs.mkdirSync(videoFolder, { recursive: true });
     };
 
-    const downloadRef = JSON.parse(fs.readFileSync(path.join(__dirname, "fileIDs.json")));
-    const fileIDs = downloadRef.videos;
+    const fileURLs = JSON.parse(fs.readFileSync(path.join(__dirname, "fileURLs.json")));
+    const fileIDs = fileURLs.videos;
     let index = 0;
 
     downloadStatus.fileCount = fileIDs.length;
@@ -138,7 +138,7 @@ const downloadPauses = (force = false) => {
         });
 
         setTimeout(() => {
-            browser.loadURL(downloadRef.urlTemplate + file.id);
+            browser.loadURL(fileURLs.urlTemplate + file.id);
             browser.webContents.on("did-finish-load", () => {
                 // Clicks the download button on the loaded page
                 // This will break if Google changes how Drive works 
@@ -163,18 +163,18 @@ const setUpHandlers = () => {
     });
 
     ipcMain.handle("check-for-local-files", () => {
-        const downloadRefs = JSON.parse(fs.readFileSync(path.join(__dirname, "fileIDs.json")));
-        const videos = downloadRefs.videos;
+        const fileURLs = JSON.parse(fs.readFileSync(path.join(__dirname, "fileURLs.json")));
+        const fileIDs = fileURLs.videos;
 
         let fileCount = 0;
 
-        videos.forEach(file => {
-            if (fs.existsSync(path.join(__dirname, "../assets/videos", file.name))) {
+        fileIDs.forEach(file => {
+            if (fs.existsSync(path.join(__dirname, "../../assets/videos", file.name))) {
                 fileCount++;
             }
         });
 
-        return fileCount === videos.length;
+        return fileCount === fileIDs.length;
     });
 
     console.log(logStatus.info + "handlers set up");
