@@ -1,6 +1,7 @@
 const { BrowserWindow, session, ipcMain } = require("electron");
 const fs = require("fs");
 const path = require("node:path")
+const { Worker } = require("worker_threads");
 const raiseError = require("./raiseError.js");
 
 const logStatus = {
@@ -19,21 +20,6 @@ const downloadStatus = {
     "size": 0,
     "received": 0,
     "percent": 0,
-};
-
-const filesExist = () => {
-    const downloadRefs = JSON.parse(fs.readFileSync(path.join(__dirname, "fileIDs.json")));
-    const videos = downloadRefs.videos;
-
-    let fileCount = 0;
-
-    videos.forEach(file => {
-        if (fs.existsSync(path.join(__dirname, "../assets/videos", file.name))) {
-            fileCount++;
-        }
-    });
-
-    return fileCount === videos.length;
 };
 
 const downloadPauses = (force = false) => {
@@ -177,7 +163,18 @@ const setUpHandlers = () => {
     });
 
     ipcMain.handle("check-for-local-files", () => {
-        return filesExist();
+        const downloadRefs = JSON.parse(fs.readFileSync(path.join(__dirname, "fileIDs.json")));
+        const videos = downloadRefs.videos;
+
+        let fileCount = 0;
+
+        videos.forEach(file => {
+            if (fs.existsSync(path.join(__dirname, "../assets/videos", file.name))) {
+                fileCount++;
+            }
+        });
+
+        return fileCount === videos.length;
     });
 
     console.log(logStatus.info + "handlers set up");
