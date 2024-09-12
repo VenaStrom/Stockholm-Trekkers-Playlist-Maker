@@ -57,9 +57,8 @@ body {
 
             &>.project-header {
                 display: grid;
-                grid-template-columns: max-content max-content 1fr;
+                grid-template-columns: max-content 1fr;
                 align-items: center;
-                gap: 1ch;
 
                 width: 100%;
 
@@ -71,7 +70,7 @@ body {
                     justify-self: flex-end;
                 }
             }
-            
+
             &>h4 {
                 margin: 0.4rem 0;
             }
@@ -85,6 +84,10 @@ body {
                 &>li {
                     margin-bottom: 0.2rem;
                 }
+            }
+
+            &:hover {
+                border-color: var(--accent-color-high-contrast);
             }
         }
     }
