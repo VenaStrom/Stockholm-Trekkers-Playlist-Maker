@@ -1,8 +1,90 @@
+:root {
+    --project-height: 10rem;
+}
+
 body {
     &>header {
         &>h1 {
             position: absolute;
             width: 100%;
+        }
+    }
+
+    &>main {
+        &>p:first-of-type {
+            margin-bottom: 0.5rem;
+        }
+
+        &>.make-new-project,
+        &>.load-project {
+            min-height: var(--project-height);
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+
+        &>.make-new-project {
+            
+
+            &>img {
+                image-rendering: pixelated;
+
+                height: calc(var(--project-height) * 0.5);
+                width: calc(var(--project-height) * 0.5);
+
+                filter: var(--filter-to-accent-color-low-contrast)
+            }
+
+            &:hover {
+                background-color: var(--accent-color-low-contrast);
+            }
+
+            &:hover>img {
+                filter: var(--filter-to-background-color);
+            }
+        }
+
+        &>.load-project {
+            text-align: left;
+            align-items: flex-start;
+            justify-content: flex-start;
+            gap: 0;
+
+            overflow-y: hidden;
+
+            padding: 1.1rem 5ch;
+
+            height: max-content;
+
+            &>.project-header {
+                display: flex;
+                flex-flow: row nowrap;
+                justify-content: space-between;
+                align-items: center;
+
+                width: 100%;
+
+                &>h3 {
+                    font-size: 1.5rem;
+                }
+
+            }
+            
+            &>h4 {
+                margin: 0.4rem 0;
+            }
+
+            &>ul {
+                overflow-y: scroll;
+
+                list-style-type: none;
+                font-size: 0.9rem;
+
+                &>li {
+                    margin-bottom: 0.2rem;
+                }
+            }
         }
     }
 }
