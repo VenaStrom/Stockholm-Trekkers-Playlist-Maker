@@ -85,7 +85,7 @@ body {
     &>header {
         width: 100svw;
         max-width: 100%;
-        height: var(--header-height);
+        min-height: var(--header-height);
 
         background-color: var(--accent-color-low-contrast);
 

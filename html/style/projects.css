@@ -1,7 +1,8 @@
 body {
     &>header {
-        &>h1#page-title {
-            justify-self: center;
+        &>h1 {
+            position: absolute;
+            width: 100%;
         }
     }
 }
