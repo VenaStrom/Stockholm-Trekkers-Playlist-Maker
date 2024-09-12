@@ -11,9 +11,7 @@ download.filesExist().then((filesExist) => {
     if (filesExist) {
         checkingForFilesWindow.querySelector("p").textContent = "Files found. Moving on...";
 
-        setTimeout(() => {
-            switchPage();
-        }, 100);
+        switchPage();
 
     } else {
         // Show download confirmation
@@ -52,9 +50,7 @@ const progressUpdate = setInterval(() => {
 
             progressBar.style.backgroundSize = "100%";
 
-            setTimeout(() => {
-                switchPage();
-            }, 100);
+            switchPage();
 
         } else if (status.status === "failed") {
             clearInterval(progressUpdate);
@@ -67,5 +63,8 @@ const progressUpdate = setInterval(() => {
 
 // Switch page
 const switchPage = () => {
-    window.location.href = "./projects.html";
+    setTimeout(() => {
+        // window.location.href = "./projects.html";
+        alert("move on");
+    }, 1000);
 };

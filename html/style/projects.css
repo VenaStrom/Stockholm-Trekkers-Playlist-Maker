@@ -4,6 +4,10 @@
 
 body {
     &>header {
+        position: sticky;
+        top: 0;
+        z-index: 9999;
+
         &>h1 {
             position: absolute;
             width: 100%;
@@ -25,8 +29,6 @@ body {
         }
 
         &>.make-new-project {
-            
-
             &>img {
                 image-rendering: pixelated;
 
@@ -58,10 +60,10 @@ body {
             height: max-content;
 
             &>.project-header {
-                display: flex;
-                flex-flow: row nowrap;
-                justify-content: space-between;
+                display: grid;
+                grid-template-columns: max-content max-content 1fr;
                 align-items: center;
+                gap: 1ch;
 
                 width: 100%;
 
@@ -69,6 +71,9 @@ body {
                     font-size: 1.5rem;
                 }
 
+                &>.meta-data {
+                    justify-self: flex-end;
+                }
             }
             
             &>h4 {
