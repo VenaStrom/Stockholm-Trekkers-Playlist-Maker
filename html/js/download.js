@@ -1,5 +1,6 @@
 
 const checkingForFilesWindow = document.getElementById("checking-for-files");
+const confirmMoveOnWindow = document.getElementById("confirm-move-on");
 const confirmDownloadWindow = document.getElementById("confirm-download");
 const progressWindow = document.getElementById("progress-window");
 
@@ -8,16 +9,25 @@ const progressWindow = document.getElementById("progress-window");
 checkingForFilesWindow.classList.remove("hidden");
 download.filesExist().then((filesExist) => {
     console.log(filesExist);
-    if (filesExist) {
-        checkingForFilesWindow.querySelector("p").textContent = "Files found. Moving on...";
 
-        switchPage();
+    setTimeout(() => {
+        if (filesExist) {
+            checkingForFilesWindow.querySelector("p").textContent = "Files found. Moving on...";
 
-    } else {
-        // Show download confirmation
-        confirmDownloadWindow.classList.remove("hidden");
-        checkingForFilesWindow.classList.add("hidden");
-    }
+            checkingForFilesWindow.classList.add("hidden");
+            confirmMoveOnWindow.classList.remove("hidden");
+
+        } else {
+            // Show download confirmation
+            confirmDownloadWindow.classList.remove("hidden");
+            checkingForFilesWindow.classList.add("hidden");
+        };
+    }, 1000);
+});
+
+// Confirm move on
+confirmMoveOnWindow.querySelector("button").addEventListener("click", () => {
+    switchPage();
 });
 
 // Confirm download
@@ -57,14 +67,11 @@ const progressUpdate = setInterval(() => {
             topStatusText.textContent = "Downloads failed.";
             bottomStatusText.textContent = "Please try again. If it still fails, contact Viggo.";
             progressBar.classList.add("warning");
-        }
+        };
     });
 }, 100);
 
 // Switch page
 const switchPage = () => {
-    setTimeout(() => {
-        // window.location.href = "./projects.html";
-        alert("move on");
-    }, 1000);
+    window.location.href = "./projects.html";
 };

@@ -13,6 +13,7 @@
     --header-height: 4rem;
     --header-margin: 1rem;
     --footer-height: 3rem;
+    --footer-margin: 1rem;
 }
 
 @font-face {
@@ -100,6 +101,10 @@ body {
 
         margin-bottom: var(--header-margin);
 
+        position: sticky;
+        top: 0;
+        z-index: 9999;
+
         &>.logo {
             height: calc(var(--header-height) * 0.8);
 
@@ -124,7 +129,7 @@ body {
     }
 
     &>main {
-        min-height: calc(100svh - var(--header-height) - var(--footer-height) - var(--header-margin));
+        min-height: calc(100svh - var(--header-height) - var(--footer-height) - var(--header-margin) - var(--footer-margin));
         display: flex;
         flex-flow: column nowrap;
         align-items: center;
@@ -133,6 +138,7 @@ body {
     }
 
     &>footer {
+        margin-top: var(--footer-margin);
         height: var(--footer-height);
     }
 }
