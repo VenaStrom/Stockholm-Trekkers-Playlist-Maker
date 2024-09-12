@@ -13,7 +13,7 @@ download.filesExist().then((filesExist) => {
 
         setTimeout(() => {
             switchPage();
-        }, 1000);
+        }, 100);
 
     } else {
         // Show download confirmation
@@ -44,16 +44,17 @@ const progressUpdate = setInterval(() => {
             bottomStatusText.textContent = `Downloading ${status.received} / ${status.size} MB (${status.percent}%)`;
 
             progressBar.style.backgroundSize = status.percent + "%";
-            console.log(progressBar);
+
         } else if (status.status === "completed") {
             clearInterval(progressUpdate);
             topStatusText.textContent = "Downloads completed. Moving on...";
+            bottomStatusText.textContent = `Downloading ${status.received} / ${status.size} MB (${status.percent}%)`;
 
             progressBar.style.backgroundSize = "100%";
 
             setTimeout(() => {
                 switchPage();
-            }, 1000);
+            }, 100);
 
         } else if (status.status === "failed") {
             clearInterval(progressUpdate);
@@ -65,4 +66,6 @@ const progressUpdate = setInterval(() => {
 }, 100);
 
 // Switch page
-const switchPage = () => { };
+const switchPage = () => {
+    window.location.href = "./projects.html";
+};

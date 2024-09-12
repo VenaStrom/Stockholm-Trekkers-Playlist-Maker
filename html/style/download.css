@@ -1,7 +1,7 @@
 body {
     &>main {
         &>h1 {
-            margin-top: 14rem;
+            margin-top: 16rem;
         }
 
         &>h1+p {

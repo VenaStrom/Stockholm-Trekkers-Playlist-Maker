@@ -1,8 +1,7 @@
-body>main {
+body {
     &>header {
-        &>h1 {
+        &>h1#page-title {
             justify-self: center;
-            align-self: center;
         }
     }
 }

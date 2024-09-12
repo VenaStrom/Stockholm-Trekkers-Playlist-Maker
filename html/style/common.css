@@ -6,12 +6,17 @@
     --warning-color: #780000;
 
     --header-height: 4rem;
+    --header-margin: 2rem;
     --footer-height: 3rem;
 }
 
 @font-face {
     font-family: "Bahnschrift";
     src: url("../../assets/fonts/BAHNSCHRIFT.TTF") format("truetype");
+}
+
+::-webkit-scrollbar {
+    display: none;
 }
 
 * {
@@ -88,7 +93,7 @@ body {
         flex-flow: row nowrap;
         align-items: center;
 
-        margin-bottom: 2rem;
+        margin-bottom: var(--header-margin);
 
         &>.logo {
             height: calc(var(--header-height) * 0.8);
@@ -114,7 +119,7 @@ body {
     }
 
     &>main {
-        height: calc(100svh - var(--header-height) - var(--footer-height));
+        height: calc(100svh - var(--header-height) - var(--footer-height) - var(--header-margin));
         display: flex;
         flex-flow: column nowrap;
         align-items: center;
