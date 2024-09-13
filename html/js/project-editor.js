@@ -1,21 +1,20 @@
 
+const backButton = document.querySelector("#back-button");
 const nameValidatorStatus = document.querySelector(".name-validator-status");
 const nameInput = document.querySelector(".name-input>input");
 const warningsWindow = document.getElementById("name-validation-popover");
 let popoverTimeout;
 let statusTimeout;
 
+backButton.addEventListener("click", () => {
+    window.location.href = "./projects.html";
+});
+
 const nameValidator = (event) => {
-    if (event.key !== "Enter") {
-        return;
-    }
+    if (event.key !== "Enter") { return; }
 
     clearTimeout(popoverTimeout);
     clearTimeout(statusTimeout);
-
-    const name = nameInput.value.trim();
-    const nameRegex = /^\d{4}-\d{2}-\d{2}$/;
-    const nameRegexNoDash = /^\d{8}$/;
 
     const warnings = (name) => {
         const date = new Date(name);
@@ -26,7 +25,7 @@ const nameValidator = (event) => {
             warnings.push("It's not a valid date. ");
         }
         if (!(date.getDay() in [6, 0])) {
-            warnings.push("It's not on a weekend. ");
+            warnings.push("It's on a weekday. ");
         }
         if (date.getFullYear() !== new Date().getFullYear()) {
             warnings.push("It's not this year. ");
@@ -34,7 +33,7 @@ const nameValidator = (event) => {
         if (date < new Date()) {
             warnings.push("It's in the past. ");
         }
-        if (date.getMonth() > new Date().getMonth() + 2) {
+        if (date.getTime() > new Date().getTime() + 5184000000) {
             warnings.push("It's more than 2 months away. ");
         }
 
@@ -50,22 +49,27 @@ const nameValidator = (event) => {
             });
 
             warningsWindow.showPopover();
-
         }
-        
+
         popoverTimeout = setTimeout(() => {
             warningsWindow.hidePopover();
         }, 5000);
     }
 
+
+    const name = nameInput.value.trim();
+    const nameRegex = /^\d{4}[-./,\s]\d{2}[-./,\s]\d{2}$/;
+    const nameRegexNoSeparator = /^\d{8}$/;
+
     if (nameRegex.test(name)) {
         nameValidatorStatus.textContent = "Looks good!";
         nameValidatorStatus.classList.remove("invalid");
 
-        nameInput.value = name;
-        warnings(name);
+        const formattedName = name.replace(/[-./,\s]/g, "-");
+        nameInput.value = formattedName;
+        warnings(formattedName);
 
-    } else if (nameRegexNoDash.test(name)) {
+    } else if (nameRegexNoSeparator.test(name)) {
         nameValidatorStatus.textContent = "Looks good!";
         nameValidatorStatus.classList.remove("invalid");
 
