@@ -2,18 +2,22 @@
 const nameValidatorStatus = document.querySelector(".name-validator-status");
 const nameInput = document.querySelector(".name-input>input");
 const warningsWindow = document.getElementById("name-validation-popover");
+let popoverTimeout;
+let statusTimeout;
 
 const nameValidator = (event) => {
     if (event.key !== "Enter") {
         return;
     }
 
+    clearTimeout(popoverTimeout);
+    clearTimeout(statusTimeout);
+
     const name = nameInput.value.trim();
     const nameRegex = /^\d{4}-\d{2}-\d{2}$/;
     const nameRegexNoDash = /^\d{8}$/;
 
     const warnings = (name) => {
-        console.log(name);
         const date = new Date(name);
 
         const warnings = [];
@@ -34,12 +38,24 @@ const nameValidator = (event) => {
             warnings.push("It's more than 2 months away. ");
         }
 
-        nameValidatorStatus.textContent += " But are you sure about: ";
+        if (warnings.length > 0) {
+            nameValidatorStatus.textContent += " But are you sure about: ";
 
-        warnings.forEach(warning => {
-            warningsWindow.textContent += warning;
+            warningsWindow.innerHTML = "";
+
+            warnings.forEach(warning => {
+                const warningTag = document.createElement("p");
+                warningTag.textContent = warning;
+                warningsWindow.appendChild(warningTag);
+            });
+
             warningsWindow.showPopover();
-        });
+
+        }
+        
+        popoverTimeout = setTimeout(() => {
+            warningsWindow.hidePopover();
+        }, 5000);
     }
 
     if (nameRegex.test(name)) {
@@ -63,7 +79,7 @@ const nameValidator = (event) => {
     }
 
     if (nameValidatorStatus.textContent === "Looks good!") {
-        setTimeout(() => {
+        statusTimeout = setTimeout(() => {
             nameValidatorStatus.textContent = "";
             nameValidatorStatus.classList.remove("invalid");
         }, 5000);

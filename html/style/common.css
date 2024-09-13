@@ -76,6 +76,17 @@ input:not(input[type="button"]) {
     }
 }
 
+*[popover] {
+    background-color: var(--accent-color-low-contrast);
+
+    border: none;
+    border-radius: 0.5rem;
+
+    padding: 0.5rem;
+
+    min-height: 2rem;
+}
+
 .italic {
     font-style: italic;
 }
@@ -98,7 +109,7 @@ input:not(input[type="button"]) {
     margin: 0.5rem;
     padding: 1rem 2rem;
 
-    border: var(--accent-color-low-contrast), 0.34rem solid;
+    border: var(--accent-color-low-contrast) 0.34rem solid;
     border-radius: 1rem;
 
     display: flex;
