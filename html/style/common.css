@@ -69,6 +69,11 @@ input:not(input[type="button"]) {
 
     padding: 0.5rem;
     border-radius: 0.5rem;
+
+    &::-webkit-inner-spin-button {
+        display: none;
+        appearance: none;
+    }
 }
 
 .italic {

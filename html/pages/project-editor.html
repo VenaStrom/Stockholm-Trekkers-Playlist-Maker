@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="../style/project-editor.css">
 
     <script src="../js/raiseError.js"></script>
+    <script defer src="../js/project-editor.js"></script>
 </head>
 
 <body>
@@ -30,10 +31,12 @@
     <main>
         <div class="name-input">
             <p>Trekdag at:</p>
-            <input type="text" placeholder="YYYY-MM-DD" title="Enter the date of the trekdag in the format, 'YYYY-MM-DD', for example '2024-09-14'">
-            <p class="trekdag-name-validator">Looks good</p>
+            <input placeholder="YYYY-MM-DD" title="Enter the date of the trekdag in the format, 'YYYY-MM-DD', for example '2024-09-14'">
+            <p class="name-validator-status"></p>
+            <p id="name-validation-popover" popover></p>
         </div>
-        <p class="info-paragraph">Playlists are constructed with <span class="italic">blocks</span>: the episodes in between pauses. You only set the start time of the first file in the block and then the rest get queued up so they play immediately after the previous episode.</p>
+
+        <p class="info-paragraph">Playlists are constructed with <span class="italic">blocks</span>. A block is the episodes in between pauses. You only set the start time of the first file in the block and then the rest get queued up so they play immediately after the previous episode. This is done as to avoid gaps in between content and for the sake of easier creation of playlists.</p>
     </main>
 
     <footer>

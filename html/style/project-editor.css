@@ -15,12 +15,18 @@ body {
         text-wrap: balance;
 
         &>.name-input {
-            display: flex;
-            flex-flow: row wrap;
+            display: grid;
+            grid-template-columns: 1fr max-content 1fr;
             align-items: center;
             column-gap: 1ch;
 
+            width: 100%;
+
             margin: 0.5rem 0;
+
+            &>:first-child {
+                text-align: right;
+            }
 
             &>input {
                 text-align: center;
@@ -28,6 +34,23 @@ body {
                 width: 13ch;
                 font-size: 1.2rem;
             }
+
+            &>.name-validator-status {
+                color: var(--accent-color-high-contrast);
+                font-size: 0.8rem;
+                width: max-content;
+                text-align: left;
+            }
+
+            &>.name-validator-status.invalid {
+                color: var(--warning-color);
+                background-color: var(--accent-color-high-contrast);
+
+                padding: .2rem 1ch;
+
+                border-radius: 0.4rem;
+            }
+
         }
 
         &>.info-paragraph {
