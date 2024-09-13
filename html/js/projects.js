@@ -1,5 +1,11 @@
 const createNewProjectWindow = document.getElementById("add-projects-after");
 
+
+createNewProjectWindow.addEventListener("click", () => {
+    window.location.href = "./project-editor.html?id=new";
+});
+
+
 projects.getAll().then((projects) => {
     if (!projects) {
         console.warn("No projects found.");
@@ -25,10 +31,9 @@ projects.getAll().then((projects) => {
                 </div>
 
                 <ul>
-                    ${project.episodes.map((episode) => `<li>${episode.time} - ${episode.name}</li>`).join("")}
+                    ${project.files.map((file) => `<li>${file.startTime} - ${file.name}</li>`).join("")}
                 </ul>
-            </div>
-        `;
+            </div>`;
 
         createNewProjectWindow.insertAdjacentHTML("afterend", loadProjectBox);
     });

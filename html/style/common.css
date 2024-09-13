@@ -92,6 +92,7 @@ body {
         width: 100svw;
         max-width: 100%;
         min-height: var(--header-height);
+        margin-bottom: var(--header-margin);
 
         background-color: var(--accent-color-low-contrast);
 
@@ -99,21 +100,19 @@ body {
         flex-flow: row nowrap;
         align-items: center;
 
-        margin-bottom: var(--header-margin);
-
         position: sticky;
         top: 0;
         z-index: 9999;
+
+        & p {
+            text-align: left;
+        }
 
         &>.logo {
             height: calc(var(--header-height) * 0.8);
 
             margin-left: 3ch;
             margin-right: 1ch;
-        }
-
-        & p {
-            text-align: left;
         }
 
         &>div {
@@ -125,6 +124,11 @@ body {
                 font-size: 0.9rem;
                 font-weight: lighter;
             }
+        }
+
+        &>h1 {
+            position: absolute;
+            width: 100%;
         }
     }
 

@@ -3,13 +3,6 @@
 }
 
 body {
-    &>header {
-        &>h1 {
-            position: absolute;
-            width: 100%;
-        }
-    }
-
     &>main {
         &>p:first-of-type {
             margin-bottom: 0.5rem;
