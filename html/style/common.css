@@ -61,6 +61,17 @@ button {
     }
 }
 
+.clickable-icon {
+    filter: var(--filter-to-text-color);
+    height: 3rem;
+    width: 3rem;
+
+    &:hover {
+        cursor: pointer;
+        filter: var(--filter-to-accent-color-high-contrast);
+    }
+}
+
 .round-box {
     width: 100%;
     min-width: 20ch;
@@ -89,7 +100,7 @@ body {
 
 
     &>header {
-        width: 100svw;
+        width: 100dvw;
         max-width: 100%;
         min-height: var(--header-height);
         margin-bottom: var(--header-margin);
@@ -133,12 +144,12 @@ body {
     }
 
     &>main {
-        min-height: calc(100svh - var(--header-height) - var(--footer-height) - var(--header-margin) - var(--footer-margin));
+        min-height: calc(100dvh - var(--header-height) - var(--footer-height) - var(--header-margin) - var(--footer-margin));
         display: flex;
         flex-flow: column nowrap;
         align-items: center;
 
-        width: 50svw;
+        width: 50dvw;
     }
 
     &>footer {

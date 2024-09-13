@@ -15,7 +15,7 @@ projects.getAll().then((projects) => {
     projects.forEach((project) => {
 
         const loadProjectBox = `
-            <div class="round-box load-project" tabindex="0">
+            <div class="round-box load-project" tabindex="0" data-id="${project.id}">
                 <div class="project-header">
                     <div class="project-name">
                         <p>Trekdag</p>

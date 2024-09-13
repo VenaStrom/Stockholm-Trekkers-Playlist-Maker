@@ -1,0 +1,11 @@
+body>main {
+    height: 200dvh;
+
+    &>#back-button {
+        position: sticky;
+        justify-self: start;
+
+        top: 5rem;
+        left: 2ch;
+    }
+}
