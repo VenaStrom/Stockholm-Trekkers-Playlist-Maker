@@ -1,5 +1,7 @@
 {
     "name": "<<DATE>>",
+    "creationDate": "<<DATE>>",
+    "lastModified": "<<DATE>>",
     "files": [
         {
             "fileName": "<<FILENAME>>",

@@ -57,7 +57,7 @@ body {
 
             &>.project-header {
                 display: grid;
-                grid-template-columns: max-content 1fr;
+                grid-template-columns: 1fr 1fr;
                 align-items: center;
 
                 width: 100%;
@@ -67,7 +67,15 @@ body {
                 }
 
                 &>.meta-data {
-                    justify-self: flex-end;
+                    display: grid;
+                    grid-template-columns: max-content max-content;
+                    gap: 0.2rem 1ch;
+
+                    justify-self: end;
+
+                    &>*:nth-child(2n) {
+                        justify-self: end;
+                    }
                 }
             }
 
