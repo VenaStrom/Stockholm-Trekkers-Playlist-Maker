@@ -31,15 +31,11 @@ body {
                 height: calc(var(--project-height) * 0.5);
                 width: calc(var(--project-height) * 0.5);
 
-                filter: var(--filter-to-accent-color-low-contrast)
+                filter: var(--filter-to-text-color)
             }
 
             &:hover {
                 background-color: var(--accent-color-low-contrast);
-            }
-
-            &:hover>img {
-                filter: var(--filter-to-background-color);
             }
         }
 
@@ -47,7 +43,6 @@ body {
             text-align: left;
             align-items: flex-start;
             justify-content: flex-start;
-            gap: 0;
 
             overflow-y: hidden;
 
@@ -62,8 +57,15 @@ body {
 
                 width: 100%;
 
-                &>h3 {
-                    font-size: 1.5rem;
+                &>.project-name {
+                    display: flex;
+                    flex-flow: row wrap;
+                    align-items: center;
+                    column-gap: 1ch;
+
+                    &>h3 {
+                        font-size: 1.5rem;
+                    }
                 }
 
                 &>.meta-data {
@@ -79,13 +81,7 @@ body {
                 }
             }
 
-            &>h4 {
-                margin: 0.4rem 0;
-            }
-
             &>ul {
-                overflow-y: scroll;
-
                 list-style-type: none;
                 font-size: 0.9rem;
 

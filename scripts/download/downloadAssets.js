@@ -1,7 +1,6 @@
 const { BrowserWindow, session, ipcMain } = require("electron");
 const fs = require("fs");
 const path = require("node:path")
-const { Worker } = require("worker_threads");
 const raiseError = require("../raiseError.js");
 
 const logStatus = {
