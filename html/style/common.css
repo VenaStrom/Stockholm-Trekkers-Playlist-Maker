@@ -61,6 +61,20 @@ button {
     }
 }
 
+input:not(input[type="button"]) {
+    all: unset;
+
+    color: var(--text-color);
+    background-color: var(--accent-color-low-contrast);
+
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+}
+
+.italic {
+    font-style: italic;
+}
+
 .clickable-icon {
     filter: var(--filter-to-text-color);
     height: 3rem;

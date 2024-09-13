@@ -1,11 +1,37 @@
-body>main {
-    height: 200dvh;
+body {
+    &>header {
+        &>#back-button {
+            color: black;
 
-    &>#back-button {
-        position: sticky;
-        justify-self: start;
+            position: relative;
 
-        top: 5rem;
-        left: 2ch;
+            top: calc(var(--header-height) + var(--header-margin));
+            left: -20ch;
+        }
+    }
+
+    &>main {
+        text-align: left;
+        text-wrap: balance;
+
+        &>.name-input {
+            display: flex;
+            flex-flow: row wrap;
+            align-items: center;
+            column-gap: 1ch;
+
+            margin: 0.5rem 0;
+
+            &>input {
+                text-align: center;
+
+                width: 13ch;
+                font-size: 1.2rem;
+            }
+        }
+
+        &>.info-paragraph {
+            text-align: center;
+        }
     }
 }
