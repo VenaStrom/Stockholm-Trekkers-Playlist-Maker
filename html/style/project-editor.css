@@ -57,8 +57,7 @@ body {
                 position-anchor: --name-validator-status;
                 position: fixed;
                 top: calc(anchor(bottom) + 0.4rem);
-                left: anchor(left); 
-
+                left: anchor(left);
 
                 border: 0.17rem solid var(--accent-color-high-contrast);
             }
@@ -66,6 +65,42 @@ body {
 
         &>.info-paragraph {
             text-align: center;
+
+            /* &>.asterisk {
+                all: unset;
+
+                font-weight: bold;
+                cursor: pointer;
+
+                color: var(--accent-color-high-contrast);
+
+                anchor-name: --asterisk;
+            } */
         }
+/* 
+        &>#pauses-explainer-popover {            
+            position-anchor: --asterisk;
+            position: fixed;
+            top: calc(anchor(bottom) + 0.4rem);
+
+            width: 100%;
+            
+            background: none;
+
+            &>div {
+                background-color: var(--accent-color-low-contrast);
+
+                border: none;
+                border-radius: 0.5rem;
+            
+                padding: 0.5rem;
+            
+                min-height: 2rem;
+
+                border: 0.17rem solid var(--accent-color-high-contrast);
+
+                width: 50dvw;
+            }
+        } */
     }
 }

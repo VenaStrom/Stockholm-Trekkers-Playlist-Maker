@@ -76,7 +76,8 @@ input:not(input[type="button"]) {
     }
 }
 
-*[popover] {
+*[popover],
+*[popover]>div {
     background-color: var(--accent-color-low-contrast);
 
     border: none;
