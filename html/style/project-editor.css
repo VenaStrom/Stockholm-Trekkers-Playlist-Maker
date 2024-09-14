@@ -59,7 +59,6 @@ body {
                 top: calc(anchor(bottom) + 0.4rem);
                 left: anchor(left); 
 
-                
 
                 border: 0.17rem solid var(--accent-color-high-contrast);
             }

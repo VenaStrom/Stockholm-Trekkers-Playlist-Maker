@@ -12,7 +12,8 @@
     <link rel="stylesheet" href="../style/project-editor.css">
 
     <script src="../js/raiseError.js"></script>
-    <script defer src="../js/project-editor.js"></script>
+    <script defer src="../js/project-editor/idCheck.js"></script>
+    <script defer src="../js/project-editor/nameValidator.js"></script>
 </head>
 
 <body>
@@ -36,7 +37,7 @@
             <div id="name-validation-popover" popover="manual"></div>
         </div>
 
-        <p class="info-paragraph">Playlists are constructed with <span class="italic">blocks</span>. A block is the episodes in between pauses. You only set the start time of the first file in the block and then the rest get queued up so they play immediately after the previous episode. This is done to avoid gaps in between content and for the sake of easier creation of playlists.</p>
+        <p class="info-paragraph">Playlists are constructed with <span class="italic">blocks</span>. A block is the episodes in between pauses. You only set the start time of the first file in the block and then the rest get queued up so they play immediately after the previous episode. The pauses are inserted automatically at the correct length. This is done to avoid gaps in between content and for the sake of easier creation of playlists.</p>
     </main>
 
     <footer>
