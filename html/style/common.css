@@ -38,6 +38,7 @@ img {
     user-select: none;
 }
 
+input[type="button"],
 button {
     appearance: none;
     border: none;
@@ -61,7 +62,8 @@ button {
     }
 }
 
-input:not(input[type="button"]) {
+input[type="text"],
+input[type="number"] {
     all: unset;
 
     color: var(--text-color);
@@ -76,7 +78,6 @@ input:not(input[type="button"]) {
     }
 }
 
-/* ,*[popover]>div  */
 *[popover] {
     background-color: var(--accent-color-low-contrast);
 
@@ -104,11 +105,14 @@ input:not(input[type="button"]) {
 }
 
 .round-box {
+    text-wrap: balance;
+
     width: 100%;
     min-width: 20ch;
+    min-height: 6rem;
 
     margin: 0.5rem;
-    padding: 1rem 2rem;
+    padding: 1rem 3ch;
 
     border: var(--accent-color-low-contrast) 0.34rem solid;
     border-radius: 1rem;

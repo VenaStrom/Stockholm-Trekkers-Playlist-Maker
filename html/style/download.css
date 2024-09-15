@@ -1,5 +1,7 @@
 body {
     &>main {
+        width: 40%;
+
         &>h1 {
             margin-top: 16rem;
         }

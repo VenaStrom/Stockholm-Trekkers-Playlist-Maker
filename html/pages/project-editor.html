@@ -14,6 +14,7 @@
     <script src="../js/raiseError.js"></script>
     <script defer src="../js/project-editor/idCheck.js"></script>
     <script defer src="../js/project-editor/nameValidator.js"></script>
+    <script defer src="../js/project-editor/openOptions.js"></script>
 </head>
 
 <body>
@@ -52,9 +53,63 @@
 
             <div class="round-box block">
                 <div class="header">
-                    <p>Block 1</p>
-                    <p>Start time: </p>
-                    <input class="time-input" type="text" placeholder="hhmm">
+
+                    <div class="time">
+                        <p>Start time: </p>
+                        <input class="time-input" type="text" placeholder="hhmm">
+                    </div>
+
+                    <h3 class="option" onclick="expandOptions(this)">Options ▼</h3>
+                    
+                    <h3 class="block">Block 1</h3>
+
+                    <div class="options">
+                        <p>Add a leading:</p>
+
+                        <div class="options">
+                            <p>Countdown</p>
+                            <input type="checkbox" id="leading-countdown">
+                            
+                            <p>Emergency routine clip</p>
+                            <input type="checkbox" id="leading-emergency-routine">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="episode">
+                    <div class="time">
+                        <p>Starts at: </p>
+                        <p>10:45</p>
+                    </div>
+
+                    <div class="file">
+                        <p>Choose a file</p>
+                        <input type="file">
+                    </div>
+                </div>
+
+                <div class="episode">
+                    <div class="time">
+                        <p>Starts at: </p>
+                        <p>10:45</p>
+                    </div>
+
+                    <div class="file">
+                        <p>Choose a file</p>
+                        <input type="file">
+                    </div>
+                </div>
+
+                <div class="episode">
+                    <div class="time">
+                        <p>Starts at: </p>
+                        <p>10:45</p>
+                    </div>
+
+                    <div class="file">
+                        <p>Choose a file</p>
+                        <input type="file">
+                    </div>
                 </div>
             </div>
         </section>

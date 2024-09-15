@@ -75,26 +75,96 @@ body {
         &>.blocks {
             margin-top: 1rem;
 
-            width: 120%;
+            width: 130%;
 
             &>.block {
                 width: 100%;
 
-                display: grid;
+                display: flex;
+                flex-flow: column nowrap;
                 text-align: left;
                 justify-content: flex-start;
+                align-items: flex-start;
 
-                padding-top: 0;
+                row-gap: 0;
+
+                padding: 0 0 1.1rem 0;
 
                 &>.header {
+                    width: 100%;
+
+                    display: grid;
+                    grid-template-columns: max-content 1fr 1fr;
+                    grid-template-rows: auto auto;
+                    column-gap: 8ch;
+                    align-items: center;
+
+                    background-color: var(--accent-color-low-contrast);
+                    padding: 0.7rem 3ch 0.7rem 2ch;
+
+                    &>.time {
+                        display: flex;
+                        flex-flow: row nowrap;
+                        align-items: center;
+                        column-gap: 1ch;
+
+                        &>.time-input {
+                            width: 6ch;
+                            text-align: center;
+
+                            background-color: var(--background-color);
+                        }
+                    }
+
+                    &>h3.block {
+                        text-align: right;
+                    }
+
+                    &>h3.option {
+                        cursor: pointer;
+
+                        &:hover {
+                            color: var(--accent-color-high-contrast);
+                        }
+                    }
+
+                    &>.options {
+                        display: none;
+                        grid-row: 2;
+                        grid-column: 1 / -1;
+
+                        padding-top: 0.5rem;
+                        
+                    }
+                }
+
+                &>.episode {
+                    width: 100%;
+                    overflow-x: scroll;
+
                     display: flex;
                     flex-flow: row nowrap;
                     align-items: center;
-                    column-gap: 1ch;
+                    column-gap: 6ch;
 
-                    &>.time-input {
-                        width: 6ch;
-                        text-align: center;
+                    padding: 0.6rem 2ch 0.6rem 2ch;
+
+                    &:not(:last-child) {
+                        border-bottom: 0.05rem solid var(--text-color);
+                    }
+
+                    &>.time,
+                    &>.file {
+                        flex: 1;
+
+                        display: flex;
+                        flex-flow: row nowrap;
+                        align-items: center;
+                        column-gap: 1ch;
+
+                        &>* {
+                            width: max-content;
+                        }
                     }
                 }
             }
