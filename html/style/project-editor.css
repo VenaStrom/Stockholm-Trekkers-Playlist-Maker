@@ -77,6 +77,12 @@ body {
 
             width: 130%;
 
+            display: flex;
+            flex-flow: column nowrap;
+            justify-content: center;
+            align-items: center;
+            row-gap: 1rem;
+
             &>.block {
                 width: 100%;
 
@@ -101,6 +107,7 @@ body {
 
                     background-color: var(--accent-color-low-contrast);
                     padding: 0.7rem 3ch 0.7rem 2ch;
+                    margin-bottom: 0.1rem;
 
                     &>.time {
                         display: flex;
@@ -132,8 +139,7 @@ body {
                         grid-row: 2;
                         grid-column: 1 / -1;
 
-                        /* display: none; */
-                        display: flex;
+                        display: none;
                         flex-flow: column nowrap;
                         row-gap: 0.5rem;
 
@@ -155,10 +161,12 @@ body {
                                 display: flex;
                                 flex-flow: row nowrap;
                                 align-items: center;
-                                justify-content: space-between;
+                                justify-content: flex-start;
                                 column-gap: 1ch;
 
-                                margin-right: auto;
+                                text-align: left;
+
+                                min-width: 25ch;
                             }
                         }
                     }
@@ -171,6 +179,7 @@ body {
                     display: flex;
                     flex-flow: row nowrap;
                     align-items: center;
+                    justify-content: flex-start;
                     column-gap: 6ch;
 
                     padding: 0.6rem 2ch 0.6rem 2ch;
@@ -181,8 +190,6 @@ body {
 
                     &>.time,
                     &>.file {
-                        flex: 1;
-
                         display: flex;
                         flex-flow: row nowrap;
                         align-items: center;
@@ -192,44 +199,34 @@ body {
                             width: max-content;
                         }
                     }
+
+                    &>.file {
+                        flex: 1;
+
+                        &>input[type="file"] {
+                            flex: 1;
+                        }
+                    }
+                }
+            }
+
+            &>.create-block {
+                height: 1rem;
+
+                &>img {
+                    image-rendering: pixelated;
+
+                    height: 5rem;
+
+                    filter: var(--filter-to-text-color);
+
+                    cursor: pointer;
+                }
+
+                &:hover {
+                    background-color: var(--accent-color-low-contrast);
                 }
             }
         }
-
-        /* 
-        &>.episodes {
-            display: flex;
-            flex-flow: column nowrap;
-            row-gap: 0.5rem;
-
-            width: 150%;
-
-            &>.info-header,
-            &>.episode {
-                display: grid;
-                grid-template-columns: 14ch 1fr 1fr;
-            }
-
-            &>.info-header {
-                padding-top: 1rem;
-
-                position: sticky;
-                top: calc(var(--header-height));
-                
-                background-color: var(--background-color);
-                
-                &>p {
-                    width: 80%;
-                    border-bottom: 0.05rem solid var(--text-color);
-                }
-            }
-
-            &>.episode {
-                &>.time-input {
-                    width: 8ch;
-                    text-align: center;
-                }
-            }
-        } */
     }
 }
