@@ -129,12 +129,34 @@ body {
                     }
 
                     &>.options {
-                        display: none;
                         grid-row: 2;
                         grid-column: 1 / -1;
 
+                        /* display: none; */
+                        display: flex;
+                        flex-flow: column nowrap;
+                        row-gap: 0.5rem;
+
                         padding-top: 0.5rem;
-                        
+                        margin-top: 1rem;
+
+                        border-top: 0.1rem solid var(--background-color);
+
+                        &>div {
+                            display: flex;
+                            flex-flow: row wrap;
+                            row-gap: 0.3rem;
+
+                            &>div {
+                                display: flex;
+                                flex-flow: row nowrap;
+                                align-items: center;
+                                justify-content: space-between;
+                                column-gap: 1ch;
+
+                                margin-right: auto;
+                            }
+                        }
                     }
                 }
 

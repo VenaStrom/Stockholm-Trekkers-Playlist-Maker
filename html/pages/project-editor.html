@@ -35,7 +35,7 @@
     <main>
         <div class="name-input">
             <p>Trekdag at:</p>
-            <input placeholder="YYYY-MM-DD" title="Enter the date of the trekdag in the format, 'YYYY-MM-DD', for example '2024-09-14'">
+            <input type="text" placeholder="YYYY-MM-DD" title="Enter the date of the trekdag in the format, 'YYYY-MM-DD', for example '2024-09-14'">
 
             <p class="name-validator-status"></p>
             <div id="name-validation-popover" popover="manual"></div>
@@ -59,19 +59,28 @@
                         <input class="time-input" type="text" placeholder="hhmm">
                     </div>
 
-                    <h3 class="option" onclick="expandOptions(this)">Options ▼</h3>
-                    
+                    <h3 class="option" tabindex="0">Options ▼</h3>
+
                     <h3 class="block">Block 1</h3>
 
                     <div class="options">
                         <p>Add a leading:</p>
 
-                        <div class="options">
-                            <p>Countdown</p>
-                            <input type="checkbox" id="leading-countdown">
-                            
-                            <p>Emergency routine clip</p>
-                            <input type="checkbox" id="leading-emergency-routine">
+                        <div>
+                            <div>
+                                <input type="checkbox" checked id="leading-countdown">
+                                <p>countdown</p>
+                            </div>
+
+                            <div>
+                                <input type="checkbox" checked id="leading-emergency-routine">
+                                <p>emergency routine</p>
+                            </div>
+
+                            <div>
+                                <input type="checkbox" id="leading-covid-disclaimer">
+                                <p>covid disclaimer</p>
+                            </div>
                         </div>
                     </div>
                 </div>

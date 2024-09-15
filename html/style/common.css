@@ -78,6 +78,25 @@ input[type="number"] {
     }
 }
 
+input[type="checkbox"] {
+    all: unset;
+    appearance: none;
+
+    cursor: pointer;
+
+    width: 1.25rem;
+    height: 1.25rem;
+    aspect-ratio: 1/1;
+
+    border: 0.15rem solid var(--text-color);
+    border-radius: 0.4rem;
+
+    &:checked {
+        background-color: var(--accent-color-high-contrast);
+        background-image: -webkit-image-set();
+    }
+}
+
 *[popover] {
     background-color: var(--accent-color-low-contrast);
 
