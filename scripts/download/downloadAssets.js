@@ -173,7 +173,12 @@ const setUpHandlers = () => {
             }
         });
 
-        return fileCount === fileIDs.length;
+        if (fileCount === 0) {
+            console.error(logStatus.error + "no files found");
+            raiseError("no files found");
+        }
+
+        return (fileCount === fileIDs.length && fileCount > 0);
     });
 
     console.log(logStatus.info + "handlers set up");
