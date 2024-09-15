@@ -97,6 +97,49 @@ input[type="checkbox"] {
     }
 }
 
+input[type="file"] {
+    all: unset;
+    appearance: none;
+
+    cursor: pointer;
+
+    border-radius: 0.5rem;
+
+    background-color: var(--background-color);
+    color: var(--text-color);
+
+    &:hover {
+        background-image: linear-gradient(var(--accent-color-high-contrast), var(--accent-color-high-contrast));
+        background-position-x: 50%;
+        background-size: 30%;
+
+        color: var(--background-color);
+
+        font-weight: bold;
+    }
+
+    &::-webkit-file-upload-button {
+        all: unset;
+        appearance: none;
+
+        padding: 0.5rem 2ch;
+        margin-right: 1ch;
+
+        border: 0.34rem solid var(--accent-color-low-contrast);
+        border-radius: 0.5rem;
+
+        background-color: var(--accent-color-low-contrast);
+        color: var(--text-color);
+
+        font-size: 0.9rem;
+
+        &:hover {
+            background-color: var(--accent-color-high-contrast);
+            color: var(--background-color);
+        }
+    }
+}
+
 *[popover] {
     background-color: var(--accent-color-low-contrast);
 

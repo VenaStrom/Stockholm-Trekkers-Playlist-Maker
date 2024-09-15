@@ -211,7 +211,8 @@ body {
             }
 
             &>.create-block {
-                height: 1rem;
+                height: 12rem;
+                cursor: pointer;
 
                 &>img {
                     image-rendering: pixelated;
@@ -219,8 +220,6 @@ body {
                     height: 5rem;
 
                     filter: var(--filter-to-text-color);
-
-                    cursor: pointer;
                 }
 
                 &:hover {
