@@ -12,3 +12,18 @@ This [electron app](https://www.electronjs.org/) makes it easy to make your play
 
 ### How to install?
 Navigate to the [releases](https://github.com/viggoStrom/Stockholm-Trekkers-Playlist-Maker/releases) page on GitHub and choose the latest version and open the *Assets* dropdown. Download the installer file (.msi for windows) and run it. It installs the program locally and will the prompt you to download additional files. The additional files are the pause files which are roughly 400MB. After installation the program will be installed so you can launch it from the start menu.
+
+### How to build?
+Prerequisites:
+[Node.js](https://nodejs.org/en/),
+[NPM](https://www.npmjs.com/),
+[Git](https://git-scm.com/),
+[Yarn](https://yarnpkg.com/)
+
+Steps:
+* Clone the repository
+* Run `yarn install`
+* Run `yarn build`
+* The build will be in the `dist` folder
+
+It should be as easy as that. If you have any issues, please let me know.
