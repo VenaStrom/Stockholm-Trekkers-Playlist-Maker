@@ -1,13 +1,9 @@
 {
     "urlTemplate": "https://drive.google.com/uc?export=download&id=",
     "videos": [
-        {"name": "pause_15_min_arsmote.mp4", "id": "1ddkmjtS4X_IJysvb0Hi_muyZuQOXlelV"},
         {"name": "pause_1_min_covid.mp4", "id": "1A4BHPsDHUGP8BIR4LzLdHCVUcqq2zzEK"},
         {"name": "pause_1_min_emergency.mp4", "id": "15vApETuRZaJ8LXkP7ls2e_YGZAByyQv1"},
         {"name": "pause_1_min_countdown.mp4", "id": "1POheLkrK_1O786JByNvmHBnxbEijn82E"},
         {"name": "pause_30_min.mp4", "id": "1gk55_x8OEcoeJcN1pA9YJr1QJkZn6jCr"}
-    ],
-    "holding": [
-        {"name": "pause_2_h.mp4", "id": "1MujcC8igVVrd3RJqHMDptwrFYsdpOnoi"}
     ]
 }

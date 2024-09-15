@@ -147,7 +147,11 @@ body {
                             flex-flow: row wrap;
                             row-gap: 0.3rem;
 
+                            user-select: none;
+
                             &>div {
+                                cursor: pointer;
+
                                 display: flex;
                                 flex-flow: row nowrap;
                                 align-items: center;
