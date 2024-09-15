@@ -2,18 +2,29 @@
   "name": "stockholm-trekkers-playlist-maker",
   "version": "2.0.0",
   "main": "main.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
+  "repository": "https://github.com/viggoStrom/Stockholm-Trekkers-Playlist-Maker.git",
   "author": "Viggo Ström",
   "license": "MIT",
   "description": "A playlist maker for the Stockholm Trekkers.",
-  "devDependencies": {
-    "@electron/fuses": "^1.8.0",
-    "electron": "^32.0.1"
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
   },
-  "dependencies": {
-    "electron-squirrel-startup": "^1.0.1"
+  "devDependencies": {
+    "electron": "^32.1.0",
+    "electron-builder": "^25.0.5"
+  },
+  "build": {
+    "appId": "com.stockholm-trekkers.playlist-maker",
+    "win": {
+      "target": "msi",
+      "icon": "assets/images/stockholm-trekkers.ico",
+      "publisherName": "Viggo Ström"
+    },
+    "linux": {
+      "target": "deb",
+      "icon": "assets/images/stockholm-trekkers-300x300.png",
+      "synopsis": "A playlist maker for the Stockholm Trekkers."
+    }
   }
 }

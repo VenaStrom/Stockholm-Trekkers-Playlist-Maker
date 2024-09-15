@@ -69,6 +69,11 @@ const downloadPauses = (force = false) => {
             return;
         }
 
+        // Check if video folder exists and make it if it doesn't
+        if (!fs.existsSync(videoFolder)) {
+            fs.mkdirSync(videoFolder, { recursive: true });
+        };
+
         // If the video is already downloaded and we're not forcing, skip it
         if (fs.existsSync(videoFolder + file.name) && !force) {
             console.log(logStatus.info + file.name + " already downloaded");
@@ -180,7 +185,7 @@ const setUpHandlers = () => {
 
         return (fileCount === fileIDs.length && fileCount > 0);
     });
-
+    
     console.log(logStatus.info + "handlers set up");
 };
 

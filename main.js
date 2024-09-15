@@ -1,6 +1,5 @@
 
 const { app, BrowserWindow, nativeTheme } = require("electron");
-if (require("electron-squirrel-startup")) app.quit();
 const path = require("node:path");
 const { setUpHandlers: setUpDownloadHandlers } = require("./scripts/download/downloadAssets.js");
 const { setUpHandlers: setUpProjectHandlers } = require("./scripts/load-projects/projects.js");
