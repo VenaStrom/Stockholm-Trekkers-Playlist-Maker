@@ -4,7 +4,7 @@ const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 module.exports = {
   packagerConfig: {
     name: 'Stockholm_Trekkers_Playlist_Generator',
-    icon: '/assets/images/stockholm-trekkers.ico',
+    icon: './assets/images/stockholm-trekkers.ico',
     asar: true,
   },
   rebuildConfig: {},
