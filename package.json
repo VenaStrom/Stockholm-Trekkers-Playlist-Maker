@@ -16,6 +16,14 @@
   },
   "build": {
     "appId": "com.stockholm-trekkers.playlist-maker",
+    "asar": false,
+    "files": [
+      "!dist/**",
+      "!assets/videos/**",
+      "!.gitignore",
+      "!.git/**",
+      "!.vscode/**"
+    ],
     "win": {
       "target": "msi",
       "icon": "assets/images/stockholm-trekkers.ico",

@@ -23,6 +23,9 @@ download.filesExist().then((filesExist) => {
             checkingForFilesWindow.classList.add("hidden");
         };
     }, 1000);
+}).catch((error) => {
+    console.error(error);
+    raiseError(error)
 });
 
 // Confirm move on

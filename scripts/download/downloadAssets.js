@@ -1,4 +1,4 @@
-const { BrowserWindow, session, ipcMain } = require("electron");
+const { BrowserWindow, ipcMain, app } = require("electron");
 const fs = require("fs");
 const path = require("node:path")
 const raiseError = require("../raiseError.js");
@@ -185,7 +185,7 @@ const setUpHandlers = () => {
 
         return (fileCount === fileIDs.length && fileCount > 0);
     });
-    
+
     console.log(logStatus.info + "handlers set up");
 };
 
