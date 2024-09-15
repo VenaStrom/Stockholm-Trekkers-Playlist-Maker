@@ -1,12 +1,16 @@
 body {
     &>header {
+        &>#save-status {
+            margin-left: 4ch;
+        }
+
         &>#back-button {
             color: black;
 
             position: relative;
 
             top: calc(var(--header-height) + var(--header-margin));
-            left: -20ch;
+            left: -28ch;
         }
     }
 
@@ -65,41 +69,70 @@ body {
 
         &>.info-paragraph {
             text-align: center;
-
-            /* &>.asterisk {
-                all: unset;
-
-                font-weight: bold;
-                cursor: pointer;
-
-                color: var(--accent-color-high-contrast);
-
-                anchor-name: --asterisk;
-            } */
         }
-/* 
-        &>#pauses-explainer-popover {            
-            position-anchor: --asterisk;
-            position: fixed;
-            top: calc(anchor(bottom) + 0.4rem);
 
-            width: 100%;
-            
-            background: none;
 
-            &>div {
-                background-color: var(--accent-color-low-contrast);
+        &>.blocks {
+            margin-top: 1rem;
 
-                border: none;
-                border-radius: 0.5rem;
-            
-                padding: 0.5rem;
-            
-                min-height: 2rem;
+            width: 120%;
 
-                border: 0.17rem solid var(--accent-color-high-contrast);
+            &>.block {
+                width: 100%;
 
-                width: 50dvw;
+                display: grid;
+                text-align: left;
+                justify-content: flex-start;
+
+                padding-top: 0;
+
+                &>.header {
+                    display: flex;
+                    flex-flow: row nowrap;
+                    align-items: center;
+                    column-gap: 1ch;
+
+                    &>.time-input {
+                        width: 6ch;
+                        text-align: center;
+                    }
+                }
+            }
+        }
+
+        /* 
+        &>.episodes {
+            display: flex;
+            flex-flow: column nowrap;
+            row-gap: 0.5rem;
+
+            width: 150%;
+
+            &>.info-header,
+            &>.episode {
+                display: grid;
+                grid-template-columns: 14ch 1fr 1fr;
+            }
+
+            &>.info-header {
+                padding-top: 1rem;
+
+                position: sticky;
+                top: calc(var(--header-height));
+                
+                background-color: var(--background-color);
+                
+                &>p {
+                    width: 80%;
+                    border-bottom: 0.05rem solid var(--text-color);
+                }
+            }
+
+            &>.episode {
+                &>.time-input {
+                    width: 8ch;
+                    text-align: center;
+                }
             }
         } */
     }

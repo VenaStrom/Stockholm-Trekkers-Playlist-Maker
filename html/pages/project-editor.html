@@ -24,6 +24,8 @@
             <p class="smaller">Playlist Maker</p>
         </div>
 
+        <p id="save-status">Not saved*</p>
+
         <h1>Editor</h1>
 
         <img class="clickable-icon" id="back-button" title="Back to projects" tabindex="0" src="../../assets/images/arrow_back_35dp_000000_FILL0_wght700_GRAD0_opsz40.png" alt="<">
@@ -43,14 +45,44 @@
             A block is the episodes in between pauses.
             You only set the start time of the first file in the block and then the rest get queued up so they play immediately after the previous episode.
             The pauses are inserted automatically at the correct length.
-            <!-- <button class="asterisk" popovertarget="pauses-explainer-popover" tabindex="0">*</button> -->
             This is done to avoid gaps in between content and for the sake of easier creation of playlists.
         </p>
-        <div id="pauses-explainer-popover" popover>
-            <div>
-                <p>Here is how the pauses actually work.</p>
+
+        <section class="blocks">
+
+            <div class="round-box block">
+                <div class="header">
+                    <p>Block 1</p>
+                    <p>Start time: </p>
+                    <input class="time-input" type="text" placeholder="hhmm">
+                </div>
             </div>
-        </div>
+        </section>
+
+        <!-- 
+        <section class="episodes">
+            <div class="info-header">
+                <p>Start time</p>
+                <p>File path</p>
+                <p>Options</p>
+            </div>
+
+            <div class="episode">
+                <input class="time-input" type="text" placeholder="hhmm">
+            </div>
+
+            <script>
+                // Duplicates the template above
+
+                const episodes = document.querySelector('.episodes');
+                const episode = episodes.querySelector('.episode');
+
+                for (let index = 0; index < 50; index++) {
+                    const newEpisode = episode.cloneNode(true);
+                    episodes.appendChild(newEpisode);                    
+                }
+            </script>
+        </section> -->
     </main>
 
     <footer>
