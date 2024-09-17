@@ -50,8 +50,9 @@ const createBlockDOM = () => {
 };
 
 const deleteBlockDOM = (source) => {
-    window.confirm("Are you sure you want to delete this block forever?");
-    source.parentElement.parentElement.remove();
+    if (window.confirm("Are you sure you want to delete this block forever?")) {
+        source.parentElement.parentElement.remove();
+    };
 
     setBlockNumbers();
 };
