@@ -113,8 +113,6 @@ input[type="file"] {
         background-position-x: 1ch;
 
         color: var(--background-color);
-
-        font-weight: bold;
     }
 
     &::-webkit-file-upload-button {
@@ -131,11 +129,6 @@ input[type="file"] {
         color: var(--text-color);
 
         font-size: 0.9rem;
-
-        &:hover {
-            background-color: var(--accent-color-high-contrast);
-            color: var(--background-color);
-        }
     }
 }
 

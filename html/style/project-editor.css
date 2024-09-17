@@ -200,7 +200,7 @@
                             opacity: 0.4;
                             user-select: none;
                             pointer-events: none;
-                            
+
                             cursor: default;
 
                             & * {
@@ -250,6 +250,39 @@
 
                     &:hover {
                         background-color: var(--accent-color-low-contrast);
+                    }
+                }
+            }
+
+            &>.bottom-sticky-container {
+                position: sticky;
+                bottom: 2rem;
+
+                width: 95vw;
+
+                display: grid;
+                align-items: center;
+
+                &>.right-side {
+                    display: flex;
+                    flex-flow: column nowrap;
+                    align-items: center;
+                    justify-items: center;
+
+                    justify-self: flex-end;
+                    row-gap: 0.5rem;
+
+                    width: max-content;
+
+                    &>.hide-unset {
+                        display: flex;
+                        flex-flow: row nowrap;
+                        align-items: center;
+                        column-gap: 1ch;
+                    }
+
+                    &>button {
+                        width: 10ch;
                     }
                 }
             }
