@@ -53,7 +53,7 @@ const nameValidator = (event) => {
 
         popoverTimeout = setTimeout(() => {
             warningsWindow.hidePopover();
-        }, 5000);
+        }, 7000);
     }
 
 
