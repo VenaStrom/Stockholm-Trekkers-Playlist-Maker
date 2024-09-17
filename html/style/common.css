@@ -158,9 +158,9 @@ input[type="file"] {
     filter: var(--filter-to-text-color);
     height: 3rem;
     width: 3rem;
+    cursor: pointer;
 
     &:hover {
-        cursor: pointer;
         filter: var(--filter-to-accent-color-high-contrast);
     }
 }
