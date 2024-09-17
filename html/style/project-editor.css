@@ -16,9 +16,9 @@
             &>.bottom-sticky-container {
                 position: absolute;
                 top: 80dvh;
-             
+
                 left: 2.5dvw;
-                width: 95dvw; 
+                width: 95dvw;
 
                 display: grid;
                 align-items: center;
@@ -45,7 +45,7 @@
                         width: 10ch;
                     }
                 }
-            }   
+            }
         }
 
         &>main {
@@ -227,7 +227,7 @@
                         padding: 0.6rem 2ch 0.6rem 2ch;
 
                         &:not(:last-child) {
-                            border-bottom: 0.05rem solid var(--text-color);
+                            border-bottom: 0.005rem solid var(--accent-color-low-contrast);
                         }
 
                         &:last-child {
