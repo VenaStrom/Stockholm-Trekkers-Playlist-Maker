@@ -1,11 +1,12 @@
 
-const blocks = document.querySelectorAll(".blocks>.block");
+const templateEpisode = document.querySelector(".episode-template.hidden");
+const blocks = document.querySelectorAll(".block");
 
-blocks.forEach(block => {
-    const episodes = block.querySelectorAll(".episode");
+const createEpisodeDOM = (parent) => {
+    const episode = templateEpisode.cloneNode(true);
+    episode.classList.add("episode");
+    episode.classList.remove("episode-template");
+    episode.classList.remove("hidden");
 
-    if (episodes.length < 2) {
-        // Cloning the previous one is not good. TODO
-        block.appendChild(episodes[0].cloneNode(true));
-    };
-});
+    parent.appendChild(episode);
+};

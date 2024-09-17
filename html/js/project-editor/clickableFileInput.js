@@ -4,7 +4,6 @@
 
 const fileContainers = document.querySelectorAll(".block div.file");
 
-console.log(fileContainers);
 fileContainers.forEach(fileContainer => {
     fileContainer.addEventListener("keydown", (event) => {
         if (event.key === "Enter") {
