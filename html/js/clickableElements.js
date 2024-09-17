@@ -1,14 +1,10 @@
 
-const clickables = document.querySelectorAll(".clickable");
-
-clickables.forEach(clickable => {
-    clickable.addEventListener("keydown", (event) => {
-        if (event.key === "Enter") {
-            event.target.click();
-        }
-        else if (event.key === " ") {
-            event.preventDefault();
-            event.target.click();
-        }
-    });
+document.addEventListener("keydown", (event) => {
+    if (!(event.key === "Enter" || event.key === " ")) {
+        return;
+    };
+    if (event.target.classList.contains("clickable")) {
+        event.target.click();
+        event.target.querySelector("&>input").click();
+    };
 });

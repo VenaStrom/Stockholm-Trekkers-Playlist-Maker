@@ -12,20 +12,6 @@ const expandOptions = (source) => {
     };
 };
 
-const optionButtons = document.querySelectorAll(".blocks .block h3.option");
-
-optionButtons.forEach(button => {
-    button.addEventListener("click", () => {
-        expandOptions(button);
-    });
-    button.addEventListener("keydown", (event) => {
-        if (event.key === "Enter" || event.key === " ") {
-            expandOptions(button);
-        };
-    });
-});
-
-
 const checkCheckbox = (source) => {
     const checkbox = source.querySelector("input[type='checkbox']");
     checkbox.checked = !checkbox.checked;
