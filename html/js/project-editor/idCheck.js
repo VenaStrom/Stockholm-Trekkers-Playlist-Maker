@@ -1,8 +1,7 @@
 
 const pageBornAt = new Date().getTime();
 
-
-const generateID = () => {
+const getID = () => {
     const pageURL = window.location.href;
     const arguments = {};
     pageURL.split("?")[1].split("&").forEach((arg) => {
@@ -18,6 +17,10 @@ const generateID = () => {
     const time = new Date().getTime();
 
     const id = time.toString() + pageBornAt.toString();
+
+    localStorage.setItem("id", {id, pageBornAt});
     
-    console.log(id);
+    return id;
 }
+
+getID();
