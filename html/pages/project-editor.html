@@ -12,10 +12,62 @@
     <link rel="stylesheet" href="../style/project-editor.css">
 
     <script src="../js/raiseError.js"></script>
+    <script defer src="../js/clickableElements.js"></script>
     <script defer src="../js/project-editor/idCheck.js"></script>
     <script defer src="../js/project-editor/nameValidator.js"></script>
     <script defer src="../js/project-editor/openOptions.js"></script>
     <script defer src="../js/project-editor/createBlock.js"></script>
+    <script defer src="../js/project-editor/createEpisode.js"></script>
+    <script defer src="../js/project-editor/clickableFileInput.js"></script>
+
+
+    <!-- Template episode -->
+    <div class="round-box block">
+
+        <div class="header">
+            <div class="time">
+                <p>Start time: </p>
+                <input class="time-input" type="text" placeholder="hhmm">
+            </div>
+
+            <h3 class="option" tabindex="0">Options ▼</h3>
+
+            <h3 class="block">Block 1</h3>
+
+            <div class="options">
+                <p>Add a leading:</p>
+
+                <div>
+                    <div tabindex="0" title="This adds a 1 min countdown before the block. This should pretty much always be on.">
+                        <input type="checkbox" checked id="leading-countdown" tabindex="-1">
+                        <p>countdown</p>
+                    </div>
+
+                    <div tabindex="0" title="This adds a 1 min clip of the emergency procedures before the block.">
+                        <input type="checkbox" checked id="leading-emergency-routine" tabindex="-1">
+                        <p>emergency routine</p>
+                    </div>
+
+                    <div tabindex="0" title="This adds a 1 min clip that reminds viewers to show respect to each other in regards to the 2020s pandemic.">
+                        <input type="checkbox" id="leading-covid-disclaimer" tabindex="-1">
+                        <p>covid disclaimer</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="episode">
+            <div class="time">
+                <p>Starts at: </p>
+                <p>--:--</p>
+            </div>
+
+            <div class="file" tabindex="0">
+                <input type="file" tabindex="-1">
+            </div>
+        </div>
+
+    </div>
 </head>
 
 <body>
@@ -30,7 +82,7 @@
 
         <h1>Editor</h1>
 
-        <img class="clickable-icon" id="back-button" title="Back to projects" tabindex="0" src="../../assets/images/arrow_back_35dp_000000_FILL0_wght700_GRAD0_opsz40.png" alt="<">
+        <img class="clickable-icon clickable" id="back-button" title="Back to projects" tabindex="0" src="../../assets/images/arrow_back_35dp_000000_FILL0_wght700_GRAD0_opsz40.png" alt="<">
     </header>
 
     <main>
@@ -51,76 +103,9 @@
         </p>
 
         <section class="blocks">
+            <!-- Script inserts episode blocks here -->
 
-            <div class="round-box block">
-
-                <div class="header">
-                    <div class="time">
-                        <p>Start time: </p>
-                        <input class="time-input" type="text" placeholder="hhmm">
-                    </div>
-
-                    <h3 class="option" tabindex="0">Options ▼</h3>
-
-                    <h3 class="block">Block 1</h3>
-
-                    <div class="options">
-                        <p>Add a leading:</p>
-
-                        <div>
-                            <div tabindex="0" title="This adds a 1 min countdown before the block. This should pretty much always be on.">
-                                <input type="checkbox" checked id="leading-countdown" tabindex="-1">
-                                <p>countdown</p>
-                            </div>
-
-                            <div tabindex="0" title="This adds a 1 min clip of the emergency procedures before the block.">
-                                <input type="checkbox" checked id="leading-emergency-routine" tabindex="-1">
-                                <p>emergency routine</p>
-                            </div>
-
-                            <div tabindex="0" title="This adds a 1 min clip that reminds viewers to show respect to each other in regards to the 2020s pandemic.">
-                                <input type="checkbox" id="leading-covid-disclaimer" tabindex="-1">
-                                <p>covid disclaimer</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="episode">
-                    <div class="time">
-                        <p>Starts at: </p>
-                        <p>--:--</p>
-                    </div>
-
-                    <div class="file">
-                        <input type="file">
-                    </div>
-                </div>
-
-                <div class="episode">
-                    <div class="time">
-                        <p>Starts at: </p>
-                        <p>--:--</p>
-                    </div>
-
-                    <div class="file">
-                        <input type="file">
-                    </div>
-                </div>
-
-                <div class="episode">
-                    <div class="time">
-                        <p>Starts at: </p>
-                        <p>--:--</p>
-                    </div>
-
-                    <div class="file">
-                        <input type="file">
-                    </div>
-                </div>
-            </div>
-
-            <div class="round-box create-block">
+            <div class="round-box create-block clickable" tabindex="0">
                 <img src="../../assets/images/add_35dp_000000_FILL0_wght700_GRAD0_opsz40.png" alt="+">
             </div>
         </section>

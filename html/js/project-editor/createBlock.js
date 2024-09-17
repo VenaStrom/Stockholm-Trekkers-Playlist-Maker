@@ -61,17 +61,6 @@ const makeBlock = () => {
                 <input type="file">
             </div>
         </div>
-
-        <div class="episode">
-            <div class="time">
-                <p>Starts at: </p>
-                <p>--:--</p>
-            </div>
-
-            <div class="file">
-                <input type="file">
-            </div>
-        </div>
     </div>`
 
     createBlockButton.insertAdjacentHTML("beforebegin", block);
