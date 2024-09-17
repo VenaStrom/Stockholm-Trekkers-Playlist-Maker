@@ -43,6 +43,8 @@ button {
     border: none;
     background: none;
 
+    cursor: pointer;
+
     padding: 0.5rem 1rem;
 
     border: 0.34rem solid var(--accent-color-low-contrast);
@@ -145,6 +147,11 @@ input[type="file"] {
 
 .italic {
     font-style: italic;
+}
+
+.clickable {
+    cursor: pointer;
+    user-select: none;
 }
 
 .clickable-icon {
