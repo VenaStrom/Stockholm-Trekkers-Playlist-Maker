@@ -12,6 +12,40 @@
                 top: calc(var(--header-height) + var(--header-margin));
                 left: -28ch;
             }
+
+            &>.bottom-sticky-container {
+                position: absolute;
+                top: 80dvh;
+             
+                left: 2.5dvw;
+                width: 95dvw; 
+
+                display: grid;
+                align-items: center;
+
+                &>.right-side {
+                    display: flex;
+                    flex-flow: column nowrap;
+                    align-items: center;
+                    justify-items: center;
+
+                    justify-self: flex-end;
+                    row-gap: 0.5rem;
+
+                    width: max-content;
+
+                    &>.hide-unset {
+                        display: flex;
+                        flex-flow: row nowrap;
+                        align-items: center;
+                        column-gap: 1ch;
+                    }
+
+                    &>button {
+                        width: 10ch;
+                    }
+                }
+            }   
         }
 
         &>main {
@@ -250,39 +284,6 @@
 
                     &:hover {
                         background-color: var(--accent-color-low-contrast);
-                    }
-                }
-            }
-
-            &>.bottom-sticky-container {
-                position: sticky;
-                bottom: 2rem;
-
-                width: 95vw;
-
-                display: grid;
-                align-items: center;
-
-                &>.right-side {
-                    display: flex;
-                    flex-flow: column nowrap;
-                    align-items: center;
-                    justify-items: center;
-
-                    justify-self: flex-end;
-                    row-gap: 0.5rem;
-
-                    width: max-content;
-
-                    &>.hide-unset {
-                        display: flex;
-                        flex-flow: row nowrap;
-                        align-items: center;
-                        column-gap: 1ch;
-                    }
-
-                    &>button {
-                        width: 10ch;
                     }
                 }
             }

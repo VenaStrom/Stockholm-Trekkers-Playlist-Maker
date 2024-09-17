@@ -4,12 +4,13 @@ document.addEventListener("keydown", (event) => {
     if (!(event.key === "Enter" || event.key === " ")) {
         return;
     };
-    
+
     // Prevents the page from scrolling when pressing the spacebar
     if (event.key === " ") { event.preventDefault() };
 
     if (event.target.classList.contains("clickable")) {
         if (event.target.hasAttribute("onclick")) { event.target.click() };
+        if (event.target.querySelector("img")) { event.target.querySelector("img").click() };
         if (event.target.querySelector("input")) { event.target.querySelector("input").click() };
     };
 });

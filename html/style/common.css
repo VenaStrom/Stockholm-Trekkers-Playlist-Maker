@@ -222,7 +222,7 @@ body {
             margin-right: 1ch;
         }
 
-        &>div {
+        &>.logo+div {
             display: flex;
             flex-flow: column nowrap;
             justify-content: center;
@@ -255,5 +255,5 @@ body {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
