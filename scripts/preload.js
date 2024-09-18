@@ -7,7 +7,7 @@ contextBridge.exposeInMainWorld("download", {
 });
 
 contextBridge.exposeInMainWorld("projects", {
-    get: (id) => ipcRenderer.invoke("project-get"),
-    save: (projectJSON) => ipcRenderer.invoke("project-save"),
-    delete: (id) => ipcRenderer.invoke("project-delete"),
+    get: (id) => ipcRenderer.invoke("project-get", id),
+    save: (projectJSON) => ipcRenderer.invoke("project-save", projectJSON),
+    delete: (id) => ipcRenderer.invoke("project-delete", id),
 });

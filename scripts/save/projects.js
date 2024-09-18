@@ -10,10 +10,9 @@ const projectGet = (id) => {
 const projectSave = (projectJSON) => {
     const id = projectJSON.id;
     if (!id) {
-        raiseError("No ID provided for project save");
-        return;
-    }
-
+        raiseError("No ID provided for the project save");
+        return "No ID provided for the project save";
+    };
 };
 
 const projectDelete = (id) => {
@@ -21,9 +20,9 @@ const projectDelete = (id) => {
 };
 
 const setUpHandlers = () => {
-    ipcMain.handle("project-get", projectSave);
+    ipcMain.handle("project-get", projectGet);
     ipcMain.handle("project-save", projectSave);
-    ipcMain.handle("project-delete", projectSave);
+    ipcMain.handle("project-delete", projectDelete);
 };
 
 module.exports = { setUpHandlers };
