@@ -2,7 +2,6 @@
 const { app, BrowserWindow, nativeTheme } = require("electron");
 const path = require("node:path");
 const { setUpHandlers: setUpDownloadHandlers } = require("./scripts/download/downloadAssets.js");
-const { setUpHandlers: setUpUserDataHandlers } = require("./scripts/save/userDataSaveHandlers.js");
 
 const createWindow = () => {
 

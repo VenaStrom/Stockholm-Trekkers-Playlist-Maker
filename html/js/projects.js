@@ -1,10 +1,8 @@
-// const createNewProjectWindow = document.getElementById("add-projects-after");
+const createNewProjectWindow = document.getElementById("add-projects-after");
 
-
-// createNewProjectWindow.addEventListener("click", () => {
-//     window.location.href = "./project-editor.html?id=new";
-// });
-
+createNewProjectWindow.addEventListener("click", () => {
+    window.location.href = "./project-editor.html?id=new";
+});
 
 // projects.getAll().then((projects) => {
 //     if (!projects) {
