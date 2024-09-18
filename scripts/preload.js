@@ -9,3 +9,9 @@ contextBridge.exposeInMainWorld("download", {
 contextBridge.exposeInMainWorld("projects", {
     getAll: () => ipcRenderer.invoke("get-projects"),
 });
+
+contextBridge.exposeInMainWorld("userData", {
+    get: (key) => ipcRenderer.invoke("get-user-data", key),
+    set: (key, value) => ipcRenderer.invoke("set-user-data", key, value),
+    remove: (key) => ipcRenderer.invoke("remove-user-data", key),
+});

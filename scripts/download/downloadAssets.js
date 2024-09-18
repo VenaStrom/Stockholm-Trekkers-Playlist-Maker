@@ -1,4 +1,4 @@
-const { BrowserWindow, ipcMain, app } = require("electron");
+const { BrowserWindow, ipcMain } = require("electron");
 const fs = require("fs");
 const path = require("node:path")
 const raiseError = require("../raiseError.js");

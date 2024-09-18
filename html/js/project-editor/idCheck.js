@@ -18,9 +18,7 @@ const getID = () => {
 
     const id = time.toString() + pageBornAt.toString();
 
-    localStorage.setItem("id", {id, pageBornAt});
-    
-    return id;
-}
+    localStorage.setItem("id", { id, pageBornAt });
 
-getID();
+    return id;
+};
