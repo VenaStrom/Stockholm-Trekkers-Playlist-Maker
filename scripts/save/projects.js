@@ -19,10 +19,15 @@ const projectDelete = (id) => {
 
 };
 
+const projectGetAll = () => {
+
+};
+
 const setUpHandlers = () => {
     ipcMain.handle("project-get", projectGet);
     ipcMain.handle("project-save", projectSave);
     ipcMain.handle("project-delete", projectDelete);
+    ipcMain.handle("project-get-all", projectGetAll);
 };
 
 module.exports = { setUpHandlers };
