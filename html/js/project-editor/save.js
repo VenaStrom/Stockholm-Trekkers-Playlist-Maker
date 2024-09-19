@@ -10,9 +10,27 @@ const getJSONstruct = () => {
         blocks: [],
     };
 
-    blocks.forEach((block) => {
-        struct.blocks.push({
 
+    blocks.forEach((block) => {
+        const options = {};
+        block.querySelectorAll(".options input[type='checkbox']").forEach(optionDOM => {
+            options[optionDOM.id] = optionDOM.checked;
+        });;
+
+        const episodes = Array.from(block.querySelectorAll(".episode:not(.hidden)"))
+            .map((episode) => { // only grab non-hidden episodes
+                return episode.querySelector(".file input[type='file']").value;
+
+            }).filter((inputValue) => { // filter out empty strings
+                if (inputValue !== "") {
+                    return inputValue
+                };
+            });
+
+        struct.blocks.push({
+            startTime: block.querySelector(".header .time input[type='text']").value,
+            options: options,
+            episodes: episodes
         });
     });
 
@@ -40,6 +58,7 @@ exportButton.addEventListener("click", () => {
 });
 
 
+// Ctrl + S to save
 document.addEventListener("keydown", (event) => {
     if (!(event.ctrlKey && event.key === "s")) { return };
 
