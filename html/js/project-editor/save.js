@@ -46,16 +46,12 @@ const saveProject = () => {
 };
 
 
-
-
-
-
-
-
 const exportButton = document.querySelector("button.export");
-exportButton.addEventListener("click", () => {
-    console.log(getJSONstruct())
+exportButton.addEventListener("click", async () => {
+    console.log(await projects.getAll());
+    // console.log(saveProject())
 });
+
 
 
 // Ctrl + S to save

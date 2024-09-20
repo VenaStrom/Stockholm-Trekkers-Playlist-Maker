@@ -12,7 +12,3 @@ contextBridge.exposeInMainWorld("projects", {
     delete: (id) => ipcRenderer.invoke("project-delete", id),
     getAll: () => ipcRenderer.invoke("project-get-all"),
 });
-
-contextBridge.exposeInMainWorld("metaData", {
-    get: (filePath) => ipcRenderer.invoke("get-meta-data", filePath),
-});
