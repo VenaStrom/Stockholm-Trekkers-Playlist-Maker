@@ -38,6 +38,7 @@ projects.getAll().then((projects) => {
             return `${yyyymmdd} ${time}`;
         };
 
+        // If it has a date modified and not a date created then the modified date is the creation date
         if (project.dateCreated) {
             metaDataDOM.querySelector("p:nth-child(2)").textContent = formatTime(project.dateCreated);
             metaDataDOM.querySelector("p:nth-child(4)").textContent = formatTime(project.dateModified);
@@ -54,6 +55,7 @@ projects.getAll().then((projects) => {
         episodesDOM.innerHTML = "";
 
         project.blocks.forEach((block, index) => {
+
             block.episodes.forEach((episode) => {
                 const episodeDOM = document.createElement("li");
 

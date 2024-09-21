@@ -23,8 +23,12 @@
                 display: grid;
                 align-items: center;
 
+                z-index: -99999;
+
                 
                 &>.right-side {
+                    z-index: 99999;
+
                     background-color: var(--background-color);
                     
                     display: flex;

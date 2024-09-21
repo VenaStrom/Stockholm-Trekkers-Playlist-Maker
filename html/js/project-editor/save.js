@@ -24,13 +24,18 @@ const getJSONstruct = () => {
             .filter((episode) => {
                 const fileInput = episode.querySelector("input[type='file']");
                 if (fileInput.value !== "") {
-                    return {
-                        filePath: fileInput.value,
-                        fileName: fileInput.value.split("/").at(-1),
-                        startTime: episode.querySelector(".time p").textContent, // Should be a string HH:MM
-                    };
+                    return true;
+                };
+            }).map((episode) => {
+                const fileInput = episode.querySelector("input[type='file']");
+                return {
+                    filePath: fileInput.value,
+                    fileName: fileInput.value.split("\\").at(-1),
+                    startTime: episode.querySelector(".time p").textContent, // Should be a string HH:MM
                 };
             });
+
+        console.log(episodes);
 
         struct.blocks.push({
             startTime: block.querySelector(".header .time input[type='text']").value,
@@ -54,7 +59,7 @@ const saveProject = () => {
 const exportButton = document.querySelector("button.export");
 exportButton.addEventListener("click", async () => {
     // console.log(await projects.getAll());
-    console.log(saveProject());
+    saveProject();
 });
 
 
