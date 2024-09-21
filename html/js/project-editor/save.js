@@ -7,23 +7,24 @@ const getJSONstruct = () => {
     const struct = {
         name: name,
         id: getID(),
+        dateModified: new Date().getTime(),
         blocks: [],
     };
 
 
     blocks.forEach((block) => {
+        // Get the options and set them in the struct
         const options = {};
         block.querySelectorAll(".options input[type='checkbox']").forEach(optionDOM => {
             options[optionDOM.id] = optionDOM.checked;
         });;
 
-        const episodes = Array.from(block.querySelectorAll(".episode:not(.hidden)"))
-            .map((episode) => { // only grab non-hidden episodes
-                return episode.querySelector(".file input[type='file']").value;
-
-            }).filter((inputValue) => { // filter out empty strings
-                if (inputValue !== "") {
-                    return inputValue
+        // Loop through and export all the episodes as a list
+        const episodes = Array.from(block.querySelectorAll(".episode:not(.hidden)")) // only grab non-hidden episodes
+            .filter((episode) => {
+                const fileInput = episode.querySelector("input[type='file']");
+                if (fileInput.value !== "") {
+                    return episode
                 };
             });
 
@@ -49,7 +50,7 @@ const saveProject = () => {
 const exportButton = document.querySelector("button.export");
 exportButton.addEventListener("click", async () => {
     console.log(await projects.getAll());
-    // console.log(saveProject())
+    // console.log(saveProject());
 });
 
 
@@ -57,6 +58,5 @@ exportButton.addEventListener("click", async () => {
 // Ctrl + S to save
 document.addEventListener("keydown", (event) => {
     if (!(event.ctrlKey && event.key === "s")) { return };
-
 
 });

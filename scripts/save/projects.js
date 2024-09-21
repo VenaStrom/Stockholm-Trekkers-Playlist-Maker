@@ -29,7 +29,16 @@ const projectSave = (projectData, projectDirPath) => {
         return "No ID provided for the project save";
     }
 
+    // If the save already exists, get it's creation date
+    if (fs.existsSync(filePath)) {
+        const oldFile = JSON.parse(fs.readFileSync(filePath))
+
+        // To get the date created, just look for the old data
+        projectData.dateCreated = oldFile.dateModified;
+    } 
+
     fs.writeFileSync(filePath, JSON.stringify(projectData), { flag: "w" });
+
     return "Project saved";
 };
 
