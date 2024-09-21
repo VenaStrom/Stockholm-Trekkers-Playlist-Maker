@@ -24,7 +24,11 @@ const getJSONstruct = () => {
             .filter((episode) => {
                 const fileInput = episode.querySelector("input[type='file']");
                 if (fileInput.value !== "") {
-                    return episode
+                    return {
+                        filePath: fileInput.value,
+                        fileName: fileInput.value.split("/").at(-1),
+                        startTime: episode.querySelector(".time p").textContent, // Should be a string HH:MM
+                    };
                 };
             });
 
@@ -49,8 +53,8 @@ const saveProject = () => {
 
 const exportButton = document.querySelector("button.export");
 exportButton.addEventListener("click", async () => {
-    console.log(await projects.getAll());
-    // console.log(saveProject());
+    // console.log(await projects.getAll());
+    console.log(saveProject());
 });
 
 

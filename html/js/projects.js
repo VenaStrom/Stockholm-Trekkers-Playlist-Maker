@@ -1,11 +1,11 @@
-const createNewProjectWindow = document.getElementById("add-projects-after");
+const createNewProjectButton = document.querySelector(".make-new-project");
 
-createNewProjectWindow.addEventListener("click", () => {
+createNewProjectButton.addEventListener("click", () => {
     window.location.href = "./project-editor.html?id=new";
 });
 
 
-const templateProject = document.querySelector("div.round-box.load-project-template.hidden")
+const templateProject = document.querySelector(".load-project-template.hidden");
 
 // Populate the, "view old projects" screen
 projects.getAll().then((projects) => {
@@ -15,7 +15,7 @@ projects.getAll().then((projects) => {
     }
 
     projects.forEach(project => {
-        const projectDOM = templateProject.cloneNode();
+        const projectDOM = templateProject.cloneNode(true);
         projectDOM.classList.remove("load-project-template");
         projectDOM.classList.add("load-project");
         projectDOM.classList.remove("hidden")
@@ -25,33 +25,53 @@ projects.getAll().then((projects) => {
 
         // The metadata tag shows date created and date modified 
         const metaDataDOM = projectDOM.querySelector(".meta-data");
-        metaDataDOM.innerHTML = "";
 
-        const dateCreatedDOM = document.createElement("p");
-        const dateModifiedDOM = document.createElement("p");
+        const formatTime = (unixTime) => {
+            if (!unixTime) {
+                return false;
+            };
 
-        // If the project only has a dateModified means it has never been modified and a set dateCreated means it has been edited
+            const date = new Date(unixTime);
+            const [yyyymmdd, fullTime] = date.toISOString().split("T");
+            const time = fullTime.slice(0, 5);
+
+            return `${yyyymmdd} ${time}`;
+        };
+
         if (project.dateCreated) {
-            dateCreatedDOM.textContent = project.dateCreated;
-            dateModifiedDOM.textContent = project.dateModified;
-
-            metaDataDOM.appendChild(dateModifiedDOM);
-
+            metaDataDOM.querySelector("p:nth-child(2)").textContent = formatTime(project.dateCreated);
+            metaDataDOM.querySelector("p:nth-child(4)").textContent = formatTime(project.dateModified);
+        } else if (project.dateModified) {
+            metaDataDOM.querySelector("p:nth-child(2)").textContent = formatTime(project.dateModified);
+            metaDataDOM.querySelector("p:nth-child(3)").innerHTML = "";
+            metaDataDOM.querySelector("p:nth-child(4)").innerHTML = "";
         } else {
-            dateCreatedDOM.textContent = project.dateModified;
+            metaDataDOM.innerHTML = "";
         }
 
-        metaDataDOM.appendChild(dateCreatedDOM);
-
+        // Loop through all of the episodes in the blocks and add them to the "load project DOM"
         const episodesDOM = projectDOM.querySelector("ul");
+        episodesDOM.innerHTML = "";
 
-        project.blocks.forEach((block) => {
+        project.blocks.forEach((block, index) => {
             block.episodes.forEach((episode) => {
                 const episodeDOM = document.createElement("li");
-                const startTime = new Date(episode.startTime).toISOString();
-                episodeDOM.textContent = `${}`;
+
+                const startTime = episode.startTime;
+                const fileName = episode.fileName;
+
+                episodeDOM.textContent = `${startTime} - ${fileName}`;
+
                 episodesDOM.appendChild(episodeDOM);
             });
+
+            if (index !== project.blocks.length - 1) {
+                const hairline = document.createElement("li");
+                hairline.classList.add("block-divider");
+                episodesDOM.appendChild(hairline);
+            }
         });
+
+        createNewProjectButton.insertAdjacentElement("afterend", projectDOM);
     });
 });

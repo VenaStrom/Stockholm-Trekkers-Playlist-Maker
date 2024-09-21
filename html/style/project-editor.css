@@ -23,7 +23,10 @@
                 display: grid;
                 align-items: center;
 
+                
                 &>.right-side {
+                    background-color: var(--background-color);
+                    
                     display: flex;
                     flex-flow: column nowrap;
                     align-items: center;
@@ -258,6 +261,10 @@
                             &>* {
                                 width: max-content;
                             }
+                        }
+
+                        &>.time {
+                            margin-left: 2ch;
                         }
 
                         &>.file {
