@@ -35,8 +35,6 @@ const getJSONstruct = () => {
                 };
             });
 
-        console.log(episodes);
-
         struct.blocks.push({
             startTime: block.querySelector(".header .time input[type='text']").value,
             options: options,

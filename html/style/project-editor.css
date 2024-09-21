@@ -24,10 +24,13 @@
                 align-items: center;
 
                 z-index: -99999;
-
+                user-select: none;
+                pointer-events: none;
                 
                 &>.right-side {
                     z-index: 99999;
+                    user-select: auto;
+                    pointer-events: all;
 
                     background-color: var(--background-color);
                     

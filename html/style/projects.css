@@ -51,7 +51,7 @@ body {
                 height: 5rem;
 
                 background-color: var(--accent-color-low-contrast);
-                
+
                 padding: 0.7rem 5ch 0.7rem 3ch;
                 margin-bottom: 0.4rem;
 
@@ -95,9 +95,12 @@ body {
                 display: flex;
                 flex-flow: column nowrap;
                 gap: 0.3rem;
+                row-gap: 0.5rem;
 
                 &>li {
-                    margin-bottom: 0.2rem;
+                    display: flex;
+                    flex-flow: row nowrap;
+                    column-gap: 2ch;
                 }
 
                 &>li.block-divider {

@@ -62,7 +62,13 @@ projects.getAll().then((projects) => {
                 const startTime = episode.startTime;
                 const fileName = episode.fileName;
 
-                episodeDOM.textContent = `${startTime} - ${fileName}`;
+                const timeDOM = document.createElement("p");
+                const fileDOM = document.createElement("p");
+                timeDOM.textContent = startTime;
+                fileDOM.textContent = fileName;
+                episodeDOM.appendChild(timeDOM);
+                episodeDOM.appendChild(document.createTextNode("-"));
+                episodeDOM.appendChild(fileDOM);
 
                 episodesDOM.appendChild(episodeDOM);
             });
@@ -72,6 +78,11 @@ projects.getAll().then((projects) => {
                 hairline.classList.add("block-divider");
                 episodesDOM.appendChild(hairline);
             }
+        });
+
+        // Go to the project in the editor when clicked
+        projectDOM.addEventListener("click", () => {
+            window.location.href = `./project-editor.html?id=${project.id}`;
         });
 
         createNewProjectButton.insertAdjacentElement("afterend", projectDOM);
