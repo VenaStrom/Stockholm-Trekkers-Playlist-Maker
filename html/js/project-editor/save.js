@@ -53,17 +53,20 @@ const saveProject = () => {
     });
 };
 
-
+// Save on the export button, it will have more functionality later
 const exportButton = document.querySelector("button.export");
 exportButton.addEventListener("click", async () => {
     // console.log(await projects.getAll());
     saveProject();
 });
 
-
-
 // Ctrl + S to save
 document.addEventListener("keydown", (event) => {
     if (!(event.ctrlKey && event.key === "s")) { return };
 
+    event.preventDefault();
+    saveProject();
 });
+
+
+// Load project on page load if there is an ID

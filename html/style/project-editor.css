@@ -12,50 +12,6 @@
                 top: calc(var(--header-height) + var(--header-margin));
                 left: -28ch;
             }
-
-            &>.bottom-sticky-container {
-                position: absolute;
-                top: 80dvh;
-
-                left: 2.5dvw;
-                width: 95dvw;
-
-                display: grid;
-                align-items: center;
-
-                z-index: -99999;
-                user-select: none;
-                pointer-events: none;
-                
-                &>.right-side {
-                    z-index: 99999;
-                    user-select: auto;
-                    pointer-events: all;
-
-                    background-color: var(--background-color);
-                    
-                    display: flex;
-                    flex-flow: column nowrap;
-                    align-items: center;
-                    justify-items: center;
-
-                    justify-self: flex-end;
-                    row-gap: 0.5rem;
-
-                    width: max-content;
-
-                    &>.hide-unset {
-                        display: flex;
-                        flex-flow: row nowrap;
-                        align-items: center;
-                        column-gap: 1ch;
-                    }
-
-                    &>button {
-                        width: 10ch;
-                    }
-                }
-            }
         }
 
         &>main {
@@ -298,6 +254,54 @@
 
                     &:hover {
                         background-color: var(--accent-color-low-contrast);
+                    }
+                }
+            }
+
+
+            &>.bottom-sticky-container {
+                position: fixed;
+                top: 80dvh;
+                left: 0;
+
+                width: 97.5dvw;
+
+                display: grid;
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr;
+
+                z-index: -999;
+                user-select: none;
+                pointer-events: none;
+
+                &>.export-box {
+                    justify-self: flex-end;
+
+                    z-index: 999;
+                    user-select: auto;
+                    pointer-events: all;
+
+                    background-color: var(--background-color);
+
+                    display: flex;
+                    flex-flow: column nowrap;
+                    align-items: center;
+                    justify-items: center;
+
+                    row-gap: 0.5rem;
+
+                    height: 7rem;
+                    width: max-content;
+
+                    &>.hide-unset {
+                        display: flex;
+                        flex-flow: row nowrap;
+                        align-items: center;
+                        column-gap: 1ch;
+                    }
+
+                    &>button {
+                        width: 10ch;
                     }
                 }
             }
