@@ -8,7 +8,7 @@
   "description": "A playlist maker for the Stockholm Trekkers.",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder"
+    "build": "electron-builder --linux --win"
   },
   "devDependencies": {
     "electron": "^32.1.0",
@@ -16,13 +16,15 @@
   },
   "build": {
     "appId": "com.stockholm-trekkers.playlist-maker",
+    "productName": "Stockholm Trekkers Playlist Maker",
     "asar": false,
     "files": [
       "!dist/**",
       "!assets/videos/**",
       "!.gitignore",
       "!.git/**",
-      "!.vscode/**"
+      "!.vscode/**",
+      "!user-data/**"
     ],
     "win": {
       "target": "msi",
@@ -30,7 +32,12 @@
       "publisherName": "Viggo Ström"
     },
     "linux": {
-      "target": "deb",
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "AudioVideo",
+      "maintainer": "Viggo Ström viggostrom05@gmail.com",
       "icon": "assets/images/stockholm-trekkers-300x300.png",
       "synopsis": "A playlist maker for the Stockholm Trekkers."
     }
