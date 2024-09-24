@@ -31,11 +31,11 @@ projects.getAll().then((projects) => {
                 return false;
             };
 
-            const date = new Date(unixTime);
-            const [yyyymmdd, fullTime] = date.toISOString().split("T");
-            const time = fullTime.slice(0, 5);
-
-            return `${yyyymmdd} ${time}`;
+            const date = new Date(unixTime);            
+            const hours = date.getHours();
+            const minutes = date.getMinutes().toString().padStart(2, "0");
+            
+            return `${date.toDateString()} ${hours}:${minutes}`;
         };
 
         // If it has a date modified and not a date created then the modified date is the creation date

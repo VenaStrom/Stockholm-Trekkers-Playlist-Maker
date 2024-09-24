@@ -27,11 +27,9 @@ const getJSONstruct = () => {
                 };
             }).map((episode) => {
                 const fileInput = episode.querySelector("input[type='file']");
-                console.log(fileInput.files, fileInput.value);
                 return {
-                    filePath: fileInput.value,
+                    filePath: webUtils.getPathForFile(fileInput.files[0]),
                     fileName: fileInput.value.split("\\").at(-1),
-                    fileObj: fileInput.files,
                     startTime: episode.querySelector(".time p").textContent, // Should be a string HH:MM
                 };
             });
@@ -72,7 +70,6 @@ document.addEventListener("keydown", (event) => {
     event.preventDefault();
     saveProject();
 });
-
 
 // Save project on change
 document.addEventListener("change", () => {

@@ -64,7 +64,7 @@ const projectGetAll = (projectDirPath) => {
 
 const setUpHandlers = () => {
     // Make sure the projects folder exists
-    const projectFolder = path.join(__dirname, "..", "user-data", "projects");
+    const projectFolder = path.join(__dirname, "../..", "user-data", "projects");
     if (!fs.existsSync(projectFolder)) {
         fs.mkdirSync(projectFolder, { recursive: true });
     };

@@ -1,4 +1,4 @@
-const { contextBridge, ipcRenderer } = require("electron");
+const { contextBridge, ipcRenderer, webUtils } = require("electron");
 
 contextBridge.exposeInMainWorld("download", {
     start: () => ipcRenderer.invoke("start-download"),
@@ -12,3 +12,5 @@ contextBridge.exposeInMainWorld("projects", {
     delete: (id) => ipcRenderer.invoke("project-delete", id),
     getAll: () => ipcRenderer.invoke("project-get-all"),
 });
+
+contextBridge.exposeInMainWorld("webUtils", webUtils);
