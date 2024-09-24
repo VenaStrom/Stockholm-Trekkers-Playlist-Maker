@@ -23,11 +23,17 @@ if (id) {
             // Set the episodes
             block.episodes.forEach((episode, episodeIndex) => {
                 const episodeDOM = blockDOM.querySelectorAll(".episode")[episodeIndex];
-                console.log(episode.fileObj);
-                episodeDOM.querySelector(".file input[type='file']").files = episode.fileObj;
+
+                // I don't like this solution but it seems to be the only way of setting the file input.
+                // When actually exporting i think the path might need to be taken from the file input 
+                // directly so you would have to go via the editor.
+                const dataTransfer = new DataTransfer();
+                const file = new File([episode.fileObj], episode.fileName, { type: episode.fileObj.type });
+                dataTransfer.items.add(file);
+
+                episodeDOM.querySelector(".file input[type='file']").files = dataTransfer.files;
                 episodeDOM.querySelector(".file input[type='file']").dispatchEvent(new Event("change"));
 
-                // episodeDOM.querySelector(".file input[type='file']").file = episode.filePath;
                 episodeDOM.querySelector(".time p").textContent = episode.startTime;
             });
         });

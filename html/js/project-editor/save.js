@@ -22,12 +22,12 @@ const getJSONstruct = () => {
         const episodes = Array.from(block.querySelectorAll(".episode:not(.hidden)")) // only grab non-hidden episodes
             .filter((episode) => {
                 const fileInput = episode.querySelector("input[type='file']");
-                console.log(fileInput.files);
                 if (fileInput.value !== "") {
                     return true;
                 };
             }).map((episode) => {
                 const fileInput = episode.querySelector("input[type='file']");
+                console.log(fileInput.files, fileInput.value);
                 return {
                     filePath: fileInput.value,
                     fileName: fileInput.value.split("\\").at(-1),
@@ -46,11 +46,15 @@ const getJSONstruct = () => {
     return struct;
 };
 
+
+const saveStatusText = document.querySelector("header #save-status");
+
 const saveProject = () => {
     const struct = getJSONstruct();
 
     projects.save(struct).then((response) => {
         console.log("response after save: " + response);
+        saveStatusText.textContent = "Saved";
     });
 };
 
@@ -69,3 +73,9 @@ document.addEventListener("keydown", (event) => {
     saveProject();
 });
 
+
+// Save project on change
+document.addEventListener("change", () => {
+    saveStatusText.textContent = "Latest changes not saved*";
+    saveProject();
+});
