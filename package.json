@@ -8,7 +8,7 @@
   "description": "A playlist maker for the Stockholm Trekkers.",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder --linux --win"
+    "build": "electron-builder"
   },
   "devDependencies": {
     "electron": "^32.1.0",
@@ -33,7 +33,6 @@
     },
     "linux": {
       "target": [
-        "AppImage",
         "deb"
       ],
       "category": "AudioVideo",
