@@ -32,6 +32,6 @@ ipcMain.handle("get-metadata", async (event, filePath) => {
         return await getVideoMetadata(filePath);
     } catch (error) {
         raiseError("Error getting metadata", error);
-        return null;
+        return undefined;
     }
 });
