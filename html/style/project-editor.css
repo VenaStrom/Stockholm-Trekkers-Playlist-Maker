@@ -270,9 +270,7 @@
                 grid-template-columns: 1fr;
                 grid-template-rows: 1fr;
 
-                z-index: -999;
-                user-select: none;
-                pointer-events: none;
+                pointer-events: none; 
 
                 &>.export-box {
                     justify-self: flex-end;
