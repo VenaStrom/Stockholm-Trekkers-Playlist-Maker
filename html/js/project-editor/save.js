@@ -1,4 +1,6 @@
 
+const autoSave = false;
+
 const getJSONstruct = () => {
     const name = document.querySelector(".name-input input[type='text']").value;
 
@@ -56,10 +58,9 @@ const saveProject = () => {
     });
 };
 
-// Save on the export button, it will have more functionality later
+// Save on the export button. It will have more functionality later
 const exportButton = document.querySelector("button.export");
-exportButton.addEventListener("click", async () => {
-    // console.log(await projects.getAll());
+exportButton.addEventListener("click", () => {
     saveProject();
 });
 
@@ -74,5 +75,8 @@ document.addEventListener("keydown", (event) => {
 // Save project on change
 document.addEventListener("change", () => {
     saveStatusText.textContent = "Latest changes not saved*";
-    saveProject();
+
+    if (autoSave) {
+        saveProject();
+    }
 });

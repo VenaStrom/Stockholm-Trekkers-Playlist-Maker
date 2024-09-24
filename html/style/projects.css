@@ -98,9 +98,14 @@ body {
                 row-gap: 0.5rem;
 
                 &>li {
-                    display: flex;
-                    flex-flow: row nowrap;
+                    display: grid;
+                    grid-template-columns: 6ch 2ch 1fr;
+                    grid-template-rows: 1fr;
                     column-gap: 2ch;
+
+                    &>:first-child {
+                        text-align: center;
+                    }
                 }
 
                 &>li.block-divider {

@@ -56,7 +56,7 @@ projects.getAll().then((projects) => {
 
         project.blocks.forEach((block, index) => {
 
-            block.episodes.forEach((episode) => {
+            block.episodes.forEach((episode, index) => {
                 const episodeDOM = document.createElement("li");
 
                 const startTime = episode.startTime;
@@ -71,6 +71,10 @@ projects.getAll().then((projects) => {
                 episodeDOM.appendChild(fileDOM);
 
                 episodesDOM.appendChild(episodeDOM);
+
+                if (index === 0) {
+                    timeDOM.textContent = block.startTime;
+                }
             });
 
             if (index !== project.blocks.length - 1) {

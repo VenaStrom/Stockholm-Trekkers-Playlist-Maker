@@ -1,7 +1,15 @@
     body {
         &>header {
             &>#save-status {
+                z-index: 999;
+                
                 margin-left: 4ch;
+
+                cursor: pointer;
+
+                &:hover {
+                    color: var(--accent-color-high-contrast);
+                }
             }
 
             &>#back-button {
