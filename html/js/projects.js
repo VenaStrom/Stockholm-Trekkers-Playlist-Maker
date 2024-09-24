@@ -31,24 +31,15 @@ projects.getAll().then((projects) => {
                 return false;
             };
 
-            const date = new Date(unixTime);            
+            const date = new Date(unixTime);
             const hours = date.getHours();
             const minutes = date.getMinutes().toString().padStart(2, "0");
-            
+
             return `${date.toDateString()} ${hours}:${minutes}`;
         };
 
-        // If it has a date modified and not a date created then the modified date is the creation date
-        if (project.dateCreated) {
-            metaDataDOM.querySelector("p:nth-child(2)").textContent = formatTime(project.dateCreated);
-            metaDataDOM.querySelector("p:nth-child(4)").textContent = formatTime(project.dateModified);
-        } else if (project.dateModified) {
-            metaDataDOM.querySelector("p:nth-child(2)").textContent = formatTime(project.dateModified);
-            metaDataDOM.querySelector("p:nth-child(3)").innerHTML = "";
-            metaDataDOM.querySelector("p:nth-child(4)").innerHTML = "";
-        } else {
-            metaDataDOM.innerHTML = "";
-        }
+        // Set the date modified
+        metaDataDOM.querySelector("p").textContent = formatTime(project.dateModified);
 
         // Loop through all of the episodes in the blocks and add them to the "load project DOM"
         const episodesDOM = projectDOM.querySelector("ul");

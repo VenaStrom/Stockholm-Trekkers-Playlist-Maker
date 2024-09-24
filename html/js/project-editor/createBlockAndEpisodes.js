@@ -4,7 +4,6 @@ const templateBlock = document.querySelector(".block-template.hidden");
 
 const createBlockButton = document.querySelector(".create-block");
 
-
 const createEpisodeDOM = (parent) => {
     // Clone the template and clean up the classes
     const episode = templateEpisode.cloneNode(true);
@@ -20,6 +19,8 @@ const createEpisodeDOM = (parent) => {
         if (episodes[episodes.length - 1] === episode) {
             createEpisodeDOM(parent);
         }
+
+        updateTimes();
     });
 };
 
@@ -38,6 +39,8 @@ const createBlockDOM = () => {
     block.classList.add("block");
     block.classList.remove("block-template");
     block.classList.remove("hidden");
+
+    block.querySelector(".time input[type='text']").addEventListener("change", updateTimes);
 
     // Make two episodes to start off with
     createEpisodeDOM(block);
@@ -62,4 +65,3 @@ createBlockDOM();
 
 // Make new block when the "create new block" button is pressed
 createBlockButton.addEventListener("click", createBlockDOM);
-

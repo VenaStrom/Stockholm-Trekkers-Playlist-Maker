@@ -17,6 +17,7 @@
     <script defer src="../js/project-editor/backButton.js"></script>
     <script defer src="../js/project-editor/nameValidator.js"></script>
     <script defer src="../js/project-editor/openOptions.js"></script>
+    <script defer src="../js/project-editor/setStartTimes.js"></script>
     <script defer src="../js/project-editor/createBlockAndEpisodes.js"></script>
     <script defer src="../js/project-editor/hideUnset.js"></script>
     <script defer src="../js/project-editor/load.js"></script>
@@ -25,7 +26,7 @@
     <!-- Template block -->
     <div class="round-box block-template hidden">
         <div class="header">
-            <div class="time">
+            <div class="time time-lint">
                 <p>Start time: </p>
                 <input class="time-input" type="text" placeholder="hhmm">
             </div>
@@ -61,7 +62,7 @@
 
     <!-- Template episode -->
     <div class="episode-template hidden">
-        <div class="time">
+        <div class="time time-lint">
             <p>--:--</p>
         </div>
 
