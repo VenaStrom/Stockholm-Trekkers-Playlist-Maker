@@ -101,7 +101,7 @@ body {
                     display: grid;
                     grid-template-columns: 6ch 2ch 1fr;
                     grid-template-rows: 1fr;
-                    column-gap: 2ch;
+                    column-gap: 1ch;
 
                     &>:first-child {
                         text-align: center;

@@ -17,7 +17,7 @@ const createEpisodeDOM = (parent) => {
     // If this input is the second to last one, make a new episode
     episode.querySelector("input[type='file']").addEventListener("change", (event) => {
         const episodes = parent.querySelectorAll(".episode");
-        if (episodes[episodes.length - 2] === episode) {
+        if (episodes[episodes.length - 1] === episode) {
             createEpisodeDOM(parent);
         }
     });

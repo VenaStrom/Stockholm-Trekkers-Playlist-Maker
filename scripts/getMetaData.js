@@ -1,3 +1,4 @@
+const { ipcMain } = require("electron");
 const path = require("node:path");
 const fs = require("node:fs");
 const { execFile } = require("node:child_process");
@@ -5,7 +6,7 @@ const ffprobe = require("ffprobe-static").path;
 const raiseError = require("./raiseError.js");
 
 
-// Function to extract metadata using ffprobe
+// Extract metadata using ffprobe
 getVideoMetadata = (filePath) => {
     return new Promise((resolve, reject) => {
         execFile(ffprobe, [
@@ -16,6 +17,7 @@ getVideoMetadata = (filePath) => {
             filePath
         ], (error, stdout, stderr) => {
             if (error) {
+                raiseError("Error running ffprobe", error);
                 reject(`Error running ffprobe: ${stderr}`);
             } else {
                 resolve(JSON.parse(stdout));
@@ -24,14 +26,12 @@ getVideoMetadata = (filePath) => {
     });
 }
 
-// Usage example:
-const videoFilePath = "C:/Users/viggo/Documents/GitHub/Stockholm-Trekkers-Playlist-Maker/assets/videos/pause_1_min_covid.mp4";  // Your video file path
-
-getVideoMetadata(videoFilePath)
-    .then(metadata => {
-        console.log("Video Metadata:", metadata);
-        fs.writeFileSync("C:/Users/viggo/Documents/GitHub/Stockholm-Trekkers-Playlist-Maker/metadata.json", JSON.stringify(metadata));
-    })
-    .catch(err => {
-        console.error("Error fetching metadata:", err);
-    });
+// Handle when the renderer process requests metadata
+ipcMain.handle("get-metadata", async (event, filePath) => {
+    try {
+        return await getVideoMetadata(filePath);
+    } catch (error) {
+        raiseError("Error getting metadata", error);
+        return null;
+    }
+});

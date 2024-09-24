@@ -1,7 +1,8 @@
 
 // Load project on page load if there is an ID
 const id = getID();
-if (id) {
+
+if (id !== "new") {
     projects.get(id).then((project) => {
         if (!project) {
             console.warn("No project found with id: " + id);
@@ -11,6 +12,11 @@ if (id) {
         document.querySelector(".name-input input[type='text']").value = project.name;
 
         project.blocks.forEach((block, blockIndex) => {
+            // Create new blocks if there are not enough
+            if (document.querySelectorAll(".block").length <= blockIndex) {
+                createBlockDOM();
+            }
+
             const blockDOM = document.querySelectorAll(".block")[blockIndex];
 
             blockDOM.querySelector(".header .time input[type='text']").value = block.startTime;
@@ -24,7 +30,7 @@ if (id) {
             block.episodes.forEach((episode, episodeIndex) => {
                 const episodeDOM = blockDOM.querySelectorAll(".episode")[episodeIndex];
 
-    
+
                 // This seems to be the only way of setting the file input (visually!!)
                 const dataTransfer = new DataTransfer();
                 const file = new File([new Blob()], episode.fileName);

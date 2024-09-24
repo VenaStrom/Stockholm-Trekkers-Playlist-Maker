@@ -204,24 +204,6 @@
                             border-bottom: 0.005rem solid var(--accent-color-low-contrast);
                         }
 
-                        &:last-child {
-                            opacity: 0.4;
-                            user-select: none;
-                            pointer-events: none;
-
-                            cursor: default;
-
-                            & * {
-                                cursor: default;
-                            }
-
-                            &>.file:hover input {
-                                background-image: linear-gradient(var(--background-color), var(--background-color));
-                                color: var(--text-color);
-                                font-weight: normal;
-                            }
-                        }
-
                         &>.time,
                         &>.file {
                             display: flex;
