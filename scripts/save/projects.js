@@ -1,5 +1,5 @@
 const { ipcMain } = require("electron");
-const fs = require("fs");
+const fs = require("node:fs");
 const path = require("node:path")
 const raiseError = require("../raiseError.js");
 

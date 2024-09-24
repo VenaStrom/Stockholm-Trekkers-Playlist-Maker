@@ -33,6 +33,9 @@ const createWindow = () => {
 };
 
 app.whenReady().then(() => {
+    const metaDataTesting = require("./scripts/getMetaData.js")
+
+    return
     createWindow();
 
     setUpDownloadHandlers();
