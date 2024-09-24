@@ -1,14 +1,10 @@
 
-const backButton = document.querySelector("#back-button");
 const nameValidatorStatus = document.querySelector(".name-validator-status");
 const nameInput = document.querySelector(".name-input>input");
 const warningsWindow = document.getElementById("name-validation-popover");
 let popoverTimeout;
 let statusTimeout;
 
-backButton.addEventListener("click", () => {
-    window.location.href = "./projects.html";
-});
 
 const nameValidator = (event) => {
     if (event.key !== "Enter") { return; }
@@ -90,5 +86,5 @@ const nameValidator = (event) => {
     }
 }
 
-nameInput.addEventListener("blur", nameValidator);
 nameInput.addEventListener("keydown", nameValidator);
+nameInput.addEventListener("blur", nameValidator);

@@ -73,6 +73,9 @@ document.addEventListener("keydown", (event) => {
 const id = getID();
 if (id) {
     projects.get(id).then((project) => {
+        console.log(project)
+    });
+    projects.get(id).then((project) => {
         if (!project) {
             console.warn("No project found with id: " + id);
             return;
@@ -93,9 +96,13 @@ if (id) {
             // Set the episodes
             block.episodes.forEach((episode, episodeIndex) => {
                 const episodeDOM = blockDOM.querySelectorAll(".episode")[episodeIndex];
-                
-                console.log(episodeDOM.querySelector(".file input[type='file']"));
-                episodeDOM.querySelector(".file input[type='file']").file = episode.filePath;
+
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(new File([], episode.fileName));
+                episodeDOM.querySelector(".file input[type='file']").files = dataTransfer.files;
+                episodeDOM.querySelector(".file input[type='file']").dispatchEvent(new Event("change"));
+
+                // episodeDOM.querySelector(".file input[type='file']").file = episode.filePath;
                 episodeDOM.querySelector(".time p").textContent = episode.startTime;
             });
         });

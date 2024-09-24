@@ -10,7 +10,8 @@ document.addEventListener("keydown", (event) => {
 
     if (event.target.classList.contains("clickable")) {
         if (event.target.hasAttribute("onclick")) { event.target.click() }
-        else if (event.target.tagName === "IMG") { event.target.click() };
+        else if (event.target.tagName === "IMG") { event.target.click() }
+        else if (!event.target.hasAttribute("onclick")) { event.target.click() };
         if (event.target.querySelector("img")) { event.target.querySelector("img").click() }
         else if (event.target.querySelector("input")) { event.target.querySelector("input").click() };
     };

@@ -7,7 +7,7 @@ const projectGet = (id, projectDirPath) => {
     const filePath = path.join(projectDirPath, id + ".json")
 
     if (!fs.existsSync(filePath)) {
-        return "Project not found"
+        return undefined;
     }
 
     const data = JSON.parse(fs.readFileSync(filePath));
@@ -15,7 +15,8 @@ const projectGet = (id, projectDirPath) => {
     if (data){
         return data;
     } else {
-        return "Something went wrong"
+        raiseError("Error reading project file: " + filePath);
+        return undefined;
     }
 };
 
@@ -26,7 +27,7 @@ const projectSave = (projectData, projectDirPath) => {
 
     if (!id) {
         raiseError("No ID provided for the project save");
-        return "No ID provided for the project save";
+        return undefined;
     }
 
     // If the save already exists, get it's creation date
@@ -50,7 +51,7 @@ const projectDelete = (id, projectDirPath) => {
         return "Project deleted";
     }
 
-    return "Project not found";
+    return undefined;
 };
 
 const projectGetAll = (projectDirPath) => {
