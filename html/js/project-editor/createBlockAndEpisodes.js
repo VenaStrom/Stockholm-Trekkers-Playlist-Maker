@@ -20,12 +20,13 @@ const createEpisodeDOM = (parent) => {
             createEpisodeDOM(parent);
         }
 
-        updateTimes();
         if (event.target.value) {
             const file = event.target.files[0];
             const filePath = webUtils.getPathForFile(file);
             event.target.setAttribute("data-file-path", filePath);
         }
+
+        updateTimes();
     });
 };
 

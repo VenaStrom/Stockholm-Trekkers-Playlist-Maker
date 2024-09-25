@@ -17,6 +17,13 @@ const lintTime = (time) => {
     return "--:--";
 };
 
+const secondsToTime = (seconds) => {
+    const hours = Math.floor(seconds / 60 / 60);
+    const minutes = Math.floor((seconds - hours * 60 * 60) / 60);
+
+    return `${hours}:${minutes}`;
+};
+
 const updateTimes = () => {
     const timeLinters = document.querySelectorAll(".time-lint");
 
@@ -36,22 +43,53 @@ const updateTimes = () => {
     blocks.forEach((block) => {
         if (!block.querySelector(".time input[type='text']")) { return }
 
-        const [hour, minute] = block.querySelector(".time input[type='text']").value.split(":");
-        const blockStartTime = 60 * (hour * 60 + minute); // total seconds
 
+        // Loop through and set the durations of the episodes
         const episodes = block.querySelectorAll(".episode");
-        episodes.forEach((episode) => {
-            // Break if there is no file 
-            if (!episode.querySelector(".file input[type='file']").value) { return };
+        episodes.forEach(episode => {
+            const fileInput = episode.querySelector(".file input[type='file']");
+            if (!fileInput.value) { return; }
+            if (!fileInput.dataset.filePath) { raiseError("no file path found for" + JSON.stringify(episode)); return; }
 
-            const timeDOM = episode.querySelector(".time p");
-            const fileDOM = episode.querySelector(".file input[type='file']");
-            const filePath = webUtils.getPathForFile(fileDOM.files[0]);
-
-
-
-            // timeDOM.textContent = lintTime((fileStartTimeMinutes / 60).toFixed(0) + "" + (fileStartTimeMinutes % 60).toFixed(0));
+            metadata.get(fileInput.dataset.filePath).then((metadata) => {
+                const episodeDuration = metadata.format.duration;
+                fileInput.dataset.duration = episodeDuration;
+            });
         });
+
+        // Calculate the start times
+        const blockTime = block.querySelector(".time input[type='text']").value;
+        console.log(blockTime);
+
+        // const blockTime = block.querySelector(".time input[type='text']");
+        // const blockTimeSeconds = blockTime.value.split(":")[0] * 60 * 60 + blockTime.value.split(":")[1] * 60;
+
+        // let timeHead = blockTimeSeconds;
+
+        // const episodes = block.querySelectorAll(".episode");
+        // Array.from(episodes)
+        //     .filter((episode) => episode.querySelector(".file input[type='file']").value)
+        //     .forEach((episode, index) => {
+        //         if (!episode.querySelector(".file input[type='file']").value) { return }
+
+        //         const fileInput = episode.querySelector(".file input[type='file']");
+
+        //         if (!fileInput.dataset.filePath) { return }
+
+        //         metadata.get(fileInput.dataset.filePath).then((metadata) => {
+        //             const episodeDuration = metadata.format.duration;
+        //             console.log(fileInput.value, episodeDuration);
+        //             const episodeTimeSeconds = episodeDuration.split(":")[0] * 60 * 60 + episodeDuration.split(":")[1] * 60;
+
+        //             const episodeTimeText = secondsToTime(timeHead);
+
+        //             console.log(timeHead, episodeTimeSeconds);
+        //             timeHead += episodeTimeSeconds;
+
+        //             episode.querySelector(".time p").textContent = episodeTimeText;
+
+        //         });
+        //     });
     });
 };
 
