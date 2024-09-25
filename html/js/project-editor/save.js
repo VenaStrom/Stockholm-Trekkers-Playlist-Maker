@@ -19,7 +19,8 @@ const getJSONstruct = () => {
         const options = {};
         block.querySelectorAll(".options input[type='checkbox']").forEach(optionDOM => {
             options[optionDOM.id] = optionDOM.checked;
-        });;
+        });
+
         // Loop through and export all the episodes as a list
         const episodes = Array.from(block.querySelectorAll(".episode:not(.hidden)")) // only grab non-hidden episodes
             .filter((episode) => {
@@ -30,7 +31,7 @@ const getJSONstruct = () => {
             }).map((episode) => {
                 const fileInput = episode.querySelector("input[type='file']");
                 return {
-                    filePath: webUtils.getPathForFile(fileInput.files[0]),
+                    filePath: fileInput.getAttribute("data-file-path"),
                     fileName: fileInput.value.split("\\").at(-1),
                     startTime: episode.querySelector(".time p").textContent, // Should be a string HH:MM
                 };

@@ -22,7 +22,6 @@ const updateTimes = () => {
 
     // Lint times
     timeLinters.forEach((trigger) => {
-        console.log(trigger);
         if (trigger.tagName === "INPUT") {
             trigger.value = lintTime(trigger.value);
 
@@ -42,19 +41,22 @@ const updateTimes = () => {
 
         const episodes = block.querySelectorAll(".episode");
         episodes.forEach((episode) => {
+            // Break if there is no file 
+            if (!episode.querySelector(".file input[type='file']").value) { return };
+
             const timeDOM = episode.querySelector(".time p");
             const fileDOM = episode.querySelector(".file input[type='file']");
-            const duration = fileDOM.getAttribute("data-duration"); // duration in seconds
+            const filePath = webUtils.getPathForFile(fileDOM.files[0]);
 
-            const fileStartTimeMinutes = blockStartTime + duration
 
-            timeDOM.textContent = lintTime((fileStartTimeMinutes / 60).toFixed(0) + "" + (fileStartTimeMinutes % 60).toFixed(0));
+
+            // timeDOM.textContent = lintTime((fileStartTimeMinutes / 60).toFixed(0) + "" + (fileStartTimeMinutes % 60).toFixed(0));
         });
     });
 };
 
 
 const blockTimes = document.querySelectorAll(".time input[type='text']")
-.forEach(blockTime => { 
-    blockTime.addEventListener("change", updateTimes);
-});
+    .forEach(blockTime => {
+        blockTime.addEventListener("change", updateTimes);
+    });

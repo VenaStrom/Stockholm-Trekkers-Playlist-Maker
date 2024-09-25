@@ -2,7 +2,8 @@
 const { app, BrowserWindow, nativeTheme } = require("electron");
 const path = require("node:path");
 const { setUpHandlers: setUpDownloadHandlers } = require("./scripts/download/downloadAssets.js");
-const { setUpHandlers: setUpProjectHandlers } = require("./scripts/save/projects.js")
+const { setUpHandlers: setUpProjectHandlers } = require("./scripts/save/projects.js");
+const { setUpHandlers: setUpMetadataHandlers } = require("./scripts/getMetaData.js");
 
 const createWindow = () => {
 
@@ -33,11 +34,12 @@ const createWindow = () => {
 };
 
 app.whenReady().then(() => {
-    
+
     createWindow();
 
     setUpDownloadHandlers();
     setUpProjectHandlers();
+    setUpMetadataHandlers();
 
     app.on("activate", () => {
         if (BrowserWindow.getAllWindows().length === 0) createWindow();

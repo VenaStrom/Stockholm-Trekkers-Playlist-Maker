@@ -26,12 +26,16 @@ getVideoMetadata = (filePath) => {
     });
 }
 
-// Handle when the renderer process requests metadata
-ipcMain.handle("get-metadata", async (event, filePath) => {
-    try {
-        return await getVideoMetadata(filePath);
-    } catch (error) {
-        raiseError("Error getting metadata", error);
-        return undefined;
-    }
-});
+const setUpHandlers = () => {
+    // Handle when the renderer process requests metadata
+    ipcMain.handle("get-metadata", async (event, filePath) => {
+        try {
+            return await getVideoMetadata(filePath);
+        } catch (error) {
+            raiseError("Error getting metadata", error);
+            return undefined;
+        }
+    });
+};
+
+module.exports = { setUpHandlers };
