@@ -28,21 +28,28 @@ if (id !== "new") {
 
             // Set the episodes
             block.episodes.forEach((episode, episodeIndex) => {
+                // Create new episodes if there are not enough
+                if (blockDOM.querySelectorAll(".episode").length <= episodeIndex) {
+                    createEpisodeDOM(blockDOM);
+                };
+
                 const episodeDOM = blockDOM.querySelectorAll(".episode")[episodeIndex];
-                
+
                 // This seems to be the only way of setting the file input (visually!!)
                 const dataTransfer = new DataTransfer();
                 const file = new File([new Blob()], episode.fileName);
                 dataTransfer.items.add(file);
-                
+
                 const fileInput = episodeDOM.querySelector(".file input[type='file']");
                 fileInput.files = dataTransfer.files;
-                fileInput.dispatchEvent(new Event("change"));
 
                 fileInput.setAttribute("data-file-path", episode.filePath);
 
                 episodeDOM.querySelector(".time p").textContent = episode.startTime;
             });
+
+            createEpisodeDOM(blockDOM);
+            blockDOM.querySelector(".time input[type='text']").dispatchEvent(new Event("change"));
         });
     });
 }

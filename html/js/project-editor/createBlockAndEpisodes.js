@@ -26,7 +26,7 @@ const createEpisodeDOM = (parent) => {
             event.target.setAttribute("data-file-path", filePath);
         }
 
-        updateTimes();
+        // updateTimes();
     });
 };
 

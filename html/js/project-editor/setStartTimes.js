@@ -19,7 +19,7 @@ const lintTime = (time) => {
 
 const secondsToTime = (seconds) => {
     const hours = Math.floor(seconds / 60 / 60);
-    const minutes = Math.floor((seconds - hours * 60 * 60) / 60);
+    const minutes = Math.round((seconds - hours * 60 * 60) / 60);
 
     return `${hours}:${minutes}`;
 };
@@ -37,64 +37,45 @@ const updateTimes = () => {
         }
     });
 
-
     // Update a block at a time
     const blocks = document.querySelectorAll(".block");
     blocks.forEach((block) => {
         if (!block.querySelector(".time input[type='text']")) { return }
 
+        const blockTime = block.querySelector(".time input[type='text']").value;
+        let head = parseFloat(blockTime.split(":")[0] * 60 * 60 + blockTime.split(":")[1] * 60); // seconds
 
         // Loop through and set the durations of the episodes
         const episodes = block.querySelectorAll(".episode");
-        episodes.forEach(episode => {
-            const fileInput = episode.querySelector(".file input[type='file']");
-            if (!fileInput.value) { return; }
-            if (!fileInput.dataset.filePath) { raiseError("no file path found for" + JSON.stringify(episode)); return; }
 
-            metadata.get(fileInput.dataset.filePath).then((metadata) => {
-                const episodeDuration = metadata.format.duration;
-                fileInput.dataset.duration = episodeDuration;
-            });
-        });
+        const doEpisode = (episodes, index) => {
+            // Get the duration of the episode
+            if (!episodes[index].querySelector(".file input[type='file']").value) { return }
+            metadata.get(episodes[index].querySelector(".file input[type='file']").dataset.filePath)
+                .then((metadata) => {
+                    if (index >= episodes.length - 1) { return }
 
-        // Calculate the start times
-        const blockTime = block.querySelector(".time input[type='text']").value;
-        console.log(blockTime);
+                    const episode = episodes[index];
+                    const timDOM = episode.querySelector(".time p");
+                    const fileInput = episode.querySelector(".file input[type='file']");
+                    const duration = parseFloat(metadata.format.duration);
+                    fileInput.dataset.duration = duration;
 
-        // const blockTime = block.querySelector(".time input[type='text']");
-        // const blockTimeSeconds = blockTime.value.split(":")[0] * 60 * 60 + blockTime.value.split(":")[1] * 60;
+                    timDOM.textContent = secondsToTime(head);
 
-        // let timeHead = blockTimeSeconds;
+                    head += duration;
 
-        // const episodes = block.querySelectorAll(".episode");
-        // Array.from(episodes)
-        //     .filter((episode) => episode.querySelector(".file input[type='file']").value)
-        //     .forEach((episode, index) => {
-        //         if (!episode.querySelector(".file input[type='file']").value) { return }
+                    doEpisode(episodes, index + 1);
+                });
+        };
 
-        //         const fileInput = episode.querySelector(".file input[type='file']");
-
-        //         if (!fileInput.dataset.filePath) { return }
-
-        //         metadata.get(fileInput.dataset.filePath).then((metadata) => {
-        //             const episodeDuration = metadata.format.duration;
-        //             console.log(fileInput.value, episodeDuration);
-        //             const episodeTimeSeconds = episodeDuration.split(":")[0] * 60 * 60 + episodeDuration.split(":")[1] * 60;
-
-        //             const episodeTimeText = secondsToTime(timeHead);
-
-        //             console.log(timeHead, episodeTimeSeconds);
-        //             timeHead += episodeTimeSeconds;
-
-        //             episode.querySelector(".time p").textContent = episodeTimeText;
-
-        //         });
-        //     });
+        doEpisode(episodes, 0);
     });
 };
 
-
-const blockTimes = document.querySelectorAll(".time input[type='text']")
-    .forEach(blockTime => {
-        blockTime.addEventListener("change", updateTimes);
-    });
+// Update times on change
+document.addEventListener("change", (event) => {
+    if (event.target.classList.contains("update-times")) {
+        updateTimes();
+    }
+});
