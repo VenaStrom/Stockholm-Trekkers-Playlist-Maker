@@ -14,14 +14,14 @@ const lintTime = (time) => {
     if (time.length === 4) {
         return `${time[0]}${time[1]}:${time[2]}${time[3]}`;
     }
-    return "--:--";
+    return undefined;
 };
 
 const secondsToTime = (seconds) => {
     const hours = Math.floor(seconds / 60 / 60);
     const minutes = Math.round((seconds - hours * 60 * 60) / 60);
 
-    return `${hours}:${minutes}`;
+    return `${hours}:${minutes.toString().padStart(2, "0")}`;
 };
 
 const updateTimes = () => {
@@ -30,17 +30,17 @@ const updateTimes = () => {
     // Lint times
     timeLinters.forEach((trigger) => {
         if (trigger.tagName === "INPUT") {
-            trigger.value = lintTime(trigger.value);
+            trigger.value = lintTime(trigger.value) || "";
 
         } else if (trigger.tagName === "P") {
-            trigger.textContent = lintTime(trigger.textContent);
+            trigger.textContent = lintTime(trigger.textContent) || "--:--";
         }
     });
 
     // Update a block at a time
     const blocks = document.querySelectorAll(".block");
     blocks.forEach((block) => {
-        if (!block.querySelector(".time input[type='text']")) { return }
+        if (!block.querySelector(".time input[type='text']").value) { return }
 
         const blockTime = block.querySelector(".time input[type='text']").value;
         let head = parseFloat(blockTime.split(":")[0] * 60 * 60 + blockTime.split(":")[1] * 60); // seconds
