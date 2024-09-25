@@ -22,6 +22,7 @@ const updateTimes = () => {
 
     // Lint times
     timeLinters.forEach((trigger) => {
+        console.log(trigger);
         if (trigger.tagName === "INPUT") {
             trigger.value = lintTime(trigger.value);
 
@@ -34,6 +35,8 @@ const updateTimes = () => {
     // Update a block at a time
     const blocks = document.querySelectorAll(".block");
     blocks.forEach((block) => {
+        if (!block.querySelector(".time input[type='text']")) { return }
+
         const [hour, minute] = block.querySelector(".time input[type='text']").value.split(":");
         const blockStartTime = 60 * (hour * 60 + minute); // total seconds
 
@@ -49,3 +52,9 @@ const updateTimes = () => {
         });
     });
 };
+
+
+const blockTimes = document.querySelectorAll(".time input[type='text']")
+.forEach(blockTime => { 
+    blockTime.addEventListener("change", updateTimes);
+});

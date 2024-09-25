@@ -14,10 +14,10 @@
     <script src="../js/raiseError.js"></script>
     <script src="../js/clickableElements.js"></script>
     <script src="../js/project-editor/idCheck.js"></script>
+    <script defer src="../js/project-editor/setStartTimes.js"></script>
     <script defer src="../js/project-editor/backButton.js"></script>
     <script defer src="../js/project-editor/nameValidator.js"></script>
     <script defer src="../js/project-editor/openOptions.js"></script>
-    <script defer src="../js/project-editor/setStartTimes.js"></script>
     <script defer src="../js/project-editor/createBlockAndEpisodes.js"></script>
     <script defer src="../js/project-editor/hideUnset.js"></script>
     <script defer src="../js/project-editor/load.js"></script>
@@ -26,9 +26,9 @@
     <!-- Template block -->
     <div class="round-box block-template hidden">
         <div class="header">
-            <div class="time time-lint">
+            <div class="time">
                 <p>Start time: </p>
-                <input class="time-input" type="text" placeholder="hhmm">
+                <input class="time-input time-lint" type="text" placeholder="hhmm">
             </div>
 
             <h3 class="option clickable" onclick="expandOptions(this)" tabindex="0" title="Show the options for this block">Options ▼</h3>
