@@ -18,3 +18,7 @@ contextBridge.exposeInMainWorld("webUtils", webUtils);
 contextBridge.exposeInMainWorld("metadata", {
     get: (filePath) => ipcRenderer.invoke("get-metadata", filePath),
 });
+
+contextBridge.exposeInMainWorld("exporter", {
+    start: (id) => ipcRenderer.invoke("start-export", id),
+});

@@ -3,6 +3,8 @@ const fs = require("node:fs");
 const path = require("node:path")
 const raiseError = require("../raiseError.js");
 
+const projectFolder = path.join(__dirname, "../..", "user-data", "projects");
+
 const projectGet = (id, projectDirPath) => {
     const filePath = path.join(projectDirPath, id + ".json")
 
@@ -56,7 +58,6 @@ const projectGetAll = (projectDirPath) => {
 
 const setUpHandlers = () => {
     // Make sure the projects folder exists
-    const projectFolder = path.join(__dirname, "../..", "user-data", "projects");
     if (!fs.existsSync(projectFolder)) {
         fs.mkdirSync(projectFolder, { recursive: true });
     };
@@ -75,4 +76,4 @@ const setUpHandlers = () => {
     });
 };
 
-module.exports = { setUpHandlers };
+module.exports = { setUpHandlers, projectGet, projectFolder };

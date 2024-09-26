@@ -4,6 +4,7 @@ const path = require("node:path");
 const { setUpHandlers: setUpDownloadHandlers } = require("./scripts/download/downloadAssets.js");
 const { setUpHandlers: setUpProjectHandlers } = require("./scripts/save/projects.js");
 const { setUpHandlers: setUpMetadataHandlers } = require("./scripts/getMetaData.js");
+const { setUpHandlers: setUpExportHandlers } = require("./scripts/export.js");
 
 const createWindow = () => {
 
@@ -40,6 +41,7 @@ app.whenReady().then(() => {
     setUpDownloadHandlers();
     setUpProjectHandlers();
     setUpMetadataHandlers();
+    setUpExportHandlers();
 
     app.on("activate", () => {
         if (BrowserWindow.getAllWindows().length === 0) createWindow();

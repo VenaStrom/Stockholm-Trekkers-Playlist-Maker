@@ -59,10 +59,12 @@ const saveProject = () => {
     });
 };
 
-// Save on the export button. It will have more functionality later
+// Save on the export button.
 const exportButton = document.querySelector("button.export");
 exportButton.addEventListener("click", () => {
     saveProject();
+
+    exporter.start(getID());
 });
 
 // Ctrl + S to save
