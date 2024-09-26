@@ -9,8 +9,10 @@ document.addEventListener("keydown", (event) => {
     if (event.key === " ") { event.preventDefault() };
 
     if (event.target.classList.contains("clickable")) {
+        event.preventDefault();
 
-        if (event.target.querySelector("*")) { // if it has a child
+        // if it has a child, click it instead
+        if (event.target.querySelector("*")) {
             event.target.querySelector("*").click();
         } else {
             event.target.click();
