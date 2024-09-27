@@ -1,23 +1,39 @@
 const backButton = document.querySelector("#back-button");
 
+// Does the user confirm leaving?
+const confirmUnsavedChanges = () => {
+    return confirm("You have unsaved changes. Are you sure you want to leave?")
+};
+
+// Is it not saved?
+const isUnsaved = () => {
+    return document.querySelector("header #save-status").textContent.includes("*");
+};
+
+// Go back when clicking the back button and confirm
 backButton.addEventListener("click", () => {
-    if (document.querySelector("header #save-status").textContent.includes("*")) {
-        if (confirm("You have unsaved changes. Are you sure you want to leave?")) {
-            window.location.href = "./projects.html";
-        }
+
+    if (isUnsaved() && confirmUnsavedChanges()) {
+        // User confirmed to leave with unsaved changes
+        window.location.href = "/projects";
     } else {
-        window.location.href = "./projects.html";
-    }
+        // Stay on the current page
+        return;
+    };
 });
 
-
-// Confirm on unsaved refresh
+// Ctrl + R confirmation
 document.addEventListener("keydown", (event) => {
-    if (event.ctrlKey && event.key === "r") {
-        if (document.querySelector("header #save-status").textContent.includes("*")) {
-            if (!confirm("You have unsaved changes. Are you sure you want to refresh?")) {
-                event.preventDefault();
-            }
-        }
-    }
+    if (
+        (event.ctrlKey && event.key === "r")
+        &&
+        isUnsaved()
+        &&
+        confirmUnsavedChanges()
+    ) {
+        // User confirmed to refresh with unsaved changes
+        return;
+    } else {
+        event.preventDefault();
+    };
 });
