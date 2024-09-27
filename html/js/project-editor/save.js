@@ -15,7 +15,7 @@ const getJSONstruct = () => {
 
 
     blocks.forEach((block) => {
-        if (block.episodes.length === 0) { return; }; // Skip blocks without episodes
+        if (!block.episodes) { return; }; // Skip blocks without episodes
 
         // Get the options of the block and set them in the struct
         const options = {};
