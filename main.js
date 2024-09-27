@@ -43,6 +43,8 @@ app.whenReady().then(() => {
     setUpMetadataHandlers();
     setUpExportHandlers();
 
+    console.log("[INFO] handlers set up");
+
     app.on("activate", () => {
         if (BrowserWindow.getAllWindows().length === 0) createWindow();
     });

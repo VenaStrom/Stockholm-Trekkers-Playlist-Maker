@@ -11,6 +11,7 @@ const logStatus = {
     download: "[DOWNLOADING] ",
 };
 
+// The object returned to the renderer process to show the download status
 const downloadStatus = {
     "fileCount": 0,
     "atFile": 0,
@@ -39,20 +40,25 @@ const downloadPauses = (force = false) => {
         fs.mkdirSync(videoFolder, { recursive: true });
     };
 
+    // Get the URLs of the files that are gonna be downloaded, from fileURLs.json
     const fileURLs = JSON.parse(fs.readFileSync(path.join(__dirname, "fileURLs.json")));
     const fileIDs = fileURLs.videos;
     let index = 0;
 
+    // Keep track of the download status
     downloadStatus.fileCount = fileIDs.length;
     downloadStatus.atFile = index;
 
+    // Headless browser to download the files
     const browser = new BrowserWindow({
         show: false,
     });
 
+    // Called at the end of each download or when a download is skipped
     const getNextFile = () => {
         index++;
 
+        // When all the files are downloaded, close the browser
         if (index >= fileIDs.length) {
             console.log(logStatus.end + "all videos downloaded");
             downloadStatus.status = "completed";
@@ -63,6 +69,7 @@ const downloadPauses = (force = false) => {
         }
     }
 
+    // Gets a specific file with a given ID
     const getFile = (file) => {
         if (!file) {
             console.error(logStatus.error + "no file");
@@ -91,15 +98,17 @@ const downloadPauses = (force = false) => {
         // Sets where the downloaded file will end up and what to do when the download is under way and when it's done
         browser.webContents.session.once("will-download", (event, item, webContents) => {
 
+            // Sets where the file will save to
             item.setSavePath(videoFolder + file.name);
 
+            // On any update in the download it checks the state and does stuff accordingly
             item.on("updated", (event, state) => {
                 if (state === "interrupted") {
                     console.warn(logStatus.error + "download is interrupted but can be resumed");
                     raiseError("download is interrupted");
                     downloadStatus.status = "failed";
 
-                    // Delete the file if it's interrupted
+                    // Delete the file if it's interrupted as to not leave a half-downloaded file
                     fs.rmSync(videoFolder + file.name);
 
                 } else if (state === "progressing") {
@@ -112,19 +121,23 @@ const downloadPauses = (force = false) => {
                         fs.rmSync(videoFolder + file.name);
 
                     } else {
+                        // This happens when everything is going well
                         const receivedMB = (item.getReceivedBytes() / 1024 / 1024).toFixed(2);
                         const fileSizeMB = (item.getTotalBytes() / 1024 / 1024).toFixed(0);
                         const percent = (item.getReceivedBytes() / item.getTotalBytes() * 100).toFixed(0);
 
+                        // Make sure the renderer knows what's going on
                         downloadStatus.size = fileSizeMB;
                         downloadStatus.received = receivedMB;
                         downloadStatus.percent = percent;
 
+                        // Logging in the backend console for debugging mostly
                         console.log(logStatus.download + `${file.name} received ${receivedMB} / ${fileSizeMB} MB ${percent}%`);
                     };
                 };
             });
 
+            // This fires *once* when the download is done
             item.once("done", (event, state) => {
                 if (state === "completed") {
                     console.log(logStatus.end + `download of ${file.name} completed successfully`);
@@ -141,17 +154,26 @@ const downloadPauses = (force = false) => {
             });
         });
 
+        // Start the actual download in a kinda of janky way
         setTimeout(() => {
             browser.loadURL(fileURLs.urlTemplate + file.id);
             browser.webContents.on("did-finish-load", () => {
                 // Clicks the download button on the loaded page
                 // This will break if Google changes how Drive works 
                 // Theres a try-catch block in there but that's only gonna do so much
-                browser.webContents.executeJavaScript(`try{document.getElementById("uc-download-link").click();} catch (error) {console.error(error); raiseError(error);}`);
+                browser.webContents.executeJavaScript(`
+                    try{
+                        document.getElementById("uc-download-link").click();
+                    } catch (error) {
+                        console.error(error);
+                        raiseError(error);
+                    }`);
             });
         }, 500);
     };
 
+    // Start the recursive download
+    // The reason it's recursive is due to issues i had with having multiple download streams at once
     getFile(fileIDs[index]);
 };
 
@@ -159,13 +181,13 @@ const downloadPauses = (force = false) => {
 const setUpHandlers = () => {
     ipcMain.handle("start-download", () => {
         downloadPauses();
-        return;
     });
 
     ipcMain.handle("get-download-status", () => {
         return downloadStatus;
     });
 
+    // Gives a simple true or false if all the files are downloaded to check if you need to download at all
     ipcMain.handle("check-for-local-files", () => {
         const fileURLs = JSON.parse(fs.readFileSync(path.join(__dirname, "fileURLs.json")));
         const fileIDs = fileURLs.videos;
@@ -185,8 +207,6 @@ const setUpHandlers = () => {
 
         return (fileCount === fileIDs.length && fileCount > 0);
     });
-
-    console.log(logStatus.info + "handlers set up");
 };
 
 module.exports = { setUpHandlers };
