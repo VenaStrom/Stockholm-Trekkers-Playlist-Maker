@@ -17,7 +17,6 @@ const nameValidator = (event) => {
 
         const warnings = [];
         
-        console.log(date.getDay());
         if (date == "Invalid Date") {
             warnings.push("It's not a valid date. ");
         };
