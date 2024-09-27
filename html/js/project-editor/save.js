@@ -15,7 +15,9 @@ const getJSONstruct = () => {
 
 
     blocks.forEach((block) => {
-        // Get the options and set them in the struct
+        if (block.episodes.length === 0) { return; }; // Skip blocks without episodes
+
+        // Get the options of the block and set them in the struct
         const options = {};
         block.querySelectorAll(".options input[type='checkbox']").forEach(optionDOM => {
             options[optionDOM.id] = optionDOM.checked;
@@ -23,17 +25,16 @@ const getJSONstruct = () => {
 
         // Loop through and export all the episodes as a list
         const episodes = Array.from(block.querySelectorAll(".episode:not(.hidden)")) // only grab non-hidden episodes
-            .filter((episode) => {
+            .filter((episode) => { // remove the file inputs that are empty
                 const fileInput = episode.querySelector("input[type='file']");
-                if (fileInput.value !== "") {
-                    return true;
-                };
+                if (fileInput.value !== "") { return true; };
+                
             }).map((episode) => {
                 const fileInput = episode.querySelector("input[type='file']");
                 return {
                     filePath: fileInput.getAttribute("data-file-path"),
-                    fileName: fileInput.value.split("\\").at(-1),
-                    startTime: episode.querySelector(".time p").textContent, // Should be a string HH:MM
+                    fileName: fileInput.value.split(/[/\\]/).at(-1), // split path via / or \ and get the last element which should be the file with it's extension
+                    startTime: episode.querySelector(".time p").textContent,
                 };
             });
 
@@ -59,11 +60,12 @@ const saveProject = () => {
     });
 };
 
-// Save on the export button.
+// Save on the export button and start the export
 const exportButton = document.querySelector("button.export");
 exportButton.addEventListener("click", () => {
     saveProject();
 
+    // Calls the exporter api in the preload.js script
     exporter.start(getID());
 });
 
