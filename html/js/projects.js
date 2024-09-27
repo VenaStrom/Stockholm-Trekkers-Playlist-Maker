@@ -8,13 +8,13 @@ createNewProjectButton.addEventListener("click", () => {
 const templateProject = document.querySelector(".load-project-template.hidden");
 
 // Populate the, "view old projects" screen
-projects.getAll().then((projects) => {
-    if (!projects) {
+projects.getAll().then((projectList) => {
+    if (!projectList) {
         console.warn("No projects found.");
         return;
     }
 
-    projects.forEach(project => {
+    projectList.forEach(project => {
         const projectDOM = templateProject.cloneNode(true);
         projectDOM.classList.remove("load-project-template");
         projectDOM.classList.add("load-project");
@@ -23,8 +23,9 @@ projects.getAll().then((projects) => {
         // Set the name i.e. the date of the trekdag
         projectDOM.querySelector(".project-header h3").textContent = project.name
 
-        // The metadata tag shows date created and date modified 
+        // The metadata tag shows date modified 
         const metaDataDOM = projectDOM.querySelector(".meta-data");
+        metaDataDOM.innerHTML = "";
 
         const formatTime = (unixTime) => {
             if (!unixTime) {
@@ -32,14 +33,17 @@ projects.getAll().then((projects) => {
             };
 
             const date = new Date(unixTime);
-            const hours = date.getHours();
-            const minutes = date.getMinutes().toString().padStart(2, "0");
 
-            return `${date.toDateString()} ${hours}:${minutes}`;
+            return date.toLocaleDateString("sv", { year: "numeric", weekday: "short", month: "short", day: "numeric" })
         };
 
-        // Set the date modified
-        metaDataDOM.querySelector("p").textContent = formatTime(project.dateModified);
+        // Make the "last modified" tag and the time next to it
+        const modifiedAt = document.createElement("p");
+        modifiedAt.textContent = "Last modified: ";
+        const modifiedTime = document.createElement("p");
+        modifiedTime.textContent = formatTime(project.dateModified);
+        metaDataDOM.appendChild(modifiedAt);
+        metaDataDOM.appendChild(modifiedTime);
 
         // Loop through all of the episodes in the blocks and add them to the "load project DOM"
         const episodesDOM = projectDOM.querySelector("ul");
@@ -76,8 +80,22 @@ projects.getAll().then((projects) => {
         });
 
         // Go to the project in the editor when clicked
-        projectDOM.addEventListener("click", () => {
-            window.location.href = `./project-editor.html?id=${project.id}`;
+        projectDOM.addEventListener("click", (event) => {
+
+            // If the delete button is clicked, delete the project
+            if (event.target.classList.contains("delete-project")) {
+                if(!confirm("Are you sure you want to delete this project?")) {
+                    return;
+                }
+
+                projects.delete(project.id).then(() => {
+                    projectDOM.remove();
+                });
+            } else {
+
+                // Go to the project in the editor
+                window.location.href = `./project-editor.html?id=${project.id}`;
+            }
         });
 
         createNewProjectButton.insertAdjacentElement("afterend", projectDOM);
