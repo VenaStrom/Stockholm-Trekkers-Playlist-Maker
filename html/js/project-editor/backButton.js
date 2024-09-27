@@ -29,11 +29,21 @@ document.addEventListener("keydown", (event) => {
         &&
         isUnsaved()
         &&
-        confirmUnsavedChanges()
+        !confirmUnsavedChanges()
     ) {
-        // User confirmed to refresh with unsaved changes
-        return;
-    } else {
+        event.preventDefault();
+    };
+});
+
+// Ctrl + W confirmation
+document.addEventListener("keydown", (event) => {
+    if (
+        (event.ctrlKey && event.key === "w")
+        &&
+        isUnsaved()
+        &&
+        !confirmUnsavedChanges()
+    ) {
         event.preventDefault();
     };
 });
