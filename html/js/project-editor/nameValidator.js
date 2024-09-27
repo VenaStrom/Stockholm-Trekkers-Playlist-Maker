@@ -16,22 +16,23 @@ const nameValidator = (event) => {
         const date = new Date(name);
 
         const warnings = [];
-
+        
+        console.log(date.getDay());
         if (date == "Invalid Date") {
             warnings.push("It's not a valid date. ");
-        }
-        if (!(date.getDay() in [6, 0])) {
+        };
+        if (!(date.getDay() === 0 || date.getDay() === 6)) {
             warnings.push("It's on a weekday. ");
-        }
+        };
         if (date.getFullYear() !== new Date().getFullYear()) {
             warnings.push("It's not this year. ");
-        }
+        };
         if (date < new Date()) {
             warnings.push("It's in the past. ");
-        }
+        };
         if (date.getTime() > new Date().getTime() + 5184000000) {
             warnings.push("It's more than 2 months away. ");
-        }
+        };
 
         if (warnings.length > 0) {
             nameValidatorStatus.textContent += " But are you sure about: ";
@@ -45,7 +46,7 @@ const nameValidator = (event) => {
             });
 
             warningsWindow.showPopover();
-        }
+        };
 
         popoverTimeout = setTimeout(() => {
             warningsWindow.hidePopover();
