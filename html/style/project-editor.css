@@ -196,7 +196,7 @@
                         grid-template-columns: 6ch 1fr;
                         align-items: center;
                         justify-content: flex-start;
-                        column-gap: 6ch;
+                        column-gap: 4ch;
 
                         padding: 0.6rem 2ch 0.6rem 2ch;
 

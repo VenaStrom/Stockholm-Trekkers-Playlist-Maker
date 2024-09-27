@@ -13,12 +13,17 @@ const isUnsaved = () => {
 // Go back when clicking the back button and confirm
 backButton.addEventListener("click", () => {
 
-    if (isUnsaved() && confirmUnsavedChanges()) {
-        // User confirmed to leave with unsaved changes
-        window.location.href = "/projects";
+    if (isUnsaved()) {
+        if (confirmUnsavedChanges()) {
+            // User confirmed to leave with unsaved changes
+            window.location.href = "./projects.html";
+        } else {
+            // Stay on the current page
+            return;
+        };
     } else {
-        // Stay on the current page
-        return;
+        // Go back to the projects page
+        window.location.href = "./projects.html";
     };
 });
 
