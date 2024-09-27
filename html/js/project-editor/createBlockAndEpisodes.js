@@ -25,8 +25,6 @@ const createEpisodeDOM = (parent) => {
             const filePath = webUtils.getPathForFile(file);
             event.target.setAttribute("data-file-path", filePath);
         }
-
-        // updateTimes();
     });
 };
 
