@@ -15,8 +15,7 @@ const getJSONstruct = () => {
 
 
     blocks.forEach((block) => {
-        if (!block.episodes) { return; }; // Skip blocks without episodes
-
+        
         // Get the options of the block and set them in the struct
         const options = {};
         block.querySelectorAll(".options input[type='checkbox']").forEach(optionDOM => {
@@ -45,6 +44,7 @@ const getJSONstruct = () => {
         });
     });
 
+    console.log(struct);
     return struct;
 };
 
@@ -65,8 +65,10 @@ const exportButton = document.querySelector("button.export");
 exportButton.addEventListener("click", () => {
     saveProject();
 
-    // Calls the exporter api in the preload.js script
-    exporter.start(getID());
+    setTimeout(() => {
+        // Calls the exporter api in the preload.js script
+        exporter.start(getID());
+    }, 500);
 });
 
 // Ctrl + S to save
