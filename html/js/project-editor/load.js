@@ -28,7 +28,7 @@ if (id !== "new") {
 
             // Set the episodes
             block.episodes.forEach((episode, episodeIndex) => {
-                // Create new episodes if there are not enough
+                // Create new episode DOMs if there aren't enough
                 if (blockDOM.querySelectorAll(".episode").length <= episodeIndex) {
                     createEpisodeDOM(blockDOM);
                 };
@@ -48,7 +48,9 @@ if (id !== "new") {
                 episodeDOM.querySelector(".time p").textContent = episode.startTime;
             });
 
-            createEpisodeDOM(blockDOM);
+            if (block.episodes.length !== 1) {
+                createEpisodeDOM(blockDOM);
+            };
             blockDOM.querySelector(".time input[type='text']").dispatchEvent(new Event("change"));
         });
     });
