@@ -192,8 +192,8 @@
                         width: 100%;
                         overflow-x: scroll;
 
-                        display: flex;
-                        flex-flow: row nowrap;
+                        display: grid;
+                        grid-template-columns: 6ch 1fr;
                         align-items: center;
                         justify-content: flex-start;
                         column-gap: 6ch;
