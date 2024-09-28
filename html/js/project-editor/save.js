@@ -19,7 +19,11 @@ const getJSONstruct = () => {
         // Get the options of the block and set them in the struct
         const options = {};
         block.querySelectorAll(".options input[type='checkbox']").forEach(optionDOM => {
-            options[optionDOM.id] = {checked: optionDOM.checked, duration: optionDOM.dataset.lengthMinutes};
+            options[optionDOM.id] = {
+                checked: optionDOM.checked, 
+                duration: optionDOM.dataset.lengthMinutes,
+                fileName: optionDOM.dataset.fileName,
+            };
         });
 
         // Loop through and export all the episodes as a list

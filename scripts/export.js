@@ -102,11 +102,34 @@ function Wait-UntilTime {
 
     const playVideoFuncDeclaration = `
 # Example usage:
-# Play-Video('C:\\path\\to\\episode.mkv')
-function Play-Video($videoPath) {
-    & $vlcPath $videoPath $mainArgs
+# Play-Video('C:\\path\\to\\episode.mkv') || Play-Video('C:\\path\\to\\episode.mkv', $true)
+function Play-Video($videoPath, $enqueue = $false) {
+    if ($enqueue) {
+        $copyOfMainArgs = $mainArgs.Clone()
+        $copyOfMainArgs += '--playlist-enqueue'
+
+        & $vlcPath $videoPath $copyOfMainArgs
+    } else {
+
+        & $vlcPath $videoPath $mainArgs
+    }
+
     # There's a small timeout to give VLC some time to start or queue things
     Start-Sleep -Milliseconds 100
+}`;
+
+    const insertPauseFuncDeclaration = `
+# Example usage:
+# Insert-Pause('C:\\pauses\\pause_30_min.mp4')
+function Insert-Pause($pausePath) {
+    Play-Video $pausePath
+}`;
+
+    const playLeadingClipFuncDeclaration = `
+# Example usage:
+# Insert-LeadingClip('C:\\pauses\\pause_1_min_countdown.mp4')
+function Insert-LeadingClip($clipPath) {
+    Play-Video $clipPath
 }`;
 
     const initialMessage = `
@@ -114,13 +137,59 @@ function Play-Video($videoPath) {
 Write-Host 'Playlist has started. You can leave the computer unattended now :)'
 `;
 
-    const playEpisodeString = (path) => {
-        return `Play-Video('${path}')`;
+    const waitUntil = (hour, minute) => {
+        return `Wait-UntilTime -Hour ${hour} -Minute ${minute}`;
     };
 
-    const waitUntilString = (hour, minute) => {
-        return `Wait-UntilTime -Hour ${hour} -Minute ${minute}`;
-        };
+    const playEpisode = (path, enqueue = false) => {
+        return `Play-Video('${path}, ${enqueue}')`;
+    };
+
+    const insertPause = (path, enqueue = false) => {
+        return `Insert-Pause('${path}, ${enqueue}')`;
+    };
+
+    const insertLeadingClip = (path, enqueue = false) => {
+        return `Insert-LeadingClip('${path}, ${enqueue}')`;
+    };
+
+    const staticParts = [
+        vlcPath,
+        mainArgs,
+        waitFuncDeclaration,
+        playVideoFuncDeclaration,
+        insertPauseFuncDeclaration,
+        playLeadingClipFuncDeclaration,
+        initialMessage,
+    ];
+
+    const blocksParts = [];
+
+    // Each block will set the start time of the block minus eventual leading clips length since they will be played together
+    // The first leading clip will play when called on while the rest of the clips and episodes will be queued
+    projectJSON.blocks.forEach((block, index) => {
+        const blockParts = [];
+
+        blockParts.push(`#\n# Block ${index + 1} starts here\n#`);
+
+        let [hour, minute] = block.startTime.split(":");
+
+        // Every option that is checked will queue it's clip and move the start time forward
+        block.options.forEach((option) => {
+            if (option.checked) {
+                const clipPath = "//pauses//" + option.fileName;
+                blockParts.push(insertLeadingClip(clipPath));
+
+                minute -= option.duration;
+
+                // Handle rollover
+                if (minute < 0) {
+                    minute += 60;
+                    hour -= 1;
+                }
+            }
+        });
+    });
 };
 
 // The main export function that is called when the user wants to export a project
