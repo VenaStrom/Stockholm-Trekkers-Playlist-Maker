@@ -22,8 +22,8 @@ if (id !== "new") {
             blockDOM.querySelector(".header .time input[type='text']").value = block.startTime;
 
             // Set the options
-            Object.keys(block.options).forEach((option) => {
-                blockDOM.querySelector(`.options input#${option}`).checked = block.options[option];
+            block.options.forEach((option, optionIndex) => {
+                blockDOM.querySelector(`.options input#${option.id}`).checked = block.options[optionIndex].checked;
             });
 
             // Set the episodes

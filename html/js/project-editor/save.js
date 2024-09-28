@@ -15,15 +15,16 @@ const getJSONstruct = () => {
 
 
     blocks.forEach((block) => {
-        
+
         // Get the options of the block and set them in the struct
-        const options = {};
+        const options = [];
         block.querySelectorAll(".options input[type='checkbox']").forEach(optionDOM => {
-            options[optionDOM.id] = {
-                checked: optionDOM.checked, 
+            options.push({
+                id: optionDOM.id,
+                checked: optionDOM.checked,
                 duration: optionDOM.dataset.lengthMinutes,
                 fileName: optionDOM.dataset.fileName,
-            };
+            });
         });
 
         // Loop through and export all the episodes as a list
@@ -31,7 +32,7 @@ const getJSONstruct = () => {
             .filter((episode) => { // remove the file inputs that are empty
                 const fileInput = episode.querySelector("input[type='file']");
                 if (fileInput.value !== "") { return true; };
-                
+
             }).map((episode) => {
                 const fileInput = episode.querySelector("input[type='file']");
                 return {
@@ -48,7 +49,6 @@ const getJSONstruct = () => {
         });
     });
 
-    console.log(struct);
     return struct;
 };
 

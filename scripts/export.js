@@ -59,7 +59,7 @@ const copyAllAssets = (projectJSON, projectFolder) => {
 
 // Make the ps1 "harness" that runs VLC and runs the correct episodes at the correct times
 const makePS1 = (projectJSON, projectFolder) => {
-    const vlcPath = `$VLCpath = 'C:\\Program Files\\VideoLAN\\VLC\\vlc.exe'`;
+    const vlcPath = `$VLCpath = 'C:\\\\Program Files\\\\VideoLAN\\\\VLC\\\\vlc.exe'`;
     const mainArgs = `
 $mainArgs = @(
     '--one-instance',
@@ -102,7 +102,7 @@ function Wait-UntilTime {
 
     const playVideoFuncDeclaration = `
 # Example usage:
-# Play-Video('C:\\path\\to\\episode.mkv') || Play-Video('C:\\path\\to\\episode.mkv', $true)
+# Play-Video('C:\\\\path\\\\to\\\\episode.mkv') || Play-Video('C:\\\\path\\\\to\\\\episode.mkv', $true)
 function Play-Video($videoPath, $enqueue = $true) {
     if ($enqueue) {
         $copyOfMainArgs = $mainArgs.Clone()
@@ -120,21 +120,21 @@ function Play-Video($videoPath, $enqueue = $true) {
 
     const insertPauseFuncDeclaration = `
 # Example usage:
-# Insert-Pause('C:\\pauses\\pause_30_min.mp4')
+# Insert-Pause('C:\\\\pauses\\\\pause_30_min.mp4')
 function Insert-Pause($pausePath, $enqueue = $true) {
     Play-Video $pausePath $enqueue
 }`;
 
     const playLeadingClipFuncDeclaration = `
 # Example usage:
-# Insert-LeadingClip('C:\\pauses\\pause_1_min_countdown.mp4')
+# Insert-LeadingClip('C:\\\\pauses\\\\pause_1_min_countdown.mp4')
 function Insert-LeadingClip($clipPath, $enqueue = $true) {
     Play-Video $clipPath $enqueue
 }`;
 
     const initialMessage = `
 # Inform the user that the playlist has started
-Write-Host 'Playlist has started. You can leave the computer unattended now :)'
+Write-Host 'Playlist for the trekdag at ${projectJSON.name} has started. You can leave the computer unattended now :)'
 `;
 
     const waitUntil = (hour, minute) => {
@@ -142,15 +142,15 @@ Write-Host 'Playlist has started. You can leave the computer unattended now :)'
     };
 
     const playEpisode = (path, enqueue = true) => {
-        return `Play-Video('${path}, ${enqueue}')`;
+        return `Play-Video('${path}', '${enqueue}')`;
     };
 
     const insertPause = (path, enqueue = true) => {
-        return `Insert-Pause('${path}, ${enqueue}')`;
+        return `Insert-Pause('${path}', '${enqueue}')`;
     };
 
     const insertLeadingClip = (path, enqueue = true) => {
-        return `Insert-LeadingClip('${path}, ${enqueue}')`;
+        return `Insert-LeadingClip('${path}', '${enqueue}')`;
     };
 
     const staticParts = [
@@ -161,6 +161,7 @@ Write-Host 'Playlist has started. You can leave the computer unattended now :)'
         insertPauseFuncDeclaration,
         playLeadingClipFuncDeclaration,
         initialMessage,
+        "\n\n",
     ];
 
     const blocksParts = [];
@@ -170,18 +171,15 @@ Write-Host 'Playlist has started. You can leave the computer unattended now :)'
     projectJSON.blocks.forEach((block, index) => {
         const blockParts = [];
 
-        blockParts.push(`#\n# Block ${index + 1} starts here\n#`);
-
+        // The start time of the block
         let [hour, minute] = block.startTime.split(":");
 
-        // Every option that is checked will queue it's clip and move the start time forward
-        let first = true;
+        // Header denoting the start of the block
+        blockParts.push(`#\n# Block ${index + 1} starts here, at ${hour}:${minute}\n#`);
+
+        // Every option that is checked will queue it's clip and move the start time back
         block.options.forEach((option) => {
             if (option.checked) {
-                const clipPath = "//pauses//" + option.fileName;
-                blockParts.push(insertLeadingClip(clipPath, first));
-                first = false;
-
                 minute -= option.duration;
 
                 // Handle rollover
@@ -192,8 +190,34 @@ Write-Host 'Playlist has started. You can leave the computer unattended now :)'
             }
         });
 
+        // Push the wait until function with the leading options taking into consideration
         blockParts.push(waitUntil(hour, minute));
+
+        // Push the leading clips
+        // The first clip will not be enqueued, rather it will be played immediately
+        let first = true;
+        block.options.forEach((option) => {
+            if (option.checked) {
+                const clipPath = "\\\\\\\\pauses\\\\\\\\" + option.fileName;
+                blockParts.push(insertLeadingClip(clipPath, !first));
+                first = false;
+            }
+        });
+
+        // Push the episodes in the block
+        block.episodes.forEach((episode) => {
+            blockParts.push(playEpisode("\\\\\\\\episodes\\\\\\\\" + episode.fileName));
+        });
+
+        // Push the block to the array of all the blocks
+        blocksParts.push(blockParts.join("\n\n"));
     });
+
+    // Combine all the parts into one string
+    const script = staticParts.concat(blocksParts).join("\n");
+
+    // Write the script to the project folder
+    fs.writeFileSync(path.join(projectFolder, "play.ps1"), script);
 };
 
 // The main export function that is called when the user wants to export a project
@@ -229,6 +253,7 @@ const projectExport = (id) => {
     copyAllAssets(projectJSON, projectFolder);
 
     // Make the ps1 script
+    makePS1(projectJSON, projectFolder);
 };
 
 const setUpHandlers = () => {
