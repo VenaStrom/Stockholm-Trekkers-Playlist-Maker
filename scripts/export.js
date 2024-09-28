@@ -103,7 +103,7 @@ function Wait-UntilTime {
     const playVideoFuncDeclaration = `
 # Example usage:
 # Play-Video('C:\\path\\to\\episode.mkv') || Play-Video('C:\\path\\to\\episode.mkv', $true)
-function Play-Video($videoPath, $enqueue = $false) {
+function Play-Video($videoPath, $enqueue = $true) {
     if ($enqueue) {
         $copyOfMainArgs = $mainArgs.Clone()
         $copyOfMainArgs += '--playlist-enqueue'
@@ -121,15 +121,15 @@ function Play-Video($videoPath, $enqueue = $false) {
     const insertPauseFuncDeclaration = `
 # Example usage:
 # Insert-Pause('C:\\pauses\\pause_30_min.mp4')
-function Insert-Pause($pausePath) {
-    Play-Video $pausePath
+function Insert-Pause($pausePath, $enqueue = $true) {
+    Play-Video $pausePath $enqueue
 }`;
 
     const playLeadingClipFuncDeclaration = `
 # Example usage:
 # Insert-LeadingClip('C:\\pauses\\pause_1_min_countdown.mp4')
-function Insert-LeadingClip($clipPath) {
-    Play-Video $clipPath
+function Insert-LeadingClip($clipPath, $enqueue = $true) {
+    Play-Video $clipPath $enqueue
 }`;
 
     const initialMessage = `
@@ -141,15 +141,15 @@ Write-Host 'Playlist has started. You can leave the computer unattended now :)'
         return `Wait-UntilTime -Hour ${hour} -Minute ${minute}`;
     };
 
-    const playEpisode = (path, enqueue = false) => {
+    const playEpisode = (path, enqueue = true) => {
         return `Play-Video('${path}, ${enqueue}')`;
     };
 
-    const insertPause = (path, enqueue = false) => {
+    const insertPause = (path, enqueue = true) => {
         return `Insert-Pause('${path}, ${enqueue}')`;
     };
 
-    const insertLeadingClip = (path, enqueue = false) => {
+    const insertLeadingClip = (path, enqueue = true) => {
         return `Insert-LeadingClip('${path}, ${enqueue}')`;
     };
 
@@ -175,10 +175,12 @@ Write-Host 'Playlist has started. You can leave the computer unattended now :)'
         let [hour, minute] = block.startTime.split(":");
 
         // Every option that is checked will queue it's clip and move the start time forward
+        let first = true;
         block.options.forEach((option) => {
             if (option.checked) {
                 const clipPath = "//pauses//" + option.fileName;
-                blockParts.push(insertLeadingClip(clipPath));
+                blockParts.push(insertLeadingClip(clipPath, first));
+                first = false;
 
                 minute -= option.duration;
 
@@ -189,6 +191,8 @@ Write-Host 'Playlist has started. You can leave the computer unattended now :)'
                 }
             }
         });
+
+        blockParts.push(waitUntil(hour, minute));
     });
 };
 
