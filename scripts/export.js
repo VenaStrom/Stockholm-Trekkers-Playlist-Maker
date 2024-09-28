@@ -59,7 +59,68 @@ const copyAllAssets = (projectJSON, projectFolder) => {
 
 // Make the ps1 "harness" that runs VLC and runs the correct episodes at the correct times
 const makePS1 = (projectJSON, projectFolder) => {
+    const vlcPath = `$VLCpath = 'C:\\Program Files\\VideoLAN\\VLC\\vlc.exe'`;
+    const mainArgs = `
+$mainArgs = @(
+    '--one-instance',
+    '--fullscreen',
 
+    '--sub-language=swe,eng,any',
+
+    '--deinterlace=0',
+    '--embedded-video',
+    '--no-loop',
+    '--no-play-and-pause',
+    '--no-random',
+    '--no-repeat',
+    '--no-video-title-show',
+
+    '--qt-auto-raise=0',
+    '--qt-continue=0',
+    '--qt-fullscreen-screennumber=1',
+    '--qt-notification=0',
+    '--no-qt-fs-controller',
+    '--no-qt-name-in-title',
+    '--no-qt-recentplay',
+    '--no-qt-updates-notif'
+)`;
+
+    const waitFuncDeclaration = `
+# Example usage:
+# Wait-UntilTime -Hour 10 -Minute 9
+function Wait-UntilTime {
+    param (
+        [int]$Hour,
+        [int]$Minute
+    )
+
+    $desiredTime = (Get-Date).Date.AddHours($Hour).AddMinutes($Minute)
+    while ((Get-Date) -lt $desiredTime) {
+        Start-Sleep -Seconds 1
+    }
+}`;
+
+    const playVideoFuncDeclaration = `
+# Example usage:
+# Play-Video('C:\\path\\to\\episode.mkv')
+function Play-Video($videoPath) {
+    & $vlcPath $videoPath $mainArgs
+    # There's a small timeout to give VLC some time to start or queue things
+    Start-Sleep -Milliseconds 100
+}`;
+
+    const initialMessage = `
+# Inform the user that the playlist has started
+Write-Host 'Playlist has started. You can leave the computer unattended now :)'
+`;
+
+    const playEpisodeString = (path) => {
+        return `Play-Video('${path}')`;
+    };
+
+    const waitUntilString = (hour, minute) => {
+        return `Wait-UntilTime -Hour ${hour} -Minute ${minute}`;
+        };
 };
 
 // The main export function that is called when the user wants to export a project
