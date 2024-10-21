@@ -147,10 +147,6 @@
                             justify-self: flex-end;
                         }
 
-                        &>h3.block-number {
-                            text-align: right;
-                        }
-
                         &>h3.option {
                             cursor: pointer;
 

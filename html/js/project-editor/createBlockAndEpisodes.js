@@ -28,15 +28,6 @@ const createEpisodeDOM = (parent) => {
     });
 };
 
-const setBlockNumbers = () => {
-    const blocks = document.querySelectorAll(".blocks>.block");
-
-    blocks.forEach((block, index) => {
-        const blockNumber = block.querySelector("h3.block-number");
-        blockNumber.textContent = "Block " + (index + 1);
-    });
-};
-
 const createBlockDOM = () => {
     // Clone the template and clean up the classes
     const block = templateBlock.cloneNode(true)
@@ -52,16 +43,12 @@ const createBlockDOM = () => {
 
     // Adds block to DOM
     createBlockButton.insertAdjacentElement("beforebegin", block);
-
-    setBlockNumbers();
 };
 
 const deleteBlockDOM = (source) => {
     if (window.confirm("Are you sure you want to delete this block forever?")) {
         source.parentElement.parentElement.remove();
     };
-
-    setBlockNumbers();
 };
 
 // Start off with one block
