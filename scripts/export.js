@@ -7,6 +7,7 @@ const { projectGet, projectFolder: userData } = require("./save/projects.js");
 
 let copyWorker;
 
+// The frontend fetches this to update the export window it shows
 const exportStatus = {
     progress: "0%",
     message: "Making folders...",
@@ -363,11 +364,13 @@ const setUpHandlers = () => {
     });
 
     ipcMain.handle("cancel-export", (event) => {
-        // Stop the worker thread
+        // Stop the worker thread that's copying all the assets
         copyWorker.terminate();
 
         // Remove the exported project folder
         fs.rmSync(exportStatus.exportLocation, { recursive: true });
+
+        exportStatus.message = "Export cancelled";
     });
 };
 
