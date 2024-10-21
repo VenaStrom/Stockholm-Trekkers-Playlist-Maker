@@ -227,6 +227,10 @@ body {
             flex-flow: column nowrap;
             justify-content: center;
 
+            @media screen and (max-width: 800px) {
+                display: none;
+            }
+
             &>.smaller {
                 font-size: 0.9rem;
                 font-weight: lighter;
