@@ -1,4 +1,5 @@
     body {
+
         &>header {
             &>#save-status {
                 z-index: 999;
@@ -19,10 +20,18 @@
 
                 top: calc(var(--header-height) + var(--header-margin));
                 left: 11ch;
+
+                @media screen and (max-width: 800px) {
+                    left: 3ch;
+                }
             }
         }
 
         &>main {
+            @media screen and (max-width: 800px) {
+                width: 80%;
+            }
+
             text-align: left;
             text-wrap: balance;
 
@@ -83,7 +92,7 @@
             &>.blocks {
                 margin-top: 1rem;
 
-                width: 130%;
+                width: 100%;
 
                 display: flex;
                 flex-flow: column nowrap;
@@ -107,12 +116,11 @@
                     &>.header {
                         width: 100%;
 
-                        display: grid;
-                        grid-template-columns: max-content 1fr 1fr max-content;
-                        grid-template-rows: auto auto;
-                        column-gap: 8ch;
+                        display: flex;
+                        flex-flow: row wrap;
                         align-items: center;
-
+                        justify-content: space-between;
+                        
                         background-color: var(--accent-color-low-contrast);
                         padding: 0.7rem 3ch 0.7rem 2ch;
                         margin-bottom: 0.1rem;
@@ -190,41 +198,34 @@
 
                     &>.episode {
                         width: 100%;
-                        overflow-x: scroll;
 
-                        display: grid;
-                        grid-template-columns: 6ch 1fr;
+                        display: flex;
+                        flex-flow: row nowrap;
+                        justify-content: space-between;
                         align-items: center;
-                        justify-content: flex-start;
-                        column-gap: 4ch;
 
-                        padding: 0.6rem 2ch 0.6rem 2ch;
+                        padding-top: 0.3rem;
+                        padding-bottom: 0.3rem;
 
+                        /* Hairline */
                         &:not(:last-child) {
-                            border-bottom: 0.005rem solid var(--accent-color-low-contrast);
-                        }
-
-                        &>.time,
-                        &>.file {
-                            display: flex;
-                            flex-flow: row nowrap;
-                            align-items: center;
-                            column-gap: 1ch;
-
-                            &>* {
-                                width: max-content;
-                            }
+                            border-bottom: 0.03rem solid var(--accent-color-low-contrast);
                         }
 
                         &>.time {
-                            margin-left: 2ch;
+                            width: 8ch;
+
+                            &>* {
+                                width: 100%;
+                                text-align: center;
+                            }
                         }
 
                         &>.file {
                             flex: 1;
 
-                            &>input[type="file"] {
-                                flex: 1;
+                            &>* {
+                                width: 100%;
                             }
                         }
                     }
