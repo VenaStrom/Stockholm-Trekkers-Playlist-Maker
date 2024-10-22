@@ -1,7 +1,9 @@
 
+// These templates are hidden in the HTML <head> tag
 const templateEpisode = document.querySelector(".episode-template.hidden");
 const templateBlock = document.querySelector(".block-template.hidden");
 
+// The button with the big plus sign
 const createBlockButton = document.querySelector(".create-block");
 
 const createEpisodeDOM = (parent) => {

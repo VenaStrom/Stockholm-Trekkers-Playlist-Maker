@@ -17,7 +17,7 @@ const lintTime = (time) => {
     return undefined;
 };
 
-const secondsToTime = (seconds) => {
+const secondsToFormattedTime = (seconds) => {
     const hours = Math.floor(seconds / 60 / 60);
     const minutes = Math.round((seconds - hours * 60 * 60) / 60);
 
@@ -61,7 +61,7 @@ const updateTimes = () => {
                     const duration = parseFloat(metadata.format.duration);
                     fileInput.dataset.duration = duration;
 
-                    timDOM.textContent = secondsToTime(head);
+                    timDOM.textContent = secondsToFormattedTime(head);
 
                     head += duration;
 

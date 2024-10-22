@@ -1,4 +1,5 @@
 
+// For now, auto saving is flat out disabled. You will have to save manually
 const autoSave = false;
 
 const getJSONstruct = () => {
@@ -37,7 +38,7 @@ const getJSONstruct = () => {
                 const fileInput = episode.querySelector("input[type='file']");
                 return {
                     filePath: fileInput.getAttribute("data-file-path"),
-                    fileName: fileInput.value.split(/[/\\]/).at(-1), // split path via / or \ and get the last element which should be the file with it's extension
+                    fileName: fileInput.value.split(/[/\\]/).at(-1), // split path via / or \ and get the last element which should be the file name with it's extension
                     startTime: episode.querySelector(".time p").textContent,
                 };
             });
@@ -51,7 +52,6 @@ const getJSONstruct = () => {
 
     return struct;
 };
-
 
 const saveStatusText = document.querySelector("header #save-status");
 
@@ -86,7 +86,7 @@ document.addEventListener("keydown", (event) => {
     saveProject();
 });
 
-// Save project on change
+// Save project on change [Will never save, see top of file]
 document.addEventListener("change", () => {
     saveStatusText.textContent = "Latest changes not saved*";
 

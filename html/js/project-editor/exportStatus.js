@@ -1,4 +1,5 @@
 
+// Runs when the export starts and regularly gets the status of the export from the backend 
 const startExportStatusGetter = () => {
     document.querySelector(".bottom-sticky-container>.export-progress-window").classList.remove("hidden");
 

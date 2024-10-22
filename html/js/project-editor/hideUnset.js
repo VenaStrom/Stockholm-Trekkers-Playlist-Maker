@@ -1,7 +1,8 @@
 
+// Hides blocks and episodes that are empty 
 const hideUnset = () => {
 
-    // Hide "make new block" button
+    // Hide t he "make new block" button that has the big plus sign
     if (hideUnsetCheckbox.checked) {
         const createBlockButton = document.querySelector(".create-block");
         createBlockButton.classList.add("hidden");
@@ -12,7 +13,6 @@ const hideUnset = () => {
 
     // Hide all episodes that have no file attached
     const episodes = document.querySelectorAll(".episode");
-
     episodes.forEach(episode => {
         if (episode.querySelector("input[type='file']").value === "") {
             if (hideUnsetCheckbox.checked) {
@@ -23,10 +23,8 @@ const hideUnset = () => {
         };
     });
 
-
     // Hide blocks that have no visible episodes
     const blocks = document.querySelectorAll(".block");
-
     blocks.forEach(block => {
         if (block.querySelectorAll(".episode:not(.hidden)").length === 0) {
             block.classList.add("hidden");
@@ -36,6 +34,6 @@ const hideUnset = () => {
     });
 };
 
+// There is a checkbox that toggles the hiding of unset blocks and episodes
 const hideUnsetCheckbox = document.querySelector(".hide-unset>input[type='checkbox']");
-
 hideUnsetCheckbox.addEventListener("change", hideUnset);
