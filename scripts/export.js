@@ -63,8 +63,8 @@ const copyAllAssets = (projectJSON, exportFolder) => {
 
     // Copy the save file from user data to the output folder
     console.log("[INFO] Copying save file...");
-    fs.mkdirSync(path.join(exportFolder, "projectSaveFile"));
-    fs.copyFileSync(path.join(userData, projectJSON.id + ".json"), path.join(exportFolder, "projectSaveFile", projectJSON.id + ".json"));
+    fs.mkdirSync(path.join(exportFolder, "project-save-file"));
+    fs.copyFileSync(path.join(userData, projectJSON.id + ".json"), path.join(exportFolder, "project-save-file", projectJSON.id + ".json"));
 
     // Update export status
     exportStatus.message = "Done!";
