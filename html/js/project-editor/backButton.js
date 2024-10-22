@@ -10,9 +10,9 @@ const isUnsaved = () => {
     return document.querySelector("header #save-status").textContent.includes("*");
 };
 
+// Are we exporting?
 const isExporting = () => {
-    return false;
-    // return !document.querySelector(".export-progress-window").classList.contains("hidden");
+    return !document.querySelector(".export-progress-window").classList.contains("hidden");
 };
 
 // Go back when clicking the back button and confirm
