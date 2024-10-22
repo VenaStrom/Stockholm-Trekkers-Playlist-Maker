@@ -7,12 +7,12 @@ const startExportStatusGetter = () => {
 
     const statusInterval = setInterval(() => {
         exporter.getStatus().then((status) => {
-
-            console.log(status);
-
+            
+            // Update the HTML
             bottomStatus.textContent = status.message;
             progressBar.style.backgroundSize = status.progress;
 
+            // When done, clear the interval
             if (status.message.includes("Done")) {
                 document.querySelector(".bottom-sticky-container>.export-progress-window button.cancel").textContent = "Done";
 
