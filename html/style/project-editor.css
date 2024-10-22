@@ -131,7 +131,7 @@
                             align-items: center;
                             column-gap: 1ch;
 
-                            &>.time-input {
+                            &>input {
                                 width: 6ch;
                                 text-align: center;
 
@@ -205,7 +205,7 @@
 
                         /* Hairline */
                         &:not(:last-child) {
-                            border-bottom: 0.03rem solid var(--accent-color-low-contrast);
+                            border-bottom: 0.05rem solid var(--accent-color-low-contrast);
                         }
 
                         &>.time {
