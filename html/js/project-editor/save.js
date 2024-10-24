@@ -3,12 +3,12 @@
 const autoSave = false;
 
 const getJSONstruct = () => {
-    const name = document.querySelector(".name-input input[type='text']").value;
+    const date = document.querySelector(".date-input input[type='text']").value;
 
     const blocks = document.querySelectorAll(".block:not(.hidden)");
 
     const struct = {
-        name: name,
+        date: date,
         id: getID(),
         dateModified: new Date().getTime(),
         blocks: [],

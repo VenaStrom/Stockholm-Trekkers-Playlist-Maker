@@ -9,7 +9,7 @@ if (id !== "new") {
             return;
         }
 
-        document.querySelector(".name-input input[type='text']").value = project.name;
+        document.querySelector(".date-input input[type='text']").value = project.date;
 
         project.blocks.forEach((block, blockIndex) => {
             // Create new blocks if there are not enough

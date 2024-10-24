@@ -1,6 +1,6 @@
 
 const nameValidatorStatus = document.querySelector(".name-validator-status");
-const nameInput = document.querySelector(".name-input>input");
+const nameInput = document.querySelector(".date-input>input");
 const warningsWindow = document.getElementById("name-validation-popover");
 let popoverTimeout;
 let statusTimeout;
