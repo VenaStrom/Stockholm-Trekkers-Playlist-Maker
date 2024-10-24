@@ -1,6 +1,7 @@
 
-const lintTime = (time) => {
-    time = time.replace(/[^0-9]/g, "");
+// Interpret the users time input to a four digit time
+const interpretUserTimeInput = (time) => {
+    time = time.replace(/[^0-9]/g, ""); // Only allow numbers
 
     if (time.length === 1) {
         return `0${time}:00`;
@@ -24,58 +25,94 @@ const secondsToFormattedTime = (seconds) => {
     return `${hours}:${minutes.toString().padStart(2, "0")}`;
 };
 
-const updateTimes = () => {
-    const timeLinters = document.querySelectorAll(".time-lint");
+const fetchEpisodeDurationsInBlock = (block) => {
+    const episodes = block.querySelectorAll(".episode");
 
-    // Lint times
-    timeLinters.forEach((trigger) => {
-        if (trigger.tagName === "INPUT") {
-            trigger.value = lintTime(trigger.value) || "";
-
-        } else if (trigger.tagName === "P") {
-            trigger.textContent = lintTime(trigger.textContent) || "--:--";
+    const updateEpisode = (index, resolve) => {
+        if (index >= episodes.length) {
+            resolve(); // Resolve when all episodes are processed
+            return;
         }
-    });
 
-    // Update a block at a time
-    const blocks = document.querySelectorAll(".block");
-    blocks.forEach((block) => {
-        if (!block.querySelector(".time input[type='text']").value) { return }
+        const episode = episodes[index];
+        const episodeFileInput = episode.querySelector(".file input[type='file']");
 
-        const blockTime = block.querySelector(".time input[type='text']").value;
-        let head = parseFloat(blockTime.split(":")[0] * 60 * 60 + blockTime.split(":")[1] * 60); // seconds
+        if (!episodeFileInput.value) {
+            updateEpisode(index + 1, resolve); // Skip if no file
+            return;
+        }
 
-        // Loop through and set the durations of the episodes
-        const episodes = block.querySelectorAll(".episode");
+        // Uses ffprobe to get metadata about the file
+        metadata.get(episodeFileInput.dataset.filePath)
+            .then((data) => {
 
-        const doEpisode = (episodes, index) => {
-            // Get the duration of the episode
-            if (!episodes[index].querySelector(".file input[type='file']").value) { return }
-            metadata.get(episodes[index].querySelector(".file input[type='file']").dataset.filePath)
-                .then((metadata) => {
-                    if (index >= episodes.length - 1) { return }
+                // Save the duration
+                episodeFileInput.dataset.duration = data.format.duration;
 
-                    const episode = episodes[index];
-                    const timDOM = episode.querySelector(".time p");
-                    const fileInput = episode.querySelector(".file input[type='file']");
-                    const duration = parseFloat(metadata.format.duration);
-                    fileInput.dataset.duration = duration;
+                updateEpisode(index + 1, resolve); // Move to the next episode
+            })
+            .catch((error) => {
+                console.error(error);
 
-                    timDOM.textContent = secondsToFormattedTime(head);
+                updateEpisode(index + 1, resolve);
+            });
+    };
 
-                    head += duration;
-
-                    doEpisode(episodes, index + 1);
-                });
-        };
-
-        doEpisode(episodes, 0);
-    });
+    return new Promise((resolve) => updateEpisode(0, resolve));
 };
 
-// Update times on change
-document.addEventListener("change", (event) => {
-    if (event.target.classList.contains("update-times")) {
-        updateTimes();
+const setEpisodeStartTimesInBlock = (block) => {
+    const episodes = block.querySelectorAll(".episode");
+    const blockTime = block.querySelector(".time input[type='text']").value;
+
+    let head = parseFloat(blockTime.split(":")[0] * 60 * 60 + blockTime.split(":")[1] * 60); // seconds
+
+    episodes.forEach((episode) => {
+        if (!episode.querySelector(".file input[type='file']").value) { return }
+
+        const episodeTimeDOM = episode.querySelector(".time p");
+        const episodeFileInput = episode.querySelector(".file input[type='file']");
+        const duration = parseFloat(episodeFileInput.dataset.duration);
+
+        episodeTimeDOM.textContent = secondsToFormattedTime(head);
+
+        head += duration;
+    });
+}
+
+// Formats time in block time input to HH:MM
+// Used in the createBlockDOM function in the createBlockAndEpisodes.js file
+const formatBlockTime = (event) => {
+    const timeInput = event.target;
+
+    // Interpret the time input
+    const interpretedTime = interpretUserTimeInput(timeInput.value);
+    // If the interpreter can't parse the time, don't change the value
+    if (interpretedTime) {
+        timeInput.value = interpretedTime;
     }
-});
+}
+
+// Used in the createBlockDOM function in the createBlockAndEpisodes.js file
+const updateEpisodeTimesInBlock = (event) => {
+    const emitter = event.target;
+    if ( // If the block time, or episode files change...
+        emitter.tagName === "INPUT"
+        &&
+        (
+            emitter.type === "file"
+            ||
+            emitter.type === "text"
+        )
+        ||
+        emitter.classList.contains("block") // allow events from the block itself since the loading function in load.js dispatches a change event on the block
+    ) {
+        // Make sure all the episodes have their durations saved
+        const block = emitter.closest(".block");
+        fetchEpisodeDurationsInBlock(block).then(() => {
+
+            // Then, update the times of the episodes
+            setEpisodeStartTimesInBlock(block);
+        });
+    }
+}

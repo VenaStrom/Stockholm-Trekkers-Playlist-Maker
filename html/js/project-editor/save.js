@@ -40,6 +40,7 @@ const getJSONstruct = () => {
                     filePath: fileInput.getAttribute("data-file-path"),
                     fileName: fileInput.value.split(/[/\\]/).at(-1), // split path via / or \ and get the last element which should be the file name with it's extension
                     startTime: episode.querySelector(".time p").textContent,
+                    duration: episode.querySelector(".time p").dataset.duration,
                 };
             });
 

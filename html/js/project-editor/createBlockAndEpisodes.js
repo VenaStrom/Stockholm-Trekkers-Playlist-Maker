@@ -37,7 +37,9 @@ const createBlockDOM = () => {
     block.classList.remove("block-template");
     block.classList.remove("hidden");
 
-    block.querySelector(".time input[type='text']").addEventListener("change", updateTimes);
+    // Callback functions defined in setStartTimes.js
+    block.querySelector(".time input[type='text']").addEventListener("change", formatBlockTime);
+    block.addEventListener("change", updateEpisodeTimesInBlock);
 
     // Make two episodes to start off with
     createEpisodeDOM(block);

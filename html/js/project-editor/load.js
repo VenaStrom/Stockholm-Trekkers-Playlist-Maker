@@ -43,7 +43,8 @@ if (id !== "new") {
                 const fileInput = episodeDOM.querySelector(".file input[type='file']");
                 fileInput.files = dataTransfer.files;
 
-                fileInput.setAttribute("data-file-path", episode.filePath);
+                fileInput.dataset.filePath = episode.filePath;
+                // fileInput.dataset.duration = episode.duration;
 
                 episodeDOM.querySelector(".time p").textContent = episode.startTime;
             });
@@ -51,7 +52,10 @@ if (id !== "new") {
             if (block.episodes.length !== 1) {
                 createEpisodeDOM(blockDOM);
             };
-            blockDOM.querySelector(".time input[type='text']").dispatchEvent(new Event("change"));
+
+            // Send events to update the times in the block. See createBlockAndEpisodes.js and setStartTimes.js
+            blockDOM.querySelector(".time input[type='text']").dispatchEvent(new Event("blur"));
+            blockDOM.dispatchEvent(new Event("change"));
         });
     });
 }
