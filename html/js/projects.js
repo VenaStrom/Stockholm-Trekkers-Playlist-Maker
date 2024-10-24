@@ -21,7 +21,7 @@ projects.getAll().then((projectList) => {
         projectDOM.classList.remove("hidden")
 
         // Set the name i.e. the date of the trekdag
-        projectDOM.querySelector(".project-header h3").textContent = project.name
+        projectDOM.querySelector(".project-header h3").textContent = project.date;
 
         // The metadata tag shows date modified 
         const metaDataDOM = projectDOM.querySelector(".meta-data");

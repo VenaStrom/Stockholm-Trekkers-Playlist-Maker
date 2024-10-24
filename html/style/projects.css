@@ -61,7 +61,7 @@ body {
                 padding: 0.7rem 3ch 0.7rem 3ch;
                 margin-bottom: 0.4rem;
 
-                &>.project-name {
+                &>.project-date {
                     display: flex;
                     flex-flow: row wrap;
                     align-items: center;
