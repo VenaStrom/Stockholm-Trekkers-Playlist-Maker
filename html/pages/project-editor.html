@@ -24,6 +24,7 @@
     <script defer src="../js/project-editor/setStartTimes.js"></script>
     <script defer src="../js/project-editor/createBlockAndEpisodes.js"></script>
     <script defer src="../js/project-editor/exportStatus.js"></script>
+    <script defer src="../js/project-editor/validators/dateValidator.js"></script>
     <script defer src="../js/project-editor/load.js"></script>
     <script defer src="../js/project-editor/save.js"></script>
 
@@ -32,7 +33,7 @@
         <div class="header">
             <div class="time">
                 <p>Start time: </p>
-                <input type="text" placeholder="hhmm">
+                <input type="text" placeholder="hhmm" onblur="dateValidator(this)">
             </div>
 
             <h3 class="option clickable" onclick="expandOptions(this)" tabindex="0" title="Show the options for this block">Options ▼</h3>
