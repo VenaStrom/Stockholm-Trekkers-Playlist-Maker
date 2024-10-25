@@ -310,8 +310,8 @@ Directly exporting to a USB drive is slow and can cause the program to hang.`
     const projectJSON = projectGet(id, userData);
 
     // The project folder is the folder within the chosen output folder that holds the actual project
-    // chosen/projectName
-    const exportLocation = path.join(chosenFolder[0], projectJSON.name);
+    // chosen projectName
+    const exportLocation = path.join(chosenFolder[0], projectJSON.date);
     exportStatus.exportLocation = exportLocation;
 
     // Creates the project folder in the selected folder.

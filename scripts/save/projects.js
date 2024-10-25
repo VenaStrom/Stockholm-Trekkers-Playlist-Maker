@@ -23,7 +23,7 @@ const projectGet = (id, projectDirPath) => {
 };
 
 const projectSave = (projectData, projectDirPath) => {
-    console.log("[INFO] Saving project: " + projectData.name + " - " + projectData.id);
+    console.log("[INFO] Saving project: " + projectData.date + " - " + projectData.id);
     const id = projectData.id;
     const filePath = path.join(projectDirPath, projectData.id + ".json");
 
