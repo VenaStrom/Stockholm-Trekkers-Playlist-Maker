@@ -61,13 +61,24 @@ const fetchEpisodeDurationsInBlock = (block) => {
     return new Promise((resolve) => updateEpisode(0, resolve));
 };
 
+const zeroAllEpisodesInBlock = (block) => {
+    const episodes = block.querySelectorAll(".episode");
+
+    episodes.forEach((episode) => {
+        episode.querySelector(".time p").textContent = "--:--";
+    });
+}
+
 const setEpisodeStartTimesInBlock = (block) => {
     const episodes = block.querySelectorAll(".episode");
     const blockTime = block.querySelector(".time input[type='text']").value;
 
+    if (!blockTime) { zeroAllEpisodesInBlock(block); return; }
+
     let head = parseFloat(blockTime.split(":")[0] * 60 * 60 + blockTime.split(":")[1] * 60); // seconds
 
     episodes.forEach((episode) => {
+        // Skip if no file
         if (!episode.querySelector(".file input[type='file']").value) { return }
 
         const episodeTimeDOM = episode.querySelector(".time p");
