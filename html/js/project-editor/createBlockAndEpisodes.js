@@ -13,9 +13,13 @@ const createEpisodeDOM = (parent) => {
     episode.classList.remove("episode-template");
     episode.classList.remove("hidden");
 
-    parent.appendChild(episode);
+    // Hairline
+    const hr = document.createElement("hr");
 
-    // If this input is the second to last one, make a new episode
+    parent.appendChild(episode);
+    parent.appendChild(hr);
+
+    // Make sure there's always at least one empty episode
     episode.querySelector("input[type='file']").addEventListener("change", (event) => {
         const episodes = parent.querySelectorAll(".episode");
         if (episodes[episodes.length - 1] === episode) {

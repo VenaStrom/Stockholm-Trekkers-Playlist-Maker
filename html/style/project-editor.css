@@ -107,11 +107,11 @@
                     flex-flow: column nowrap;
                     text-align: left;
                     justify-content: flex-start;
-                    align-items: flex-start;
+                    align-items: center;
 
                     row-gap: 0;
 
-                    padding: 0 0 1.1rem 0;
+                    padding: 0 0 0.3rem 0;
 
                     &>.header {
                         width: 100%;
@@ -120,7 +120,7 @@
                         flex-flow: row wrap;
                         align-items: center;
                         justify-content: space-between;
-                        
+
                         background-color: var(--accent-color-low-contrast);
                         padding: 0.7rem 3ch 0.7rem 2ch;
                         margin-bottom: 0.1rem;
@@ -192,6 +192,15 @@
                         }
                     }
 
+                    &>hr {
+                        width: calc(100% - 3ch);
+                        border: 0.05rem solid var(--accent-color-low-contrast);
+
+                        &:last-child {
+                            display: none;
+                        }
+                    }
+
                     &>.episode {
                         width: 100%;
 
@@ -200,16 +209,12 @@
                         justify-content: space-between;
                         align-items: center;
 
-                        padding-top: 0.3rem;
-                        padding-bottom: 0.3rem;
-
-                        /* Hairline */
-                        &:not(:last-child) {
-                            border-bottom: 0.05rem solid var(--accent-color-low-contrast);
-                        }
+                        padding-top: 0.4rem;
+                        padding-bottom: 0.4rem;
 
                         &>.time {
                             width: 8ch;
+                            padding-left: 1ch;
 
                             &>* {
                                 width: 100%;
@@ -219,6 +224,7 @@
 
                         &>.file {
                             flex: 1;
+                            padding-right: 2ch;
 
                             &>* {
                                 width: 100%;
