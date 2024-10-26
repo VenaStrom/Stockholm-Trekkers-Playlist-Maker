@@ -1,3 +1,4 @@
+/* Variables */
 :root {
     --text-color: #f2f2f2;
     --background-color: #2b2b2b;
@@ -16,11 +17,13 @@
     --footer-margin: 2rem;
 }
 
+/* Font imports */
 @font-face {
     font-family: "Bahnschrift";
     src: url("../../assets/fonts/BAHNSCHRIFT.TTF") format("truetype");
 }
 
+/* Start of selector wide styling */
 ::-webkit-scrollbar {
     display: none;
 }
@@ -99,6 +102,7 @@ input[type="checkbox"] {
 }
 
 input[type="file"] {
+    /* Wipe all styling */
     all: unset;
     appearance: none;
 
@@ -106,17 +110,22 @@ input[type="file"] {
 
     border-radius: 0.5rem;
 
+    /* Background to make it not transparent */
+    /* The background color is a fallback, the background image is there since it needs to be offset on hover */
     background-color: var(--background-color);
+    background-image: linear-gradient(var(--background-color), var(--background-color));
+    background-repeat: no-repeat;
+    background-position-x: 1ch;
+
     color: var(--text-color);
 
     &:hover {
         background-image: linear-gradient(var(--accent-color-high-contrast), var(--accent-color-high-contrast));
-        background-repeat: no-repeat;
-        background-position-x: 1ch;
 
         color: var(--background-color);
     }
 
+    /* The button part of the file input */
     &::-webkit-file-upload-button {
         all: unset;
         appearance: none;
@@ -132,17 +141,6 @@ input[type="file"] {
 
         font-size: 0.9rem;
     }
-}
-
-*[popover] {
-    background-color: var(--accent-color-low-contrast);
-
-    border: none;
-    border-radius: 0.5rem;
-
-    padding: 0.5rem;
-
-    min-height: 2rem;
 }
 
 .italic {
@@ -184,7 +182,9 @@ input[type="file"] {
     align-items: center;
     gap: 0.8rem;
 }
+/* End of selector wide styling */
 
+/* Common styling of base html structure */
 body {
     background-color: var(--background-color);
 
