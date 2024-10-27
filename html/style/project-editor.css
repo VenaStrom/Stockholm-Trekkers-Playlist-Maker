@@ -56,33 +56,6 @@
                     width: 13ch;
                     font-size: 1.2rem;
                 }
-
-                &>.name-validator-status {
-                    color: var(--accent-color-high-contrast);
-                    font-size: 0.8rem;
-                    width: max-content;
-                    text-align: left;
-
-                    anchor-name: --name-validator-status;
-                }
-
-                &>.name-validator-status.invalid {
-                    color: var(--warning-color);
-                    background-color: var(--accent-color-high-contrast);
-
-                    padding: .2rem 1ch;
-
-                    border-radius: 0.4rem;
-                }
-
-                &>#name-validation-popover {
-                    position-anchor: --name-validator-status;
-                    position: fixed;
-                    top: calc(anchor(bottom) + 0.4rem);
-                    left: anchor(left);
-
-                    border: 0.17rem solid var(--accent-color-high-contrast);
-                }
             }
 
             &>.info-paragraph {
