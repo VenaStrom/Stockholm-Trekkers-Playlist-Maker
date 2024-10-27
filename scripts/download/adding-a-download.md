@@ -9,7 +9,7 @@ The program uses google drive to store the assets. To add a new asset to downloa
 ### Steps
 1. You need to have the asset uploaded to google drive.
 2. Get the file id of the asset.
-   - To do this the easiest way is to go to the asset in google drive and double click it. You should be brought to a page that looks like this:
+   - To do this the easiest way is to go to the asset in google drive and open it in a new tab. You should be brought to a page that looks like this:
 ![Screenshot](screenshots/find-file-id.png)
 In the url bar you will see a long string of characters that looks like this: `1POheLkrK_1O786JByNvmHBnxbEijn82E`, keep in mind that it can contain underscores, dashes, and other characters. Copy this string.
 
