@@ -145,7 +145,7 @@
                             &>div {
                                 display: flex;
                                 flex-flow: row wrap;
-                                row-gap: 0.3rem;
+                                row-gap: 0.5rem;
 
                                 user-select: none;
 

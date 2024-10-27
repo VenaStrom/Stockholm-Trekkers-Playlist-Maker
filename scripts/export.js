@@ -59,14 +59,15 @@ $mainArgs = @(
 
 # Function to wait until a specific time
 # Example usage:
-# Wait-UntilTime -Hour 10 -Minute 9
+# Wait-UntilTime -Hour 10 -Minute 9 -Seconds 30
 function Wait-UntilTime {
     param (
         [int]$Hour,
-        [int]$Minute
+        [int]$Minute,
+        [int]$Seconds
     )
 
-    $desiredTime = (Get-Date).Date.AddHours($Hour).AddMinutes($Minute)
+    $desiredTime = (Get-Date).Date.AddHours($Hour).AddMinutes($Minute).AddSeconds($Seconds)
     while ((Get-Date) -lt $desiredTime) {
         Start-Sleep -Seconds 1
     }
@@ -140,7 +141,7 @@ Insert-Pause -pausePath '/pauses/pause_30_min.mp4' -playImmediately $false
 Insert-Pause -pausePath '/pauses/pause_30_min.mp4' -playImmediately $false
 `;
 
-    const waitUntil = (hour, minute) => `Wait-UntilTime -Hour ${hour} -Minute ${minute};`;
+    const waitUntil = (hour, minute, seconds) => `Wait-UntilTime -Hour ${hour} -Minute ${minute} -Seconds ${seconds};`;
     const playEpisode = (episodePath, playImmediately = false) => `Play-Video -videoPath '${episodePath}' -playImmediately ${playImmediately ? "$true" : "$false"};`;
     const insertPause = (pausePath, playImmediately = false) => `Insert-Pause -pausePath '${pausePath}' -playImmediately ${playImmediately ? "$true" : "$false"};`;
     const insertLeadingClip = (clipPath, playImmediately = false) => `Insert-LeadingClip -clipPath '${clipPath}' -playImmediately ${playImmediately ? "$true" : "$false"};`;
@@ -153,7 +154,7 @@ Insert-Pause -pausePath '/pauses/pause_30_min.mp4' -playImmediately $false
         const blockArray = [];
 
         // The start time of the block
-        let [hour, minute] = block.startTime.split(":");
+        let [hour, minute, seconds] = [...block.startTime.split(":"), 0];
 
         // Header denoting the start of the block
         blockArray.push(`#\n# Block ${index + 1} starts here, at ${hour}:${minute} \n#`);
@@ -161,9 +162,13 @@ Insert-Pause -pausePath '/pauses/pause_30_min.mp4' -playImmediately $false
         // Move back the start time by the durations of the clips associated with an option
         block.options.forEach((option) => {
             if (option.checked) {
-                minute -= option.duration;
+                seconds -= option.duration; // seconds
 
                 // Handle rollover
+                if (seconds < 0) {
+                    seconds += 60;
+                    minute -= 1;
+                }
                 if (minute < 0) {
                     minute += 60;
                     hour -= 1;
@@ -172,7 +177,7 @@ Insert-Pause -pausePath '/pauses/pause_30_min.mp4' -playImmediately $false
         });
 
         // Wait until the start time of the block
-        blockArray.push(waitUntil(hour, minute));
+        blockArray.push(waitUntil(hour, minute, seconds));
 
         // Queue the leading clips
         let first = true;

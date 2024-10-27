@@ -23,7 +23,10 @@ if (id !== "new") {
 
             // Set the options
             block.options.forEach((option, optionIndex) => {
-                blockDOM.querySelector(`.options input#${option.id}`).checked = block.options[optionIndex].checked;
+                const optionDOM = blockDOM.querySelector(".options input#" + option.id);
+                if (optionDOM) {
+                    optionDOM.checked = block.options[optionIndex].checked;
+                }
             });
 
             // Set the episodes
