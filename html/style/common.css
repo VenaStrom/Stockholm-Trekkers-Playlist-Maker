@@ -119,8 +119,6 @@ input[type="file"] {
 
     color: var(--text-color);
 
-    text-wrap: wrap;
-
     &:hover {
         background-image: linear-gradient(var(--accent-color-high-contrast), var(--accent-color-high-contrast));
 
