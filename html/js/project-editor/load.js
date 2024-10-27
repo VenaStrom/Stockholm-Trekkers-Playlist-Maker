@@ -23,8 +23,14 @@ if (id !== "new") {
 
             // Set the options
             block.options.forEach((option, optionIndex) => {
-                blockDOM.querySelector(`.options input#${option.id}`).checked = block.options[optionIndex].checked;
+                const optionDOM = blockDOM.querySelector(".options input#" + option.id);
+                if (optionDOM) {
+                    optionDOM.checked = block.options[optionIndex].checked;
+                }
             });
+
+            // Update the dots
+            updateDots(blockDOM.querySelector(".options"));
 
             // Set the episodes
             block.episodes.forEach((episode, episodeIndex) => {
@@ -42,11 +48,12 @@ if (id !== "new") {
 
                 const fileInput = episodeDOM.querySelector(".file input[type='file']");
                 fileInput.files = dataTransfer.files;
-
                 fileInput.dataset.filePath = episode.filePath;
-                // fileInput.dataset.duration = episode.duration;
 
-                episodeDOM.querySelector(".time p").textContent = episode.startTime;
+                const timeDOM = episodeDOM.querySelector(".time p");
+
+                timeDOM.textContent = episode.startTime;
+                timeDOM.dataset.endTime = episode.endTime;
             });
 
             if (block.episodes.length !== 1) {
