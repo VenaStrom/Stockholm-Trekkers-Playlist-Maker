@@ -29,6 +29,9 @@ if (id !== "new") {
                 }
             });
 
+            // Update the dots
+            updateDots(blockDOM.querySelector(".options"));
+
             // Set the episodes
             block.episodes.forEach((episode, episodeIndex) => {
                 // Create new episode DOMs if there aren't enough

@@ -77,9 +77,17 @@ const setEpisodeStartTimesInBlock = (block) => {
 
     let head = parseFloat(blockTime.split(":")[0] * 60 * 60 + blockTime.split(":")[1] * 60); // seconds
 
-    episodes.forEach((episode) => {
+    episodes.forEach((episode, index) => {
         // Skip if no file
-        if (!episode.querySelector(".file input[type='file']").value) { return; }
+        if (!episode.querySelector(".file input[type='file']").value) {
+            // If the previous episode has a file, set time to it's end time
+            if (episodes[index - 1] && episodes[index - 1].querySelector(".file input[type='file']").value) {
+                episode.querySelector(".time p").textContent = episodes[index - 1].querySelector(".time p").dataset.endTime;
+            } else {
+                episode.querySelector(".time p").textContent = "--:--";
+            }
+            return;
+        }
 
         const episodeTimeDOM = episode.querySelector(".time p");
         const episodeFileInput = episode.querySelector(".file input[type='file']");

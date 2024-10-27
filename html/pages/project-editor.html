@@ -19,9 +19,9 @@
     <script src="../js/clickableElements.js"></script>
     <script src="../js/project-editor/idCheck.js"></script>
     <script defer src="../js/project-editor/backButton.js"></script>
-    <script defer src="../js/project-editor/openOptions.js"></script>
     <script defer src="../js/project-editor/hideUnset.js"></script>
     <script defer src="../js/project-editor/setStartTimes.js"></script>
+    <script defer src="../js/project-editor/openOptions.js"></script>
     <script defer src="../js/project-editor/createBlockAndEpisodes.js"></script>
     <script defer src="../js/project-editor/exportStatus.js"></script>
     <script defer src="../js/project-editor/validators/dateValidator.js"></script>
@@ -36,32 +36,46 @@
                 <input type="text" placeholder="hhmm" onblur="dateValidator(this)">
             </div>
 
-            <h3 class="option clickable" onclick="expandOptions(this)" tabindex="0" title="Show the options for this block">Options ▼</h3>
+            <div class="open-options clickable" onclick="expandOptions(this)" tabindex="0">
+                <div class="option-preview-dot"></div>
+                <div class="option-preview-dot"></div>
+                <div class="option-preview-dot"></div>
+                <div class="option-preview-dot"></div>
+                <p>Options ▼</p>
+            </div>
 
             <img class="clickable-icon clickable" id="delete-block" onclick="deleteBlockDOM(this)" tabindex="0" title="Delete this block" src="../../assets/images/delete_35dp_000000_FILL0_wght700_GRAD0_opsz40.png" alt="Delete">
 
-            <div class="options">
-                <p>Add a leading or trailing:</p>
+            <div class="options" onchange="updateDots(this)">
+                <div class="leading">
+                    <p>Add a leading:</p>
 
-                <div>
-                    <div class="clickable" tabindex="0" title="This adds a 1 min countdown before the block. This should pretty much always be on.">
-                        <input type="checkbox" checked id="leading-countdown" data-file-name="pause_1_min_countdown.mp4" data-length-seconds="60" tabindex="-1">
-                        <p>countdown</p>
+                    <div>
+                        <div class="clickable" tabindex="0" title="This adds a 1 min countdown before the block. This should pretty much always be on.">
+                            <input type="checkbox" checked id="leading-countdown" data-file-name="pause_1_min_countdown.mp4" data-length-seconds="60" tabindex="-1">
+                            <p>countdown</p>
+                        </div>
+
+                        <div class="clickable" tabindex="0" title="This adds a 1 min clip of the emergency procedures before the block.">
+                            <input type="checkbox" checked id="leading-emergency-routine" data-file-name="pause_1_min_emergency.mp4" data-length-seconds="59" tabindex="-1">
+                            <p>emergency routine</p>
+                        </div>
+
+                        <div class="clickable" tabindex="0" title="This adds a 1 min clip that reminds viewers to show respect to each other in regards to the 2020s pandemic.">
+                            <input type="checkbox" id="leading-covid-disclaimer" data-file-name="pause_1_min_covid.mp4" data-length-seconds="60" tabindex="-1">
+                            <p>covid disclaimer</p>
+                        </div>
                     </div>
+                </div>
 
-                    <div class="clickable" tabindex="0" title="This adds a 1 min clip of the emergency procedures before the block.">
-                        <input type="checkbox" checked id="leading-emergency-routine" data-file-name="pause_1_min_emergency.mp4" data-length-seconds="59" tabindex="-1">
-                        <p>emergency routine</p>
-                    </div>
+                <div class="trailing">
+                    <p>Add a trailing:</p>
 
-                    <div class="clickable" tabindex="0" title="This adds a 1 min clip that reminds viewers to show respect to each other in regards to the 2020s pandemic.">
-                        <input type="checkbox" id="leading-covid-disclaimer" data-file-name="pause_1_min_covid.mp4" data-length-seconds="60" tabindex="-1">
-                        <p>covid disclaimer</p>
-                    </div>
-
-                    <div class="clickable" tabindex="0" title="This adds a 20 second clip at the end of the block that reminds visitors to sign in">
-                        <input type="checkbox" id="trailing-sign-in-reminder" data-file-name="sign_in_reminder.mp4" data-length-seconds="19" tabindex="-1">
-                        <p>sign-in reminder</p>
+                    <div>
+                        <div class="clickable" tabindex="0" title="This adds a 20 second clip at the end of the block that reminds visitors to sign in">
+                            <input type="checkbox" id="trailing-sign-in-reminder" data-file-name="sign_in_reminder.mp4" data-length-seconds="19" tabindex="-1">
+                            <p>sign-in reminder</p>
+                        </div>
                     </div>
                 </div>
             </div>

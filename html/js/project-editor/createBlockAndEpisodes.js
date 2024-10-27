@@ -41,6 +41,9 @@ const createBlockDOM = () => {
     block.classList.remove("block-template");
     block.classList.remove("hidden");
 
+    // Update the option dots 
+    updateDots(block.querySelector(".options"));
+
     // Callback functions defined in setStartTimes.js
     block.querySelector(".time input[type='text']").addEventListener("change", formatBlockTime);
     block.addEventListener("change", updateEpisodeTimesInBlock);
