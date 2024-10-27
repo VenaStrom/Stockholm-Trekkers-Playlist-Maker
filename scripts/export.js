@@ -124,6 +124,18 @@ function Insert-LeadingClip {
     Play-Video -videoPath $clipPath -playImmediately $playImmediately
 }
 
+# Function to insert a trailing clip
+# Example usage:
+# Insert-TrailingClip -clipPath 'C:/pauses/pause_1_min_countdown.mp4' -playImmediately $false
+function Insert-TrailingClip {
+    param (
+        [string]$clipPath,
+        [bool]$playImmediately = $false
+    )
+
+    Play-Video -videoPath $clipPath -playImmediately $playImmediately
+}
+
 
 
 #
@@ -145,6 +157,7 @@ Insert-Pause -pausePath '/pauses/pause_30_min.mp4' -playImmediately $false
     const playEpisode = (episodePath, playImmediately = false) => `Play-Video -videoPath '${episodePath}' -playImmediately ${playImmediately ? "$true" : "$false"};`;
     const insertPause = (pausePath, playImmediately = false) => `Insert-Pause -pausePath '${pausePath}' -playImmediately ${playImmediately ? "$true" : "$false"};`;
     const insertLeadingClip = (clipPath, playImmediately = false) => `Insert-LeadingClip -clipPath '${clipPath}' -playImmediately ${playImmediately ? "$true" : "$false"};`;
+    const insertTrailingClip = (clipPath, playImmediately = false) => `Insert-TrailingClip -clipPath '${clipPath}' -playImmediately ${playImmediately ? "$true" : "$false"};`;
 
     const blocks = [];
 
@@ -182,7 +195,7 @@ Insert-Pause -pausePath '/pauses/pause_30_min.mp4' -playImmediately $false
         // Queue the leading clips
         let first = true;
         block.options.forEach((option) => {
-            if (option.checked) {
+            if (option.checked && option.id.includes("leading")) {
                 const clipPath = "/pauses/" + option.fileName;
                 blockArray.push(insertLeadingClip(clipPath, playImmediately = first));
                 first = false;
@@ -193,6 +206,7 @@ Insert-Pause -pausePath '/pauses/pause_30_min.mp4' -playImmediately $false
         blockArray.push("");
 
         // Push the episodes in the block
+        blockArray.push(`# Episodes in block ${index + 1}`);
         block.episodes.forEach((episode) => {
             blockArray.push(playEpisode("/episodes/" + episode.fileName, playImmediately = first));
             first = false;
@@ -200,6 +214,14 @@ Insert-Pause -pausePath '/pauses/pause_30_min.mp4' -playImmediately $false
 
         // Add some margin in the ps1 script for easier readability
         blockArray.push("");
+
+        // Add the trailing clips
+        block.options.forEach((option) => {
+            if (option.checked && option.id.includes("trailing")) {
+                const clipPath = "/pauses/" + option.fileName;
+                blockArray.push(insertTrailingClip(clipPath, false));
+            }
+        });
 
         // Push an hour and a half of pauses at the end of each block
         for (let i = 0; i < 3; i++) {
