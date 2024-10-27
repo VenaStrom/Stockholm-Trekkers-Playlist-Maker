@@ -42,11 +42,12 @@ if (id !== "new") {
 
                 const fileInput = episodeDOM.querySelector(".file input[type='file']");
                 fileInput.files = dataTransfer.files;
-
                 fileInput.dataset.filePath = episode.filePath;
-                // fileInput.dataset.duration = episode.duration;
 
-                episodeDOM.querySelector(".time p").textContent = episode.startTime;
+                const timeDOM = episodeDOM.querySelector(".time p");
+
+                timeDOM.textContent = episode.startTime;
+                timeDOM.dataset.endTime = episode.endTime;
             });
 
             if (block.episodes.length !== 1) {

@@ -79,7 +79,7 @@ const setEpisodeStartTimesInBlock = (block) => {
 
     episodes.forEach((episode) => {
         // Skip if no file
-        if (!episode.querySelector(".file input[type='file']").value) { return }
+        if (!episode.querySelector(".file input[type='file']").value) { return; }
 
         const episodeTimeDOM = episode.querySelector(".time p");
         const episodeFileInput = episode.querySelector(".file input[type='file']");
@@ -88,6 +88,9 @@ const setEpisodeStartTimesInBlock = (block) => {
         episodeTimeDOM.textContent = secondsToFormattedTime(head);
 
         head += duration;
+
+        // Save the episode end time as well
+        episodeTimeDOM.dataset.endTime = secondsToFormattedTime(head);
     });
 }
 

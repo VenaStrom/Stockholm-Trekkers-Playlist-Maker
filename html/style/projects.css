@@ -100,30 +100,74 @@ body {
                 font-size: 0.9rem;
                 font-weight: 300;
 
-                padding-left: 5ch;
-                padding-right: 5ch;
+                padding-left: 3ch;
+                padding-right: 3ch;
 
                 width: 100%;
 
                 display: flex;
                 flex-flow: column nowrap;
                 gap: 0.3rem;
-                row-gap: 0.5rem;
+                row-gap: 0.7rem;
 
                 &>li {
                     display: grid;
-                    grid-template-columns: 6ch 2ch 1fr;
+                    grid-template-columns: 6ch 1fr;
                     grid-template-rows: 1fr;
-                    column-gap: 1ch;
+                    column-gap: 2ch;
 
                     &>:first-child {
                         text-align: center;
                     }
+
+                    &.pause:last-of-type {
+                        display: none;
+                    }
+
+                    &.block-header {
+                        display: flex;
+                        flex-flow: row nowrap;
+                        align-items: center;
+
+                        &>div {
+                            &>p {
+                                font-size: 0.75rem;
+                                margin-right: 0.6ch;
+                            }
+
+                            display: flex;
+                            flex-flow: row nowrap;
+                            align-items: center;
+                            column-gap: 0.2ch;
+
+                            /* The little dots */
+                            &>.option {
+                                height: 0.6rem;
+                                width: 0.6rem;
+                                background-color: var(--accent-color-low-contrast);
+                                border: solid 0.1rem var(--background-color);
+                                border-radius: 0.2rem;
+
+                                &.checked {
+                                    background-color: var(--accent-color-high-contrast);
+                                }
+                            }
+                        }
+                    }
                 }
 
-                &>li.block-divider {
-                    border-bottom: 0.05rem solid var(--accent-color-low-contrast);
-                    border-radius: 100vw;
+
+                &>hr {
+                    width: calc(100% - 3ch);
+                    border: 0.05rem solid var(--accent-color-low-contrast);
+
+                    &:last-child {
+                        display: none;
+                    }
+
+                    &:nth-last-of-type(2) {
+                        display: none;
+                    }
                 }
             }
 
