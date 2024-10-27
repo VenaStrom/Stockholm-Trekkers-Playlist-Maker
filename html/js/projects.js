@@ -140,7 +140,7 @@ projects.getAll().then((projectList) => {
             episodeList.appendChild(document.createElement("hr"));
 
             // Add the pause at the end of the block
-            const lastEpisode = blockData.episodes.at(-1);
+            const lastEpisode = blockData.episodes.at(-1) || { endTime: "--:--" };
             episodeList.appendChild(makePauseDOM(lastEpisode));
 
             // Add a hairline after the pause and before the next block
