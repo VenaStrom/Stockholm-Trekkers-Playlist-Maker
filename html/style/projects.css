@@ -4,7 +4,8 @@
 
 body {
     &>main {
-        width: 40%;
+        width: 50%;
+
         @media screen and (max-width: 800px) {
             width: 80%;
         }

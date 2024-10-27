@@ -28,6 +28,7 @@
         }
 
         &>main {
+            width: 55%;
             @media screen and (max-width: 800px) {
                 width: 80%;
             }
