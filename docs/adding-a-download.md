@@ -10,10 +10,10 @@ The program uses google drive to store the assets. To add a new asset to downloa
 1. You need to have the asset uploaded to google drive.
 2. Get the file id of the asset.
    - To do this the easiest way is to go to the asset in google drive and open it in a new tab. You should be brought to a page that looks like this:
-![Screenshot](screenshots/find-file-id.png)
+![Screenshot](../screenshots/find-file-id.png)
 In the url bar you will see a long string of characters that looks like this: `1POheLkrK_1O786JByNvmHBnxbEijn82E`, keep in mind that it can contain underscores, dashes, and other characters. Copy this string.
 
-3. Open the [fileURLs.json](./fileURLs.json) file and add a new object to the `videos` array. The file should look something like this:
+1. Open the [fileURLs.json](./fileURLs.json) file and add a new object to the `videos` array. The file should look something like this:
 ```json
 {
     "urlTemplate": "https://drive.google.com/uc?export=download&id=",
