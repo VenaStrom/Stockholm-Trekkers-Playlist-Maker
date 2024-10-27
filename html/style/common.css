@@ -119,6 +119,8 @@ input[type="file"] {
 
     color: var(--text-color);
 
+    text-wrap: wrap;
+
     &:hover {
         background-image: linear-gradient(var(--accent-color-high-contrast), var(--accent-color-high-contrast));
 
@@ -182,7 +184,9 @@ input[type="file"] {
     align-items: center;
     gap: 0.8rem;
 }
+
 /* End of selector wide styling */
+
 
 /* Common styling of base html structure */
 body {

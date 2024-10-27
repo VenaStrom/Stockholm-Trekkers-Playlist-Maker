@@ -208,6 +208,7 @@
                         flex-flow: row nowrap;
                         justify-content: space-between;
                         align-items: center;
+                        column-gap: 1ch;
 
                         padding-top: 0.4rem;
                         padding-bottom: 0.4rem;
@@ -224,8 +225,8 @@
 
                         &>.file {
                             flex: 1;
-                            padding-right: 2ch;
-
+                            margin-right: 2ch;
+                            
                             &>* {
                                 width: 100%;
                             }
