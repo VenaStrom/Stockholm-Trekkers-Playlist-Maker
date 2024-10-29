@@ -15,6 +15,12 @@ const warningPopup = (id, source, warnings) => {
     popup.classList.add("warning-popup");
     popup.id = id;
 
+    // Create close button
+    const closeButton = document.createElement("p");
+    closeButton.textContent = "Dismiss";
+    closeButton.addEventListener("click", () => popup.remove());
+    popup.appendChild(closeButton);
+
     // Populate popup with warnings
     warnings.forEach(warning => {
         const p = document.createElement("p");

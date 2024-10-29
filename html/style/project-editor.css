@@ -12,6 +12,18 @@
     text-align: left;
 
     padding: 0.8rem;
+    padding-top: 0.2rem;
+
+    &>p:first-child {
+        cursor: pointer;
+        color: var(--mid-color);
+        font-size: 0.8rem;
+        width: max-content;
+
+        &:hover {
+            color: var(--accent-color-high-contrast);
+        }
+    }
 }
 
 body {
