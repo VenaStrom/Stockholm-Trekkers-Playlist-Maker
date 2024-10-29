@@ -1,27 +1,32 @@
 
-const dateValidator = (inputSource) => {
+const dateValidator = (inputDate) => {
 
-    const warnings = (name) => {
-        const date = new Date(name);
-        
-        const warnings = [];
-    
-        if (date == "Invalid Date") {
-            warnings.push("It's not a valid date. ");
+    const date = new Date(inputDate);
+
+    const warningMessages = [];
+
+    if (date == "Invalid Date") {
+        warningMessages.push("It's not a valid date. ");
     };
     if (!(date.getDay() === 0 || date.getDay() === 6)) {
-        warnings.push("It's on a weekday. ");
+        warningMessages.push("It's on a weekday. ");
     };
     if (date.getFullYear() !== new Date().getFullYear()) {
-        warnings.push("It's not this year. ");
+        warningMessages.push("It's not this year. ");
     };
     if (date < new Date()) {
-        warnings.push("It's in the past. ");
+        warningMessages.push("It's in the past. ");
     };
     if (date.getTime() > new Date().getTime() + 5184000000) {
-        warnings.push("It's more than 2 months away. ");
+        warningMessages.push("It's more than 2 months away. ");
     };
 
-    return warnings;
+    return warningMessages;
 }
-}
+
+document.querySelector(".date-input>input").addEventListener("blur", (event) => {
+    const date = event.target.value;
+    const warnings = dateValidator(date);
+
+    warningPopup("date-warning-popup-id", event.target, warnings);
+});

@@ -10,6 +10,7 @@ if (id !== "new") {
         }
 
         document.querySelector(".date-input input[type='text']").value = project.date;
+        document.querySelector(".date-input input[type='text']").dispatchEvent(new Event("blur"));
 
         project.blocks.forEach((block, blockIndex) => {
             // Create new blocks if there are not enough
@@ -20,6 +21,7 @@ if (id !== "new") {
             const blockDOM = document.querySelectorAll(".block")[blockIndex];
 
             blockDOM.querySelector(".header .time input[type='text']").value = block.startTime;
+            blockDOM.querySelector(".header .time input[type='text']").dispatchEvent(new Event("blur"));
 
             // Set the options
             block.options.forEach((option, optionIndex) => {
