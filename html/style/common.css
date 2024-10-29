@@ -96,7 +96,7 @@ input[type="checkbox"] {
     height: 1.25rem;
     aspect-ratio: 1/1;
 
-    border: 0.15rem solid var(--background-color);
+    border: 0.2rem solid var(--background-color);
     border-radius: 0.4rem;
 
     &:checked {

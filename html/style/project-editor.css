@@ -405,6 +405,10 @@ body {
                     flex-flow: row nowrap;
                     align-items: center;
                     column-gap: 1ch;
+
+                    &>input {
+                        border-color: var(--accent-color-low-contrast);
+                    }
                 }
 
                 &>button {
