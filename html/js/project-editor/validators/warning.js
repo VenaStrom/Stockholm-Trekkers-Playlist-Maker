@@ -24,21 +24,20 @@ const warningPopup = (id, source, warnings) => {
     // Populate popup with warnings
     warnings.forEach(warning => {
         const p = document.createElement("p");
-        p.textContent = "- " + warning;
+        p.textContent = "• " + warning;
         popup.appendChild(p);
     });
 
     document.body.appendChild(popup);
 
     // Set popup position
-    const sourceRect = source.getBoundingClientRect();
-    const popupRect = popup.getBoundingClientRect();
-    popup.style.left = `${sourceRect.x + (sourceRect.width - popupRect.width) / 2}px`;
-    popup.style.top = `${sourceRect.bottom + window.scrollY}px`;
-    window.addEventListener("scroll", () => {
+    const calculatePosition = () => {
         const sourceRect = source.getBoundingClientRect();
         const popupRect = popup.getBoundingClientRect();
         popup.style.left = `${sourceRect.x + (sourceRect.width - popupRect.width) / 2}px`;
         popup.style.top = `${sourceRect.bottom + window.screenY}px`;
-    });
+    };
+    window.addEventListener("scroll", calculatePosition);
+    window.addEventListener("resize", calculatePosition);
+    calculatePosition();
 };
