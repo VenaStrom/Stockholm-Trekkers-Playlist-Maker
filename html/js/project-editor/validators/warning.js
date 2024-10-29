@@ -14,8 +14,6 @@ const warningPopup = (id, source, warnings) => {
     const popup = document.createElement("div");
     popup.classList.add("warning-popup");
     popup.id = id;
-    popup.style.left = `${source.getBoundingClientRect().center}px`;
-    popup.style.top = `${source.getBoundingClientRect().bottom}px`;
 
     // Populate popup with warnings
     warnings.forEach(warning => {
@@ -25,4 +23,16 @@ const warningPopup = (id, source, warnings) => {
     });
 
     document.body.appendChild(popup);
+
+    // Set popup position
+    const sourceRect = source.getBoundingClientRect();
+    const popupRect = popup.getBoundingClientRect();
+    popup.style.left = `${sourceRect.x + (sourceRect.width - popupRect.width) / 2}px`;
+    popup.style.top = `${sourceRect.bottom + window.scrollY}px`;
+    window.addEventListener("scroll", () => {
+        const sourceRect = source.getBoundingClientRect();
+        const popupRect = popup.getBoundingClientRect();
+        popup.style.left = `${sourceRect.x + (sourceRect.width - popupRect.width) / 2}px`;
+        popup.style.top = `${sourceRect.bottom + window.screenY}px`;
+    });
 };
