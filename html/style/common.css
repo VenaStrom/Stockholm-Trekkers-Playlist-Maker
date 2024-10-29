@@ -96,12 +96,15 @@ input[type="checkbox"] {
     height: 1.25rem;
     aspect-ratio: 1/1;
 
-    border: 0.15rem solid var(--text-color);
+    border: 0.15rem solid var(--background-color);
     border-radius: 0.4rem;
 
     &:checked {
         background-color: var(--accent-color-high-contrast);
-        background-image: -webkit-image-set();
+    }
+
+    &:hover:not(&:checked) {
+        border-color: var(--mid-color);
     }
 }
 

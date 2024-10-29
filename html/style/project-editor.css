@@ -174,7 +174,7 @@ body {
 
                         display: none;
                         flex-flow: column nowrap;
-                        row-gap: 0.5rem;
+                        row-gap: 1rem;
 
                         padding-top: 0.5rem;
                         margin-top: 1rem;
@@ -182,12 +182,13 @@ body {
                         /* Hairline */
                         border-top: 0.1rem solid var(--background-color);
 
+                        /* "Leading" or "trailing" divs are on this level */
                         &>div {
                             width: 100%;
 
                             display: flex;
                             flex-flow: column nowrap;
-                            row-gap: 0.5rem;
+                            row-gap: 0.3rem;
 
                             &>div {
                                 display: flex;
@@ -208,6 +209,15 @@ body {
                                     text-align: left;
 
                                     min-width: 25ch;
+
+                                    &:hover {
+                                        &>p {
+                                            color: var(--accent-color-high-contrast);
+                                        }
+                                        &>input:not(&>input:checked) {
+                                            border-color: var(--mid-color);
+                                        }
+                                    }
                                 }
                             }
                         }
