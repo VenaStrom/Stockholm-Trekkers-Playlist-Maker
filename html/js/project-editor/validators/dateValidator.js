@@ -7,6 +7,8 @@ const dateValidator = (inputDate) => {
 
     if (date == "Invalid Date") {
         warnings.push("It's not a valid date. ");
+
+        return warnings; // There's no point in checking further if the date is invalid since the rest of the checks rely on the date object
     };
     if (!(date.getDay() === 0 || date.getDay() === 6)) {
         warnings.push("It's on a weekday. ");
