@@ -44,9 +44,10 @@ const createBlockDOM = () => {
     // Update the option dots 
     updateDots(block.querySelector(".options"));
 
-    // Callback functions defined in setStartTimes.js
+    // Callback functions defined in setStartTimes.js and blockTimeValidator.js
     block.querySelector(".time input[type='text']").addEventListener("change", formatBlockTime);
     block.addEventListener("change", updateEpisodeTimesInBlock);
+    block.querySelector(".time input[type='text']").addEventListener("blur", blockTimeValidator);
 
     // Make two episodes to start off with
     createEpisodeDOM(block);
