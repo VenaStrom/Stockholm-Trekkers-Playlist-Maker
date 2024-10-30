@@ -207,16 +207,18 @@ body {
                                 flex-flow: row wrap;
                                 row-gap: 0.5rem;
 
-                                display: flex;
-                                flex-flow: column nowrap;
-                                row-gap: 0.5rem;
+                                user-select: none;
 
                                 &>div {
-                                    display: flex;
-                                    flex-flow: row wrap;
-                                    row-gap: 0.5rem;
+                                    cursor: pointer;
 
-                                    user-select: none;
+                                    display: flex;
+                                    flex-flow: row nowrap;
+                                    align-items: center;
+                                    justify-content: flex-start;
+                                    column-gap: 1ch;
+
+                                    text-align: left;
 
                                     min-width: 25ch;
 
@@ -273,6 +275,23 @@ body {
                             width: 100%;
                         }
                     }
+                }
+            }
+
+            &>.create-block {
+                height: 12rem;
+                cursor: pointer;
+
+                &>img {
+                    image-rendering: pixelated;
+
+                    height: 5rem;
+
+                    filter: var(--filter-to-text-color);
+                }
+
+                &:hover {
+                    background-color: var(--accent-color-low-contrast);
                 }
             }
 
