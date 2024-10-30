@@ -136,7 +136,17 @@ function Insert-TrailingClip {
     Play-Video -videoPath $clipPath -playImmediately $playImmediately
 }
 
-
+#
+# Ensure VLC has started
+#
+Write-Host 'Waiting for VLC to open...'
+& $VLCpath $mainArgs # Start VLC
+# Wait for VLC to open
+$vlcProcess = Get-Process -Name "vlc" -ErrorAction SilentlyContinue
+while (-not $vlcProcess) {
+    Start-Sleep -Milliseconds 100
+    $vlcProcess = Get-Process -Name "vlc" -ErrorAction SilentlyContinue
+}
 
 #
 # Inform the user that the playlist is "armed"

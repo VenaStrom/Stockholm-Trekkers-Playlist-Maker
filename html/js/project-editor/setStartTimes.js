@@ -7,13 +7,25 @@ const interpretUserTimeInput = (time) => {
         return `0${time}:00`;
     }
     if (time.length === 2) {
-        return `${time}:00`;
+        if (parseInt(time) > 23) {
+            return `0${time[0]}:${time[1]}0`;
+        } else {
+            return `${time}:00`;
+        }
     }
     if (time.length === 3) {
-        return `${time[0]}${time[1]}:${time[2]}0`;
+        if (parseInt(time[0] + time[1]) > 23) {
+            return `0${time[0]}:${time[1]}${time[2]}`;
+        } else {
+            return `${time[0]}${time[1]}:${time[2]}0`;
+        }
     }
     if (time.length === 4) {
-        return `${time[0]}${time[1]}:${time[2]}${time[3]}`;
+        if (parseInt(time[0] + time[1]) > 23) {
+            return `23:${time[2]}${time[3]}`;
+        } else {
+            return `${time[0]}${time[1]}:${time[2]}${time[3]}`;
+        }
     }
     return undefined;
 };
@@ -77,13 +89,16 @@ const setEpisodeStartTimesInBlock = (block) => {
 
     let head = parseFloat(blockTime.split(":")[0] * 60 * 60 + blockTime.split(":")[1] * 60); // seconds
 
+    if (isNaN(head)) { zeroAllEpisodesInBlock(block); return; }
+
     episodes.forEach((episode, index) => {
         // Skip if no file
         if (!episode.querySelector(".file input[type='file']").value) {
-            // If the previous episode has a file, set time to it's end time
             if (episodes[index - 1] && episodes[index - 1].querySelector(".file input[type='file']").value) {
+                // If the previous episode has a file and this one doesn't, set time to it's end time
                 episode.querySelector(".time p").textContent = episodes[index - 1].querySelector(".time p").dataset.endTime;
             } else {
+                // Otherwise, set time to "--:--"
                 episode.querySelector(".time p").textContent = "--:--";
             }
             return;
@@ -99,6 +114,11 @@ const setEpisodeStartTimesInBlock = (block) => {
 
         // Save the episode end time as well
         episodeTimeDOM.dataset.endTime = secondsToFormattedTime(head);
+    });
+
+    // This triggers the validators for all the blocks since they rely on the episode times to check for overlaps. See, blockTimeValidator.js
+    document.querySelectorAll(".block").forEach((block) => {
+        block.querySelector(".time>input[type='text']").dispatchEvent(new Event("blur"));
     });
 }
 
