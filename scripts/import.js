@@ -23,9 +23,19 @@ const showDialog = () => {
                 fs.mkdirSync(projectsFolder);
             }
 
-            // If the file already exists, don't copy it
+            // Ask to overwrite if the file already exists
             if (fs.existsSync(path.join(projectsFolder, fileName))) {
-                console.log(`[WARN] A file (${fileName}) wasn't copied due to the project already containing a file with the same name. This should be expected behavior when showing multiples of the same file but it could also be bad if files accidentally were named the same thing.`);
+                const result = dialog.showMessageBoxSync({
+                    type: "warning",
+                    title: "File Already Exists. Overwrite?",
+                    message: `A file named ${fileName} already exists in the projects folder. Do you want to overwrite it?`,
+                    buttons: ["Yes", "No"],
+                    defaultId: 1,
+                })
+                if (result === 0) {
+                    fs.rmSync(path.join(projectsFolder, fileName));
+                    fs.copyFileSync(filePath, path.join(projectsFolder, fileName));
+                }
             } else {
                 fs.copyFileSync(filePath, path.join(projectsFolder, fileName));
             }
