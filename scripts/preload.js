@@ -24,3 +24,7 @@ contextBridge.exposeInMainWorld("exporter", {
     getStatus: () => ipcRenderer.invoke("get-export-status"),
     cancel: () => ipcRenderer.invoke("cancel-export"),
 });
+
+contextBridge.exposeInMainWorld("importer", {
+    import: () => ipcRenderer.invoke("import"),
+});

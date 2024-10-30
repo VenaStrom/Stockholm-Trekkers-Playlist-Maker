@@ -18,6 +18,7 @@
     <script src="../js/raiseError.js"></script>
     <script defer src="../js/projects.js"></script>
     <script defer src="../js/clickableElements.js"></script>
+    <script defer src="../js/importFromFile.js"></script>
 
 
     <!-- Template div -->
@@ -32,7 +33,8 @@
                 <p>2024-08-30</p>
             </div>
 
-            <img class="clickable clickable-icon delete-project" tabindex="0" src="../../assets/images/delete_35dp_000000_FILL0_wght700_GRAD0_opsz40.png" alt="Delete">
+            <img class="clickable clickable-icon delete-project" tabindex="0"
+                src="../../assets/images/delete_35dp_000000_FILL0_wght700_GRAD0_opsz40.png" alt="Delete">
         </div>
 
         <ul>
@@ -85,6 +87,13 @@
 
         <div class="round-box make-new-project clickable" tabindex="0">
             <img src="../../assets/images/add_35dp_000000_FILL0_wght700_GRAD0_opsz40.png" alt="+">
+        </div>
+
+        <div class="button-wrapper">
+            <button class="import-button" onclick="importFromFile()">
+                <img src="../../assets/images/download_24dp_000000_FILL0_wght400_GRAD0_opsz24.png" alt="">
+                Import From File
+            </button>
         </div>
     </main>
 

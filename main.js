@@ -1,9 +1,10 @@
-const { app, BrowserWindow, nativeTheme } = require("electron");
+const { app, BrowserWindow } = require("electron");
 const path = require("node:path");
 const { setUpHandlers: setUpDownloadHandlers } = require("./scripts/download/downloadAssets.js");
 const { setUpHandlers: setUpProjectHandlers } = require("./scripts/save/projects.js");
 const { setUpHandlers: setUpMetadataHandlers } = require("./scripts/getMetaData.js");
 const { setUpHandlers: setUpExportHandlers } = require("./scripts/export.js");
+const { setUpHandlers: setUpImportHandlers } = require("./scripts/import.js");
 
 const createMainWindow = () => {
     const mainWindow = new BrowserWindow({
@@ -41,6 +42,7 @@ app.whenReady().then(() => {
     setUpProjectHandlers();
     setUpMetadataHandlers();
     setUpExportHandlers();
+    setUpImportHandlers();
 
     console.log("[INFO] handlers set up");
 

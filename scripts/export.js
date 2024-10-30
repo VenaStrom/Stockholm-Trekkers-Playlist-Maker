@@ -2,7 +2,7 @@ const { ipcMain, dialog } = require("electron");
 const { Worker } = require("worker_threads");
 const path = require("node:path");
 const fs = require("node:fs");
-const { projectGet, projectFolder: userData } = require("./save/projects.js");
+const { projectGet, projectsFolder: userData } = require("./save/projects.js");
 
 let copyWorker;
 
@@ -327,7 +327,7 @@ Directly exporting to a USB drive is slow and can cause the program to hang.`
         }
     });
     // This starts the copying
-    copyWorker.postMessage({ projectJSON, projectFolder: exportLocation, userData });
+    copyWorker.postMessage({ projectJSON, projectsFolder: exportLocation, userData });
 };
 
 

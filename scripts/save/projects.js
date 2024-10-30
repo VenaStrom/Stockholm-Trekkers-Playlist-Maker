@@ -3,7 +3,7 @@ const fs = require("node:fs");
 const path = require("node:path")
 const raiseError = require("../raiseError.js");
 
-const projectFolder = path.join(__dirname, "../..", "user-data", "projects");
+const projectsFolder = path.join(__dirname, "../..", "user-data", "projects");
 
 const projectGet = (id, projectDirPath) => {
     const filePath = path.join(projectDirPath, id + ".json")
@@ -58,22 +58,22 @@ const projectGetAll = (projectDirPath) => {
 
 const setUpHandlers = () => {
     // Make sure the projects folder exists
-    if (!fs.existsSync(projectFolder)) {
-        fs.mkdirSync(projectFolder, { recursive: true });
+    if (!fs.existsSync(projectsFolder)) {
+        fs.mkdirSync(projectsFolder, { recursive: true });
     };
 
     ipcMain.handle("project-get", (event, id) => {
-        return projectGet(id, projectFolder);
+        return projectGet(id, projectsFolder);
     });
     ipcMain.handle("project-save", (event, projectJSON) => {
-        return projectSave(projectJSON, projectFolder);
+        return projectSave(projectJSON, projectsFolder);
     });
     ipcMain.handle("project-delete", (event, id) => {
-        return projectDelete(id, projectFolder);
+        return projectDelete(id, projectsFolder);
     });
     ipcMain.handle("project-get-all", (event) => {
-        return projectGetAll(projectFolder);
+        return projectGetAll(projectsFolder);
     });
 };
 
-module.exports = { setUpHandlers, projectGet, projectFolder };
+module.exports = { setUpHandlers, projectGet, projectsFolder };

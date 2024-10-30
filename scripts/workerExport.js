@@ -65,5 +65,5 @@ const copyAllAssets = (projectJSON, exportFolder, userData) => {
 
 parentPort.on("message", (message) => {
     console.log("[INFO] Worker started working");
-    copyAllAssets(message.projectJSON, message.projectFolder, message.userData);
+    copyAllAssets(message.projectJSON, message.projectsFolder, message.userData);
 });
