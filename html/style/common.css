@@ -205,6 +205,9 @@ body {
 
 
     &>header {
+        -webkit-user-select: none;
+        -webkit-app-region: drag;
+
         width: 100dvw;
         max-width: 100%;
         min-height: var(--header-height);
