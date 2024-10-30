@@ -1,9 +1,7 @@
 
 const dateInput = document.querySelector(".date-input>input");
 
-dateInput.addEventListener("blur", (event) => {
-    const date = event.target.value;
-
+const interpretDate = (date) => {
     if (date == "") { return; }
 
     const strippedDate = date.replace(/\D/g, "");
@@ -91,4 +89,11 @@ dateInput.addEventListener("blur", (event) => {
             return;
         }
     }
+};
+
+dateInput.addEventListener("blur", (event) => {
+    // Interpret the date
+    interpretDate(event.target.value);
+    // Then run the validator
+    validateDate(event.target);
 });

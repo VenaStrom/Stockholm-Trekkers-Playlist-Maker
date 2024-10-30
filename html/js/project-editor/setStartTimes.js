@@ -115,6 +115,11 @@ const setEpisodeStartTimesInBlock = (block) => {
         // Save the episode end time as well
         episodeTimeDOM.dataset.endTime = secondsToFormattedTime(head);
     });
+
+    // This triggers the validators for all the blocks since they rely on the episode times to check for overlaps. See, blockTimeValidator.js
+    document.querySelectorAll(".block").forEach((block) => {
+        block.querySelector(".time>input[type='text']").dispatchEvent(new Event("blur"));
+    });
 }
 
 // Formats time in block time input to HH:MM

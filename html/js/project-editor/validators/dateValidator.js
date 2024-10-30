@@ -26,9 +26,10 @@ const dateValidator = (inputDate) => {
     return warnings;
 }
 
-document.querySelector(".date-input>input").addEventListener("blur", (event) => {
-    const date = event.target.value;
+// This function is run from the dateFormatter.js file
+const validateDate = (source) => {
+    const date = source.value;
     const warnings = dateValidator(date);
 
-    warningPopup("date-warning-popup-id", event.target, warnings);
-});
+    warningPopup("date-warning-popup-id", source, warnings);
+};

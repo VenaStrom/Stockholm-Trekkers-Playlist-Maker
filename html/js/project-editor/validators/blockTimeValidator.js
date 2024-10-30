@@ -58,7 +58,33 @@ const validateTime = (time) => {
         warnings.push("Duplicate time.");
     }
 
+    const blockIndex = blockTimes.indexOf(time);
+    const previousBlock = blocks[blockIndex - 1] || null;
+    const nextBlock = blocks[blockIndex + 1] || null;
 
+    // Overlapping time
+    if (previousBlock) {
+        const previousBlockEpisodes = Array.from(previousBlock.querySelectorAll(".episode")).reverse();
+
+        // Finds the last time in the previous block that isn't unset
+        let previousTime = "--:--";
+        for (const episode of previousBlockEpisodes) {
+            const episodeTime = episode.querySelector(".time>p").textContent;
+
+            if (episodeTime !== "--:--") {
+                previousTime = episodeTime;
+                break;
+            }
+        }
+
+        if (previousTime !== "--:--") {
+            const [previousHours, previousMinutes] = previousTime.split(":").map(Number);
+
+            if (hours < previousHours || (hours === previousHours && minutes < previousMinutes)) {
+                warnings.push("Time overlaps with the previous block.");
+            }
+        }
+    }
 
     return warnings;
 };
