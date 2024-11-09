@@ -87,6 +87,12 @@ exportButton.addEventListener("click", () => {
     }, 500);
 });
 
+// Save button next to the export button
+const saveButton = document.querySelector("button.save");
+saveButton.addEventListener("click", () => {
+    saveProject();
+});
+
 // Ctrl + S to save
 document.addEventListener("keydown", (event) => {
     if (!(event.ctrlKey && event.key === "s")) { return };

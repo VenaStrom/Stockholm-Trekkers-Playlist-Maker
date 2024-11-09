@@ -435,11 +435,10 @@ body {
 
                 row-gap: 0.5rem;
 
-                width: max-content;
+                padding-top: 0.7rem;
+                padding-bottom: 0.7rem;
 
-                &>button {
-                    width: 12ch;
-                }
+                width: max-content;
             }
         }
     }
