@@ -1,5 +1,6 @@
 const backButton = document.querySelector("#back-button");
 
+// Helper functions for the back button //
 // Does the user confirm leaving?
 const confirmUnsavedChanges = () => {
     return confirm("You have unsaved changes or you are currently exporting a project. Are you sure you want to leave?")
@@ -15,9 +16,8 @@ const isExporting = () => {
     return !document.querySelector(".export-progress-window").classList.contains("hidden");
 };
 
-// Go back when clicking the back button and confirm
+// When clicking back button, confirm that the user actually wants to leave
 backButton.addEventListener("click", () => {
-
     if (
         isUnsaved()
         ||
@@ -36,7 +36,7 @@ backButton.addEventListener("click", () => {
     };
 });
 
-// Ctrl + R confirmation
+// Ctrl + R confirmation to prevent unwanted refresh
 document.addEventListener("keydown", (event) => {
     if (
         (event.ctrlKey && event.key === "r")
@@ -53,7 +53,7 @@ document.addEventListener("keydown", (event) => {
     };
 });
 
-// Ctrl + W confirmation
+// Ctrl + W confirmation to prevent unwanted close
 document.addEventListener("keydown", (event) => {
     if (
         (event.ctrlKey && event.key === "w")
