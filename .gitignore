@@ -4,3 +4,4 @@ assets/videos/
 dist/
 user-data/
 .vscode/settings.json
+*.todo
