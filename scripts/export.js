@@ -267,11 +267,14 @@ const projectExport = (id) => {
         buttons: ["OK"],
         title: "Good to know about exporting",
         message: `
-Your export speed is very dependent on your disk speed so it is advised that you export to a system drive for faster performance. 
+CAUTION:
+* Directly exporting to a USB drive can cause the program to hang. Export to a system drive.
+* Make sure you have enough space on your drive for the project. A project is usually around 20 GB.
 
-After that, you can zip the file, upload it to the cloud, and then transfer it to a USB drive. 
+Your export speed is very dependent on your disk speed so it is advised that you export to a system drive for faster performance and to mitigate the risk of the program hanging.
 
-Directly exporting to a USB drive is slow and can cause the program to hang.`
+After that, you can zip the file, upload it to the cloud, and also transfer it to a USB drive to bring to the Trekdag.
+`
     });
 
     // Prompt to select the output folder
