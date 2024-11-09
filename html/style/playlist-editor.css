@@ -35,6 +35,11 @@ body {
 
             cursor: pointer;
 
+            /* An exception to make the text clickable and not draggable */
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-app-region: no-drag;
+
             &:hover {
                 color: var(--accent-color-high-contrast);
             }
@@ -309,7 +314,7 @@ body {
 
                 &>div {
                     height: 100%;
-                    
+
                     display: flex;
                     justify-content: center;
                     align-items: center;
