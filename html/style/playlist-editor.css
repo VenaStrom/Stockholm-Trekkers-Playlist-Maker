@@ -430,22 +430,10 @@ body {
 
                 row-gap: 0.5rem;
 
-                height: 7rem;
                 width: max-content;
 
-                &>.hide-unset {
-                    display: flex;
-                    flex-flow: row nowrap;
-                    align-items: center;
-                    column-gap: 1ch;
-
-                    &>input {
-                        border-color: var(--accent-color-low-contrast);
-                    }
-                }
-
                 &>button {
-                    width: 10ch;
+                    width: 12ch;
                 }
             }
         }
