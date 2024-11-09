@@ -226,6 +226,7 @@ body {
                                         &>p {
                                             color: var(--accent-color-high-contrast);
                                         }
+
                                         &>input:not(&>input:checked) {
                                             border-color: var(--mid-color);
                                         }
@@ -281,6 +282,12 @@ body {
             &>.create-block {
                 height: 12rem;
                 cursor: pointer;
+
+                /* The "Create block" text */
+                &>p {
+                    /* Height 0 as to not mess up the alignment of the plus icon */
+                    height: 0; 
+                }
 
                 &>img {
                     image-rendering: pixelated;
