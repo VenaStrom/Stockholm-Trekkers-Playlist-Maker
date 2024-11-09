@@ -332,11 +332,8 @@ Directly exporting to a USB drive is slow and can cause the program to hang.`
 
 
 const setUpHandlers = () => {
-    let currentProjectId;
-
     ipcMain.handle("start-export", (event, id) => {
         projectExport(id);
-        currentProjectId = id;
     });
 
     ipcMain.handle("get-export-status", (event) => {
