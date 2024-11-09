@@ -1,7 +1,7 @@
 // Big plus button for making a new project
 const createNewProjectButton = document.querySelector(".make-new-project");
 createNewProjectButton.addEventListener("click", () => {
-    window.location.href = "./project-editor.html?id=new";
+    window.location.href = "./playlist-editor.html?id=new";
 });
 
 // Decides how to format the time you see by "last modified" 
@@ -165,7 +165,7 @@ projects.getAll().then((projectList) => {
             } else {
 
                 // Go to the project in the editor
-                window.location.href = `./project-editor.html?id=${project.id}`;
+                window.location.href = `./playlist-editor.html?id=${project.id}`;
             }
         });
     });

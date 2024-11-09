@@ -6,10 +6,10 @@ This desktop app is a tool we use to create playlists for our Star Trek viewing 
 ### Images
 <div>
     <img width="49%" alt="Screenshots" src="screenshots/projects-page.png">
-    <img width="49%" alt="Screenshots" src="screenshots/project-editor-page.png">
+    <img width="49%" alt="Screenshots" src="screenshots/playlist-editor-page.png">
 </div>
 <div>
-    <img width="49%" alt="Screenshots" src="screenshots/project-editor-open-options.png">
+    <img width="49%" alt="Screenshots" src="screenshots/playlist-editor-open-options.png">
     <img width="49%" alt="Screenshots" src="screenshots/project-exporting.png">
 </div>
 
