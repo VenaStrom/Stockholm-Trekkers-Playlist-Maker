@@ -20,7 +20,7 @@ download.filesExist().then((filesExist) => {
             confirmDownloadWindow.classList.remove("hidden");
             checkingForFilesWindow.classList.add("hidden");
         };
-    }, 1000);
+    }, 100);
 }).catch((error) => {
     console.error(error);
     raiseError(error)
