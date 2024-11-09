@@ -283,18 +283,44 @@ body {
                 height: 12rem;
                 cursor: pointer;
 
-                /* The "Create block" text */
-                &>p {
-                    /* Height 0 as to not mess up the alignment of the plus icon */
-                    height: 0; 
+                padding: 0;
+                margin: 0;
+
+                align-items: center;
+                justify-content: start;
+
+                gap: 0;
+
+                &>.header {
+                    width: 100%;
+                    height: 3rem;
+
+                    padding-left: 2ch;
+
+                    background-color: var(--accent-color-low-contrast);
+
+                    display: flex;
+                    flex-flow: column nowrap;
+                    align-items: start;
+                    justify-content: center;
+
+                    border-bottom: 0.1rem solid var(--background-color);
                 }
 
-                &>img {
-                    image-rendering: pixelated;
+                &>div {
+                    height: 100%;
+                    
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
 
-                    height: 5rem;
+                    &>img {
+                        image-rendering: pixelated;
 
-                    filter: var(--filter-to-text-color);
+                        height: 5rem;
+
+                        filter: var(--filter-to-text-color);
+                    }
                 }
 
                 &:hover {
