@@ -266,7 +266,7 @@ const projectExport = (id) => {
         buttons: ["OK"],
         title: "Good to know about exporting",
         message: `
-Your export speed is very dependant on your disk speed so it is advised that you export to a system drive for faster performance. 
+Your export speed is very dependent on your disk speed so it is advised that you export to a system drive for faster performance. 
 
 After that, you can zip the file, upload it to the cloud, and then transfer it to a USB drive. 
 
