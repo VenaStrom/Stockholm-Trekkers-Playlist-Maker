@@ -10,6 +10,15 @@ const dateValidator = (inputDate) => {
 
         return warnings; // There's no point in checking further if the date is invalid since the rest of the checks rely on the date object
     };
+    if ( // First contact day 2063-04-05
+        date.getFullYear() === 2063
+        &&
+        date.getMonth() === 3
+        &&
+        date.getDate() === 5
+    ) { 
+        warnings.push("Live long and prosper 🖖");
+    }
     if (!(date.getDay() === 0 || date.getDay() === 6)) {
         warnings.push("On a weekday. Are you sure?");
     };
