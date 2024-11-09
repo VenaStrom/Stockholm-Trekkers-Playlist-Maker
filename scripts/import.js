@@ -1,6 +1,7 @@
 const { ipcMain, dialog } = require("electron");
 const fs = require("fs");
 const path = require("path");
+const os = require("os");
 const { projectsFolder } = require("./save/projects.js");
 
 const showDialog = () => {
@@ -13,6 +14,8 @@ const showDialog = () => {
         buttonLabel: "Import",
         message: "Select a JSON file to import",
         title: "Import Project",
+        defaultPath: path.join(os.homedir()),
+        
     }).then((result) => {
         if (!result.canceled) {
             const filePath = result.filePaths[0];

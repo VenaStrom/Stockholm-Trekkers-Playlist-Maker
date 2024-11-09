@@ -1,6 +1,7 @@
 const { ipcMain, dialog } = require("electron");
 const { Worker } = require("worker_threads");
 const path = require("node:path");
+const os = require("os");
 const fs = require("node:fs");
 const { projectGet, projectsFolder: userData } = require("./save/projects.js");
 
@@ -279,6 +280,7 @@ Directly exporting to a USB drive is slow and can cause the program to hang.`
         buttonLabel: "Export here",
         title: "The project folder will end up here",
         message: "The project folder will end up here",
+        defaultPath: path.join(os.homedir()),
     });
 
     // If the user cancels the export, return
