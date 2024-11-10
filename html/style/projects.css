@@ -14,43 +14,6 @@ body {
             margin-bottom: 0.5rem;
         }
 
-        &>.button-wrapper {
-            width: 88%;
-            height: 87dvh;
-
-            position: fixed;
-
-            display: flex;
-            flex-flow: row nowrap;
-            justify-content: end;
-            align-items: end;
-
-            pointer-events: none;
-            
-            &>.import-button {
-                pointer-events: all;
-
-                display: flex;
-                flex-flow: row nowrap;
-                align-items: end;
-                column-gap: 1ch;
-
-                padding-left: 1.5ch;
-
-                &>img {
-                    height: 1.5rem;
-                    width: 1.5rem;
-                    filter: var(--filter-to-text-color);
-                }
-
-                &:hover {
-                    &>img {
-                        filter: var(--filter-to-accent-color-low-contrast);
-                    }
-                }
-            }
-        }
-
         &>.make-new-project,
         &>.load-project {
             min-height: var(--project-height);
@@ -210,6 +173,52 @@ body {
 
             &:hover {
                 border-color: var(--accent-color-high-contrast);
+            }
+        }
+
+        &>.button-wrapper {
+            width: 88%;
+            height: 87dvh;
+
+            position: fixed;
+
+            display: flex;
+            flex-flow: column nowrap;
+            justify-content: end;
+            align-items: end;
+
+            pointer-events: none;
+
+            &>.button-container {
+                display: flex;
+                flex-flow: column nowrap;
+                justify-content: center;
+                align-items: center;
+
+                row-gap: 0.5rem;
+
+                &>button {
+                    pointer-events: all;
+                
+                    display: flex;
+                    flex-flow: row nowrap;
+                    align-items: end;
+                    column-gap: 1ch;
+
+                    padding-left: 1.5ch;
+
+                    &>img {
+                        height: 1.5rem;
+                        width: 1.5rem;
+                        filter: var(--filter-to-text-color);
+                    }
+
+                    &:hover {
+                        &>img {
+                            filter: var(--filter-to-accent-color-low-contrast);
+                        }
+                    }
+                }
             }
         }
     }
