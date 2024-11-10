@@ -5,6 +5,7 @@ const os = require("os");
 const fs = require("node:fs");
 const { projectGet, projectsFolder: userData } = require("./save/projects.js");
 
+// Assigned later in the projectExport function to a worker thread that copies all the assets
 let copyWorker;
 
 // The frontend fetches this to update the export window it shows
