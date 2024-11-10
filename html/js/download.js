@@ -26,11 +26,6 @@ download.filesExist().then((filesExist) => {
     raiseError(error)
 });
 
-// Confirm move on
-confirmMoveOnWindow.querySelector("button").addEventListener("click", () => {
-    switchPage();
-});
-
 // Confirm download
 confirmDownloadWindow.querySelector("button").addEventListener("click", () => {
     confirmDownloadWindow.classList.add("hidden");
@@ -38,7 +33,12 @@ confirmDownloadWindow.querySelector("button").addEventListener("click", () => {
     download.start();
 });
 
-// Progress
+// Switch page
+const switchPage = () => {
+    window.location.href = "./projects.html";
+};
+
+// Progress update
 const progressBar = progressWindow.querySelector("#progress-bar");
 const topStatusText = progressWindow.querySelectorAll("p")[0];
 const bottomStatusText = progressWindow.querySelectorAll("p")[1];
@@ -56,12 +56,14 @@ const progressUpdate = setInterval(() => {
 
         } else if (status.status === "completed") {
             clearInterval(progressUpdate);
-            topStatusText.textContent = "Downloads completed. Moving on...";
-            bottomStatusText.textContent = `Downloading ${status.received} / ${status.size} MB (${status.percent}%)`;
+            topStatusText.textContent = "Downloads completed.";
+            bottomStatusText.textContent = `Downloading ${status.size} / ${status.size} MB (100%)`;
 
             progressBar.style.backgroundSize = "100%";
 
-            switchPage();
+            appPath.get().then((path) => {
+                bottomStatusText.textContent = path;
+            });
 
         } else if (status.status === "failed") {
             clearInterval(progressUpdate);
@@ -72,7 +74,12 @@ const progressUpdate = setInterval(() => {
     });
 }, 100);
 
-// Switch page
-const switchPage = () => {
-    window.location.href = "./projects.html";
-};
+// Confirm to switch page
+confirmMoveOnWindow.querySelector("button").addEventListener("click", () => {
+    switchPage();
+});
+
+// Set the open-file-path div text content to the app path
+appPath.get().then((path) => {
+    document.querySelector(".open-file-path").dataset.filePath = path + "\\assets\\videos";
+}); 

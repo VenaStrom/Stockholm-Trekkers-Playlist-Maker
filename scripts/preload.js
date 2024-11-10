@@ -1,5 +1,11 @@
 const { contextBridge, ipcRenderer, webUtils } = require("electron");
 
+contextBridge.exposeInMainWorld("webUtils", webUtils);
+
+contextBridge.exposeInMainWorld("appPath", {
+    get: () => ipcRenderer.invoke("get-app-path"),
+});
+
 contextBridge.exposeInMainWorld("download", {
     start: () => ipcRenderer.invoke("start-download"),
     status: () => ipcRenderer.invoke("get-download-status"),
@@ -12,8 +18,6 @@ contextBridge.exposeInMainWorld("projects", {
     delete: (id) => ipcRenderer.invoke("project-delete", id),
     getAll: () => ipcRenderer.invoke("project-get-all"),
 });
-
-contextBridge.exposeInMainWorld("webUtils", webUtils);
 
 contextBridge.exposeInMainWorld("metadata", {
     get: (filePath) => ipcRenderer.invoke("get-metadata", filePath),

@@ -1,9 +1,9 @@
-const { spawn } = require("child_process");
+const { spawn } = require("node:child_process");
 const { ipcMain } = require("electron");
 const path = require("node:path");
 
 const openFilePath = (folderPath) => {
-    const fullPath = path.resolve(folderPath, "../"); // Resolves the absolute path
+    const fullPath = path.resolve(folderPath); // Resolves the absolute path
 
     if (process.platform === "win32") { // Windows
         spawn("explorer", [fullPath], { shell: true });

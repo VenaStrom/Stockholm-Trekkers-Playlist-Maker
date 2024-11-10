@@ -16,6 +16,7 @@
 
     <!-- Scripts -->
     <script src="../js/raiseError.js"></script>
+    <script defer src="../js/openFilePath.js"></script>
     <script defer src="../js/download.js"></script>
 </head>
 
@@ -29,7 +30,6 @@
     </header>
 
     <main>
-
         <h1>Welcome to</h1>
         <p>Stockholm Trekkers Playlist Maker</p>
 
@@ -39,7 +39,10 @@
 
         <div class="round-box hidden" id="confirm-move-on">
             <p>You have the required files.</p>
+
             <button>Go to projects</button>
+
+            <p>The downloaded assets are located <span class="open-file-path" tabindex="0" data-file-path>here</span>.</p>
         </div>
 
         <div class="round-box hidden" id="confirm-download">

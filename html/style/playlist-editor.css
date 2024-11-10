@@ -363,7 +363,7 @@ body {
                 width: 45dvw;
 
                 justify-content: flex-start;
-                padding: 0 0 2rem 0;
+                padding: 0 0 0.5rem 0;
 
                 &>.header {
                     width: 100%;
@@ -396,7 +396,7 @@ body {
                     &>button {
                         width: 20%;
                         align-self: center;
-                        margin: 1rem;
+                        margin: 0.5rem;
                     }
 
                     &>#export-progress-bar {

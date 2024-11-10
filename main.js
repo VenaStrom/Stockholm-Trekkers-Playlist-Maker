@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("node:path");
 const { setUpHandlers: setUpDownloadHandlers } = require("./scripts/download/downloadAssets.js");
 const { setUpHandlers: setUpProjectHandlers } = require("./scripts/save/projects.js");
@@ -51,6 +51,11 @@ app.whenReady().then(() => {
     // Just in case something goes wrong, make the main window if it somehow didn't get made
     app.on("activate", () => {
         if (BrowserWindow.getAllWindows().length === 0) createMainWindow();
+    });
+
+    // Used by the download status to link to the app data
+    ipcMain.handle("get-app-path", () => {
+        return path.resolve(__dirname);
     });
 });
 
