@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const path = require("node:path");
 const { setUpHandlers: setUpDownloadHandlers } = require("./scripts/download/downloadAssets.js");
 const { setUpHandlers: setUpProjectHandlers } = require("./scripts/save/projects.js");
@@ -20,7 +20,23 @@ const createMainWindow = () => {
         titleBarOverlay: { color: "#1e1e1e", symbolColor: "#f2f2f2" },
     });
 
-    // When closing the main window, close all other windows (i.e. hidden download windows)
+    // Handle how the app closes
+    mainWindow.on("close", (event) => {
+
+        const quitConfirmation = dialog.showMessageBoxSync({
+            type: "question",
+            buttons: ["Yes", "No"],
+            title: "Confirm",
+            message: "Are you sure you want to quit?",
+            defaultId: 1,
+        });
+
+        if (quitConfirmation === 1) {
+            event.preventDefault();
+        }
+    });
+
+    // Make sure all windows are closed when the main window is closed
     mainWindow.on("closed", () => {
         BrowserWindow.getAllWindows().forEach(window => {
             window.close();
@@ -38,24 +54,23 @@ app.whenReady().then(() => {
     createMainWindow();
 
     // Set up the handlers for the ipc messages
-    // The handlers are defined in the respective files
+    // The handlers are defined in their respective files
     setUpDownloadHandlers();
     setUpProjectHandlers();
     setUpMetadataHandlers();
     setUpExportHandlers();
     setUpImportHandlers();
     setUpOpenFileLocationHandlers();
+    // Used by the download status to link to the app data
+    ipcMain.handle("get-app-path", () => {
+        return path.resolve(__dirname);
+    });
 
     console.log("[INFO] handlers set up");
 
     // Just in case something goes wrong, make the main window if it somehow didn't get made
     app.on("activate", () => {
         if (BrowserWindow.getAllWindows().length === 0) createMainWindow();
-    });
-
-    // Used by the download status to link to the app data
-    ipcMain.handle("get-app-path", () => {
-        return path.resolve(__dirname);
     });
 });
 
