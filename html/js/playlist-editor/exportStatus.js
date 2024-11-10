@@ -3,19 +3,21 @@
 const startExportStatusGetter = () => {
     document.querySelector(".bottom-sticky-container>.export-progress-window").classList.remove("hidden");
 
-    const bottomStatus = document.querySelectorAll(".bottom-sticky-container>.export-progress-window .status-text")[1];
+    const statusMessage = document.querySelectorAll(".bottom-sticky-container>.export-progress-window .status-text")[1];
     const progressBar = document.getElementById("export-progress-bar");
 
     const statusInterval = setInterval(() => {
         exporter.getStatus().then((status) => {
-            
+
             // Update the HTML
-            bottomStatus.textContent = status.message;
+            statusMessage.textContent = status.message;
             progressBar.style.backgroundSize = status.progress;
 
             // When done, clear the interval
             if (status.message.includes("Done")) {
                 document.querySelector(".bottom-sticky-container>.export-progress-window button.cancel").textContent = "Done";
+                statusMessage.innerHTML = `Export done! Project saved to<br>
+                <span class="open-file-path" tabindex="0">${status.exportLocation}</span>`;
 
                 clearInterval(statusInterval);
             }

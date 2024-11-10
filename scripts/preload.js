@@ -28,3 +28,7 @@ contextBridge.exposeInMainWorld("exporter", {
 contextBridge.exposeInMainWorld("importer", {
     import: () => ipcRenderer.invoke("import"),
 });
+
+contextBridge.exposeInMainWorld("explorer", {
+    open: (path) => ipcRenderer.invoke("open-file-path", path),
+});
