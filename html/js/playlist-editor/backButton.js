@@ -3,12 +3,12 @@ const backButton = document.querySelector("#back-button");
 // Helper functions for the back button //
 // Does the user confirm leaving?
 const confirmUnsavedChanges = () => {
-    return confirm("You have unsaved changes or you are currently exporting a project. Are you sure you want to leave?")
+    return confirm("You have unsaved changes. Are you sure you want to leave?")
 };
 
 // Is it not saved?
 const isSaved = () => {
-    return !document.querySelector("header #save-status").textContent.includes("*");
+    return document.getElementsByTagName("TITLE")[0].text.includes("*");
 };
 
 // Are we exporting?
@@ -52,14 +52,9 @@ backButton.addEventListener("click", () => {
 });
 
 // Ctrl + R confirmation to prevent unwanted refresh
-// Ctrl + W confirmation to prevent unwanted close
 document.addEventListener("keydown", (event) => {
     if (
-        (
-            (event.ctrlKey && event.key === "r")
-            ||
-            (event.ctrlKey && event.key === "w")
-        )
+        (event.ctrlKey && event.key === "r")
         &&
         (
             !isSaved()

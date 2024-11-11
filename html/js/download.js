@@ -31,6 +31,9 @@ confirmDownloadWindow.querySelector("button").addEventListener("click", () => {
     confirmDownloadWindow.classList.add("hidden");
     progressWindow.classList.remove("hidden");
     download.start();
+
+    // Add an asterisk to the title to prompt for confirmation on window close
+    document.getElementsByTagName("TITLE")[0].text += "*";
 });
 
 // Switch page
@@ -64,6 +67,9 @@ const progressUpdate = setInterval(() => {
             appPath.get().then((path) => {
                 bottomStatusText.textContent = path;
             });
+
+            // Remove the asterisk that would prompt for confirmation on window close
+            document.getElementsByTagName("TITLE")[0].text = document.getElementsByTagName("TITLE")[0].text.replace("*", "");
 
         } else if (status.status === "failed") {
             clearInterval(progressUpdate);

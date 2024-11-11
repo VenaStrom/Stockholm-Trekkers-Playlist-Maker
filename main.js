@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog } = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("node:path");
 const { setUpHandlers: setUpDownloadHandlers } = require("./scripts/download/downloadAssets.js");
 const { setUpHandlers: setUpProjectHandlers } = require("./scripts/save/projects.js");
@@ -6,6 +6,7 @@ const { setUpHandlers: setUpMetadataHandlers } = require("./scripts/getMetaData.
 const { setUpHandlers: setUpExportHandlers } = require("./scripts/export.js");
 const { setUpHandlers: setUpImportHandlers } = require("./scripts/import.js");
 const { setUpHandlers: setUpOpenFileLocationHandlers } = require("./scripts/openFilePath.js");
+const handleAppClose = require("./scripts/handleAppClose.js");
 
 const createMainWindow = () => {
     const mainWindow = new BrowserWindow({
@@ -20,28 +21,9 @@ const createMainWindow = () => {
         titleBarOverlay: { color: "#1e1e1e", symbolColor: "#f2f2f2" },
     });
 
-    // Handle how the app closes
-    mainWindow.on("close", (event) => {
-
-        const quitConfirmation = dialog.showMessageBoxSync({
-            type: "question",
-            buttons: ["Yes", "No"],
-            title: "Confirm",
-            message: "Are you sure you want to quit?",
-            defaultId: 1,
-        });
-
-        if (quitConfirmation === 1) {
-            event.preventDefault();
-        }
-    });
-
-    // Make sure all windows are closed when the main window is closed
-    mainWindow.on("closed", () => {
-        BrowserWindow.getAllWindows().forEach(window => {
-            window.close();
-        });
-    });
+    // Set up the handlers for the main window //
+    handleAppClose.onClose(mainWindow);
+    handleAppClose.onClosed(mainWindow);
 
     // Load and show the main window at the download assets page
     mainWindow.loadFile("./html/pages/download.html");

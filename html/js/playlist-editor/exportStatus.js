@@ -9,6 +9,9 @@ const startingTopStatusMessage = topStatusMessage.textContent;
 // Runs when the export starts and regularly gets the status of the export from the backend 
 const startExportStatusGetter = () => {
 
+    // Add an asterisk to the window title to make it prompt the user to confirm before closing
+    document.getElementsByTagName("TITLE")[0].text += "*";
+
     // Show the export progress window
     document.querySelector(".export-progress-window").classList.remove("hidden");
 
@@ -28,6 +31,9 @@ const startExportStatusGetter = () => {
 
             // When done, clear the interval
             if (status.message.includes("Done")) {
+                
+                // Remove the asterisk from the window title
+                document.getElementsByTagName("TITLE")[0].text = document.getElementsByTagName("TITLE")[0].text.replace("*", "");
 
                 // Set the button text to "Done"
                 cancelButton.textContent = "Done";

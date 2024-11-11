@@ -349,7 +349,7 @@ const setUpHandlers = () => {
     ipcMain.handle("cancel-export", (event) => {
         // Stop the worker thread that's copying all the assets
         copyWorker.terminate();
-
+        
         // Remove the exported project folder
         fs.rmSync(exportStatus.exportLocation, { recursive: true });
 
