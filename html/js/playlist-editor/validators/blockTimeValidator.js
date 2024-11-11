@@ -1,4 +1,5 @@
 
+// If the imputed time is less than 9 or greater than 20, a warning will be displayed.
 const earliestTime = 9;
 const latestTime = 20;
 
@@ -37,6 +38,10 @@ const validateTime = (time) => {
         return warnings; // No need to check further
     }
 
+    // 47! This is an easter egg.
+    if (minutes === 47) {
+        warnings.push("47!");
+    }
     // Is it a bit too early?
     if (hours < earliestTime) {
         warnings.push("It's a bit early. Are you sure?");
