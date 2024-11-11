@@ -18,6 +18,13 @@ const interpretDate = (date) => {
         return;
     }
 
+    if (strippedDate.length === 7) {
+        // Assume the date is in the format YYYYMM0D
+        const formattedDate = `${strippedDate.slice(0, 4)}-${strippedDate.slice(4, 6)}-${strippedDate.slice(6, 7).padStart(2, "0")}`;
+        dateInput.value = formattedDate;
+        return;
+    }
+
     if (strippedDate.length === 6) {
         // Assume the date is in the format YYMMDD
         const currentCentury = new Date().getFullYear().toString().slice(0, 2);
