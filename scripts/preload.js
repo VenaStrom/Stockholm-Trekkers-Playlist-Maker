@@ -1,6 +1,10 @@
-const { contextBridge, ipcRenderer, webUtils } = require("electron");
+const { contextBridge, ipcRenderer, webUtils, dialog } = require("electron");
 
 contextBridge.exposeInMainWorld("webUtils", webUtils);
+
+contextBridge.exposeInMainWorld("dialog", {
+    leavingWarning: (message) => ipcRenderer.invoke("confirm-leave", message),
+});
 
 contextBridge.exposeInMainWorld("appPath", {
     get: () => ipcRenderer.invoke("get-app-path"),

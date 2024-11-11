@@ -6,6 +6,7 @@ const { setUpHandlers: setUpMetadataHandlers } = require("./scripts/getMetaData.
 const { setUpHandlers: setUpExportHandlers } = require("./scripts/export.js");
 const { setUpHandlers: setUpImportHandlers } = require("./scripts/import.js");
 const { setUpHandlers: setUpOpenFileLocationHandlers } = require("./scripts/openFilePath.js");
+const { setUpHandlers: setUpConfirmLeaveDialogHandler } = require("./scripts/confirmLeaveDialog.js");
 const handleAppClose = require("./scripts/handleAppClose.js");
 
 const createMainWindow = () => {
@@ -43,6 +44,7 @@ app.whenReady().then(() => {
     setUpExportHandlers();
     setUpImportHandlers();
     setUpOpenFileLocationHandlers();
+    setUpConfirmLeaveDialogHandler();
     // Used by the download status to link to the app data
     ipcMain.handle("get-app-path", () => {
         return path.resolve(__dirname);

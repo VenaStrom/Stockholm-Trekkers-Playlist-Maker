@@ -65,8 +65,9 @@ const saveProject = () => {
     const struct = getJSONstruct();
 
     projects.save(struct).then((response) => {
-        console.log("response after save: " + response);
         saveStatusText.textContent = "Saved";
+
+        document.getElementsByTagName("TITLE")[0].text.replace("*", "");
     });
 };
 
@@ -104,6 +105,8 @@ document.addEventListener("keydown", (event) => {
 // Save project on change if autoSave is enabled
 document.addEventListener("change", () => {
     saveStatusText.textContent = "Latest changes not saved*";
+
+    document.getElementsByTagName("TITLE")[0].text += "*";
 
     if (autoSave) {
         saveProject();
