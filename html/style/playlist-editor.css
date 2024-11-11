@@ -361,6 +361,9 @@ body {
                 border-color: var(--accent-color-high-contrast);
 
                 width: 45dvw;
+                @media screen and (max-width: 800px) {
+                    width: 80dvw;
+                }
 
                 justify-content: flex-start;
                 padding: 0 0 0.5rem 0;
