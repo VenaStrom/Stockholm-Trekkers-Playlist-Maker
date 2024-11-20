@@ -38,13 +38,13 @@ Prerequisites:
 [Yarn](https://yarnpkg.com/)
 
 #### Windows & Linux
-The steps are the same for Windows and Linux.
+The steps are the same for Windows and Linux. I have used [WSL](https://learn.microsoft.com/en-us/windows/wsl/install) to build the linux. If you are doing the same, keep in mind that you **must** run `yarn install` in the WSL context in order to install the linux versions of all the dependencies before building.
 
 #### Steps:
-* Clone the repository
-  * You may want to checkout to a specific tag e.g. `git checkout v2.1.0`
-* Run `yarn install`
-* Run `yarn build`
-* The build will end up in the `dist` folder
+1. Clone the repository
+   * You may want to checkout to a specific tag e.g. `git checkout v2.1.0`
+2. Run `yarn install`
+4. Run `yarn build`
+5. The build will end up in the `dist` folder
 
 You may get a warning about unmet dependencies or "asar" but you can ignore those.
