@@ -16,6 +16,7 @@
 
     <!-- Scripts -->
     <script src="../js/raiseError.js"></script>
+    <script defer src="../js/clickableElements.js"></script>
     <script defer src="../js/openFilePath.js"></script>
     <script defer src="../js/download.js"></script>
 </head>
@@ -40,14 +41,14 @@
         <div class="round-box hidden" id="confirm-move-on">
             <p>You have the required files.</p>
 
-            <button>Go to projects</button>
+            <button class="clickable">Go to projects</button>
 
-            <p>The downloaded assets are located <span class="open-file-path" tabindex="0" data-file-path>here</span>.</p>
+            <p>The downloaded assets are located <span class="open-file-path clickable" tabindex="0" data-file-path>here</span>.</p>
         </div>
 
         <div class="round-box hidden" id="confirm-download">
             <p>To use this app, some video files need to be downloaded. The files are around 400 MB.</p>
-            <button>Start download</button>
+            <button class="clickable">Start download</button>
         </div>
 
         <div class="round-box hidden" id="progress-window">

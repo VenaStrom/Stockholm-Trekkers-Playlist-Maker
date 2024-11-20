@@ -65,7 +65,8 @@ const progressUpdate = setInterval(() => {
             progressBar.style.backgroundSize = "100%";
 
             appPath.get().then((path) => {
-                bottomStatusText.textContent = path;
+                const videosPath = path + "\\assets\\videos";
+                bottomStatusText.innerHTML = `Files downloaded to:<span class="open-file-path clickable" data-file-path="${videosPath}"><br>${videosPath}</span>`;
             });
 
             // Remove the asterisk that would prompt for confirmation on window close
