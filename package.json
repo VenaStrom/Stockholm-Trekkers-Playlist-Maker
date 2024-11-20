@@ -12,7 +12,7 @@
   },
   "devDependencies": {
     "electron": "^32.1.0",
-    "electron-builder": "^25.0.5"
+    "electron-builder": "^25.1.8"
   },
   "build": {
     "appId": "com.stockholm-trekkers.playlist-maker",
@@ -31,8 +31,7 @@
     ],
     "win": {
       "target": "msi",
-      "icon": "assets/images/stockholm-trekkers.ico",
-      "publisherName": "Viggo Ström"
+      "icon": "assets/images/stockholm-trekkers.ico"
     },
     "linux": {
       "target": [
