@@ -1,0 +1,66 @@
+
+#### Legend 
+[ ] - Unfinished.
+[X] - Finished.
+[O] - Implemented but requires feedback.
+[-] - Not implemented and requires feedback.
+
+## Språk och tydlighet
+- [X] Istället för "gaps in between content" i editorn bör det kanske stå "gaps in between episodes".
+- [X] Felmeddelandet "That's not a valid date." uppfattar jag som eventuellt lite drygt. 😅 Det räcker kanske med bara t.ex. "Not a valid date." Jag blev även lite förvirrad över att felmeddelandets "Dismiss" låg inklämt uppe i vänstra hörnet. Det känns mer logiskt att ha det nere till vänster, tycker jag, och gärna med lite större storlek och/eller större avstånd till felmeddelandet.
+- [X] I alt-texten för covid disclaimer bör det stå "with regard to".
+- [X] Ska jag vara supermegaonödigt petig så saknas en punkt i slutet av alt-texten till sign-in reminder.
+- [X] Jag insåg till en början inte att det stora plustecknet i "Editor" var till för att skapa ett nytt block och inte för att skapa en till spellista. Antagligen blev jag förvirrad eftersom knappen är likadan som den i "Projects". Det vore bra om det kan stå typ "Add block" någonstans så att det blir tydligare.
+- [X] Editor kanske kan få heta "Playlist editor", också för ökad tydlighet.
+- [X] I "Projects" står det "You can load a previous project ..." men knappen heter "Import From File". Det är nog tydligare om det står "You can import a previous project ..." Det vore också bra om man får veta var projekten sparas och vad de heter, så att man kan hitta och importera dem.
+- [X] I fönstret "Good to know about exporting" ska det stå "dependent".
+- [ ] Efter att ha lekt runt lite så stod det "Latest changes not saved*" upptill i editorn, men jag hittade inget sätt att spara mina ändringar. Sedan insåg jag att de sparas när jag trycker på "Finish". Knappen "Finish" borde kanske heta "Save project and export playlist" för att det ska bli tydligare vad den gör. Alternativt bara "Export playlist" och att "Save project" får bli en separat funktion, men det blir ju mer jobb för dig såklart.
+
+## Funktion
+- [ ] I det första steget, när filer ska laddas ner, så reagerade jag på att jag inte fick välja eller veta var de sparas någonstans. Jag vet fortfarande inte var de är. 🤣
+- [X] Första gången jag klickade på knapparna "Import From File" och "Choose file" så öppnades System32, vilket kändes lite oroväckande. 😅
+- [X] Om jag lägger till en fil via "Choose file" och sedan klickar på filnamnet eller knappen så att fönstret för att välja fil öppnas igen och därefter väljer avbryt, så tas den tidigare valda filen bort. Det kan lätt bli ett irritationsmoment om man klickar av misstag. Däremot är det ju bra om det finns en funktion för att avsiktligen ta bort valda filer.
+- [ ] När jag försökte exportera protesterade Windows Security, vilket till att börja med ledde till att jag hindrades från att skapa en ny mapp i Utforskarfönstret som dök upp. Sedan gick det till synes att exportera, men i praktiken stod exporten bara still. Jag antar att det är p.g.a. Windows Security, men när jag kollar under "Protection history" så står det "No recent actions" trots att jag fick en popup om att den stoppat spellisteprogrammet. 😒
+
+
+
+## Changes
+- [X] klickbar save status text.
+- [X] spara på tillbakapilen.
+- [X] revidera `finish`-knappen. Dela upp finish till save och export.
+- [X] lägg till info om export storlek i info-popupen.
+- [X] efter klar export, länk till filplatsen.
+- [X] efter filnedladdningen / filchecken, länka till filplatsen.
+- [X] knapp någonstans för se vart save files är och så.
+- [X] confirm on full window close if unsaved changes.
+  - [X] confirm on close, allways. Should be a confirm on close if unsaved changes.
+- [ ] Refactor all css basically. Make more things inherit from common.css
+- [X] make more sophisticated exit dialog with back button
+- [ ] silent ffprobe errors
+- [ ] Autofocus the block time of a newly created block
+- [ ] Rewrite the downloading html and related js
+
+## Features
+- [-] uninstaller som tar bort assets.
+- [ ] handle another persons imported project
+  - [ ] maybe prompt to find the project output folder if it can't find your files
+- [ ] self signed cert.
+- [ ] importera spellista som textfil och få previews på avsnitten.
+- [ ] save time constantly while playing a playlist and go to that time on restart.
+- [ ] Move blocks around in the editor.
+
+## Fixes
+- [-] error handling när diskutrymmet tar slut under export
+  - [-] After a pretty long while you get an error in windows telling you it's full. Not optimal but still
+- [ ] What happens when the program closes mid download?
+- [ ] Empty block with block time should show the block time in on the projects page.
+
+## Patches 
+- [ ] z index on export popup
+- [X] padstart på dagen i 2024-11-9 på blur
+- [X] small screen export cancel button
+  - [ ] Alignment on the export window is off
+
+## Easter Eggs
+- [X] first contact datum easter egg i validatorn 
+- [X] 47!
