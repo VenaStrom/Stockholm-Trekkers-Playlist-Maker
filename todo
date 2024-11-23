@@ -54,7 +54,8 @@
   - [-] After a pretty long while you get an error in windows telling you it's full. Not optimal but still
 - [ ] What happens when the program closes mid download?
 - [ ] Empty block with block time should show the block time in on the projects page.
-- [ ] Time validator for duplicate time only tags one at a time and removing all the non tagged times does not resolve the popup even though it should
+- [ ] Time validator for duplicate time only tags one at a time and removing all the non tagged times does not resolve the popup even though it should.
+- [ ] Validators do not get resolved on block deletion
 
 ## Patches 
 - [ ] z index on export popup
