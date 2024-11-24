@@ -56,6 +56,7 @@
 - [ ] Empty block with block time should show the block time in on the projects page.
 - [ ] Time validator for duplicate time only tags one at a time and removing all the non tagged times does not resolve the popup even though it should.
 - [ ] Validators do not get resolved on block deletion
+- [ ] Leave dialog is broken. Centralize the * use or something
 
 ## Patches 
 - [ ] z index on export popup

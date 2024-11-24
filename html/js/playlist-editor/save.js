@@ -40,12 +40,13 @@ const getJSONstruct = () => {
 
             }).map((episode) => {
                 const fileInput = episode.querySelector("input[type='file']");
+                const timeDOM = episode.querySelector(".time p"); 
                 return {
                     filePath: fileInput.getAttribute("data-file-path"),
                     fileName: fileInput.value.split(/[/\\]/).at(-1), // a somewhat hacky way to get the file name from the path
-                    startTime: episode.querySelector(".time p").textContent,
-                    endTime: episode.querySelector(".time p").dataset.endTime,
-                    duration: episode.querySelector(".time p").dataset.duration,
+                    startTime: timeDOM.textContent,
+                    endTime: timeDOM.dataset.endTime,
+                    duration: timeDOM.dataset.duration,
                 };
             });
 
