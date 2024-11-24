@@ -1,7 +1,7 @@
 
-// Load project on page load if there is an ID
 const id = getID();
 
+// Load project on page load if there is an ID
 if (id !== "new") {
     projects.get(id).then((project) => {
         if (!project) {
@@ -9,10 +9,12 @@ if (id !== "new") {
             return;
         }
 
+        // Set the date input and trigger its formatting
         document.querySelector(".date-input input[type='text']").value = project.date;
         document.querySelector(".date-input input[type='text']").dispatchEvent(new Event("blur"));
 
-        project.blocks.forEach((block, blockIndex) => {
+        // Load all blocks, one at a time
+        project.blocks.forEach((blockData, blockIndex) => {
             // Create new blocks if there are not enough
             if (document.querySelectorAll(".block").length <= blockIndex) {
                 createBlockDOM();
@@ -20,23 +22,25 @@ if (id !== "new") {
 
             const blockDOM = document.querySelectorAll(".block")[blockIndex];
 
-            blockDOM.querySelector(".header .time input[type='text']").value = block.startTime;
+            // Set the start time of this block
+            blockDOM.querySelector(".header .time input[type='text']").value = blockData.startTime;
             blockDOM.querySelector(".header .time input[type='text']").dispatchEvent(new Event("blur"));
 
             // Set the options
-            block.options.forEach((option, optionIndex) => {
+            blockData.options.forEach((option, optionIndex) => {
                 const optionDOM = blockDOM.querySelector(".options input#" + option.id);
+                // If the option still exists, set its checked state
                 if (optionDOM) {
-                    optionDOM.checked = block.options[optionIndex].checked;
+                    optionDOM.checked = blockData.options[optionIndex].checked;
                 }
             });
 
-            // Update the dots
+            // Update the dots that represent which options are chosen
             updateDots(blockDOM.querySelector(".options"));
 
-            // Set the episodes
-            block.episodes.forEach((episode, episodeIndex) => {
-                // Create new episode DOMs if there aren't enough
+            // Load all the episodes of this block, one at a time
+            blockData.episodes.forEach((episode, episodeIndex) => {
+                // Create new episode DOM if there aren't enough
                 if (blockDOM.querySelectorAll(".episode").length <= episodeIndex) {
                     createEpisodeDOM(blockDOM);
                 };
@@ -44,6 +48,7 @@ if (id !== "new") {
                 const episodeDOM = blockDOM.querySelectorAll(".episode")[episodeIndex];
 
                 // This seems to be the only way of setting the file input (visually!!)
+                // It just makes the input display the file name
                 const dataTransfer = new DataTransfer();
                 const file = new File([new Blob()], episode.fileName);
                 dataTransfer.items.add(file);
@@ -57,10 +62,6 @@ if (id !== "new") {
                 timeDOM.textContent = episode.startTime;
                 timeDOM.dataset.endTime = episode.endTime;
             });
-
-            if (block.episodes.length !== 1) {
-                createEpisodeDOM(blockDOM);
-            };
 
             // Send events to update the times in the block. See createBlockAndEpisodes.js and setStartTimes.js
             blockDOM.querySelector(".time input[type='text']").dispatchEvent(new Event("blur"));

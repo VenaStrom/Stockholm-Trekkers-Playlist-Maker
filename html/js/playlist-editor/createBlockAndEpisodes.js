@@ -6,8 +6,9 @@ const templateBlock = document.querySelector(".block-template.hidden");
 // The button with the big plus sign
 const createBlockButton = document.querySelector(".create-block");
 
+// Creates a new episode and add it to the given parent block
 const createEpisodeDOM = (parent) => {
-    // Clone the template and clean up the classes
+    // Clone the template and clean up its classes
     const episode = templateEpisode.cloneNode(true);
     episode.classList.add("episode");
     episode.classList.remove("episode-template");
@@ -26,16 +27,18 @@ const createEpisodeDOM = (parent) => {
             createEpisodeDOM(parent);
         }
 
+        // If the file input has a file after it's changed, set the file path in the DOM so it can be saved later
         if (event.target.value) {
             const file = event.target.files[0];
             const filePath = webUtils.getPathForFile(file);
-            event.target.setAttribute("data-file-path", filePath);
+            event.target.dataset.filePath = filePath;
         }
     });
 };
 
+// Creates a block next to the create block button
 const createBlockDOM = () => {
-    // Clone the template and clean up the classes
+    // Clone the template and clean up its classes
     const block = templateBlock.cloneNode(true)
     block.classList.add("block");
     block.classList.remove("block-template");
@@ -53,7 +56,7 @@ const createBlockDOM = () => {
     createEpisodeDOM(block);
     createEpisodeDOM(block);
 
-    // Adds block to DOM
+    // Add this block to the DOM, before the create block button
     createBlockButton.insertAdjacentElement("beforebegin", block);
 };
 
