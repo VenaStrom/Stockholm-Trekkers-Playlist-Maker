@@ -89,7 +89,7 @@ const makeEpisodeDOM = (episodeData) => {
     return episodeDOM;
 };
 
-const makePauseDOM = (episodeData) => {
+const makePauseDOM = (episodeData, blockTime) => {
     const pauseDOM = document.createElement("li");
     pauseDOM.classList.add("pause");
 
@@ -141,6 +141,10 @@ projects.getAll().then((projectList) => {
 
             // Add the pause at the end of the block
             const lastEpisode = blockData.episodes.at(-1) || { endTime: "--:--" };
+            // If there are no episodes, the pause should start at the beginning of the block
+            if (blockData.length === 0) {
+                lastEpisode.endTime = blockData.startTime || "--:--";
+            }
             episodeList.appendChild(makePauseDOM(lastEpisode));
 
             // Add a hairline after the pause and before the next block
