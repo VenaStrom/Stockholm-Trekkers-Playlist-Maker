@@ -329,9 +329,18 @@ After that, you can zip the file, upload it to the cloud, and also transfer it t
         if (message.type === "status") {
             exportStatus.message = message.message;
             exportStatus.progress = message.progress;
-            console.log("[INFO] " + message.progress + " - " + message.message);
+            console.log("[INFO] " + parseFloat(message.progress).toFixed(2) + "% - " + message.message);
+
+        } else if (message.type === "error") {
+            exportStatus.message = "ERROR: " + message.message + " Export cancelled.";
+            exportStatus.progress = "100%";
+            console.error("[ERROR] " + message.message);
+
+            // Stop the worker thread that's copying all the assets
+            copyWorker.terminate();
         }
     });
+
     // This starts the copying
     copyWorker.postMessage({ projectJSON, projectsFolder: exportLocation, userData });
 };
@@ -349,7 +358,7 @@ const setUpHandlers = () => {
     ipcMain.handle("cancel-export", (event) => {
         // Stop the worker thread that's copying all the assets
         copyWorker.terminate();
-        
+
         // Remove the exported project folder
         fs.rmSync(exportStatus.exportLocation, { recursive: true });
 

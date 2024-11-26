@@ -20,14 +20,19 @@ const createEpisodeDOM = (parent) => {
     parent.appendChild(episode);
     parent.appendChild(hr);
 
-    // Make sure there's always at least one empty episode
-    episode.querySelector("input[type='file']").addEventListener("change", (event) => {
+    // Make sure there's always at least one empty episode at the end of the block
+    const fileInput = episode.querySelector("input[type='file']");
+    fileInput.addEventListener("change", (event) => {
         const episodes = parent.querySelectorAll(".episode");
-        if (episodes[episodes.length - 1] === episode) {
+
+        // If the last episode DOM has a file, create a new episode since there should always be an empty episode at the end
+        // This approach allows for gaps in the block which is useful for the user
+        const lastEpisode = episodes[episodes.length - 1];
+        if (lastEpisode.querySelector("input[type='file']").value) {
             createEpisodeDOM(parent);
         }
 
-        // If the file input has a file after it's changed, set the file path in the DOM so it can be saved later
+        // After the change, if a file was added, the file path is saved in the DOM
         if (event.target.value) {
             const file = event.target.files[0];
             const filePath = webUtils.getPathForFile(file);

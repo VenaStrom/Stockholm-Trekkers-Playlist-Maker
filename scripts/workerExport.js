@@ -4,7 +4,7 @@ const path = require("node:path");
 
 const exportStatus = {};
 
-const copyAllAssets = (projectJSON, exportFolder, userData) => {
+const copyAllAssets = (projectData, exportFolder, userData) => {
     // Copies the pause clips to the output folder
     const pauseFolder = path.join(__dirname, "..", "assets", "videos");
 
@@ -29,16 +29,19 @@ const copyAllAssets = (projectJSON, exportFolder, userData) => {
 
     // Loop through all the episodes and copy them from their given path to the output folder
     console.log("[INFO] Copying episodes...");
-    projectJSON.blocks.forEach((block, blockIndex) => {
+    projectData.blocks.forEach((block, blockIndex) => {
         block.episodes.forEach((episode, episodeIndex) => {
 
             // Update export status
-            exportStatus.progress = `${20 + (80 / projectJSON.blocks.length / block.episodes.length) * (blockIndex * block.episodes.length + episodeIndex)}%`; // Gets a percent inbetween 20 and 100 based on which episode and block you are on
+            exportStatus.progress = `${20 + (80 / projectData.blocks.length / block.episodes.length) * (blockIndex * block.episodes.length + episodeIndex)}%`; // Gets a percent inbetween 20 and 100 based on which episode and block you are on
             parentPort.postMessage(exportStatus);
 
             // Check if the file path is missing or if the file is missing
-            if (episode.filePath === "") { raiseError("Cannot find " + episode.fileName + ". The file path seems to be missing"); return; };
-            if (!fs.existsSync(episode.filePath)) { raiseError("Cannot find " + episode.fileName + ". The file seems to be missing"); return; };
+            if (!episode.filePath || !fs.existsSync(episode.filePath)) {
+                console.error(`[ERROR] Cannot find ${episode.fileName}. The file path (${episode.filePath}) might be incorrect or the file is missing.`);
+                parentPort.postMessage({ type: "error", message: `Cannot find ${episode.fileName}. The file path (${episode.filePath ?? "empty string"}) might be incorrect or the file is missing.` });
+                return;
+            }
 
             // If a file with the same name already exists in the output folder, don't copy again
             if (fs.existsSync(path.join(exportFolder, "episodes", episode.fileName))) {
@@ -54,7 +57,7 @@ const copyAllAssets = (projectJSON, exportFolder, userData) => {
     // Copy the save file from user data to the output folder
     console.log("[INFO] Copying save file...");
     fs.mkdirSync(path.join(exportFolder, "project-save-file"));
-    fs.copyFileSync(path.join(userData, projectJSON.id + ".json"), path.join(exportFolder, "project-save-file", projectJSON.id + ".json"));
+    fs.copyFileSync(path.join(userData, projectData.id + ".json"), path.join(exportFolder, "project-save-file", projectData.id + ".json"));
 
     // Update export status
     exportStatus.message = "Done!";

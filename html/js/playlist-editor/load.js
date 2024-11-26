@@ -56,6 +56,7 @@ if (id !== "new") {
                 const fileInput = episodeDOM.querySelector(".file input[type='file']");
                 fileInput.files = dataTransfer.files;
                 fileInput.dataset.filePath = episode.filePath;
+                fileInput.dispatchEvent(new Event("change"));
 
                 const timeDOM = episodeDOM.querySelector(".time p");
 

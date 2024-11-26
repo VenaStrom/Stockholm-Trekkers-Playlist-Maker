@@ -46,6 +46,8 @@ const HHMMToSeconds = (hhmm) => {
 };
 
 const updateEpisodeDurationsInBlock = (block) => {
+    console.log("Getting times in block", block);
+
     const episodes = block.querySelectorAll(".episode");
 
     // Recursively get the duration of each episode. This is done to avoid async issues and to not overload ffmpeg/ffprobe
@@ -67,7 +69,13 @@ const updateEpisodeDurationsInBlock = (block) => {
         // Uses ffprobe to get metadata about the file, namely the duration
         metadata.get(episodeFileInput.dataset.filePath)
             .then((data) => {
-                // Save the duration in the dataset of the input element
+                if (!data) {
+                    console.error("No data returned from ffprobe");
+                    updateEpisode(index + 1, resolve);
+                    return;
+                }
+
+                // Save the duration in the DOM of the input element to be accessed later
                 episodeFileInput.dataset.duration = data.format.duration;
 
                 updateEpisode(index + 1, resolve);
@@ -95,6 +103,8 @@ const clearAllEpisodeTimesInBlock = (block) => {
 };
 
 const setStartTimesInBlock = (block) => {
+    console.log("Setting times in block", block);
+
     const episodes = block.querySelectorAll(".episode");
     const blockTime = block.querySelector(".time input[type='text']").value;
 
@@ -165,7 +175,7 @@ const updateEpisodeTimesInBlock = (event) => {
     const emitter = event.target;
 
     // This ugly condition block is there since multiple elements can trigger this event but not everything. This is highly implementation specific
-    if ( 
+    if (
         emitter.tagName === "INPUT"
         &&
         (
@@ -177,7 +187,7 @@ const updateEpisodeTimesInBlock = (event) => {
         emitter.classList.contains("block") // allow events from the block itself since the loading function in load.js dispatches a change event on the block
     ) {
         const block = emitter.closest(".block");
-        
+
         // Make sure all the episodes have their durations saved
         updateEpisodeDurationsInBlock(block).then(() => {
 

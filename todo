@@ -42,7 +42,7 @@
 
 ## Features
 - [-] uninstaller som tar bort assets.
-- [ ] handle another persons imported project
+- [-] handle another persons imported project
   - [ ] maybe prompt to find the project output folder if it can't find your files
 - [ ] self signed cert.
 - [ ] importera spellista som textfil och få previews på avsnitten.
@@ -57,6 +57,7 @@
 - [ ] Time validator for duplicate time only tags one at a time and removing all the non tagged times does not resolve the popup even though it should.
 - [ ] Validators do not get resolved on block deletion
 - [ ] Leave dialog is broken. Centralize the * use or something
+- [ ] Have a look at all the event when loading and changing things in the editor
 
 ## Patches 
 - [ ] z index on export popup
