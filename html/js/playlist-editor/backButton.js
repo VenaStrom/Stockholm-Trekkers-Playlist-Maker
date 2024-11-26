@@ -1,5 +1,3 @@
-const backButton = document.querySelector("#back-button");
-
 // Helper functions for the back button //
 // Is it not saved?
 const isSaved = () => {
@@ -29,6 +27,8 @@ const savePrompt = () => {
 const goToProjectsPage = () => {
     window.location.href = "./projects.html";
 }
+
+const backButton = document.querySelector("#back-button");
 
 // When clicking back button, confirm that the user actually wants to leave
 backButton.addEventListener("click", () => {

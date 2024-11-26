@@ -48,25 +48,33 @@
                 <p>Options ▼</p>
             </div>
 
-            <img class="clickable-icon clickable" id="delete-block" onclick="deleteBlockDOM(this)" tabindex="0" title="Delete this block" src="../../assets/images/delete_35dp_000000_FILL0_wght700_GRAD0_opsz40.png" alt="Delete">
+            <img class="clickable-icon clickable" id="delete-block" onclick="deleteBlockDOM(this)" tabindex="0"
+                title="Delete this block" src="../../assets/images/delete_35dp_000000_FILL0_wght700_GRAD0_opsz40.png"
+                alt="Delete">
 
             <div class="options" onchange="updateDots(this)">
                 <div class="leading">
                     <p>Add a leading:</p>
 
                     <div>
-                        <div class="clickable" tabindex="0" title="This adds a 1 min countdown before the block. This should pretty much always be on.">
-                            <input type="checkbox" checked id="leading-countdown" data-file-name="pause_1_min_countdown.mp4" data-length-seconds="60" tabindex="-1">
+                        <div class="clickable" tabindex="0"
+                            title="This adds a 1 min countdown before the block. This should pretty much always be on.">
+                            <input type="checkbox" checked id="leading-countdown" data-file-name="pause_1_min_countdown.mp4"
+                                data-length-seconds="60" tabindex="-1">
                             <p>countdown</p>
                         </div>
 
-                        <div class="clickable" tabindex="0" title="This adds a 1 min clip of the emergency procedures before the block.">
-                            <input type="checkbox" checked id="leading-emergency-routine" data-file-name="pause_1_min_emergency.mp4" data-length-seconds="59" tabindex="-1">
+                        <div class="clickable" tabindex="0"
+                            title="This adds a 1 min clip of the emergency procedures before the block.">
+                            <input type="checkbox" checked id="leading-emergency-routine"
+                                data-file-name="pause_1_min_emergency.mp4" data-length-seconds="59" tabindex="-1">
                             <p>emergency routine</p>
                         </div>
 
-                        <div class="clickable" tabindex="0" title="This adds a 1 min clip that reminds viewers to show respect to each other with regard to the 2020s pandemic.">
-                            <input type="checkbox" id="leading-covid-disclaimer" data-file-name="pause_1_min_covid.mp4" data-length-seconds="60" tabindex="-1">
+                        <div class="clickable" tabindex="0"
+                            title="This adds a 1 min clip that reminds viewers to show respect to each other with regard to the 2020s pandemic.">
+                            <input type="checkbox" id="leading-covid-disclaimer" data-file-name="pause_1_min_covid.mp4"
+                                data-length-seconds="60" tabindex="-1">
                             <p>covid disclaimer</p>
                         </div>
                     </div>
@@ -76,8 +84,10 @@
                     <p>Add a trailing:</p>
 
                     <div>
-                        <div class="clickable" tabindex="0" title="This adds a 20 second clip at the end of the block that reminds visitors to sign in.">
-                            <input type="checkbox" id="trailing-sign-in-reminder" data-file-name="sign_in_reminder.mp4" data-length-seconds="19" tabindex="-1">
+                        <div class="clickable" tabindex="0"
+                            title="This adds a 20 second clip at the end of the block that reminds visitors to sign in.">
+                            <input type="checkbox" id="trailing-sign-in-reminder" data-file-name="sign_in_reminder.mp4"
+                                data-length-seconds="19" tabindex="-1">
                             <p>sign-in reminder</p>
                         </div>
                     </div>
@@ -113,19 +123,22 @@
 
         <h1>Playlist Editor</h1>
 
-        <img class="clickable-icon clickable" id="back-button" title="Back to projects" tabindex="0" src="../../assets/images/arrow_back_35dp_000000_FILL0_wght700_GRAD0_opsz40.png" alt="<">
+        <img class="clickable-icon clickable" id="back-button" title="Back to projects" tabindex="0"
+            src="../../assets/images/arrow_back_35dp_000000_FILL0_wght700_GRAD0_opsz40.png" alt="<">
     </header>
 
     <main>
         <div class="date-input">
             <p>Trekdag at:</p>
-            <input type="text" placeholder="YYYY-MM-DD" title="Enter the date of the trekdag in the format, 'YYYY-MM-DD', for example '2024-09-14'">
+            <input type="text" placeholder="YYYY-MM-DD"
+                title="Enter the date of the trekdag in the format, 'YYYY-MM-DD', for example '2024-09-14'">
         </div>
 
         <p class="info-paragraph">
             Playlists are constructed with <span class="italic">blocks</span>.
             A block is the episodes in between pauses.
-            You only set the start time of the first episode in the block and then the rest get queued up so they play immediately after the previous episode.
+            You only set the start time of the first episode in the block and then the rest get queued up so they play immediately
+            after the previous episode.
             This is done to avoid gaps in between episodes and for the sake of easier creation of playlists.
             The pauses are inserted automatically between the blocks at the correct length.
         </p>
@@ -152,7 +165,8 @@
                 </div>
 
                 <div class="body">
-                    <p class="status-text">The export has begun and will take a while since it needs to copy all the files included in the playlist.</p>
+                    <p class="status-text">The export has begun and will take a while since it needs to copy all the files
+                        included in the playlist.</p>
 
                     <div id="export-progress-bar" style="background-size: 0%;"></div>
 

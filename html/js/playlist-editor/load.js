@@ -68,5 +68,9 @@ if (id !== "new") {
             blockDOM.querySelector(".time input[type='text']").dispatchEvent(new Event("blur"));
             blockDOM.dispatchEvent(new Event("change"));
         });
+
+        // Since the block times gets auto focused, we need to blur it to remove the focus. Focusing the back button also places the selection marker at a good place to start tabbing.
+        document.querySelector("#back-button").focus();
+        document.querySelector("#back-button").blur();
     });
 }

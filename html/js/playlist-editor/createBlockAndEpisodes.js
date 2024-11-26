@@ -63,6 +63,9 @@ const createBlockDOM = () => {
 
     // Add this block to the DOM, before the create block button
     createBlockButton.insertAdjacentElement("beforebegin", block);
+
+    // Focus on the blocks time input
+    block.querySelector(".time input[type='text']").focus();
 };
 
 const deleteBlockDOM = (source) => {
