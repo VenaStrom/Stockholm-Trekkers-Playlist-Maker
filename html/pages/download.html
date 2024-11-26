@@ -15,11 +15,11 @@
     <link rel="stylesheet" href="../style/download.css">
 
     <!-- Scripts -->
-    <script src="../js/raiseError.js"></script>
-    <script src="../js/saveStatus.js"></script>
-    <script defer src="../js/clickableElements.js"></script>
-    <script defer src="../js/openFilePath.js"></script>
-    <script defer src="../js/download.js"></script>
+    <script src="../js/general/raiseError.js"></script>
+    <script src="../js/general/saveStatusHandler.js"></script>
+    <script src="../js/general/clickableElements.js"></script>
+    <script src="../js/general/openFilePath.js"></script>
+    <script defer src="../js/download-page/downloadStatus.js"></script>
 </head>
 
 <body>
@@ -44,7 +44,8 @@
 
             <button class="clickable">Go to projects</button>
 
-            <p>The downloaded assets are located <span class="open-file-path clickable" tabindex="0" data-file-path>here</span>.</p>
+            <p>The downloaded assets are located <span class="open-file-path clickable" tabindex="0" data-file-path>here</span>.
+            </p>
         </div>
 
         <div class="round-box hidden" id="confirm-download">

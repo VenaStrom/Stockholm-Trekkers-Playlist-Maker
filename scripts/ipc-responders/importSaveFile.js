@@ -15,7 +15,7 @@ const showDialog = () => {
         message: "Select a JSON file to import",
         title: "Import Project",
         defaultPath: path.join(os.homedir()),
-        
+
     }).then((result) => {
         if (!result.canceled) {
             const filePath = result.filePaths[0];

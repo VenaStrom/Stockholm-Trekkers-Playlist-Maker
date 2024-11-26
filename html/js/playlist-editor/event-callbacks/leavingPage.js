@@ -15,10 +15,6 @@ const confirmRefresh = () => {
     return confirm("You have unsaved changes. Are you sure you want to refresh?")
 };
 
-const confirmLeave = () => {
-    return confirm("You have unsaved changes. Are you sure you want to leave?");
-};
-
 // Ask to save if the user has unsaved changes
 const savePrompt = () => {
     return confirm("You have unsaved changes. Do you want to save? You will not leave this page.");
@@ -28,10 +24,8 @@ const goToProjectsPage = () => {
     window.location.href = "./projects.html";
 }
 
-const backButton = document.querySelector("#back-button");
-
 // When clicking back button, confirm that the user actually wants to leave
-backButton.addEventListener("click", () => {
+const handleLeaving = () => {
 
     // Regular back button behavior
     if (isSaved() && !isExporting()) {
@@ -39,6 +33,7 @@ backButton.addEventListener("click", () => {
         return;
     }
 
+    // Confirm to leave with unsaved changes
     if (!isSaved()) {
         dialog.confirmLeaveUnsaved().then((response) => {
             if (response === 0) {
@@ -66,6 +61,7 @@ backButton.addEventListener("click", () => {
         });
     }
 
+    // Confirm to leave while exporting
     if (isExporting()) {
         dialog.confirmLeaveExporting().then((response) => {
             if (response === 0) {
@@ -78,21 +74,11 @@ backButton.addEventListener("click", () => {
             }
         });
     }
-});
+};
 
 // Ctrl + R confirmation to prevent unwanted refresh
-document.addEventListener("keydown", (event) => {
-    if (
-        (event.ctrlKey && event.key === "r")
-        &&
-        (
-            !isSaved()
-            ||
-            isExporting()
-        )
-        &&
-        !confirmRefresh()
-    ) {
-        event.preventDefault();
-    };
-});
+document.addEventListener("keydown", handleLeaving);
+
+// Back button click event
+const backButton = document.querySelector("#back-button");
+backButton.addEventListener("click", handleLeaving);

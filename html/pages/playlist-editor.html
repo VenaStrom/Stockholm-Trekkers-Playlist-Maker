@@ -15,22 +15,25 @@
     <link rel="stylesheet" href="../style/playlist-editor.css">
 
     <!-- Scripts -->
-    <script src="../js/raiseError.js"></script>
-    <script src="../js/saveStatus.js"></script>
-    <script src="../js/clickableElements.js"></script>
-    <script src="../js/playlist-editor/idCheck.js"></script>
-    <script defer src="../js/playlist-editor/validators/warning.js"></script>
-    <script defer src="../js/playlist-editor/validators/dateValidator.js"></script>
-    <script defer src="../js/playlist-editor/validators/blockTimeValidator.js"></script>
-    <script defer src="../js/playlist-editor/backButton.js"></script>
-    <script defer src="../js/playlist-editor/setStartTimes.js"></script>
-    <script defer src="../js/playlist-editor/openOptions.js"></script>
-    <script defer src="../js/playlist-editor/createBlockAndEpisodes.js"></script>
-    <script defer src="../js/playlist-editor/exportStatus.js"></script>
-    <script defer src="../js/playlist-editor/dateFormatter.js"></script>
-    <script defer src="../js/openFilePath.js"></script>
-    <script defer src="../js/playlist-editor/load.js"></script>
-    <script defer src="../js/playlist-editor/save.js"></script>
+    <script src="../js/general/raiseError.js"></script>
+    <script src="../js/general/saveStatusHandler.js"></script>
+    <script src="../js/general/clickableElements.js"></script>
+    <script src="../js/general/openFilePath.js"></script>
+    <script defer src="../js/playlist-editor/idGenerator.js"></script>
+    <script defer src="../js/playlist-editor/validator/dateValidator.js"></script>
+    <script defer src="../js/playlist-editor/validator/timeValidator.js"></script>
+    <script defer src="../js/playlist-editor/validator/warningPopup.js"></script>
+    <script defer src="../js/playlist-editor/event-callbacks/leavingPage.js"></script>
+    <script defer src="../js/playlist-editor/event-callbacks/optionsMenu.js"></script>
+    <script defer src="../js/playlist-editor/event-callbacks/setStartTimes.js"></script>
+    <script defer src="../js/playlist-editor/element-creators/createBlock.js"></script>
+    <script defer src="../js/playlist-editor/element-creators/createEpisode.js"></script>
+    <script defer src="../js/playlist-editor/element-creators/populateDOM.js"></script>
+    <script defer src="../js/playlist-editor/exporting/exportStatus.js"></script>
+    <script defer src="../js/playlist-editor/formatters/dateFormatter.js"></script>
+    <script defer src="../js/playlist-editor/formatters/timeFormatter.js"></script>
+    <script defer src="../js/playlist-editor/file-handling/save.js"></script>
+    <script defer src="../js/playlist-editor/file-handling/load.js"></script>
 
     <!-- Template block -->
     <div class="round-box block-template hidden">

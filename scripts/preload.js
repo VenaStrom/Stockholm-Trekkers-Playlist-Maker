@@ -24,7 +24,7 @@ contextBridge.exposeInMainWorld("projects", {
     getAll: () => ipcRenderer.invoke("project-get-all"),
 });
 
-contextBridge.exposeInMainWorld("metadata", {
+contextBridge.exposeInMainWorld("ffprobe", {
     get: (filePath) => ipcRenderer.invoke("get-metadata", filePath),
 });
 

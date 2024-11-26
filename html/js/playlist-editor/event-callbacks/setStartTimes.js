@@ -1,50 +1,4 @@
 
-// Interpret the users time input to a four digit time
-const interpretUserTimeInput = (time) => {
-    time = time.replace(/[^0-9]/g, ""); // Only allow numbers
-
-    if (time.length === 1) {
-        return `0${time}:00`;
-    }
-    if (time.length === 2) {
-        if (parseInt(time) > 23) {
-            return `0${time[0]}:${time[1]}0`;
-        } else {
-            return `${time}:00`;
-        }
-    }
-    if (time.length === 3) {
-        if (parseInt(time[0] + time[1]) > 23) {
-            return `0${time[0]}:${time[1]}${time[2]}`;
-        } else {
-            return `${time[0]}${time[1]}:${time[2]}0`;
-        }
-    }
-    if (time.length >= 4) { // Greater than our equal since I assume a user types the first digits correctly and I let the rest overflow
-
-        // If over 23 hours, cap it
-        if (parseInt(time[0] + time[1]) > 23) { // + is string concatenation
-            return `23:59`;
-        }
-
-        return `${time[0]}${time[1]}:${time[2]}${time[3]}`;
-    }
-    return undefined;
-};
-
-const secondsToHHMM = (seconds) => {
-    const hours = Math.floor(seconds / 60 / 60);
-    const minutes = Math.round((seconds - hours * 60 * 60) / 60); // Lossy
-
-    return `${hours}:${minutes.toString().padStart(2, "0")}`;
-};
-
-const HHMMToSeconds = (hhmm) => {
-    const [hours, minutes] = interpretUserTimeInput(hhmm).split(":");
-
-    return hours * 60 * 60 + minutes * 60;
-};
-
 const updateEpisodeDurationsInBlock = (block) => {
     console.log("Getting times in block", block);
 
@@ -67,7 +21,7 @@ const updateEpisodeDurationsInBlock = (block) => {
         }
 
         // Uses ffprobe to get metadata about the file, namely the duration
-        metadata.get(episodeFileInput.dataset.filePath)
+        ffprobe.get(episodeFileInput.dataset.filePath)
             .then((data) => {
                 if (!data) {
                     console.error("No data returned from ffprobe");
@@ -153,12 +107,7 @@ const setStartTimesInBlock = (block) => {
         // Save the episode end time as well. This is mostly used for setting the trailing empty episodes time signifying the end time of the block
         episodeTimeDOM.dataset.endTime = secondsToHHMM(head);
     });
-
-    // This triggers the validators for all the blocks since they rely on the episode times to check for overlaps. See, blockTimeValidator.js
-    document.querySelectorAll(".block").forEach((block) => {
-        block.querySelector(".time>input[type='text']").dispatchEvent(new Event("blur"));
-    });
-}
+};
 
 // Used in the createBlockDOM function in the createBlockAndEpisodes.js file
 const formatBlockTime = (event) => {
@@ -168,7 +117,7 @@ const formatBlockTime = (event) => {
     if (interpretedTime) {
         timeInput.value = interpretedTime;
     }
-}
+};
 
 // Used in the createBlockDOM function in the createBlockAndEpisodes.js file
 const updateEpisodeTimesInBlock = (event) => {
@@ -195,4 +144,4 @@ const updateEpisodeTimesInBlock = (event) => {
             setStartTimesInBlock(block);
         });
     }
-}
+};

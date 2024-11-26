@@ -4,14 +4,13 @@ const id = getID();
 // Load project on page load if there is an ID
 if (id !== "new") {
     projects.get(id).then((project) => {
-        if (!project) {
+            if (!project) {
             console.warn("No project found with id: " + id);
             return;
         }
 
         // Set the date input and trigger its formatting
         document.querySelector(".date-input input[type='text']").value = project.date;
-        document.querySelector(".date-input input[type='text']").dispatchEvent(new Event("blur"));
 
         // Load all blocks, one at a time
         project.blocks.forEach((blockData, blockIndex) => {
@@ -24,7 +23,6 @@ if (id !== "new") {
 
             // Set the start time of this block
             blockDOM.querySelector(".header .time input[type='text']").value = blockData.startTime;
-            blockDOM.querySelector(".header .time input[type='text']").dispatchEvent(new Event("blur"));
 
             // Set the options
             blockData.options.forEach((option, optionIndex) => {
@@ -56,17 +54,12 @@ if (id !== "new") {
                 const fileInput = episodeDOM.querySelector(".file input[type='file']");
                 fileInput.files = dataTransfer.files;
                 fileInput.dataset.filePath = episode.filePath;
-                fileInput.dispatchEvent(new Event("change"));
 
                 const timeDOM = episodeDOM.querySelector(".time p");
 
                 timeDOM.textContent = episode.startTime;
                 timeDOM.dataset.endTime = episode.endTime;
             });
-
-            // Send events to update the times in the block. See createBlockAndEpisodes.js and setStartTimes.js
-            blockDOM.querySelector(".time input[type='text']").dispatchEvent(new Event("blur"));
-            blockDOM.dispatchEvent(new Event("change"));
         });
 
         // Since the block times gets auto focused, we need to blur it to remove the focus. Focusing the back button also places the selection marker at a good place to start tabbing.

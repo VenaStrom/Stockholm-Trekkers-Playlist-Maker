@@ -94,7 +94,7 @@ const validateTime = (time) => {
     return warnings;
 };
 
-const blockTimeValidator = (event) => {
+const timeValidator = (event) => {
 
     const time = event.target.value;
     const warnings = validateTime(time);
