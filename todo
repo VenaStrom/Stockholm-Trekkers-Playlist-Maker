@@ -37,7 +37,7 @@
 - [ ] Refactor all css basically. Make more things inherit from common.css
 - [X] make more sophisticated exit dialog with back button
 - [X] silent ffprobe errors
-- [ ] Autofocus the block time of a newly created block
+- [X] Autofocus the block time of a newly created block
 - [ ] Rewrite the downloading html and related js
 
 ## Features
