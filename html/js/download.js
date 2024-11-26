@@ -32,8 +32,8 @@ confirmDownloadWindow.querySelector("button").addEventListener("click", () => {
     progressWindow.classList.remove("hidden");
     download.start();
 
-    // Add an asterisk to the title to prompt for confirmation on window close
-    document.getElementsByTagName("TITLE")[0].text += "*";
+    // Prompt the user to save the state
+    setUnsavedState();
 });
 
 // Switch page
@@ -69,8 +69,8 @@ const progressUpdate = setInterval(() => {
                 bottomStatusText.innerHTML = `Files downloaded to:<span class="open-file-path clickable" data-file-path="${videosPath}"><br>${videosPath}</span>`;
             });
 
-            // Remove the asterisk that would prompt for confirmation on window close
-            document.getElementsByTagName("TITLE")[0].text = document.getElementsByTagName("TITLE")[0].text.replace("*", "");
+            // Allow for unhindered reloading and leaving
+            setSavedState();
 
         } else if (status.status === "failed") {
             clearInterval(progressUpdate);

@@ -17,7 +17,7 @@ const onClose = (mainWindow) => {
             type: "question",
             buttons: ["Yes", "No"],
             title: "Confirm",
-            message: "You may be downloading or exporting. Are you sure you want to quit?",
+            message: "Are you sure you want to leave? You may have unsaved changes.",
             defaultId: 1,
         });
 

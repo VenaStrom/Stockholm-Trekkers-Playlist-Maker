@@ -1,9 +1,10 @@
-const { contextBridge, ipcRenderer, webUtils, dialog } = require("electron");
+const { contextBridge, ipcRenderer, webUtils } = require("electron");
 
 contextBridge.exposeInMainWorld("webUtils", webUtils);
 
 contextBridge.exposeInMainWorld("dialog", {
-    leavingWarning: (message) => ipcRenderer.invoke("confirm-leave", message),
+    confirmLeaveUnsaved: (message) => ipcRenderer.invoke("confirm-leave-unsaved", message),
+    confirmLeaveExporting: (message) => ipcRenderer.invoke("confirm-leave-exporting", message),
 });
 
 contextBridge.exposeInMainWorld("appPath", {

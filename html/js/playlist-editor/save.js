@@ -33,14 +33,14 @@ const getJSONstruct = () => {
 
         // Loop through and export all the episodes as a list
         const episodes = Array.from(block.querySelectorAll(".episode:not(.hidden)")) // only grab non-hidden episodes
-            .filter((episode) => { 
+            .filter((episode) => {
                 // ignore the file inputs that are empty
                 const fileInput = episode.querySelector("input[type='file']");
                 if (fileInput.value !== "") { return true; };
 
             }).map((episode) => {
                 const fileInput = episode.querySelector("input[type='file']");
-                const timeDOM = episode.querySelector(".time p"); 
+                const timeDOM = episode.querySelector(".time p");
                 return {
                     filePath: fileInput.getAttribute("data-file-path"),
                     fileName: fileInput.value.split(/[/\\]/).at(-1), // a somewhat hacky way to get the file name from the path
@@ -68,7 +68,7 @@ const saveProject = () => {
     projects.save(struct).then((response) => {
         saveStatusText.textContent = "Saved";
 
-        document.getElementsByTagName("TITLE")[0].text.replace("*", "");
+        setSavedState();
     });
 };
 
@@ -106,8 +106,7 @@ document.addEventListener("keydown", (event) => {
 // Save project on change if autoSave is enabled
 document.addEventListener("change", () => {
     saveStatusText.textContent = "Latest changes not saved*";
-
-    document.getElementsByTagName("TITLE")[0].text += "*";
+    setUnsavedState();
 
     if (autoSave) {
         saveProject();

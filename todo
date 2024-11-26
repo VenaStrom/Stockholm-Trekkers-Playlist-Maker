@@ -36,7 +36,7 @@
   - [X] confirm on close, allways. Should be a confirm on close if unsaved changes.
 - [ ] Refactor all css basically. Make more things inherit from common.css
 - [X] make more sophisticated exit dialog with back button
-- [ ] silent ffprobe errors
+- [X] silent ffprobe errors
 - [ ] Autofocus the block time of a newly created block
 - [ ] Rewrite the downloading html and related js
 
@@ -53,10 +53,10 @@
 - [-] error handling när diskutrymmet tar slut under export
   - [-] After a pretty long while you get an error in windows telling you it's full. Not optimal but still, it's something.
 - [ ] What happens when the program closes mid download?
-- [ ] Empty block with block time should show the block time in on the projects page.
+- [X] Empty block with block time should show the block time in on the projects page.
 - [ ] Time validator for duplicate time only tags one at a time and removing all the non tagged times does not resolve the popup even though it should.
 - [ ] Validators do not get resolved on block deletion
-- [ ] Leave dialog is broken. Centralize the * use or something
+- [X] Leave dialog is broken. Centralize the * use or something
 - [ ] Have a look at all the event when loading and changing things in the editor
 
 ## Patches 
