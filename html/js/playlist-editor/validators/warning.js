@@ -35,7 +35,7 @@ const warningPopup = (id, source, warnings) => {
         const sourceRect = source.getBoundingClientRect();
         const popupRect = popup.getBoundingClientRect();
         popup.style.left = `${sourceRect.x + (sourceRect.width - popupRect.width) / 2}px`;
-        popup.style.top = `${sourceRect.bottom + window.screenY}px`;
+        popup.style.top = `${sourceRect.bottom + window.screenY + 3}px`;
     };
     window.addEventListener("scroll", calculatePosition);
     window.addEventListener("resize", calculatePosition);

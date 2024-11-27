@@ -190,6 +190,18 @@ input[type="file"] {
     gap: 0.8rem;
 }
 
+.open-file-path {
+    cursor: pointer;
+
+    color: var(--text-color);
+    border-bottom: 0.05rem solid var(--text-color);
+    
+    &:hover {
+        color: var(--accent-color-high-contrast);
+        border-bottom: 0.05rem solid var(--accent-color-high-contrast);
+    }
+}
+
 /* End of selector wide styling */
 
 

@@ -3,13 +3,13 @@ document.addEventListener("keydown", (event) => {
     if (!(event.key === "Enter" || event.key === " ")) {
         return;
     };
-
+    
     // Prevents the page from scrolling when pressing the space bar
     if (event.key === " ") { event.preventDefault() };
-
+    
     if (event.target.classList.contains("clickable")) {
         event.preventDefault();
-
+        
         // if it has a child, click it instead
         if (event.target.querySelector("*")) {
             event.target.querySelector("*").click();

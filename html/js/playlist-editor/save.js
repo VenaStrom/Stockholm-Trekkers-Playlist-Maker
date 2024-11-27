@@ -2,9 +2,12 @@
 // For now, auto saving is flat out disabled. You will have to save manually
 const autoSave = false;
 
+
+// Return the entire project as a JSON object
 const getJSONstruct = () => {
     const date = document.querySelector(".date-input input[type='text']").value;
 
+    // Get all the DOM objects of the blocks that are not hidden
     const blocks = document.querySelectorAll(".block:not(.hidden)");
 
     const struct = {
@@ -14,7 +17,7 @@ const getJSONstruct = () => {
         blocks: [],
     };
 
-
+    // Loop through all the blocks and get the options and episodes and append them to the struct
     blocks.forEach((block) => {
 
         // Get the options of the block and set them in the struct
@@ -30,18 +33,20 @@ const getJSONstruct = () => {
 
         // Loop through and export all the episodes as a list
         const episodes = Array.from(block.querySelectorAll(".episode:not(.hidden)")) // only grab non-hidden episodes
-            .filter((episode) => { // remove the file inputs that are empty
+            .filter((episode) => {
+                // ignore the file inputs that are empty
                 const fileInput = episode.querySelector("input[type='file']");
                 if (fileInput.value !== "") { return true; };
 
             }).map((episode) => {
                 const fileInput = episode.querySelector("input[type='file']");
+                const timeDOM = episode.querySelector(".time p");
                 return {
                     filePath: fileInput.getAttribute("data-file-path"),
-                    fileName: fileInput.value.split(/[/\\]/).at(-1), // split path via / or \ and get the last element which should be the file name with it's extension
-                    startTime: episode.querySelector(".time p").textContent,
-                    endTime: episode.querySelector(".time p").dataset.endTime,
-                    duration: episode.querySelector(".time p").dataset.duration,
+                    fileName: fileInput.value.split(/[/\\]/).at(-1), // a somewhat hacky way to get the file name from the path
+                    startTime: timeDOM.textContent,
+                    endTime: timeDOM.dataset.endTime,
+                    duration: timeDOM.dataset.duration,
                 };
             });
 
@@ -61,10 +66,14 @@ const saveProject = () => {
     const struct = getJSONstruct();
 
     projects.save(struct).then((response) => {
-        console.log("response after save: " + response);
         saveStatusText.textContent = "Saved";
+
+        setSavedState();
     });
 };
+
+
+// Actions leading to saving //
 
 // Save on the export button and start the export
 const exportButton = document.querySelector("button.export");
@@ -80,6 +89,12 @@ exportButton.addEventListener("click", () => {
     }, 500);
 });
 
+// Save button next to the export button
+const saveButton = document.querySelector("button.save");
+saveButton.addEventListener("click", () => {
+    saveProject();
+});
+
 // Ctrl + S to save
 document.addEventListener("keydown", (event) => {
     if (!(event.ctrlKey && event.key === "s")) { return };
@@ -88,11 +103,17 @@ document.addEventListener("keydown", (event) => {
     saveProject();
 });
 
-// Save project on change [Will never save, see top of file]
+// Save project on change if autoSave is enabled
 document.addEventListener("change", () => {
     saveStatusText.textContent = "Latest changes not saved*";
+    setUnsavedState();
 
     if (autoSave) {
         saveProject();
     }
+});
+
+// Save on clicking the save status text
+saveStatusText.addEventListener("click", () => {
+    saveProject();
 });

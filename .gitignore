@@ -7,3 +7,4 @@ user-data/
 *.todo
 *.cert
 *.pfx
+*.env

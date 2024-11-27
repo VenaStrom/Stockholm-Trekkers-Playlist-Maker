@@ -79,7 +79,7 @@ const downloadPauses = (force = false) => {
         // Check if video folder exists and make it if it doesn't
         if (!fs.existsSync(videoFolder)) {
             fs.mkdirSync(videoFolder, { recursive: true });
-        };
+        }
 
         // If the video is already downloaded and we're not forcing, skip it
         if (fs.existsSync(videoFolder + file.name) && !force) {
@@ -89,7 +89,7 @@ const downloadPauses = (force = false) => {
 
         } else {
             console.log(logStatus.start + file.name);
-        };
+        }
 
         downloadStatus.status = "downloading";
         downloadStatus.atFile = index;
@@ -133,8 +133,8 @@ const downloadPauses = (force = false) => {
 
                         // Logging in the backend console for debugging mostly
                         console.log(logStatus.download + `${file.name} received ${receivedMB} / ${fileSizeMB} MB ${percent}%`);
-                    };
-                };
+                    }
+                }
             });
 
             // This fires *once* when the download is done
@@ -150,7 +150,7 @@ const downloadPauses = (force = false) => {
 
                     // Delete the file if it fails
                     fs.rmSync(videoFolder + file.name);
-                };
+                }
             });
         });
 

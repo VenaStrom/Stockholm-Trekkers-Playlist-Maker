@@ -1,9 +1,11 @@
 const { ipcMain, dialog } = require("electron");
 const { Worker } = require("worker_threads");
 const path = require("node:path");
+const os = require("os");
 const fs = require("node:fs");
 const { projectGet, projectsFolder: userData } = require("./save/projects.js");
 
+// Assigned later in the projectExport function to a worker thread that copies all the assets
 let copyWorker;
 
 // The frontend fetches this to update the export window it shows
@@ -266,11 +268,14 @@ const projectExport = (id) => {
         buttons: ["OK"],
         title: "Good to know about exporting",
         message: `
-Your export speed is very dependant on your disk speed so it is advised that you export to a system drive for faster performance. 
+CAUTION:
+* Directly exporting to a USB drive can cause the program to hang. Always export to a system drive.
+* Make sure you have enough space on your drive for the project. A project is usually around 20 GB.
 
-After that, you can zip the file, upload it to the cloud, and then transfer it to a USB drive. 
+Your export speed is very dependent on your disk speed, so you should export to a system drive to mitigate the risk of the program hanging and generally speed up the export.
 
-Directly exporting to a USB drive is slow and can cause the program to hang.`
+After that, you can zip the file, upload it to the cloud, and also transfer it to a USB drive to bring to the Trekdag.
+`
     });
 
     // Prompt to select the output folder
@@ -279,6 +284,7 @@ Directly exporting to a USB drive is slow and can cause the program to hang.`
         buttonLabel: "Export here",
         title: "The project folder will end up here",
         message: "The project folder will end up here",
+        defaultPath: path.join(os.homedir()),
     });
 
     // If the user cancels the export, return
@@ -323,20 +329,26 @@ Directly exporting to a USB drive is slow and can cause the program to hang.`
         if (message.type === "status") {
             exportStatus.message = message.message;
             exportStatus.progress = message.progress;
-            console.log("[INFO] " + message.progress + " - " + message.message);
+            console.log("[INFO] " + parseFloat(message.progress).toFixed(2) + "% - " + message.message);
+
+        } else if (message.type === "error") {
+            exportStatus.message = "ERROR: " + message.message + " Export cancelled.";
+            exportStatus.progress = "100%";
+            console.error("[ERROR] " + message.message);
+
+            // Stop the worker thread that's copying all the assets
+            copyWorker.terminate();
         }
     });
+
     // This starts the copying
     copyWorker.postMessage({ projectJSON, projectsFolder: exportLocation, userData });
 };
 
 
 const setUpHandlers = () => {
-    let currentProjectId;
-
     ipcMain.handle("start-export", (event, id) => {
         projectExport(id);
-        currentProjectId = id;
     });
 
     ipcMain.handle("get-export-status", (event) => {

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Stockholm Trekkers Playlist Maker</title>
+    <title>Stockholm Trekkers Playlist Maker - Projects</title>
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="../../assets/images/stockholm-trekkers.ico" type="image/x-icon">
@@ -16,6 +16,7 @@
 
     <!-- Scripts -->
     <script src="../js/raiseError.js"></script>
+    <script src="../js/saveStatus.js"></script>
     <script defer src="../js/projects.js"></script>
     <script defer src="../js/clickableElements.js"></script>
     <script defer src="../js/importFromFile.js"></script>
@@ -83,17 +84,26 @@
     </header>
 
     <main>
-        <p>You can load a previous project or make a new one.</p>
+        <p>Edit a previous project, make a new one or import one from a file.</p>
 
         <div class="round-box make-new-project clickable" tabindex="0">
             <img src="../../assets/images/add_35dp_000000_FILL0_wght700_GRAD0_opsz40.png" alt="+">
         </div>
 
         <div class="button-wrapper">
-            <button class="import-button" onclick="importFromFile()">
-                <img src="../../assets/images/download_24dp_000000_FILL0_wght400_GRAD0_opsz24.png" alt="">
-                Import From File
-            </button>
+
+            <!-- Import file and open folder buttons -->
+            <div class="button-container">
+                <button class="import-button">
+                    <img src="../../assets/images/download_24dp_000000_FILL0_wght400_GRAD0_opsz24.png" alt="">
+                    Import From File
+                </button>
+
+                <button class="open-folder-button">
+                    <img src="../../assets/images/folder_open_24dp_000000_FILL0_wght400_GRAD0_opsz24.png" alt="">
+                    Open Your Projects Folder
+                </button>
+            </div>
         </div>
     </main>
 

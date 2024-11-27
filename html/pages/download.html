@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Stockholm Trekkers Playlist Maker</title>
+    <title>Stockholm Trekkers Playlist Maker - Setting Up</title>
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="../../assets/images/stockholm-trekkers.ico" type="image/x-icon">
@@ -16,6 +16,9 @@
 
     <!-- Scripts -->
     <script src="../js/raiseError.js"></script>
+    <script src="../js/saveStatus.js"></script>
+    <script defer src="../js/clickableElements.js"></script>
+    <script defer src="../js/openFilePath.js"></script>
     <script defer src="../js/download.js"></script>
 </head>
 
@@ -29,7 +32,6 @@
     </header>
 
     <main>
-
         <h1>Welcome to</h1>
         <p>Stockholm Trekkers Playlist Maker</p>
 
@@ -39,12 +41,15 @@
 
         <div class="round-box hidden" id="confirm-move-on">
             <p>You have the required files.</p>
-            <button>Go to projects</button>
+
+            <button class="clickable">Go to projects</button>
+
+            <p>The downloaded assets are located <span class="open-file-path clickable" tabindex="0" data-file-path>here</span>.</p>
         </div>
 
         <div class="round-box hidden" id="confirm-download">
             <p>To use this app, some video files need to be downloaded. The files are around 400 MB.</p>
-            <button>Start download</button>
+            <button class="clickable">Start download</button>
         </div>
 
         <div class="round-box hidden" id="progress-window">

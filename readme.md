@@ -6,10 +6,10 @@ This desktop app is a tool we use to create playlists for our Star Trek viewing 
 ### Images
 <div>
     <img width="49%" alt="Screenshots" src="screenshots/projects-page.png">
-    <img width="49%" alt="Screenshots" src="screenshots/project-editor-page.png">
+    <img width="49%" alt="Screenshots" src="screenshots/playlist-editor-page.png">
 </div>
 <div>
-    <img width="49%" alt="Screenshots" src="screenshots/project-editor-open-options.png">
+    <img width="49%" alt="Screenshots" src="screenshots/playlist-editor-open-options.png">
     <img width="49%" alt="Screenshots" src="screenshots/project-exporting.png">
 </div>
 
@@ -21,6 +21,9 @@ Navigate to the [releases](https://github.com/viggoStrom/Stockholm-Trekkers-Play
 
 ### How to use it
 Once you get into the app the experience should be rather intuitive. On an overarching level, you pick the episodes you want to watch, set the start time for different parts of the playlist and export the playlist to a folder. The app will guide you through the process. If you have any questions, feel free to ask me. The goal of this app is for it to be easy to use and I am always looking for ways to improve it.
+
+### Uninstalling
+You uninstall it like any other program on your computer. On Windows that is through the settings app in the `Apps & Features` tab. To fully remove the app, namely the the video assets and your saved projects, you need to delete them in your file system. This is most easily done through the app itself. On the first screen you see after opening the app, you can click the `here` link to where the video assets are stored. There you can delete them. The saved projects can be accessed in the `Projects` page in the app. There you can either delete them one by one, or by clicking the `Open Your Projects Folder` button you can delete them via your file explorer.
 
 ### Technologies
 The app is made with [Electron](https://www.electronjs.org/) which is a framework for building cross-platform desktop applications with web technologies. Therefore, the app is written in JavaScript, HTML, and CSS.
@@ -35,13 +38,13 @@ Prerequisites:
 [Yarn](https://yarnpkg.com/)
 
 #### Windows & Linux
-The steps are the same for Windows and Linux.
+The steps are the same for Windows and Linux. I have used [WSL](https://learn.microsoft.com/en-us/windows/wsl/install) to build the linux. If you are doing the same, keep in mind that you **must** run `yarn install` in the WSL context in order to install the linux versions of all the dependencies before building.
 
 #### Steps:
-* Clone the repository
-  * You may want to checkout to a specific tag e.g. `git checkout v2.1.0`
-* Run `yarn install`
-* Run `yarn build`
-* The build will end up in the `dist` folder
+1. Clone the repository
+   * You may want to checkout to a specific tag e.g. `git checkout v2.1.0`
+2. Run `yarn install`
+4. Run `yarn build`
+5. The build will end up in the `dist` folder
 
 You may get a warning about unmet dependencies or "asar" but you can ignore those.

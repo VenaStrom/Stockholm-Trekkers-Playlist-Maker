@@ -1,5 +1,16 @@
 const { contextBridge, ipcRenderer, webUtils } = require("electron");
 
+contextBridge.exposeInMainWorld("webUtils", webUtils);
+
+contextBridge.exposeInMainWorld("dialog", {
+    confirmLeaveUnsaved: (message) => ipcRenderer.invoke("confirm-leave-unsaved", message),
+    confirmLeaveExporting: (message) => ipcRenderer.invoke("confirm-leave-exporting", message),
+});
+
+contextBridge.exposeInMainWorld("appPath", {
+    get: () => ipcRenderer.invoke("get-app-path"),
+});
+
 contextBridge.exposeInMainWorld("download", {
     start: () => ipcRenderer.invoke("start-download"),
     status: () => ipcRenderer.invoke("get-download-status"),
@@ -13,8 +24,6 @@ contextBridge.exposeInMainWorld("projects", {
     getAll: () => ipcRenderer.invoke("project-get-all"),
 });
 
-contextBridge.exposeInMainWorld("webUtils", webUtils);
-
 contextBridge.exposeInMainWorld("metadata", {
     get: (filePath) => ipcRenderer.invoke("get-metadata", filePath),
 });
@@ -27,4 +36,8 @@ contextBridge.exposeInMainWorld("exporter", {
 
 contextBridge.exposeInMainWorld("importer", {
     import: () => ipcRenderer.invoke("import"),
+});
+
+contextBridge.exposeInMainWorld("explorer", {
+    open: (path) => ipcRenderer.invoke("open-file-path", path),
 });
