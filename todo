@@ -59,6 +59,7 @@
 - [ ] Validators do not get resolved on block deletion
 - [X] Leave dialog is broken. Centralize the * use or something
 - [ ] Have a look at all the event when loading and changing things in the editor
+- [ ] Ag
 
 ## Patches 
 - [ ] z index on export popup
