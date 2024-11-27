@@ -75,8 +75,7 @@ const progressUpdate = setInterval(() => {
             // Switch page after a short delay, this is not final
             setTimeout(() => {
                 switchPage();
-            }, 500);
-
+            }, 1000);
 
         } else if (status.status === "failed") {
             clearInterval(progressUpdate);
