@@ -66,11 +66,17 @@ const progressUpdate = setInterval(() => {
 
             appPath.get().then((path) => {
                 const videosPath = path + "\\assets\\videos";
-                bottomStatusText.innerHTML = `Files downloaded to:<span class="open-file-path clickable" data-file-path="${videosPath}"><br>${videosPath}</span>`;
+                bottomStatusText.innerHTML = `Files downloaded to:<span class="open-file-path clickable" data-file-path="${videosPath}"><br>${videosPath}</span>.<br>Moving on...`;
             });
 
             // Allow for unhindered reloading and leaving
             setSavedState();
+            
+            // Switch page after a short delay, this is not final
+            setTimeout(() => {
+                switchPage();
+            }, 500);
+
 
         } else if (status.status === "failed") {
             clearInterval(progressUpdate);
