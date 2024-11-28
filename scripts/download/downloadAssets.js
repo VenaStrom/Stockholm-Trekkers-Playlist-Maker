@@ -1,7 +1,7 @@
 const { BrowserWindow, ipcMain } = require("electron");
 const fs = require("fs");
 const path = require("node:path")
-const raiseError = require("../raiseError.js");
+const raiseError = require("../ipc-responders/raiseError.js");
 
 const logStatus = {
     start: "[STARTED] ",
@@ -22,9 +22,10 @@ const downloadStatus = {
     "percent": 0,
 };
 
-const downloadPauses = (force = false) => {
-    const videoFolder = path.join(__dirname, "../../assets/videos/")
+const videoFolder = path.join(__dirname, "../../assets/videos/")
+const downloadReferenceFile = path.join(__dirname, "..", "..", "fileDownload.json");
 
+const downloadPauses = (force = false) => {
     downloadStatus.status = "starting";
 
     // If force downloading, delete the folder just to make sure
@@ -41,7 +42,7 @@ const downloadPauses = (force = false) => {
     };
 
     // Get the URLs of the files that are gonna be downloaded, from fileURLs.json
-    const fileURLs = JSON.parse(fs.readFileSync(path.join(__dirname, "fileURLs.json")));
+    const fileURLs = JSON.parse(fs.readFileSync(downloadReferenceFile));
     const fileIDs = fileURLs.videos;
     let index = 0;
 
@@ -189,7 +190,7 @@ const setUpHandlers = () => {
 
     // Gives a simple true or false if all the files are downloaded to check if you need to download at all
     ipcMain.handle("check-for-local-files", () => {
-        const fileURLs = JSON.parse(fs.readFileSync(path.join(__dirname, "fileURLs.json")));
+        const fileURLs = JSON.parse(fs.readFileSync(downloadReferenceFile));
         const fileIDs = fileURLs.videos;
 
         let fileCount = 0;

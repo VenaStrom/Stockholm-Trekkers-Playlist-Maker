@@ -1,13 +1,14 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("node:path");
+const raiseError = require("./scripts/ipc-responders/raiseError.js")
+const handleAppClose = require("./scripts/dialogs/handleAppClose.js");
+const { setUpHandlers: setUpFfprobeHandlers } = require("./scripts/ipc-responders/ffprobe.js")
+const { setUpHandlers: setUpSaveFileImportHandlers } = require("./scripts/ipc-responders/importSaveFile.js")
+const { setUpHandlers: setUpSaveFileFolderOpenerHandlers } = require("./scripts/ipc-responders/openFilePath.js")
+const { setUpHandlers: setUpProjectDataGetterHandlers } = require("./scripts/ipc-responders/projectGetters.js")
 const { setUpHandlers: setUpDownloadHandlers } = require("./scripts/download/downloadAssets.js");
-const { setUpHandlers: setUpProjectHandlers } = require("./scripts/save/projects.js");
-const { setUpHandlers: setUpMetadataHandlers } = require("./scripts/getMetaData.js");
-const { setUpHandlers: setUpExportHandlers } = require("./scripts/export.js");
-const { setUpHandlers: setUpImportHandlers } = require("./scripts/import.js");
-const { setUpHandlers: setUpOpenFileLocationHandlers } = require("./scripts/openFilePath.js");
-const { setUpHandlers: setUpConfirmLeaveDialogHandler } = require("./scripts/confirmLeaveDialog.js");
-const handleAppClose = require("./scripts/handleAppClose.js");
+const { setUpHandlers: setUpLeaveDialogHandlers } = require("./scripts/dialogs/leaveDialog.js");
+const { setUpHandlers: setUpExportHandlers } = require("./scripts/export/exportProject.js");
 
 const createMainWindow = () => {
     const mainWindow = new BrowserWindow({
@@ -38,13 +39,14 @@ app.whenReady().then(() => {
 
     // Set up the handlers for the ipc messages
     // The handlers are defined in their respective files
+    setUpFfprobeHandlers();
+    setUpSaveFileImportHandlers();
+    setUpSaveFileFolderOpenerHandlers();
+    setUpProjectDataGetterHandlers();
     setUpDownloadHandlers();
-    setUpProjectHandlers();
-    setUpMetadataHandlers();
+    setUpLeaveDialogHandlers();
     setUpExportHandlers();
-    setUpImportHandlers();
-    setUpOpenFileLocationHandlers();
-    setUpConfirmLeaveDialogHandler();
+
     // Used by the download status to link to the app data
     ipcMain.handle("get-app-path", () => {
         return path.resolve(__dirname);

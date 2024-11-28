@@ -1,7 +1,7 @@
 const { ipcMain } = require("electron");
 const fs = require("node:fs");
 const path = require("node:path")
-const raiseError = require("../raiseError.js");
+const raiseError = require("../ipc-responders/raiseError.js");
 
 const projectsFolder = path.join(__dirname, "../..", "user-data", "projects");
 
@@ -14,7 +14,7 @@ const projectGet = (id, projectDirPath) => {
 
     const data = JSON.parse(fs.readFileSync(filePath));
 
-    if (data){
+    if (data) {
         return data;
     } else {
         raiseError("Error reading project file: " + filePath);
@@ -52,7 +52,7 @@ const projectGetAll = (projectDirPath) => {
     const projectFiles = fs.readdirSync(projectDirPath);
 
     return projectFiles.map((file) => {
-        return JSON.parse(fs.readFileSync(path.join(projectDirPath, file), {encoding: "utf-8"}));
+        return JSON.parse(fs.readFileSync(path.join(projectDirPath, file), { encoding: "utf-8" }));
     });
 };
 
