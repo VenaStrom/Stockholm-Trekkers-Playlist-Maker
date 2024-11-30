@@ -103,7 +103,7 @@ document.addEventListener("keydown", (event) => {
     saveProject();
 });
 
-// Save project on change if autoSave is enabled
+// Set unsaved status on change
 document.addEventListener("change", () => {
     saveStatusText.textContent = "Latest changes not saved*";
     setUnsavedState();

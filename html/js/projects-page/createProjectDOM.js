@@ -1,28 +1,133 @@
 
-// Big plus button for making a new project
-const createNewProjectButton = document.querySelector(".make-new-project");
-createNewProjectButton.addEventListener("click", () => {
-    window.location.href = "./playlist-editor.html?id=new";
-});
+// <!-- Template project -->
+// <div class="round-box load-project-template hidden clickable" tabindex="0">
+//     <div class="project-header">
+//         <div class="project-date">
+//             <p>Trekdag</p>
+//             <h3>2024-09-14</h3>
+//         </div>
 
+//         <div class="meta-data">
+//             <p>2024-08-30</p>
+//         </div>
 
-// Clone and clean up the template project
-const cloneTemplateProject = () => {
-    const templateProject = document.querySelector(".load-project-template.hidden");
-    const projectDOM = templateProject.cloneNode(true);
-    projectDOM.classList.remove("load-project-template");
-    projectDOM.classList.add("load-project");
-    projectDOM.classList.remove("hidden")
+//         <img class="clickable clickable-icon delete-project" tabindex="0"
+//             src="../../assets/images/delete_35dp_000000_FILL0_wght700_GRAD0_opsz40.png" alt="Delete">
+//     </div>
 
-    const episodeDOMs = projectDOM.querySelector("ul");
-    episodeDOMs.innerHTML = ""; // Wipe the template episodes
+//     <ul>
+//         <li class="block-header">
+//             <p>Block 1</p>
+//             <div>
+//                 <div class="option"></div>
+//                 <div class="option"></div>
+//                 <div class="option"></div>
+//             </div>
+//         </li>
+//         <li>HH:MM - Episode 1 with a long name</li>
+//         <li>HH:MM - Episode 2 with a different long name</li>
+//         <li>HH:MM - Episode 3 with another long name</li>
+//         <li>HH:MM - Episode 4 with yet another long name</li>
+//         <li>HH:MM - Episode 4 with yet another long name</li>
+//         <hr>
+//         <li class="pause">HH:MM - Pause</li>
+//         <hr>
+//         <li class="block-header">
+//             <p>Block 1</p>
+//             <div>
+//                 <div class="option"></div>
+//                 <div class="option"></div>
+//                 <div class="option"></div>
+//             </div>
+//         </li>
+//         <li>HH:MM - Episode 4 with yet another long name</li>
+//         <li>HH:MM - Episode 5 with a very long name</li>
+//         <li>HH:MM - Episode 6 with yet another long name</li>
+//         <li>HH:MM - Episode 7 with a very long name</li>
+//         <li>HH:MM - Episode 8 with an extremely long name</li>
+//     </ul>
+// </div>
 
-    return projectDOM;
-};
 
 // Creates and fills the metadata tag with the date modified
-const createMetadataDOM = (projectData) => {
-    // Decides how to format the time you see by "last modified" 
+// const createMetadataDOM = (projectData) => {
+//     // Decides how to format the time you see by "last modified" 
+
+
+//     const metadataDOM = document.createElement("div");
+
+//     const lastModifiedText = document.createElement("p");
+//     lastModifiedText.textContent = "Last modified: ";
+
+//     const lastModifiedTime = document.createElement("p");
+//     lastModifiedTime.textContent = unixTimeToDate(projectData.dateModified);
+
+//     metadataDOM.appendChild(lastModifiedText);
+//     metadataDOM.appendChild(lastModifiedTime);
+
+//     return metadataDOM;
+// };
+
+// const createPauseDOM = (episodeData) => {
+//     const pauseDOM = document.createElement("li");
+//     pauseDOM.classList.add("pause");
+
+//     const startTime = episodeData.endTime || "--:--";
+
+//     const pauseTextDOM = document.createElement("p");
+//     pauseTextDOM.textContent = "Pause";
+
+//     const timeDOM = document.createElement("p");
+//     timeDOM.textContent = startTime;
+
+//     pauseDOM.appendChild(timeDOM);
+//     pauseDOM.appendChild(pauseTextDOM);
+
+//     return pauseDOM;
+// };
+
+// // Block header mainly contains the dots that represent the options that are checked
+// const createBlockHeader = (blockData) => {
+//     const blockHeader = document.createElement("li");
+//     blockHeader.classList.add("block-header");
+
+//     // The container holding the little dots that represent the options
+//     const optionsContainer = document.createElement("div");
+
+//     const optionsText = document.createElement("p");
+//     optionsText.textContent = "Options";
+//     optionsContainer.appendChild(optionsText);
+
+//     // Make the little dots that represent the options
+//     blockData.options.forEach((option) => {
+//         const optionDOM = document.createElement("div");
+//         optionDOM.classList.add("option");
+
+//         if (option.checked) { optionDOM.classList.add("checked"); }
+
+//         optionsContainer.appendChild(optionDOM);
+//     });
+//     blockHeader.appendChild(optionsContainer);
+
+//     return blockHeader;
+// };
+
+// const makeEpisodeDOM = (episodeData) => {
+//     const episodeDOM = document.createElement("li");
+
+//     const timeDOM = document.createElement("p");
+//     timeDOM.textContent = episodeData.startTime;
+//     episodeDOM.appendChild(timeDOM);
+
+//     const episodeFileNameDOM = document.createElement("p");
+//     episodeFileNameDOM.textContent = episodeData.fileName;
+//     episodeDOM.appendChild(episodeFileNameDOM);
+
+//     return episodeDOM;
+// };
+
+const createProjectDOM = (projectData) => {
+
     const unixTimeToDate = (unixTime) => {
         if (!unixTime) { return undefined; };
 
@@ -31,111 +136,69 @@ const createMetadataDOM = (projectData) => {
         return date.toLocaleDateString("en", { year: "numeric", weekday: "short", month: "short", day: "numeric" })
     };
 
-    const metadataDOM = document.createElement("div");
+    const projectTemplate = `
+        <div class="round-box load-project clickable" tabindex="0">
+            <div class="project-header">
+                <div class="project-date">
+                    <p>Trekdag</p>
+                    <h3>${projectData.date}</h3>
+                </div>
 
-    const lastModifiedText = document.createElement("p");
-    lastModifiedText.textContent = "Last modified: ";
+                <div class="meta-data">
+                    <p>Last modified: </p>
+                    <p>${unixTimeToDate(projectData.dateModified)}</p>
+                </div>
 
-    const lastModifiedTime = document.createElement("p");
-    lastModifiedTime.textContent = unixTimeToDate(projectData.dateModified);
+                <img class="clickable clickable-icon delete-project" tabindex="0" src="../../assets/images/delete_35dp_000000_FILL0_wght700_GRAD0_opsz40.png" alt="Delete">
+            </div>
 
-    metadataDOM.appendChild(lastModifiedText);
-    metadataDOM.appendChild(lastModifiedTime);
+            <ul></ul>
+        </div>`;
 
-    return metadataDOM;
-};
-
-const createPauseDOM = (episodeData) => {
-    const pauseDOM = document.createElement("li");
-    pauseDOM.classList.add("pause");
-
-    const startTime = episodeData.endTime || "--:--";
-
-    const pauseTextDOM = document.createElement("p");
-    pauseTextDOM.textContent = "Pause";
-
-    const timeDOM = document.createElement("p");
-    timeDOM.textContent = startTime;
-
-    pauseDOM.appendChild(timeDOM);
-    pauseDOM.appendChild(pauseTextDOM);
-
-    return pauseDOM;
-};
-
-// Block header mainly contains the dots that represent the options that are checked
-const createBlockHeader = (blockData) => {
-    const blockHeader = document.createElement("li");
-    blockHeader.classList.add("block-header");
-
-    // The container holding the little dots that represent the options
-    const optionsContainer = document.createElement("div");
-
-    const optionsText = document.createElement("p");
-    optionsText.textContent = "Options";
-    optionsContainer.appendChild(optionsText);
-
-    // Make the little dots that represent the options
-    blockData.options.forEach((option) => {
-        const optionDOM = document.createElement("div");
-        optionDOM.classList.add("option");
-
-        if (option.checked) { optionDOM.classList.add("checked"); }
-
-        optionsContainer.appendChild(optionDOM);
-    });
-    blockHeader.appendChild(optionsContainer);
-
-    return blockHeader;
-};
-
-const makeEpisodeDOM = (episodeData) => {
-    const episodeDOM = document.createElement("li");
-
-    const timeDOM = document.createElement("p");
-    timeDOM.textContent = episodeData.startTime;
-    episodeDOM.appendChild(timeDOM);
-
-    const episodeFileNameDOM = document.createElement("p");
-    episodeFileNameDOM.textContent = episodeData.fileName;
-    episodeDOM.appendChild(episodeFileNameDOM);
-
-    return episodeDOM;
-};
-
-const createProjectDOM = (projectData) => {
-    const projectDOM = cloneTemplateProject();
-
-    const projectHeader = projectDOM.querySelector(".project-header");
-
-    // The date of the trekdag
-    projectHeader.querySelector("h3").textContent = projectData.date;
-
-    // Metadata in the header
-    projectHeader.querySelector(".meta-data").outerHTML = createMetadataDOM(projectData);
-
-    // Loop through all the blocks and episodes and append them to the project
-    projectData.blocks.forEach((blockData) => {
-        const episodeList = document.createElement("ul");
-
-        episodeList.appendChild(createBlockHeader(blockData));
-
-        blockData.episodes.forEach((episodeData) => {
-            episodeList.appendChild(makeEpisodeDOM(episodeData));
+    const blockHeaderTemplate = (options) => {
+        const dots = [];
+        options.forEach(option => {
+            dots.push(`<div class="option${option.checked ? " checked" : ""}"></div>`);
         });
 
-        // Add a hairline between the pause and the episodes
-        episodeList.appendChild(document.createElement("hr"));
+        return `
+        <li class="block-header">
+            <p>Options</p>
 
-        // Add the pause at the end of the block with the time of the last episodes end time
-        const lastEpisodeData = blockData.episodes.at(-1) || { endTime: "--:--" };
-        if (blockData.length === 0) {
-            // If there are no episodes, the pause should just say the start time of the block
-            lastEpisodeData.endTime = blockData.startTime || "--:--";
-        }
-        episodeList.appendChild(createPauseDOM(lastEpisodeData));
+            <div>
+                ${dots.join("\n")}
+            </div>
+        </li>`
+    };
 
-        episodeList.appendChild(document.createElement("hr"));
+    const episodeTemplate = (time, episodeName) => `
+        <li>
+            <p class="time">${time}</p>
+            <p class="episode-name">${episodeName}</p>
+        </li>`;
+
+
+    const pauseTemplate = (time) => `
+        <li class="pause">
+            <p class="time">${time}</p>
+            <p class="pause-text">Pause</p>
+        </li>`;
+
+    const temporaryWrapper = document.createElement("div");
+    temporaryWrapper.innerHTML = projectTemplate;
+    const projectDOM = temporaryWrapper.children[0];
+
+    const episodeList = projectDOM.querySelector("ul");
+
+    projectData.blocks.forEach((blockData) => {
+        episodeList.innerHTML += blockHeaderTemplate(blockData.options);
+
+        blockData.episodes.forEach((episodeData) => {
+            episodeList.innerHTML += episodeTemplate(episodeData.startTime, episodeData.fileName);
+        });
+
+        episodeList.innerHTML += pauseTemplate(blockData.episodes.at(-1)?.endTime || blockData.startTime || "--:--");
+        episodeList.innerHTML += `<hr>`;
     });
 
     // Clicking the project can: delete it, or open it in the editor depending on where you click
@@ -155,6 +218,8 @@ const createProjectDOM = (projectData) => {
         }
 
         // Else, go to the project in the editor
-        window.location.href = `./playlist-editor.html?id=${project.id}`;
+        window.location.href = `./playlist-editor.html?id=${projectData.id}`;
     });
+
+    return projectDOM;
 };

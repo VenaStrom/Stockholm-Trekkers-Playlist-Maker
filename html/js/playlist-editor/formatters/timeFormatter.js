@@ -28,7 +28,8 @@ const interpretTime = (time) => {
 
         return `${time[0]}${time[1]}:${time[2]}${time[3]}`;
     }
-    return undefined;
+    
+    return time;
 };
 
 const secondsToHHMM = (seconds) => {
@@ -39,7 +40,7 @@ const secondsToHHMM = (seconds) => {
 };
 
 const HHMMToSeconds = (hhmm) => {
-    const [hours, minutes] = interpretUserTimeInput(hhmm).split(":");
+    const [hours, minutes] = interpretTime(hhmm).split(":");
 
     return hours * 60 * 60 + minutes * 60;
 };

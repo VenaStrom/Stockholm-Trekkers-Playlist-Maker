@@ -9,10 +9,10 @@ document.addEventListener("keydown", (event) => {
     // If it's clickable, click it
     if (event.target.classList.contains("clickable")) {
         event.preventDefault(); // Prevents double clicks if the element is already "enterable"
-
+        
         // If a clickable element has a child, that means it is the one that should be clicked
         if (event.target.children.length > 0) {
-            event.target.children.at(0).click();
+            event.target.children[0].click();
         } else {
             event.target.click();
         }

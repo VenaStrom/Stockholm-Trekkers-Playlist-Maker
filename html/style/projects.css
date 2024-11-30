@@ -156,16 +156,11 @@ body {
                     }
                 }
 
-
                 &>hr {
                     width: calc(100% - 3ch);
                     border: 0.05rem solid var(--accent-color-low-contrast);
 
                     &:last-child {
-                        display: none;
-                    }
-
-                    &:nth-last-of-type(2) {
                         display: none;
                     }
                 }
@@ -199,7 +194,7 @@ body {
 
                 &>button {
                     pointer-events: all;
-                
+
                     display: flex;
                     flex-flow: row nowrap;
                     align-items: end;

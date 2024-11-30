@@ -1,6 +1,5 @@
 
 const dateValidator = (inputDate) => {
-
     const date = new Date(inputDate);
 
     const warnings = [];

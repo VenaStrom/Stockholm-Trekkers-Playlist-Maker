@@ -4,19 +4,19 @@ const id = getID();
 // Load project on page load if there is an ID
 if (id !== "new") {
     projects.get(id).then((project) => {
-            if (!project) {
+        if (!project) {
             console.warn("No project found with id: " + id);
             return;
         }
 
-        // Set the date input and trigger its formatting
+        // Set the date input
         document.querySelector(".date-input input[type='text']").value = project.date;
 
         // Load all blocks, one at a time
         project.blocks.forEach((blockData, blockIndex) => {
             // Create new blocks if there are not enough
             if (document.querySelectorAll(".block").length <= blockIndex) {
-                createBlockDOM();
+                createBlockDOM(document.querySelector(".create-block"));
             }
 
             const blockDOM = document.querySelectorAll(".block")[blockIndex];
@@ -39,9 +39,9 @@ if (id !== "new") {
             // Load all the episodes of this block, one at a time
             blockData.episodes.forEach((episode, episodeIndex) => {
                 // Create new episode DOM if there aren't enough
-                if (blockDOM.querySelectorAll(".episode").length <= episodeIndex) {
+                if (episodeIndex !== 0) {
                     createEpisodeDOM(blockDOM);
-                };
+                }
 
                 const episodeDOM = blockDOM.querySelectorAll(".episode")[episodeIndex];
 
@@ -61,9 +61,5 @@ if (id !== "new") {
                 timeDOM.dataset.endTime = episode.endTime;
             });
         });
-
-        // Since the block times gets auto focused, we need to blur it to remove the focus. Focusing the back button also places the selection marker at a good place to start tabbing.
-        document.querySelector("#back-button").focus();
-        document.querySelector("#back-button").blur();
     });
 }

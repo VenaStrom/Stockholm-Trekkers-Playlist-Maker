@@ -16,9 +16,7 @@ const createEpisodeDOM = (parent) => {
     parent.appendChild(episode);
     parent.appendChild(hr);
 
-    // Make sure there's always at least one empty episode at the end of the block
-    const fileInput = episode.querySelector("input[type='file']");
-    fileInput.addEventListener("change", (event) => {
+    const makeSureEmptyEpisodeExists = (event) => {
         const episodes = parent.querySelectorAll(".episode");
 
         // If the last episode DOM has a file, create a new episode since there should always be an empty episode at the end
@@ -34,5 +32,11 @@ const createEpisodeDOM = (parent) => {
             const filePath = webUtils.getPathForFile(file);
             event.target.dataset.filePath = filePath;
         }
-    });
+    };
+
+    const fileInput = episode.querySelector("input[type='file']");
+    fileInput.addEventListener("change", makeSureEmptyEpisodeExists);
+    // fileInput.addEventListener("change", () => {
+    //     parent.querySelector(".time>input[type='text']").dispatchEvent(new Event("blur"));
+    // });
 };

@@ -3,7 +3,7 @@
 const templateBlock = document.querySelector(".block-template.hidden");
 
 // Creates a block next to the create block button
-const createBlockDOM = (sibling) => {
+const createBlockDOM = (sibling, focusBlock = false) => {
     // Clone the template and clean up its classes
     const block = templateBlock.cloneNode(true)
     block.classList.add("block");
@@ -13,11 +13,6 @@ const createBlockDOM = (sibling) => {
     // Update the option dots 
     updateDots(block.querySelector(".options"));
 
-    // Callback functions defined in setStartTimes.js and timeValidator.js
-    block.querySelector(".time input[type='text']").addEventListener("change", formatBlockTime);
-    block.addEventListener("change", updateEpisodeTimesInBlock);
-    block.querySelector(".time input[type='text']").addEventListener("blur", timeValidator);
-
     // Make two episodes to start off with
     createEpisodeDOM(block);
     createEpisodeDOM(block);
@@ -26,7 +21,22 @@ const createBlockDOM = (sibling) => {
     sibling.insertAdjacentElement("beforebegin", block);
 
     // Focus on the blocks time input
-    block.querySelector(".time input[type='text']").focus();
+    if (focusBlock) {
+        block.querySelector(".time input[type='text']").focus();
+    }
+
+    // Add event listeners
+    block.querySelector(".time>input[type='text']").addEventListener("blur", (event) => {
+        event.target.value = interpretTime(event.target.value);
+
+        updateEpisodeDurationsInBlock(block);
+        setStartTimesInBlock(block);
+    });
+
+    block.addEventListener("change", (event) => {
+        updateEpisodeDurationsInBlock(block);
+        setStartTimesInBlock(block);
+    });
 };
 
 const deleteBlockDOM = (source) => {

@@ -77,7 +77,15 @@ const handleLeaving = () => {
 };
 
 // Ctrl + R confirmation to prevent unwanted refresh
-document.addEventListener("keydown", handleLeaving);
+document.addEventListener("keydown", (event) => {
+    if (event.ctrlKey && event.key === "r") {
+        if (!isSaved() && !isExporting()) {
+            if (!confirmRefresh()) {
+                event.preventDefault();
+            }
+        }
+    }
+});
 
 // Back button click event
 const backButton = document.querySelector("#back-button");
