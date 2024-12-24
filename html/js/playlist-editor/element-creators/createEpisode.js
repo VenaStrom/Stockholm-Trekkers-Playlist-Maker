@@ -36,6 +36,7 @@ const createEpisodeDOM = (parent) => {
 
     const fileInput = episode.querySelector("input[type='file']");
     fileInput.addEventListener("change", makeSureEmptyEpisodeExists);
+    // TODO - make the episode time actually do something
     // fileInput.addEventListener("change", () => {
     //     parent.querySelector(".time>input[type='text']").dispatchEvent(new Event("blur"));
     // });

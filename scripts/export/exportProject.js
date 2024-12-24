@@ -3,7 +3,7 @@ const { Worker } = require("worker_threads");
 const path = require("node:path");
 const os = require("os");
 const fs = require("node:fs");
-const { projectGet, projectsFolder: userData } = require("../ipc-responders/projectGetters.js");
+const { projectGet, projectsFolder: userData } = require("../ipc-handlers/projectGetters.js");
 const makePS1 = require("./createPS1.js");
 
 // Assigned later in the projectExport function to a worker thread that copies all the assets

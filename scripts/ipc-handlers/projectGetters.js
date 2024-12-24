@@ -1,7 +1,7 @@
 const { ipcMain } = require("electron");
 const fs = require("node:fs");
 const path = require("node:path")
-const raiseError = require("../ipc-responders/raiseError.js");
+const raiseError = require("../ipc-handlers/raiseError.js");
 
 const projectsFolder = path.join(__dirname, "../..", "user-data", "projects");
 

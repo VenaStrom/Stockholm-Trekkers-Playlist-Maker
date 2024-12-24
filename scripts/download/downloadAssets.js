@@ -1,7 +1,7 @@
 const { BrowserWindow, ipcMain } = require("electron");
 const fs = require("fs");
 const path = require("node:path")
-const raiseError = require("../ipc-responders/raiseError.js");
+const raiseError = require("../ipc-handlers/raiseError.js");
 
 const logStatus = {
     start: "[STARTED] ",

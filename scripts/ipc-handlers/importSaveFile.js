@@ -2,7 +2,7 @@ const { ipcMain, dialog } = require("electron");
 const fs = require("fs");
 const path = require("path");
 const os = require("os");
-const { projectsFolder } = require("../ipc-responders/projectGetters.js");
+const { projectsFolder } = require("../ipc-handlers/projectGetters.js");
 
 const showDialog = () => {
     return dialog.showOpenDialog({
