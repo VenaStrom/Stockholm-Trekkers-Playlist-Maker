@@ -1,3 +1,5 @@
+"use strict";
+
 
 // Make the ps1 "harness" that runs VLC and runs the correct episodes at the correct times
 const makePS1 = (projectJSON, exportFolder) => {

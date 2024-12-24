@@ -1,16 +1,10 @@
 "use strict";
-const { app, BrowserWindow, ipcMain } = require("electron");
+
+const { app, BrowserWindow } = require("electron");
 const path = require("node:path");
-const handleAppClose = require("./scripts/dialogs/handleAppClose.js");
-const { setUpHandlers: setUpFfprobeHandlers } = require("./scripts/ipc-handlers/ffprobe.js")
-const { setUpHandlers: setUpSaveFileImportHandlers } = require("./scripts/ipc-handlers/importSaveFile.js")
-const { setUpHandlers: setUpSaveFileFolderOpenerHandlers } = require("./scripts/ipc-handlers/openFilePath.js")
-const { setUpHandlers: setUpProjectDataGetterHandlers } = require("./scripts/ipc-handlers/projectGetters.js")
-const { setUpHandlers: setUpDownloadHandlers } = require("./scripts/download/downloadAssets.js");
-const { setUpHandlers: setUpLeaveDialogHandlers } = require("./scripts/dialogs/leaveDialog.js");
-const { setUpHandlers: setUpExportHandlers } = require("./scripts/export/exportProject.js");
-const ipcAppPath = require("./scripts/ipc-handlers/appPath.js");
 require("./scripts/extend/console.js"); // Adds more verbose logging to the console and colors!
+const appCloseHandlers = require("./scripts/dialogs/handleAppClose.js");
+const { ipcHandlers: ipcProjects } = require("./scripts/ipc-handlers/projectGetters.js");
 
 const createMainWindow = () => {
     const mainWindow = new BrowserWindow({
@@ -26,8 +20,9 @@ const createMainWindow = () => {
     });
 
     // Handle when the app can close with and without a dialog
-    mainWindow.once("close", handleAppClose.onClose);
-    mainWindow.once("closed", handleAppClose.onClosed);
+    mainWindow.isMain = true; // Allow things to find main window
+    mainWindow.once("close", appCloseHandlers.onClose);
+    mainWindow.once("closed", appCloseHandlers.onClosed);
 
     // Load and show the main window at the download assets page
     mainWindow.loadFile("./html/pages/download.html");
@@ -38,22 +33,17 @@ const createMainWindow = () => {
 app.once("ready", () => {
     createMainWindow();
 
-    // Set up the handlers for the ipc messages
-    // The handlers are defined in their respective files
-    setUpFfprobeHandlers();
-    setUpSaveFileImportHandlers();
-    setUpSaveFileFolderOpenerHandlers();
-    setUpProjectDataGetterHandlers();
-    setUpDownloadHandlers();
-    setUpLeaveDialogHandlers();
-    setUpExportHandlers();
-    ipcAppPath();
-
-
-    console.info("handlers set up");
-});
-
-// Just in case something goes wrong, make the main window if it somehow didn't get made
-app.on("activate", () => {
-    if (BrowserWindow.getAllWindows().length === 0) createMainWindow();
+    // Register IPC Handlers
+    const ipcHandlers = [
+        require("./scripts/ipc-handlers/importSaveFile.js"),
+        require("./scripts/ipc-handlers/openFilePath.js"),
+        require("./scripts/ipc-handlers/appPath.js"),
+        require("./scripts/ipc-handlers/ffprobe.js"),
+        require("./scripts/download/downloadAssets.js"),
+        require("./scripts/dialogs/leaveDialog.js"),
+        require("./scripts/export/exportProject.js"),
+        ipcProjects,
+    ];
+    ipcHandlers.forEach(handler => handler());
+    console.info(`Registered ${ipcHandlers.length} IPC Handlers`);
 });

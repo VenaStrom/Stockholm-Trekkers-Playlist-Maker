@@ -1,3 +1,5 @@
+"use strict";
+
 
 // Big plus button for making a new project
 const createNewProjectButton = document.querySelector(".make-new-project");

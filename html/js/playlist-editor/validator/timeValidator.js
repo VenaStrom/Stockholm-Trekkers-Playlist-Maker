@@ -1,3 +1,5 @@
+"use strict";
+
 
 // If the imputed time is less than 9 or greater than 20, a warning will be displayed.
 const earliestTime = 9;

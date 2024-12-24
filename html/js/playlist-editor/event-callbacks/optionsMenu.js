@@ -1,3 +1,5 @@
+"use strict";
+
 
 const expandOptions = (source) => {
     const options = source.parentElement.querySelector(".options");

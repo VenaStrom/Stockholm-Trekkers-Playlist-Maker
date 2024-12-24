@@ -1,6 +1,8 @@
+"use strict";
+
 const { dialog, ipcMain } = require("electron");
 
-const setUpHandlers = () => {
+const ipcHandlers = () => {
     // Confirm unsaved changes
     ipcMain.handle("confirm-leave-unsaved", async (event, message) => {
         const response = dialog.showMessageBoxSync({
@@ -30,4 +32,4 @@ const setUpHandlers = () => {
     });
 };
 
-module.exports = { setUpHandlers };
+module.exports = ipcHandlers;

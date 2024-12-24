@@ -1,3 +1,5 @@
+"use strict";
+
 
 // Intercept all keydowns and if the target is a clickable element, click it
 document.addEventListener("keydown", (event) => {

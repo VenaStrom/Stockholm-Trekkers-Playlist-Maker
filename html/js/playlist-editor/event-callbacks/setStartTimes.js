@@ -1,3 +1,5 @@
+"use strict";
+
 
 const updateEpisodeDurationsInBlock = (block) => {
     console.log("Getting times in block", block);

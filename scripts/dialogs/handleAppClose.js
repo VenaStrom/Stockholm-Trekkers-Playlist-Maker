@@ -1,13 +1,14 @@
 "use strict";
+
 const { dialog, BrowserWindow } = require("electron");
 
 // If any of these strings appear in the window title the app will prompt the user to confirm closing
 const closeConfirmationStrings = ["*"];
 
-const onClose = (event) => {
+const onClose = () => {
     // Check if the window title contains any of the strings that require confirmation
-    console.log(event);
-    const title = event.sender.getTitle();
+    const mainWindow = BrowserWindow.getAllWindows().find(window => window.isMain);
+    const title = mainWindow.getTitle();
     const needsConfirmation = closeConfirmationStrings.some(string => title.includes(string));
 
     if (!needsConfirmation) return; // Just close

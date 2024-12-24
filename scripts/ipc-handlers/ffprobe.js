@@ -1,10 +1,12 @@
+"use strict";
+
 const { ipcMain } = require("electron");
 const { execFile } = require("node:child_process");
 const fs = require("node:fs");
 const ffprobe = require("ffprobe-static").path;
 
 // Extract metadata using ffprobe
-getVideoMetadata = (filePath) => {
+const getVideoMetadata = (filePath) => {
     return new Promise((resolve, reject) => {
         execFile(ffprobe, [
             "-v", "error",
@@ -23,7 +25,7 @@ getVideoMetadata = (filePath) => {
     });
 }
 
-const setUpHandlers = () => {
+const ipcHandlers = () => {
     // Handle when the renderer process requests metadata
     ipcMain.handle("get-metadata", async (event, filePath) => {
         if (!fs.existsSync(filePath)) {
@@ -35,4 +37,4 @@ const setUpHandlers = () => {
     });
 };
 
-module.exports = { setUpHandlers };
+module.exports = ipcHandlers;

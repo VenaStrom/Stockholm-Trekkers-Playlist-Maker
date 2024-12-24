@@ -1,3 +1,5 @@
+"use strict";
+
 const { spawn } = require("node:child_process");
 const { ipcMain } = require("electron");
 const path = require("node:path");
@@ -19,10 +21,10 @@ const openFilePath = (folderPath) => {
     }
 };
 
-const setUpHandlers = () => {
+const ipcHandlers = () => {
     ipcMain.handle("open-file-path", (event, folderPath) => {
         openFilePath(folderPath);
     });
 };
 
-module.exports = { setUpHandlers };
+module.exports = ipcHandlers;

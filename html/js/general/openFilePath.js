@@ -1,3 +1,5 @@
+"use strict";
+
 
 // HTML elements with the class "open-file-path" will open their data-file-path attribute value to open the file explorer at that location
 // E.g.:

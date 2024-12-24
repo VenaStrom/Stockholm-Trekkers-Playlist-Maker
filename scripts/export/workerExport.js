@@ -1,3 +1,5 @@
+"use strict";
+
 const { parentPort } = require("worker_threads");
 const fs = require("node:fs");
 const path = require("node:path");

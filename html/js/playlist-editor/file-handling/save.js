@@ -1,3 +1,5 @@
+"use strict";
+
 
 // For now, auto saving is flat out disabled. You will have to save manually
 const autoSave = false;

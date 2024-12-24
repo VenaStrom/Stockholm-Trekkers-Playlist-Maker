@@ -1,3 +1,5 @@
+"use strict";
+
 const { ipcMain } = require("electron");
 const fs = require("node:fs");
 const path = require("node:path")
@@ -56,7 +58,7 @@ const projectGetAll = (projectDirPath) => {
     });
 };
 
-const setUpHandlers = () => {
+const ipcHandlers = () => {
     // Make sure the projects folder exists
     if (!fs.existsSync(projectsFolder)) {
         fs.mkdirSync(projectsFolder, { recursive: true });
@@ -76,4 +78,4 @@ const setUpHandlers = () => {
     });
 };
 
-module.exports = { setUpHandlers, projectGet, projectsFolder };
+module.exports = { ipcHandlers, projectGet, projectsFolder };

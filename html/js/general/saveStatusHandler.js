@@ -1,3 +1,5 @@
+"use strict";
+
 
 const setUnsavedState = () => {
     if (!document.title.includes("*")) {

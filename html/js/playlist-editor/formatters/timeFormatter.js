@@ -1,3 +1,5 @@
+"use strict";
+
 
 const interpretTime = (time) => {
     time = time.replace(/[^0-9]/g, ""); // Only allow numbers

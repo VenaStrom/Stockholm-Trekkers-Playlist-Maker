@@ -1,3 +1,5 @@
+"use strict";
+
 const { ipcMain, dialog } = require("electron");
 const fs = require("fs");
 const path = require("path");
@@ -48,10 +50,10 @@ const showDialog = () => {
     });
 };
 
-const setUpHandlers = () => {
+const ipcHandlers = () => {
     ipcMain.handle("import", (event) => {
         return showDialog();
     });
 };
 
-module.exports = { setUpHandlers };
+module.exports = ipcHandlers;

@@ -1,3 +1,5 @@
+"use strict";
+
 
 const importSaveFile = () => {
     importer.import().then(() => {

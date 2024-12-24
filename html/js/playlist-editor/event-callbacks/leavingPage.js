@@ -1,3 +1,5 @@
+"use strict";
+
 // Helper functions for the back button //
 // Is it not saved?
 const isSaved = () => {

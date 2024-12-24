@@ -1,3 +1,5 @@
+"use strict";
+
 
 const pageBornAt = new Date().getTime();
 

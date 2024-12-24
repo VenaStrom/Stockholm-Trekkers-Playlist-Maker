@@ -1,3 +1,5 @@
+"use strict";
+
 
 const checkingForFilesWindow = document.getElementById("checking-for-files");
 const confirmMoveOnWindow = document.getElementById("confirm-move-on");

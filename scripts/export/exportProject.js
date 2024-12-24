@@ -1,3 +1,5 @@
+"use strict";
+
 const { ipcMain, dialog } = require("electron");
 const { Worker } = require("worker_threads");
 const path = require("node:path");
@@ -105,7 +107,7 @@ After that, you can zip the file, upload it to the cloud, and also transfer it t
 };
 
 
-const setUpHandlers = () => {
+const ipcHandlers = () => {
     ipcMain.handle("start-export", (event, id) => {
         projectExport(id);
     });
@@ -125,4 +127,4 @@ const setUpHandlers = () => {
     });
 };
 
-module.exports = { setUpHandlers };
+module.exports = ipcHandlers;

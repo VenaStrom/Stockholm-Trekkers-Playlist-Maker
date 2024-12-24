@@ -1,3 +1,5 @@
+"use strict";
+
 const { BrowserWindow, ipcMain } = require("electron");
 const fs = require("fs");
 const path = require("node:path")
@@ -179,7 +181,7 @@ const downloadPauses = (force = false) => {
 };
 
 
-const setUpHandlers = () => {
+const ipcHandlers = () => {
     ipcMain.handle("start-download", () => {
         downloadPauses();
     });
@@ -210,4 +212,4 @@ const setUpHandlers = () => {
     });
 };
 
-module.exports = { setUpHandlers };
+module.exports = ipcHandlers;
