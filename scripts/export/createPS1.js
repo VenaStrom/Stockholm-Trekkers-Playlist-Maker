@@ -1,8 +1,10 @@
 "use strict";
 require("../extend/console.js"); // Adds more verbose logging to the console and colors!
 
+const path = require("node:path");
+
 // Make the ps1 "harness" that runs VLC and runs the correct episodes at the correct times
-const makePS1 = (projectJSON, exportFolder) => {
+const makePS1 = (projectData, exportLocation) => {
     console.info("Making ps1 script...");
 
     // Update export status
@@ -151,6 +153,7 @@ Insert-Pause -pausePath '/pauses/pause_30_min.mp4' -playImmediately $false
 Insert-Pause -pausePath '/pauses/pause_30_min.mp4' -playImmediately $false
 `;
 
+    // JS aliases for the PowerShell functions
     const waitUntil = (hour, minute, seconds) => `Wait-UntilTime -Hour ${hour} -Minute ${minute} -Seconds ${seconds};`;
     const playEpisode = (episodePath, playImmediately = false) => `Play-Video -videoPath '${episodePath}' -playImmediately ${playImmediately ? "$true" : "$false"};`;
     const insertPause = (pausePath, playImmediately = false) => `Insert-Pause -pausePath '${pausePath}' -playImmediately ${playImmediately ? "$true" : "$false"};`;
@@ -159,21 +162,22 @@ Insert-Pause -pausePath '/pauses/pause_30_min.mp4' -playImmediately $false
 
     const blocks = [];
 
-    // Each block will set the start time of the block minus eventual leading clips length since they will be played together
-    // The first leading clip will play when called on while the rest of the clips and episodes will be queued
-    projectJSON.blocks.forEach((block, index) => {
-        const blockArray = [];
+    // First parts of this function will find the start time of the blocks first episode and the leading clips since they affect each other
+    projectData.blocks.forEach((block, index) => {
+        const thisBlock = [];
 
         // The start time of the block
         let [hour, minute, seconds] = [...block.startTime.split(":"), 0];
 
         // Header denoting the start of the block
-        blockArray.push(`#\n# Block ${index + 1} starts here, at ${hour}:${minute} \n#`);
+        thisBlock.push("#");
+        thisBlock.push(`# Block ${index + 1} starts here, at ${hour}:${minute}`);
+        thisBlock.push("#");
 
         // Move back the start time by the durations of the clips associated with an option
         block.options.forEach((option) => {
             if (option.checked) {
-                seconds -= option.duration; // seconds
+                seconds -= option.duration;
 
                 // Handle rollover
                 if (seconds < 0) {
@@ -187,57 +191,55 @@ Insert-Pause -pausePath '/pauses/pause_30_min.mp4' -playImmediately $false
             }
         });
 
-        // Wait until the start time of the block
-        blockArray.push(waitUntil(hour, minute, seconds));
+        // Block starts at the correct start time
+        thisBlock.push(waitUntil(hour, minute, seconds));
 
         // Queue the leading clips
-        let first = true;
+        let isFirst = true;
         block.options.forEach((option) => {
             if (option.checked && option.id.includes("leading")) {
-                const clipPath = "/pauses/" + option.fileName;
-                blockArray.push(insertLeadingClip(clipPath, playImmediately = first));
-                first = false;
+                const clipPath = `/pauses/${option.fileName}`;
+                thisBlock.push(insertLeadingClip(clipPath, playImmediately = isFirst));
+                isFirst = false;
             }
         });
 
-        // Add some margin in the ps1 script for easier readability
-        blockArray.push("");
+        thisBlock.push(""); // Margin in ps1 script
 
         // Push the episodes in the block
-        blockArray.push(`# Episodes in block ${index + 1}`);
+        thisBlock.push(`# Episodes in block ${index + 1}`);
         block.episodes.forEach((episode) => {
-            blockArray.push(playEpisode("/episodes/" + episode.fileName, playImmediately = first));
-            first = false;
+            thisBlock.push(playEpisode(`/episodes/${episode.fileName}`, playImmediately = isFirst));
+            isFirst = false;
         });
 
-        // Add some margin in the ps1 script for easier readability
-        blockArray.push("");
+        thisBlock.push(""); // Margin in ps1 script
 
         // Add the trailing clips
         block.options.forEach((option) => {
             if (option.checked && option.id.includes("trailing")) {
-                const clipPath = "/pauses/" + option.fileName;
-                blockArray.push(insertTrailingClip(clipPath, false));
+                const clipPath = `/pauses/${option.fileName}`;
+                thisBlock.push(insertTrailingClip(clipPath, false));
             }
         });
 
         // Push an hour and a half of pauses at the end of each block
         for (let i = 0; i < 3; i++) {
-            blockArray.push(insertPause("/pauses/pause_30_min.mp4"));
+            thisBlock.push(insertPause("/pauses/pause_30_min.mp4"));
         }
 
         // Push the block to the array of all the blocks
-        blocks.push(`\n\n${blockArray.join("\n")} `);
+        blocks.push(`\n\n${thisBlock.join("\n")}`);
     });
 
     // Join the beginning and the blocks together
-    const script = staticBeginning + blocks.join("\n");
+    const scriptContent = staticBeginning + blocks.join("\n");
 
     // Write the script to the project folder
-    if (!fs.existsSync(exportFolder)) {
-        fs.mkdirSync(exportFolder, { recursive: true });
+    if (!fs.existsSync(exportLocation)) {
+        fs.mkdirSync(exportLocation, { recursive: true });
     };
-    fs.writeFileSync(path.join(exportFolder, "play.ps1"), script);
+    fs.writeFileSync(path.join(exportLocation, "play.ps1"), scriptContent);
 };
 
 module.exports = makePS1;
