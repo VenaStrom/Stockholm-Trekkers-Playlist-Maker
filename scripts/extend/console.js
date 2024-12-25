@@ -95,9 +95,18 @@ Object.entries(colors).forEach(([methodName, color]) => {
 
         // Relay to Renderer
         BrowserWindow.getAllWindows().forEach((window) => {
-            const prefix = styleText("bold", `[Main Process]` + (format.trace ? ` ${getTrace({ verbose: format.verboseTrace })}` : ""));
-            const finalArgs = format.passFirstArg ? [firstArg, ...args] : args;
-            window.webContents.executeJavaScript(`console.${methodName}("${prefix}",  ...${JSON.stringify(finalArgs)});`);
+            const prefix = styleText("bold", `[Main Process]` + (format.trace ? ` ${getTrace({ depth: 4, verbose: format.verboseTrace })}` : ""));
+            const compiledArgs = format.passFirstArg ? [firstArg, ...args] : args;
+
+            if (compiledArgs.length === 1 && compiledArgs.at(0) === "") {
+                window.webContents.executeJavaScript(
+                    `console.${methodName}("${prefix}", "Empty");`
+                );
+            } else {
+                window.webContents.executeJavaScript(
+                    `console.${methodName}("${prefix}", ...${JSON.stringify(compiledArgs)});`
+                );
+            }
         });
 
         // Colorize
@@ -110,15 +119,16 @@ Object.entries(colors).forEach(([methodName, color]) => {
             }
         }
 
-        // Call the original function with regard to the options
+        // Compile the arguments with regard to the options
         const finalArgs = [...args];
         if (format.passFirstArg) {
             finalArgs.unshift(firstArg);
         }
         colorize(finalArgs);
         if (format.trace) {
-            finalArgs.unshift(getTrace({ verbose: format.verboseTrace }));
+            finalArgs.unshift(getTrace({ depth: 2, verbose: format.verboseTrace }));
         }
+        // Call the original function
         originalFunction(...finalArgs);
     }
 });
