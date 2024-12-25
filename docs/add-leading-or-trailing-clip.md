@@ -1,7 +1,7 @@
 # Adding a Leading or Trailing Clip
 
 To add a leading or trailing clip so that you can toggle it in the project editor, follow these steps:
-1. Make sure the clip you want gets downloaded to your computer. See [adding-a-download.md](./adding-a-download.md) for instructions.
+1. Make sure the clip you want gets downloaded to your computer. See [adding-a-file-download.md](./adding-a-file-download.md) for instructions.
 
 2. You will need to add it to the [playlist-editor.html](../html/pages/playlist-editor.html) file within the `<head>` tag. There you will find this html structure:
 ```html

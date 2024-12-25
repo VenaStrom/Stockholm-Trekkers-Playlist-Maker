@@ -17,7 +17,7 @@ const downloadStatus = {
 };
 
 const videoFolder = path.join(__dirname, "../../assets/videos/")
-const downloadReferenceFile = path.join(__dirname, "..", "..", "fileDownload.json");
+const downloadReferenceFile = path.join(__dirname, "..", "..", "assetDownloadInfo.json");
 
 const downloadPauses = (force = false) => {
     downloadStatus.status = "starting";
