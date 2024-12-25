@@ -1,11 +1,12 @@
 "use strict";
+require("../extend/console.js"); // Adds more verbose logging to the console and colors!
 
 const { ipcMain, dialog } = require("electron");
 const { Worker } = require("worker_threads");
 const path = require("node:path");
 const os = require("os");
 const fs = require("node:fs");
-const { projectGet, projectsFolder: userData } = require("../ipc-handlers/projectGetters.js");
+const { projectGet } = require("../ipc-handlers/projectGetters.js");
 const makePS1 = require("./createPS1.js");
 
 // Assigned later in the projectExport function to a worker thread that copies all the assets
@@ -20,7 +21,7 @@ const exportStatus = {
 
 // The main export function that is called when the user wants to export a project
 const projectExport = (id) => {
-    console.log("[INFO] Exporting project with id: " + id);
+    console.info(`Exporting project with id: ${id}`);
 
     // Update export status
     exportStatus.progress = "5%";
@@ -54,13 +55,12 @@ After that, you can zip the file, upload it to the cloud, and also transfer it t
     if (!chosenFolder) { return; };
 
     // Get JSON object of the project
-    const projectJSON = projectGet(id, userData);
+    const projectData = projectGet(id);
 
-    const exportLocation = path.join(chosenFolder[0], projectJSON.date);
+    const exportLocation = path.join(chosenFolder.at(0), projectData.date);
     exportStatus.exportLocation = exportLocation;
 
-    // Creates the project folder in the selected folder.
-    // Confirm with the user to overwrite old folder, if not, cancel the export
+    // Override existing folder confirmation
     if (fs.existsSync(exportLocation)) {
         if (
             dialog.showMessageBoxSync({
@@ -82,7 +82,7 @@ After that, you can zip the file, upload it to the cloud, and also transfer it t
     fs.mkdirSync(exportLocation);
 
     // Make the ps1 script
-    makePS1(projectJSON, exportLocation);
+    makePS1(projectData, exportLocation);
 
     // Makes a worker thread to copy all the assets and relay its status to the main thread
     copyWorker = new Worker(path.join(__dirname, "workerExport.js"));
@@ -90,12 +90,12 @@ After that, you can zip the file, upload it to the cloud, and also transfer it t
         if (message.type === "status") {
             exportStatus.message = message.message;
             exportStatus.progress = message.progress;
-            console.log("[INFO] " + parseFloat(message.progress).toFixed(2) + "% - " + message.message);
+            console.info(`${parseFloat(message.progress).toFixed(2)}% - ${message.message}`);
 
         } else if (message.type === "error") {
             exportStatus.message = "ERROR: " + message.message + " Export cancelled.";
             exportStatus.progress = "100%";
-            console.error("[ERROR] " + message.message);
+            console.error(message.message);
 
             // Stop the worker thread that's copying all the assets
             copyWorker.terminate();
@@ -103,20 +103,20 @@ After that, you can zip the file, upload it to the cloud, and also transfer it t
     });
 
     // This starts the copying
-    copyWorker.postMessage({ projectJSON, projectsFolder: exportLocation, userData });
+    copyWorker.postMessage({ projectData, exportLocation, saveFilesFolder });
 };
 
 
 const ipcHandlers = () => {
-    ipcMain.handle("start-export", (event, id) => {
+    ipcMain.handle("start-export", (_, id) => {
         projectExport(id);
     });
 
-    ipcMain.handle("get-export-status", (event) => {
+    ipcMain.handle("get-export-status", (_) => {
         return exportStatus;
     });
 
-    ipcMain.handle("cancel-export", (event) => {
+    ipcMain.handle("cancel-export", (_) => {
         // Stop the worker thread that's copying all the assets
         copyWorker.terminate();
 
@@ -127,4 +127,4 @@ const ipcHandlers = () => {
     });
 };
 
-module.exports = ipcHandlers;
+module.exports = { ipcHandlers };

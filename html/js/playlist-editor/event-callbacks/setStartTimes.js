@@ -1,8 +1,7 @@
 "use strict";
 
-
 const updateEpisodeDurationsInBlock = (block) => {
-    console.log("Getting times in block", block);
+    console.info("Getting times in block", block);
 
     const episodes = block.querySelectorAll(".episode");
 
@@ -59,7 +58,7 @@ const clearAllEpisodeTimesInBlock = (block) => {
 };
 
 const setStartTimesInBlock = (block) => {
-    console.log("Setting times in block", block);
+    console.info("Setting times in block", block);
 
     const episodes = block.querySelectorAll(".episode");
     const blockTime = block.querySelector(".time input[type='text']").value;

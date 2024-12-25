@@ -25,7 +25,6 @@ download.filesExist().then((filesExist) => {
     }, 100);
 }).catch((error) => {
     console.error(error);
-    raiseError(error)
 });
 
 // Confirm download

@@ -1,4 +1,5 @@
 "use strict";
+require("../extend/console.js"); // Adds more verbose logging to the console and colors!
 
 const { dialog, BrowserWindow } = require("electron");
 

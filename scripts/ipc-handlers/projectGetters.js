@@ -1,17 +1,16 @@
 "use strict";
+require("../extend/console.js"); // Adds more verbose logging to the console and colors!
 
 const { ipcMain } = require("electron");
 const fs = require("node:fs");
 const path = require("node:path")
-const raiseError = require("../ipc-handlers/raiseError.js");
+const { saveFilesPath } = require("../../main.js");
 
-const projectsFolder = path.join(__dirname, "../..", "user-data", "projects");
-
-const projectGet = (id, projectDirPath) => {
-    const filePath = path.join(projectDirPath, id + ".json")
+const projectGet = (id) => {
+    const filePath = path.join(saveFilesPath, id + ".json")
 
     if (!fs.existsSync(filePath)) {
-        return undefined;
+        return null;
     }
 
     const data = JSON.parse(fs.readFileSync(filePath));
@@ -19,19 +18,19 @@ const projectGet = (id, projectDirPath) => {
     if (data) {
         return data;
     } else {
-        raiseError("Error reading project file: " + filePath);
-        return undefined;
+        console.error("Error reading project file: " + filePath);
+        return null;
     }
 };
 
-const projectSave = (projectData, projectDirPath) => {
-    console.log("[INFO] Saving project: " + projectData.date + " - " + projectData.id);
+const projectSave = (projectData) => {
+    console.info("Saving project: " + projectData.date + " - " + projectData.id);
     const id = projectData.id;
-    const filePath = path.join(projectDirPath, projectData.id + ".json");
+    const filePath = path.join(saveFilesPath, projectData.id + ".json");
 
     if (!id) {
-        raiseError("No ID provided for the project save");
-        return undefined;
+        console.error("No ID provided for the project save");
+        return null;
     }
 
     fs.writeFileSync(filePath, JSON.stringify(projectData), { flag: "w" });
@@ -39,43 +38,38 @@ const projectSave = (projectData, projectDirPath) => {
     return "Project saved";
 };
 
-const projectDelete = (id, projectDirPath) => {
-    const filePath = path.join(projectDirPath, id + ".json")
+const projectDelete = (id) => {
+    const filePath = path.join(saveFilesPath, id + ".json")
 
     if (fs.existsSync(filePath)) {
         fs.rmSync(filePath);
         return "Project deleted";
     }
 
-    return undefined;
+    return null;
 };
 
-const projectGetAll = (projectDirPath) => {
-    const projectFiles = fs.readdirSync(projectDirPath);
+const projectGetAll = () => {
+    const projectFiles = fs.readdirSync(saveFilesPath);
 
     return projectFiles.map((file) => {
-        return JSON.parse(fs.readFileSync(path.join(projectDirPath, file), { encoding: "utf-8" }));
+        return JSON.parse(fs.readFileSync(path.join(saveFilesPath, file), { encoding: "utf-8" }));
     });
 };
 
 const ipcHandlers = () => {
-    // Make sure the projects folder exists
-    if (!fs.existsSync(projectsFolder)) {
-        fs.mkdirSync(projectsFolder, { recursive: true });
-    };
-
-    ipcMain.handle("project-get", (event, id) => {
-        return projectGet(id, projectsFolder);
+    ipcMain.handle("project-get", (_, id) => {
+        return projectGet(id);
     });
-    ipcMain.handle("project-save", (event, projectJSON) => {
-        return projectSave(projectJSON, projectsFolder);
+    ipcMain.handle("project-save", (_, projectJSON) => {
+        return projectSave(projectJSON);
     });
-    ipcMain.handle("project-delete", (event, id) => {
-        return projectDelete(id, projectsFolder);
+    ipcMain.handle("project-delete", (_, id) => {
+        return projectDelete(id);
     });
-    ipcMain.handle("project-get-all", (event) => {
-        return projectGetAll(projectsFolder);
+    ipcMain.handle("project-get-all", (_) => {
+        return projectGetAll();
     });
 };
 
-module.exports = { ipcHandlers, projectGet, projectsFolder };
+module.exports = { ipcHandlers, projectGet, projectSave, projectDelete, projectGetAll };

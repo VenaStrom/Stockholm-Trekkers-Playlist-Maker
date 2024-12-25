@@ -1,10 +1,18 @@
 "use strict";
+require("./scripts/extend/console.js"); // Adds more verbose logging to the console and colors!
 
 const { app, BrowserWindow } = require("electron");
 const path = require("node:path");
-require("./scripts/extend/console.js"); // Adds more verbose logging to the console and colors!
+const fs = require("node:fs");
 const appCloseHandlers = require("./scripts/dialogs/handleAppClose.js");
-const { ipcHandlers: ipcProjects } = require("./scripts/ipc-handlers/projectGetters.js");
+
+
+// User Data Path //
+const userDataFolder = path.join(path.resolve(__dirname), "user-data");
+if (!fs.existsSync(userDataFolder)) fs.mkdirSync(userDataFolder);
+const saveFilesFolder = path.join(userDataFolder, "save-files");
+if (!fs.existsSync(saveFilesFolder)) fs.mkdirSync(saveFilesFolder);
+
 
 const createMainWindow = () => {
     const mainWindow = new BrowserWindow({
@@ -20,7 +28,7 @@ const createMainWindow = () => {
     });
 
     // Handle when the app can close with and without a dialog
-    mainWindow.isMain = true; // Allow things to find main window
+    mainWindow.isMain = true; // Allow things to find this window
     mainWindow.once("close", appCloseHandlers.onClose);
     mainWindow.once("closed", appCloseHandlers.onClosed);
 
@@ -35,14 +43,14 @@ app.once("ready", () => {
 
     // Register IPC Handlers
     const ipcHandlers = [
-        require("./scripts/ipc-handlers/importSaveFile.js"),
-        require("./scripts/ipc-handlers/openFilePath.js"),
-        require("./scripts/ipc-handlers/appPath.js"),
-        require("./scripts/ipc-handlers/ffprobe.js"),
-        require("./scripts/download/downloadAssets.js"),
-        require("./scripts/dialogs/leaveDialog.js"),
-        require("./scripts/export/exportProject.js"),
-        ipcProjects,
+        require("./scripts/ipc-handlers/importSaveFile.js").ipcHandlers,
+        require("./scripts/ipc-handlers/projectGetters.js").ipcHandlers,
+        require("./scripts/ipc-handlers/openFilePath.js").ipcHandlers,
+        require("./scripts/ipc-handlers/appPath.js").ipcHandlers,
+        require("./scripts/ipc-handlers/ffprobe.js").ipcHandlers,
+        require("./scripts/download/downloadAssets.js").ipcHandlers,
+        require("./scripts/dialogs/leaveDialog.js").ipcHandlers,
+        require("./scripts/export/exportProject.js").ipcHandlers,
     ];
     ipcHandlers.forEach(handler => handler());
     console.info(`Registered ${ipcHandlers.length} IPC Handlers`);
@@ -51,3 +59,5 @@ app.once("ready", () => {
 
     console.info({ _noTrace: true }, ""); // Trailing margin for prettiness reasons :)
 });
+
+module.exports = { userDataPath: userDataFolder, saveFilesPath: saveFilesFolder };

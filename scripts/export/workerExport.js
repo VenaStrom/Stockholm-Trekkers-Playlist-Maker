@@ -1,4 +1,5 @@
 "use strict";
+require("../extend/console.js"); // Adds more verbose logging to the console and colors!
 
 const { parentPort } = require("worker_threads");
 const fs = require("node:fs");
@@ -6,7 +7,7 @@ const path = require("node:path");
 
 const exportStatus = {};
 
-const copyAllAssets = (projectData, exportFolder, userData) => {
+const copyAllAssets = (projectData, exportLocation, saveFilesFolder) => {
     // Copies the pause clips to the output folder
     const pauseFolder = path.join(__dirname, "..", "assets", "videos");
 
@@ -17,12 +18,12 @@ const copyAllAssets = (projectData, exportFolder, userData) => {
     parentPort.postMessage(exportStatus);
 
     // Copy the entire pauses folder to the output folder in /pauses
-    console.log("[INFO] Copying pauses...");
-    fs.mkdirSync(path.join(exportFolder, "pauses"));
-    fs.cpSync(pauseFolder, path.join(exportFolder, "pauses"), { recursive: true });
+    console.info("Copying pauses...");
+    fs.mkdirSync(path.join(exportLocation, "pauses"));
+    fs.cpSync(pauseFolder, path.join(exportLocation, "pauses"), { recursive: true });
 
     // Make episodes folder
-    fs.mkdirSync(path.join(exportFolder, "episodes"));
+    fs.mkdirSync(path.join(exportLocation, "episodes"));
 
     // Update export status
     exportStatus.message = "Copying episodes...";
@@ -30,7 +31,7 @@ const copyAllAssets = (projectData, exportFolder, userData) => {
     parentPort.postMessage(exportStatus);
 
     // Loop through all the episodes and copy them from their given path to the output folder
-    console.log("[INFO] Copying episodes...");
+    console.info("Copying episodes...");
     projectData.blocks.forEach((block, blockIndex) => {
         block.episodes.forEach((episode, episodeIndex) => {
 
@@ -40,26 +41,26 @@ const copyAllAssets = (projectData, exportFolder, userData) => {
 
             // Check if the file path is missing or if the file is missing
             if (!episode.filePath || !fs.existsSync(episode.filePath)) {
-                console.error(`[ERROR] Cannot find ${episode.fileName}. The file path (${episode.filePath}) might be incorrect or the file is missing.`);
+                console.error(`Cannot find ${episode.fileName}. The file path (${episode.filePath}) might be incorrect or the file is missing.`);
                 parentPort.postMessage({ type: "error", message: `Cannot find ${episode.fileName}. The file path (${episode.filePath ?? "empty string"}) might be incorrect or the file is missing.` });
                 return;
             }
 
             // If a file with the same name already exists in the output folder, don't copy again
-            if (fs.existsSync(path.join(exportFolder, "episodes", episode.fileName))) {
-                console.log(`[WARN] A file (${episode.fileName}) wasn't copied due to the project already containing a file with the same name. This should be expected behavior when showing multiples of the same file but it could also be bad if files accidentally were named the same thing.`);
+            if (fs.existsSync(path.join(exportLocation, "episodes", episode.fileName))) {
+                console.warn(`A file (${episode.fileName || "empty string"}) wasn't copied due to the project already containing a file with the same name. This should be expected behavior when showing multiples of the same file but it could also be bad if files accidentally were named the same thing.`);
                 return;
             };
 
             // Copy the episode to the output folder
-            fs.copyFileSync(episode.filePath, path.join(exportFolder, "episodes", episode.fileName));
+            fs.copyFileSync(episode.filePath, path.join(exportLocation, "episodes", episode.fileName));
         });
     });
 
     // Copy the save file from user data to the output folder
-    console.log("[INFO] Copying save file...");
-    fs.mkdirSync(path.join(exportFolder, "project-save-file"));
-    fs.copyFileSync(path.join(userData, projectData.id + ".json"), path.join(exportFolder, "project-save-file", projectData.id + ".json"));
+    console.info("Copying save file...");
+    fs.mkdirSync(path.join(exportLocation, "project-save-file"));
+    fs.copyFileSync(path.join(saveFilesFolder, projectData.id + ".json"), path.join(exportLocation, "project-save-file", projectData.id + ".json"));
 
     // Update export status
     exportStatus.message = "Done!";
@@ -69,6 +70,6 @@ const copyAllAssets = (projectData, exportFolder, userData) => {
 
 
 parentPort.on("message", (message) => {
-    console.log("[INFO] Worker started working");
-    copyAllAssets(message.projectJSON, message.projectsFolder, message.userData);
+    console.info("Worker started working");
+    copyAllAssets(message.projectData, message.exportLocation, message.saveFilesFolder);
 });

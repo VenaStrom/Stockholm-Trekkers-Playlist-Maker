@@ -1,17 +1,9 @@
 "use strict";
+require("../extend/console.js"); // Adds more verbose logging to the console and colors!
 
 const { BrowserWindow, ipcMain } = require("electron");
 const fs = require("fs");
 const path = require("node:path")
-const raiseError = require("../ipc-handlers/raiseError.js");
-
-const logStatus = {
-    start: "[STARTED] ",
-    end: "[FINISHED] ",
-    info: "[INFO] ",
-    error: "[ERROR] ",
-    download: "[DOWNLOADING] ",
-};
 
 // The object returned to the renderer process to show the download status
 const downloadStatus = {
@@ -32,10 +24,10 @@ const downloadPauses = (force = false) => {
 
     // If force downloading, delete the folder just to make sure
     if (force) {
-        console.log(logStatus.info + "force downloading...");
+        console.info("Force downloading...");
         fs.rmSync(videoFolder, { recursive: true });
     } else {
-        console.log(logStatus.info + "looking for files...");
+        console.info("Looking for files...");
     };
 
     // Check if the video folder exists and make it if it doesn't
@@ -63,7 +55,7 @@ const downloadPauses = (force = false) => {
 
         // When all the files are downloaded, close the browser
         if (index >= fileIDs.length) {
-            console.log(logStatus.end + "all videos downloaded");
+            console.info("All videos downloaded");
             downloadStatus.status = "completed";
             setTimeout(() => { browser.close(); }, 1000);
 
@@ -75,7 +67,7 @@ const downloadPauses = (force = false) => {
     // Gets a specific file with a given ID
     const getFile = (file) => {
         if (!file) {
-            console.error(logStatus.error + "no file");
+            console.error("No file given");
             return;
         }
 
@@ -86,12 +78,12 @@ const downloadPauses = (force = false) => {
 
         // If the video is already downloaded and we're not forcing, skip it
         if (fs.existsSync(videoFolder + file.name) && !force) {
-            console.log(logStatus.info + file.name + " already downloaded");
+            console.info(`€${file.name} already downloaded. Skipping...`);
             getNextFile();
             return;
 
         } else {
-            console.log(logStatus.start + file.name);
+            console.info(`Downloading ${file.name}`);
         }
 
         downloadStatus.status = "downloading";
@@ -102,26 +94,24 @@ const downloadPauses = (force = false) => {
         browser.webContents.session.once("will-download", (event, item, webContents) => {
 
             // Sets where the file will save to
-            item.setSavePath(videoFolder + file.name);
+            item.setSavePath(path.join(videoFolder, file.name));
 
             // On any update in the download it checks the state and does stuff accordingly
             item.on("updated", (event, state) => {
                 if (state === "interrupted") {
-                    console.warn(logStatus.error + "download is interrupted but can be resumed");
-                    raiseError("download is interrupted");
+                    console.error(`Download of ${file.name} is interrupted`);
                     downloadStatus.status = "failed";
 
                     // Delete the file if it's interrupted as to not leave a half-downloaded file
-                    fs.rmSync(videoFolder + file.name);
+                    fs.rmSync(path.join(videoFolder, file.name));
 
                 } else if (state === "progressing") {
                     if (item.isPaused()) {
-                        console.warn(logStatus.error + `download of ${file.name} is paused`);
-                        raiseError(`download of ${file.name} is paused`);
+                        console.error(`Download of ${file.name} is paused`);
                         downloadStatus.status = "failed";
 
                         // Delete the file if it's paused
-                        fs.rmSync(videoFolder + file.name);
+                        fs.rmSync(path.join(videoFolder, file.name));
 
                     } else {
                         // This happens when everything is going well
@@ -135,7 +125,7 @@ const downloadPauses = (force = false) => {
                         downloadStatus.percent = percent;
 
                         // Logging in the backend console for debugging mostly
-                        console.log(logStatus.download + `${file.name} received ${receivedMB} / ${fileSizeMB} MB ${percent}%`);
+                        console.info(`${file.name} received ${receivedMB} / ${fileSizeMB} MB ${percent}%`);
                     }
                 }
             });
@@ -143,16 +133,15 @@ const downloadPauses = (force = false) => {
             // This fires *once* when the download is done
             item.once("done", (event, state) => {
                 if (state === "completed") {
-                    console.log(logStatus.end + `download of ${file.name} completed successfully`);
+                    console.info(`Download of ${file.name} completed successfully`);
                     getNextFile();
 
                 } else {
-                    console.error(logStatus.download + `download failed with state: ${state}`);
-                    raiseError(`download failed with state: ${state}`);
+                    console.error(`Download of ${file.name} failed with state: ${state}`);
                     downloadStatus.status = "failed";
 
                     // Delete the file if it fails
-                    fs.rmSync(videoFolder + file.name);
+                    fs.rmSync(path.join(videoFolder, file.name));
                 }
             });
         });
@@ -169,7 +158,6 @@ const downloadPauses = (force = false) => {
                         document.getElementById("uc-download-link").click();
                     } catch (error) {
                         console.error(error);
-                        raiseError(error);
                     }`);
             });
         }, 500);
@@ -204,12 +192,11 @@ const ipcHandlers = () => {
         });
 
         if (fileCount === fileIDs.length && fileCount === 0) {
-            console.error(logStatus.error + "no files found");
-            raiseError("no files found");
+            console.error("No files found");
         }
 
         return (fileCount === fileIDs.length && fileCount > 0);
     });
 };
 
-module.exports = ipcHandlers;
+module.exports = { ipcHandlers } ;

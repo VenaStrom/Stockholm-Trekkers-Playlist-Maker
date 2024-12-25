@@ -1,9 +1,9 @@
 "use strict";
-
+require("../extend/console.js"); // Adds more verbose logging to the console and colors!
 
 // Make the ps1 "harness" that runs VLC and runs the correct episodes at the correct times
 const makePS1 = (projectJSON, exportFolder) => {
-    console.log("[INFO] Making ps1 script...");
+    console.info("Making ps1 script...");
 
     // Update export status
     exportStatus.message = "Making ps1 script...";

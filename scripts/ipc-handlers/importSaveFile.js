@@ -1,4 +1,5 @@
 "use strict";
+require("../extend/console.js"); // Adds more verbose logging to the console and colors!
 
 const { ipcMain, dialog } = require("electron");
 const fs = require("fs");
@@ -56,4 +57,4 @@ const ipcHandlers = () => {
     });
 };
 
-module.exports = ipcHandlers;
+module.exports = { ipcHandlers } ;
