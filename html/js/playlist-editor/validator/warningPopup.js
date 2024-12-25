@@ -1,6 +1,5 @@
 "use strict";
 
-
 const warningPopup = (id, source, warnings) => {
     // Remove previous popup
     if (document.getElementById(id)) {

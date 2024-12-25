@@ -5,9 +5,10 @@ const { ipcMain, dialog } = require("electron");
 const fs = require("fs");
 const path = require("path");
 const os = require("os");
-const { projectsFolder } = require("../ipc-handlers/projectGetters.js");
 
-const showDialog = () => {
+const { saveFilesFolder } = require("../../main.js");
+
+const showDialog = async () => {
     return dialog.showOpenDialog({
         properties: ["openFile"],
         filters: [
@@ -15,39 +16,33 @@ const showDialog = () => {
             { name: "All Files", extensions: ["*"] },
         ],
         buttonLabel: "Import",
-        message: "Select a JSON file to import",
+        message: "Select a JSON file to import that save file",
         title: "Import Project",
         defaultPath: path.join(os.homedir()),
 
-    }).then((result) => {
-        if (!result.canceled) {
-            const filePath = result.filePaths[0];
-            const fileName = path.basename(filePath);
+    }).then((dialogResult) => {
+        if (dialogResult.canceled) return;
 
-            // Make sure the projects folder exists
-            if (!fs.existsSync(projectsFolder)) {
-                fs.mkdirSync(projectsFolder);
-            }
+        const sourceFilePath = dialogResult.filePaths.at(0);
+        const fileName = path.basename(sourceFilePath);
+        const destFilePath = path.join(saveFilesFolder, fileName);
 
-            // Ask to overwrite if the file already exists
-            if (fs.existsSync(path.join(projectsFolder, fileName))) {
-                const result = dialog.showMessageBoxSync({
-                    type: "warning",
-                    title: "File Already Exists. Overwrite?",
-                    message: `A file named ${fileName} already exists in the projects folder. Do you want to overwrite it?`,
-                    buttons: ["Yes", "No"],
-                    defaultId: 1,
-                })
-                if (result === 0) {
-                    fs.rmSync(path.join(projectsFolder, fileName));
-                    fs.copyFileSync(filePath, path.join(projectsFolder, fileName));
-                }
+        // Ask to overwrite if the file already exists
+        if (fs.existsSync(destFilePath)) {
+            const result = dialog.showMessageBoxSync({
+                type: "warning",
+                title: "File Already Exists. Overwrite?",
+                message: `A file named ${fileName} already exists in the projects folder. Do you want to overwrite it?`,
+                buttons: ["Yes", "No"],
+                defaultId: 1,
+            })
+            if (result === 0) {
+                fs.rmSync(destFilePath);
             } else {
-                fs.copyFileSync(filePath, path.join(projectsFolder, fileName));
+                return;
             }
         }
-
-        return;
+        fs.copyFileSync(sourceFilePath, destFilePath);
     });
 };
 
@@ -57,4 +52,4 @@ const ipcHandlers = () => {
     });
 };
 
-module.exports = { ipcHandlers } ;
+module.exports = { ipcHandlers };

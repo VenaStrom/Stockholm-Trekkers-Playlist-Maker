@@ -1,6 +1,5 @@
 "use strict";
 
-
 // The template block lives in the <head> tag of the HTML
 const templateBlock = document.querySelector(".block-template.hidden");
 

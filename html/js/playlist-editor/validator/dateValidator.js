@@ -1,6 +1,5 @@
 "use strict";
 
-
 const dateValidator = (inputDate) => {
     const date = new Date(inputDate);
 

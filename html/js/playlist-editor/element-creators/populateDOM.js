@@ -1,6 +1,5 @@
 "use strict";
 
-
 // The button with the big plus sign
 const createBlockButton = document.querySelector(".create-block");
 

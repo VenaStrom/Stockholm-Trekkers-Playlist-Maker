@@ -1,22 +1,21 @@
 "use strict";
 
-
 const pageBornAt = new Date().getTime();
 
 const getID = () => {
     const pageURL = window.location.href;
 
     // Get an object with all the arguments in the url
-    const arguments = {};
-    pageURL.split("?")[1].split("&").forEach((arg) => {
+    const args = {};
+    pageURL.split("?").at(1).split("&").forEach((arg) => {
         const [key, value] = arg.split("=");
 
-        arguments[key] = value;
+        args[key] = value;
     });
 
     // If the id already exists, return it
-    if (arguments.id !== "new") {
-        return arguments.id;
+    if (args.id !== "new") {
+        return args.id;
     };
 
     // Else, create a new id

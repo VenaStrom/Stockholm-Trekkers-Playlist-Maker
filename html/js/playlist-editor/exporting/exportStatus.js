@@ -1,6 +1,5 @@
 "use strict";
 
-
 const topStatusMessage = document.querySelectorAll(".export-progress-window .status-text")[0];
 const bottomStatusMessage = document.querySelectorAll(".export-progress-window .status-text")[1];
 const progressBar = document.getElementById("export-progress-bar");

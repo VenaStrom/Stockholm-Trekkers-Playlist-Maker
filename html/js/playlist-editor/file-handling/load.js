@@ -1,6 +1,5 @@
 "use strict";
 
-
 const id = getID();
 
 // Load project on page load if there is an ID

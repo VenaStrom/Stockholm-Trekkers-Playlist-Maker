@@ -60,4 +60,4 @@ app.once("ready", () => {
     console.info({ _noTrace: true }, ""); // Trailing margin for prettiness reasons :)
 });
 
-module.exports = { userDataPath: userDataFolder, saveFilesPath: saveFilesFolder };
+module.exports = { userDataFolder, saveFilesFolder };

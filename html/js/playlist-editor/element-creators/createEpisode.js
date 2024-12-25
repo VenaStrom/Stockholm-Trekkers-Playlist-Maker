@@ -1,6 +1,5 @@
 "use strict";
 
-
 // The template episode lives in the <head> tag of the HTML
 const templateEpisode = document.querySelector(".episode-template.hidden");
 

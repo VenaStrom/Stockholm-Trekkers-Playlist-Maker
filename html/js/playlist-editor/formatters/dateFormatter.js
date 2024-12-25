@@ -1,6 +1,5 @@
 "use strict";
 
-
 const interpretDate = (date) => {
     date = date.replace(/\D/g, ""); // Only keep numbers
 

@@ -1,6 +1,5 @@
 "use strict";
 
-
 // <!-- Template project -->
 // <div class="round-box load-project-template hidden clickable" tabindex="0">
 //     <div class="project-header">
