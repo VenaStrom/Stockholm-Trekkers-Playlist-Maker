@@ -8,11 +8,14 @@
   "description": "A playlist maker for the Stockholm Trekkers.",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder"
+    "build": "yarn sass-build && electron-builder",
+    "sass": "sass --watch html/style/main.scss:html/style/dist-css/main.css",
+    "sass-build": "sass --style compressed html/style/main.scss:html/style/dist-css/main.css"
   },
   "devDependencies": {
     "electron": "^33.2.0",
-    "electron-builder": "^25.1.8"
+    "electron-builder": "^25.1.8",
+    "sass": "^1.83.0"
   },
   "build": {
     "appId": "com.stockholm-trekkers.playlist-maker",
