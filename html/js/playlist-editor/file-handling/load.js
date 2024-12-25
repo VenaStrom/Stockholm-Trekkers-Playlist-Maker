@@ -6,7 +6,7 @@ const id = getID();
 if (id !== "new") {
     projects.get(id).then((project) => {
         if (!project) {
-            console.warn("No project found with id: " + id);
+            console.warn(`No project found with id: ${id}`);
             return;
         }
 
@@ -27,7 +27,7 @@ if (id !== "new") {
 
             // Set the options
             blockData.options.forEach((option, optionIndex) => {
-                const optionDOM = blockDOM.querySelector(".options input#" + option.id);
+                const optionDOM = blockDOM.querySelector(`.options input#${option.id}`);
                 // If the option still exists, set its checked state
                 if (optionDOM) {
                     optionDOM.checked = blockData.options[optionIndex].checked;

@@ -24,7 +24,7 @@ const getID = () => {
     const id = time.toString() + pageBornAt.toString();
 
     // This solution is not scalable in case you need more arguments in the url which probably won't be needed
-    window.location.href = window.location.href.replace("?id=new", "") + "?id=" + id;
+    window.location.href = window.location.href.replace("?id=new", "") + `?id=${id}`;
 
     return id;
 };

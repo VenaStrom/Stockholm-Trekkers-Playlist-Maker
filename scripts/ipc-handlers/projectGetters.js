@@ -14,7 +14,7 @@ const projectGet = (id) => {
         return null;
     }
 
-    const filePath = path.join(saveFilesFolder, id + ".json")
+    const filePath = path.join(saveFilesFolder, `${id}.json`)
 
     if (!fs.existsSync(filePath)) {
         return null;
@@ -44,8 +44,8 @@ const projectSave = (projectData) => {
         return null;
     }
 
-    const filePath = path.join(saveFilesFolder, id + ".json");
-    
+    const filePath = path.join(saveFilesFolder, `${id}.json`);
+
     fs.writeFileSync(filePath, JSON.stringify(projectData), { flag: "w" });
 
     return "Project saved";
@@ -59,7 +59,7 @@ const projectDelete = (id) => {
         return null;
     }
 
-    const filePath = path.join(saveFilesFolder, id + ".json")
+    const filePath = path.join(saveFilesFolder, `${id}.json`)
 
     if (fs.existsSync(filePath)) {
         fs.rmSync(filePath);

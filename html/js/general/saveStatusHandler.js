@@ -2,7 +2,7 @@
 
 const setUnsavedState = () => {
     if (!document.title.includes("*")) {
-        document.title = document.title + "*";
+        document.title += "*";
     }
 }
 

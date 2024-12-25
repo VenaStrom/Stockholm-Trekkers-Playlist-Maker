@@ -25,7 +25,7 @@ const warningPopup = (id, source, warnings) => {
     // Populate popup with warnings
     warnings.forEach(warning => {
         const p = document.createElement("p");
-        p.textContent = "• " + warning;
+        p.textContent = `• ${warning}`;
         popup.appendChild(p);
     });
 

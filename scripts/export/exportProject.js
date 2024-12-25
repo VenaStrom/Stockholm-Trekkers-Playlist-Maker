@@ -93,7 +93,7 @@ After that, you can zip the file, upload it to the cloud, and also transfer it t
             console.info(`${parseFloat(message.progress).toFixed(2)}% - ${message.message}`);
 
         } else if (message.type === "error") {
-            exportStatus.message = "ERROR: " + message.message + " Export cancelled.";
+            exportStatus.message = `ERROR: ${message.message}. Export cancelled.`;
             exportStatus.progress = "100%";
             console.error(message.message);
 

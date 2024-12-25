@@ -52,10 +52,10 @@ const progressUpdate = setInterval(() => {
             bottomStatusText.textContent = "Download will start soon.";
 
         } else if (status.status === "downloading") {
-            topStatusText.textContent = "Downloading video files, please wait... (" + status.atFile + "/" + status.fileCount + ")";
+            topStatusText.textContent = `Downloading video files, please wait... (${status.atFile}/${status.fileCount})`;
             bottomStatusText.textContent = `Downloading ${status.received} / ${status.size} MB (${status.percent}%)`;
 
-            progressBar.style.backgroundSize = status.percent + "%";
+            progressBar.style.backgroundSize = `${status.percent}%`;
 
         } else if (status.status === "completed") {
             clearInterval(progressUpdate);
@@ -65,8 +65,9 @@ const progressUpdate = setInterval(() => {
             progressBar.style.backgroundSize = "100%";
 
             appPath.get().then((path) => {
-                const videosPath = path + "\\assets\\videos";
-                bottomStatusText.innerHTML = `Files downloaded to:<span class="open-file-path clickable" data-file-path="${videosPath}"><br>${videosPath}</span>.<br>Moving on...`;
+                const videosFolder = `${path}\\assets\\videos`; // Definitely not the best way to do this cause of Linux
+            
+                bottomStatusText.innerHTML = `Files downloaded to:<span class="open-file-path clickable" data-file-path="${videosFolder}"><br>${videosFolder}</span>.<br>Moving on...`;
             });
 
             // Allow for unhindered reloading and leaving
@@ -93,5 +94,5 @@ confirmMoveOnWindow.querySelector("button").addEventListener("click", () => {
 
 // Set the open-file-path div text content to the app path
 appPath.get().then((path) => {
-    document.querySelector(".open-file-path").dataset.filePath = path + "\\assets\\videos";
+    document.querySelector(".open-file-path").dataset.filePath = `${path}\\assets\\videos`;
 }); 

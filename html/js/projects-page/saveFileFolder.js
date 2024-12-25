@@ -11,7 +11,7 @@ importButton.addEventListener("click", importSaveFile);
 
 const openSaveFileFolder = () => {
     appPath.get().then((path) => {
-        explorer.open(path + "/user-data/projects");
+        explorer.open(`${path}\\user-data\\projects`);
     });
 };
 const openButton = document.querySelector(".open-folder-button");

@@ -103,6 +103,6 @@ const timeValidator = (event) => {
     const blocks = document.querySelectorAll(".block");
     const blockTimes = Array.from(blocks).map(block => block.querySelector(".time input[type='text']").value);
     const blockIndex = blockTimes.indexOf(time);
-    const id = "block-time-warning-popup-id" + blockIndex;
+    const id = `block-time-warning-popup-id${blockIndex}`;
     warningPopup(id, event.target, warnings);
 };
