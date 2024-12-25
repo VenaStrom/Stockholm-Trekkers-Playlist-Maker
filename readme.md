@@ -48,3 +48,8 @@ The steps are the same for Windows and Linux. I have used [WSL](https://learn.mi
 5. The build will end up in the `dist` folder
 
 You may get a warning about unmet dependencies or "asar" but you can ignore those.
+
+
+## Documentation
+- [Adding a New Leading or Trailing Clip](docs/add-leading-or-trailing-clip.md)
+- [Adding a New File Asset to be Downloaded](docs/adding-a-file-download.md)
