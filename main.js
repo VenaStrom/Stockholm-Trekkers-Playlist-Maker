@@ -46,4 +46,8 @@ app.once("ready", () => {
     ];
     ipcHandlers.forEach(handler => handler());
     console.info(`Registered ${ipcHandlers.length} IPC Handlers`);
+
+
+
+    console.info({ _noTrace: true }, ""); // Trailing margin for prettiness reasons :)
 });

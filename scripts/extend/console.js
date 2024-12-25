@@ -1,9 +1,12 @@
 "use strict";
 
+const { styleText } = require("node:util");
 const readline = require("node:readline");
 const path = require("node:path");
-const { styleText } = require("node:util");
+const { BrowserWindow } = require("electron");
 
+
+// Call Trace //
 // Function to get the file name and line number of the caller
 const getTrace = (options = { depth: 2, verbose: false }) => {
     // Temporarily override Error.prepareStackTrace to get the stack trace
@@ -23,6 +26,7 @@ const getTrace = (options = { depth: 2, verbose: false }) => {
 };
 
 
+// Block //
 // Surrounds content with ---------------- lines
 console.block = (content, title = "", options = { lineWidth: 40 }) => {
     const fileNameAndLine = getTrace();
@@ -34,6 +38,7 @@ console.block = (content, title = "", options = { lineWidth: 40 }) => {
 };
 
 
+// Read Line //
 // Get user input from the console
 console.readLine = (query) => {
     const rl = readline.createInterface({
@@ -53,7 +58,10 @@ console.readLine = (query) => {
 };
 
 
-// Add colors to the console log functions
+// Extend Console Functions //
+// Relay all console logs to the renderer
+// Adds a trace of the source file and line number to the console logs
+// Adds colors to the console logging functions
 const colors = {
     log: "cyan",
     debug: "blue",
@@ -61,45 +69,56 @@ const colors = {
     error: ["reset", "bgRed", "white", "bold"],
     info: "green",
 };
-
 Object.entries(colors).forEach(([methodName, color]) => {
     const originalFunction = console[methodName];
 
-    // Reassign the original functions to include color
-    console[methodName] = (...args) => {
-        const coloredArguments = args.map((argument) => {
-            // If the argument is not a string, return it as is since it can't be styled without parsing to string
-            if (typeof argument === "string") {
-                return styleText(color, argument);
+    // Reassign the original functions
+    console[methodName] = (firstArg, ...args) => {
+        const format = {
+            passFirstArg: true,
+            trace: true,
+            verboseTrace: false,
+        };
+
+        // Read Options
+        if (typeof firstArg === "object") {
+            // If the option object is present, don't pass the first argument
+            if (firstArg._verboseTrace !== undefined) {
+                format.passFirstArg = false;
+                format.verboseTrace = firstArg._verboseTrace;
             }
-
-            return argument;
-        });
-        originalFunction(...coloredArguments);
-    };
-});
-
-
-// Add file name and line number to console logs
-["debug", "log", "warn", "error", "info"].forEach((methodName) => {
-    const originalFunction = console[methodName];
-
-    // Reassign the original functions to include the file name and line number of the caller
-    console[methodName] = (firstArgument, ...otherArguments) => {
-        const fileNameAndLine = getTrace();
-
-        if (typeof firstArgument === "object") { // Look for config object
-            if (firstArgument._noTrace !== undefined) {
-                const args = firstArgument._noTrace ? otherArguments : [fileNameAndLine, ...otherArguments]; // If false, don't include options object
-                originalFunction(...args);
-                return;
-            }
-            if (firstArgument._verboseTrace !== undefined) {
-                const args = firstArgument._verboseTrace ? [getTrace({ depth: 2, verbose: true }), ...otherArguments] : otherArguments; // If false, don't include options object
-                originalFunction(...args);
-                return;
+            if (firstArg._noTrace !== undefined) {
+                format.passFirstArg = false;
+                format.trace = !firstArg._noTrace;
             }
         }
-        originalFunction(fileNameAndLine, firstArgument, ...otherArguments);
-    };
+
+        // Relay to Renderer
+        BrowserWindow.getAllWindows().forEach((window) => {
+            const prefix = styleText("bold", `[Main Process]` + (format.trace ? ` ${getTrace({ verbose: format.verboseTrace })}` : ""));
+            const finalArgs = format.passFirstArg ? [firstArg, ...args] : args;
+            window.webContents.executeJavaScript(`console.${methodName}("${prefix}",  ...${JSON.stringify(finalArgs)});`);
+        });
+
+        // Colorize
+        const colorize = (preColorArgs) => {
+            for (let index = 0; index < preColorArgs.length; index++) {
+                const arg = preColorArgs[index];
+                if (typeof arg === "string") {
+                    preColorArgs[index] = styleText(color, arg);
+                }
+            }
+        }
+
+        // Call the original function with regard to the options
+        const finalArgs = [...args];
+        if (format.passFirstArg) {
+            finalArgs.unshift(firstArg);
+        }
+        colorize(finalArgs);
+        if (format.trace) {
+            finalArgs.unshift(getTrace({ verbose: format.verboseTrace }));
+        }
+        originalFunction(...finalArgs);
+    }
 });
