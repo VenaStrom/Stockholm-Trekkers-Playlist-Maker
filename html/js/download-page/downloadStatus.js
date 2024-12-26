@@ -1,15 +1,54 @@
 "use strict";
 
-const infoBox = document.querySelector("round-box:first-of-type");
+const infoBox = document.querySelector(".round-box");
 
-const displayMoveOn = () => {
+const displayMoveOnPrompt = async () => {
+    infoBox.innerHTML = `
+        <div class="header">
+            Ready To Move On
+        </div>
 
+        <div class="main">
+            <p>
+                All necessary files have been downloaded. The files can be found at 
+            </p>
+            <button class="open-path">${await assets.getPath()}</button>
+    
+            <button onclick="switchPage()">Continue</button>
+        </div>`;
+};
+
+const displayDownloadFilesPrompt = () => {
+    infoBox.innerHTML = `
+        <div class="header">
+            Download Files
+        </div>
+    
+        <div class="main">
+            <p>
+                Some video files need to be downloaded in order to use this application. The files are roughly 400 MB in total.
+            </p>
+
+            <button onclick="downloadAssets()">Download</button>
+        </div>`;
 };
 
 // Check if any file downloads are necessary
-download.fileExists().then((filesExist) => {
-
+assets.allExist().then((theyExist) => {
+    if (theyExist) {
+        displayMoveOnPrompt();
+    } else {
+        displayDownloadFilesPrompt();
+    }
 });
+
+const downloadAssets = () => {
+    
+};
+
+const switchPage = () => {
+    window.location.href = "./projects-page.html";
+};
 
 // const checkingForFilesWindow = document.getElementById("checking-for-files");
 // const confirmMoveOnWindow = document.getElementById("confirm-move-on");

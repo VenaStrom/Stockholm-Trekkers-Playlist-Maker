@@ -14,10 +14,14 @@ main#download-page {
     &>p:last-of-type {
         @include text-size(2xl);
         @include thin();
-        @include margin(0, 0, 4xl, 0);
+        @include margin(0, 0, 3xl, 0);
     }
 
     &>.round-box {
-        @include width(xl);
+        @include width(2xl);
+
+        &>.main>button {
+            @include margin(m, 0, 0, 0)
+        }
     }
 }

@@ -12,10 +12,12 @@ input {
 }
 
 a {
+    // Reset
     all: unset;
 
-    text-decoration: underline;    
     cursor: pointer;
+
+    text-decoration: underline;    
 
     &:hover {
         color: var(--color-primary);
@@ -24,12 +26,14 @@ a {
 
 button,
 input[type="button"] {
+    // Reset
     all: unset;
-    cursor: pointer;
 
     @include padding(m, xl);
     @include border-radius(m);
     @include border(thick);
+    
+    cursor: pointer;
 
     background-color: var(--color-low);
     color: var(--color-fg);
@@ -42,7 +46,4 @@ input[type="button"] {
     }
 }
 
-// input[type="text"] {
-//     all: unset;
-//     cursor: text;
-// }
+// TODO - style inputs

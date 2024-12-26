@@ -10,13 +10,14 @@ contextBridge.exposeInMainWorld("dialog", {
 });
 
 contextBridge.exposeInMainWorld("appPath", {
-    get: () => ipcRenderer.invoke("get-app-path"),
+    get: () => ipcRenderer.invoke("get-app-root"),
 });
 
-contextBridge.exposeInMainWorld("download", {
-    start: () => ipcRenderer.invoke("start-download"),
-    status: () => ipcRenderer.invoke("get-download-status"),
-    filesExist: () => ipcRenderer.invoke("check-for-local-files"),
+contextBridge.exposeInMainWorld("assets", {
+    download: () => ipcRenderer.invoke("start-download"),
+    getStatus: () => ipcRenderer.invoke("get-download-status"),
+    allExist: () => ipcRenderer.invoke("check-for-local-files"),
+    getPath: () => ipcRenderer.invoke("get-assets-path"),
 });
 
 contextBridge.exposeInMainWorld("projects", {

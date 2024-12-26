@@ -23,10 +23,14 @@
 }
 
 .thin {
-  font-weight: 300;
+  font-weight: lighter;
 }
 
 .round-box {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: start;
+  align-items: center;
   --margin-0: 0;
   --margin-none: 0;
   --margin-2xs: 0.1rem;
@@ -62,6 +66,10 @@
   width: 100%;
 }
 .round-box > .header {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
   --padding-0: 0;
   --padding-none: 0;
   --padding-2xs: 0.1rem;
@@ -78,12 +86,46 @@
   --padding-7xl: 20dvh;
   --padding-8xl: 25dvh;
   --padding-default: var(--padding-m);
-  padding: var(--padding-s) var(--padding-m) var(--padding-s) var(--padding-m);
+  padding: var(--padding-m) var(--padding-l) var(--padding-s) var(--padding-l);
+  --text-size-s: 0.75rem;
+  --text-size-m: 1rem;
+  --text-size-l: 1.1rem;
+  --text-size-xl: 1.25rem;
+  --text-size-2xl: 1.5rem;
+  --text-size-title: 2rem;
+  --text-size-x-title: 2.5rem;
+  --text-size-xx-title: 3rem;
+  font-size: var(--text-size-l);
 }
-.round-box > .header:not(.solid) {
+.round-box > .header:not(.none) {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: start;
+  align-items: center;
+  --padding-0: 0;
+  --padding-none: 0;
+  --padding-2xs: 0.1rem;
+  --padding-xs: 0.15rem;
+  --padding-s: 0.25rem;
+  --padding-m: 0.5rem;
+  --padding-l: 0.75rem;
+  --padding-xl: 1rem;
+  --padding-2xl: 1.5rem;
+  --padding-3xl: 2rem;
+  --padding-4xl: 5dvh;
+  --padding-5xl: 10dvh;
+  --padding-6xl: 15dvh;
+  --padding-7xl: 20dvh;
+  --padding-8xl: 25dvh;
+  --padding-default: var(--padding-m);
+  padding: var(--padding-m) var(--padding-xl);
   background-color: var(--color-low);
 }
 .round-box > .main {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: start;
+  align-items: start;
   --padding-0: 0;
   --padding-none: 0;
   --padding-2xs: 0.1rem;
@@ -100,30 +142,25 @@
   --padding-7xl: 20dvh;
   --padding-8xl: 25dvh;
   --padding-default: var(--padding-m);
-  padding: var(--padding-m) var(--padding-4xl) var(--padding-xl) var(--padding-m);
+  padding: var(--padding-m) var(--padding-2xl) var(--padding-m) var(--padding-2xl);
+  font-weight: lighter;
   flex: 1;
 }
-.round-box > .footer {
-  --padding-0: 0;
-  --padding-none: 0;
-  --padding-2xs: 0.1rem;
-  --padding-xs: 0.15rem;
-  --padding-s: 0.25rem;
-  --padding-m: 0.5rem;
-  --padding-l: 0.75rem;
-  --padding-xl: 1rem;
-  --padding-2xl: 1.5rem;
-  --padding-3xl: 2rem;
-  --padding-4xl: 5dvh;
-  --padding-5xl: 10dvh;
-  --padding-6xl: 15dvh;
-  --padding-7xl: 20dvh;
-  --padding-8xl: 25dvh;
-  --padding-default: var(--padding-m);
-  padding: var(--padding-s) var(--padding-m) var(--padding-m) var(--padding-m);
+.round-box > .main > button, .round-box > .main > input {
+  align-self: center;
 }
-.round-box > .footer.solid {
-  background-color: var(--color-low);
+
+.open-path {
+  all: unset;
+  text-decoration: underline;
+  word-break: break-all;
+}
+.open-path:active, .open-path:hover {
+  all: unset;
+  cursor: pointer;
+  text-decoration: underline;
+  word-break: break-all;
+  color: var(--color-primary);
 }
 
 a:focus,
@@ -140,8 +177,8 @@ input:focus {
 
 a {
   all: unset;
-  text-decoration: underline;
   cursor: pointer;
+  text-decoration: underline;
 }
 a:hover {
   color: var(--color-primary);
@@ -150,7 +187,6 @@ a:hover {
 button,
 input[type=button] {
   all: unset;
-  cursor: pointer;
   --padding-0: 0;
   --padding-none: 0;
   --padding-2xs: 0.1rem;
@@ -179,6 +215,7 @@ input[type=button] {
   --border-thickness-thick: 0.3rem;
   --border-thickness-x-thick: 0.4rem;
   border: var(--border-thickness-thick) solid var(--color-low);
+  cursor: pointer;
   background-color: var(--color-low);
   color: var(--color-fg);
 }
@@ -240,7 +277,7 @@ main#download-page > p:last-of-type {
   --text-size-x-title: 2.5rem;
   --text-size-xx-title: 3rem;
   font-size: var(--text-size-2xl);
-  font-weight: 300;
+  font-weight: lighter;
   --margin-0: 0;
   --margin-none: 0;
   --margin-2xs: 0.1rem;
@@ -257,7 +294,7 @@ main#download-page > p:last-of-type {
   --margin-7xl: 20dvh;
   --margin-8xl: 25dvh;
   --margin-default: var(--margin-m);
-  margin: var(--margin-0) var(--margin-0) var(--margin-4xl) var(--margin-0);
+  margin: var(--margin-0) var(--margin-0) var(--margin-3xl) var(--margin-0);
 }
 main#download-page > .round-box {
   --width-xs: 5dvw;
@@ -280,12 +317,31 @@ main#download-page > .round-box {
   --width-14xl: 90dvw;
   --width-15xl: 95dvw;
   --width-max: 100dvw;
-  width: var(--width-xl);
+  width: var(--width-2xl);
 }
 @media (max-width: 800px) {
   main#download-page > .round-box {
-    width: calc(var(--width-xl) * 2);
+    width: calc(var(--width-2xl) * 2);
   }
+}
+main#download-page > .round-box > .main > button {
+  --margin-0: 0;
+  --margin-none: 0;
+  --margin-2xs: 0.1rem;
+  --margin-xs: 0.15rem;
+  --margin-s: 0.25rem;
+  --margin-m: 0.5rem;
+  --margin-l: 0.75rem;
+  --margin-xl: 1rem;
+  --margin-2xl: 1.5rem;
+  --margin-3xl: 2rem;
+  --margin-4xl: 5dvh;
+  --margin-5xl: 10dvh;
+  --margin-6xl: 15dvh;
+  --margin-7xl: 20dvh;
+  --margin-8xl: 25dvh;
+  --margin-default: var(--margin-m);
+  margin: var(--margin-m) var(--margin-0) var(--margin-0) var(--margin-0);
 }
 
 @font-face {
@@ -393,7 +449,7 @@ body > header > img + div > p:first-of-type {
   font-size: var(--text-size-l);
 }
 body > header > img + div > p:last-of-type {
-  font-weight: 300;
+  font-weight: lighter;
 }
 body > header > h1 {
   font-weight: bold;

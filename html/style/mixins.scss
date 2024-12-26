@@ -262,7 +262,7 @@
 }
 
 @mixin thin() {
-    font-weight: 300;
+    font-weight: lighter;
 }
 
 @mixin italic() {
@@ -338,6 +338,7 @@
 }
 
 @mixin round-box() {
+    @include column($justify: start, $align: center);
     @include margin(xs);
     @include border-radius(l);
     @include border();
@@ -350,24 +351,32 @@
     }
 
     &>.header {
-        @include padding(s, m, s, m);
+        @include row($justify: center, $align: center);
+        @include padding(m, l, s, l);
+        @include text-size(l);
 
-        &:not(.solid) {
+        // With infill
+        &:not(.none) { 
+            @include row($justify: start, $align: center);
+            @include padding(m, xl);
+
             background-color: var(--color-low);
         }
     }
 
     &>.main {
-        @include padding(m, 4xl, xl, m);
+        @include column($justify: start, $align: start);
+        @include padding(m, 2xl, m, 2xl);
+        @include thin();
 
         flex: 1;
-    }
 
-    &>.footer {
-        @include padding(s, m, m, m);
+        // Not entirely sure about this
+        // text-align: center;
 
-        &.solid {
-            background-color: var(--color-low);
+        &>button,
+        &>input {
+            align-self: center;
         }
     }
 }

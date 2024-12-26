@@ -20,3 +20,23 @@
 .round-box {
     @include round-box();
 }
+
+.open-path {
+    all: unset;
+
+    text-decoration: underline;
+    word-break: break-all;
+
+    &:active,
+    &:hover{
+        // Override the default button styles
+        all: unset;
+        
+        cursor: pointer;
+        
+        text-decoration: underline;
+        word-break: break-all;
+
+        color: var(--color-primary);
+    }
+}

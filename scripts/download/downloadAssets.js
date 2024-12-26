@@ -197,6 +197,10 @@ const ipcHandlers = () => {
 
         return (fileCount === fileIDs.length && fileCount > 0);
     });
+
+    ipcMain.handle("get-assets-path", () => {
+        return videoFolder;
+    });
 };
 
 module.exports = { ipcHandlers } ;
