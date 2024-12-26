@@ -33,7 +33,7 @@ const createMainWindow = () => {
     mainWindow.once("closed", appCloseHandlers.onClosed);
 
     // Load and show the main window at the download assets page
-    mainWindow.loadFile("./html/pages/download.html");
+    mainWindow.loadFile("./html/pages/download-page.html");
     mainWindow.maximize();
     mainWindow.focus();
 };

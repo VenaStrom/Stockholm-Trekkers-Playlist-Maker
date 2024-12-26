@@ -1,0 +1,48 @@
+@use "variables.scss" as *;
+@use "mixins.scss" as *; // Functions to style everything easier
+
+// Focus outline
+a,
+button,
+input {
+    &:focus {
+        @include border-radius(s);
+        outline: var(--color-primary) solid 0.1rem;
+    }
+}
+
+a {
+    all: unset;
+
+    text-decoration: underline;    
+    cursor: pointer;
+
+    &:hover {
+        color: var(--color-primary);
+    }
+}
+
+button,
+input[type="button"] {
+    all: unset;
+    cursor: pointer;
+
+    @include padding(m, xl);
+    @include border-radius(m);
+    @include border(thick);
+
+    background-color: var(--color-low);
+    color: var(--color-fg);
+
+    &:hover {
+        @include bold();
+
+        background-color: var(--color-primary);
+        color: var(--color-low);
+    }
+}
+
+// input[type="text"] {
+//     all: unset;
+//     cursor: text;
+// }

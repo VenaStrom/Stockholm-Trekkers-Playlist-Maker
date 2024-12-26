@@ -1,0 +1,373 @@
+@use "variables.scss" as *;
+
+// Display Types
+//
+//   ||\\   ||  /==\  ||==\  ||      ||   ||  ||
+//   || ||  ||   \\   ||==/  ||     |==|    ||
+//   ||//   ||  \==/  ||     ||||  ||  ||   ||
+// 
+@mixin row($justify: start, $align: center, $wrap: nowrap) {
+    display: flex;
+    flex-flow: row $wrap;
+
+    justify-content: $justify;
+    align-items: $align;
+}
+
+@mixin column($justify: center, $align: start, $wrap: nowrap) {
+    display: flex;
+    flex-flow: column $wrap;
+
+    justify-content: $justify;
+    align-items: $align;
+}
+
+@mixin grid($columns: 1, $rows: 1) {
+    display: grid;
+    grid-template-columns: repeat($columns, 1fr);
+    grid-template-rows: repeat($rows, 1fr);
+}
+
+@mixin hidden() {
+    display: none !important;
+}
+
+// Spacing
+//
+//   /==\  ||==\    ||    /==\  ||  || ||  /==
+//    \\   ||==/   |==|   ||    ||  ||\||  || _
+//   \==/  ||     ||  ||  \==/  ||  || ||  \==/
+//
+@mixin gap($first: false, $second: false, $column: false, $row: false) {
+    --gap-0: 0;
+    --gap-none: 0;
+    --gap-s: 0.25rem;
+    --gap-m: 0.5rem;
+    --gap-l: 0.75rem;
+    --gap-xl: 1rem;
+    --gap-default: var(--gap-m);
+
+    // None defined: apply default gap
+    @if not $first and not $second and not $column and not $row {
+        gap: var(--gap-default);
+    }
+
+    // First defined: set both gaps to first
+    @else if $first and not $second and not $column and not $row {
+        gap: var(--gap-#{$first});
+    }
+
+    // First and second defined: set both gaps respectively
+    @else if $first and $second and not $column and not $row {
+        gap: var(--gap-#{$first}) var(--gap-#{$second});
+    }
+
+    @else {
+
+        // If column: set column
+        @if $column {
+            column-gap: var(--gap-#{$column});
+        }
+
+        // If row: set row
+        @if $row {
+            row-gap: var(--gap-#{$row});
+        }
+    }
+}
+
+@mixin padding($top: false, $right: false, $bottom: false, $left: false) {
+    --padding-0: 0;
+    --padding-none: 0;
+    --padding-2xs: 0.1rem;
+    --padding-xs: 0.15rem;
+    --padding-s: 0.25rem;
+    --padding-m: 0.5rem;
+    --padding-l: 0.75rem;
+    --padding-xl: 1rem;
+    --padding-2xl: 1.5rem;
+    --padding-3xl: 2rem;
+    --padding-4xl: 5dvh;
+    --padding-5xl: 10dvh;
+    --padding-6xl: 15dvh;
+    --padding-7xl: 20dvh;
+    --padding-8xl: 25dvh;
+    --padding-default: var(--padding-m);
+
+    // None defined: apply default padding
+    @if not $top and not $right and not $bottom and not $left {
+        padding: var(--padding-default);
+    }
+
+    // Four defined: apply to all sides
+    @else if $top and $right and $bottom and $left {
+        padding: var(--padding-#{$top}) var(--padding-#{$right}) var(--padding-#{$bottom}) var(--padding-#{$left});
+    }
+
+    // Three defined: error
+    @else if $top and $right and $bottom and not $left {
+        @error "Three padding values are not supported";
+    }
+
+    // Two defined: apply up down and side
+    @else if $top and $right and not $bottom and not $left {
+        padding: var(--padding-#{$top}) var(--padding-#{$right});
+    }
+
+    // One defined: apply to all sides
+    @else if $top and not $right and not $bottom and not $left {
+        padding: var(--padding-#{$top});
+    }
+
+    @else {
+        @error "Invalid padding values. Only use positional arguments";
+    }
+}
+
+@mixin margin($top: false, $right: false, $bottom: false, $left: false) {
+    --margin-0: 0;
+    --margin-none: 0;
+    --margin-2xs: 0.1rem;
+    --margin-xs: 0.15rem;
+    --margin-s: 0.25rem;
+    --margin-m: 0.5rem;
+    --margin-l: 0.75rem;
+    --margin-xl: 1rem;
+    --margin-2xl: 1.5rem;
+    --margin-3xl: 2rem;
+    --margin-4xl: 5dvh;
+    --margin-5xl: 10dvh;
+    --margin-6xl: 15dvh;
+    --margin-7xl: 20dvh;
+    --margin-8xl: 25dvh;
+    --margin-default: var(--margin-m);
+
+    // None defined: apply default margin
+    @if not $top and not $right and not $bottom and not $left {
+        margin: var(--margin-default);
+    }
+
+    // Four defined: apply to all sides
+    @else if $top and $right and $bottom and $left {
+        margin: var(--margin-#{$top}) var(--margin-#{$right}) var(--margin-#{$bottom}) var(--margin-#{$left});
+    }
+
+    // Three defined: error
+    @else if $top and $right and $bottom and not $left {
+        @error "Three margin values are not supported";
+    }
+
+    // Two defined: apply up down and side
+    @else if $top and $right and not $bottom and not $left {
+        margin: var(--margin-#{$top}) var(--margin-#{$right});
+    }
+
+    // One defined: apply to all sides
+    @else if $top and not $right and not $bottom and not $left {
+        margin: var(--margin-#{$top});
+    }
+
+    @else {
+        @error "Invalid margin values. Only use positional arguments";
+    }
+}
+
+
+// Sizing
+//
+//   /==\  ||  ||=||  ||  || ||  /==
+//    \\   ||    /    ||  ||\||  || _
+//   \==/  ||  ||=||  ||  || ||  \==/
+//
+@mixin width($size: m) {
+    --width-xs: 5dvw;
+    --width-s: 10dvw;
+    --width-m: 15dvw;
+    --width-l: 20dvw;
+    --width-xl: 25dvw;
+    --width-2xl: 30dvw;
+    --width-3xl: 35dvw;
+    --width-4xl: 40dvw;
+    --width-5xl: 45dvw;
+    --width-6xl: 50dvw;
+    --width-7xl: 55dvw;
+    --width-8xl: 60dvw;
+    --width-9xl: 65dvw;
+    --width-10xl: 70dvw;
+    --width-11xl: 75dvw;
+    --width-12xl: 80dvw;
+    --width-13xl: 85dvw;
+    --width-14xl: 90dvw;
+    --width-15xl: 95dvw;
+    --width-max: 100dvw;
+
+    width: var(--width-#{$size});
+
+    @media (max-width: 800px) {
+        width: calc(var(--width-#{$size}) * 2);
+    }
+}
+
+@mixin height($size: m) {
+    --height-xs: 5dvh;
+    --height-s: 10dvh;
+    --height-m: 15dvh;
+    --height-l: 20dvh;
+    --height-xl: 25dvh;
+    --height-2xl: 30dvh;
+    --height-3xl: 35dvh;
+    --height-4xl: 40dvh;
+    --height-5xl: 45dvh;
+    --height-6xl: 50dvh;
+    --height-7xl: 55dvh;
+    --height-8xl: 60dvh;
+    --height-9xl: 65dvh;
+    --height-10xl: 70dvh;
+    --height-11xl: 75dvh;
+    --height-12xl: 80dvh;
+    --height-13xl: 85dvh;
+    --height-14xl: 90dvh;
+    --height-15xl: 95dvh;
+    --height-max: 100dvh;
+
+    height: var(--height-#{$size});
+
+    @media (max-width: 800px) {
+        height: calc(var(--height-#{$size}) * 2);
+    }
+}
+
+
+// Text
+// 
+//   ||==||  ||==  ||  ||  ||==||
+//     ||    ||==    ||      ||
+//     ||    ||==  ||  ||    ||
+//
+@mixin text-size($size: m) {
+    --text-size-s: 0.75rem;
+    --text-size-m: 1rem;
+    --text-size-l: 1.1rem;
+    --text-size-xl: 1.25rem;
+    --text-size-2xl: 1.5rem;
+    --text-size-title: 2rem;
+    --text-size-x-title: 2.5rem;
+    --text-size-xx-title: 3rem;
+
+    font-size: var(--text-size-#{$size});
+}
+
+@mixin bold() {
+    font-weight: bold;
+}
+
+@mixin thin() {
+    font-weight: 300;
+}
+
+@mixin italic() {
+    font-style: italic;
+}
+
+
+// Border
+//
+//  ||\   /==\   ||==\  ||\\   ||==  ||==\
+//  ||<  ||  ||  ||==/  || ||  ||==  ||==/
+//  ||/   \==/   || \\  ||//   ||==  || \\
+//
+@mixin border($thickness: m, $color: var(--color-low)) {
+    --border-thickness-thin: 0.1rem;
+    --border-thickness-m: 0.2rem;
+    --border-thickness-thick: 0.3rem;
+    --border-thickness-x-thick: 0.4rem;
+
+    border: var(--border-thickness-#{$thickness}) solid $color;
+}
+
+@mixin border-radius($radius: m) {
+    --border-radius-xs: 0.15rem;
+    --border-radius-s: 0.25rem;
+    --border-radius-m: 0.5rem;
+    --border-radius-l: 0.75rem;
+    --border-radius-xl: 1rem;
+
+    border-radius: var(--border-radius-#{$radius});
+}
+
+
+// Functions
+//
+//   ||==  || ||  || ||  /==\  ||==||  ||   /==\   || ||  /==\                                                                                                                                                   
+//   ||==  || ||  ||\||  ||      ||    ||  ||  ||  ||\||   \\                                                                                                                                               
+//   ||     |||   || ||  \==/    ||    ||   \==/   || ||  \==/                                                                                                                                         
+//
+@mixin icon($size: m, $hover: false) {
+    --icon-size-xs: 1.2rem;
+    --icon-size-s: 2rem;
+    --icon-size-m: 2.7rem;
+    --icon-size-l: 4rem;
+
+    height: var(--icon-size-#{$size});
+    width: var(--icon-size-#{$size});
+
+    aspect-ratio: 1/1;
+
+    user-select: none;
+
+    &>* {
+        height: 100%;
+        width: 100%;
+
+        user-select: none;
+        pointer-events: none;
+
+        // Make the black, base icon, white
+        filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(290deg) brightness(104%) contrast(104%);
+
+        @if $hover {
+            &:active {
+                @include dim();
+            }
+        }
+    }
+}
+
+@mixin hairline($position, $thickness: 0.02rem) {
+    border-#{$position}: solid $thickness var(--color-gray);
+}
+
+@mixin round-box() {
+    @include margin(xs);
+    @include border-radius(l);
+    @include border();
+
+    min-width: 20ch;
+    min-height: 5rem;
+
+    &>* {
+        width: 100%;
+    }
+
+    &>.header {
+        @include padding(s, m, s, m);
+
+        &:not(.solid) {
+            background-color: var(--color-low);
+        }
+    }
+
+    &>.main {
+        @include padding(m, 4xl, xl, m);
+
+        flex: 1;
+    }
+
+    &>.footer {
+        @include padding(s, m, m, m);
+
+        &.solid {
+            background-color: var(--color-low);
+        }
+    }
+}

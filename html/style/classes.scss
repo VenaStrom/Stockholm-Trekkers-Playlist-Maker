@@ -1,0 +1,22 @@
+@use "variables.scss" as *;
+@use "mixins.scss" as *; // Functions to style everything easier
+
+.hidden {
+    @include hidden();
+}
+
+.italic {
+    @include italic();
+}
+
+.bold {
+    @include bold();
+}
+
+.thin {
+    @include thin();
+}
+
+.round-box {
+    @include round-box();
+}

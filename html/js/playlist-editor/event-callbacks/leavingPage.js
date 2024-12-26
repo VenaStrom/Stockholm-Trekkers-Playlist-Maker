@@ -23,7 +23,7 @@ const savePrompt = () => {
 };
 
 const goToProjectsPage = () => {
-    window.location.href = "./projects.html";
+    window.location.href = "./projects-page.html";
 }
 
 // When clicking back button, confirm that the user actually wants to leave

@@ -1,0 +1,23 @@
+@use "../mixins.scss" as *; // Functions to style everything easier
+
+main#download-page {
+    @include margin(8xl, 0, 0, 0);
+
+    &>p:first-of-type {
+        @include text-size(l);
+    }
+
+    &>h2 {
+        @include text-size(title);
+    }
+
+    &>p:last-of-type {
+        @include text-size(2xl);
+        @include thin();
+        @include margin(0, 0, 4xl, 0);
+    }
+
+    &>.round-box {
+        @include width(xl);
+    }
+}
