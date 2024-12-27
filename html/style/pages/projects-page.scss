@@ -106,11 +106,12 @@ main#projects-page {
                         @include gap(0, l);
 
                         &>p:first-child {
-                            width: 5ch;
+                            width: 6ch;
                             text-align: center;
                         }
 
                         &>p:last-child {
+                            @include margin(0, 0, 0, s);
                             width: 100%;
                         }
                     }

@@ -80,7 +80,7 @@ const unixTimeToDate = (unixTime) => {
 const stringToHTML = (string) => {
     const htmlLaunderer = document.createElement("div");
     htmlLaunderer.innerHTML = string.trim();
-    
+
     return htmlLaunderer.firstChild;
 };
 
@@ -151,7 +151,24 @@ const createProjectDOM = (projectData) => {
         }
     });
 
-
+    projectBody.addEventListener("click", () => openProject(projectData.id));
+    projectBody.querySelector(".delete").addEventListener("click", (event) => {
+        event.stopPropagation();
+        deleteProject(projectData.id);
+    });
 
     return projectBody;
+};
+
+const openProject = (id) => {
+    console.info(`Opening project with id: ${id}`);
+    window.location.href = `./playlist-editor.html?id=${id}`;
+};
+
+const deleteProject = (id) => {
+    if (confirm("Are you sure you want to delete this project forever?")) {
+        console.info(`Deleting project with id: ${id}`);
+        projects.delete(id);
+        window.location.reload();
+    }
 };
