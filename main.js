@@ -14,6 +14,21 @@ const saveFilesFolder = path.join(userDataFolder, "save-files");
 if (!fs.existsSync(saveFilesFolder)) fs.mkdirSync(saveFilesFolder);
 
 
+// MIGRATION PATCH //
+// Migrate the old save files to the new save files folder
+const oldSaveFilesFolder = path.join(path.resolve(__dirname), "projects");
+if (fs.existsSync(oldSaveFilesFolder)) {
+    const oldSaveFiles = fs.readdirSync(oldSaveFilesFolder);
+    oldSaveFiles.forEach(file => {
+        const oldSaveFilePath = path.join(oldSaveFilesFolder, file);
+        const newSaveFilePath = path.join(saveFilesFolder, file);
+        fs.copyFileSync(oldSaveFilePath, newSaveFilePath);
+    });
+    fs.rmdirSync(oldSaveFilesFolder, { recursive: true });
+    console.info(`Migrated ${oldSaveFiles.length} save files to the new save files folder and removed the old save files folder`);
+}
+
+
 const createMainWindow = () => {
     const mainWindow = new BrowserWindow({
         width: 1920,
