@@ -722,7 +722,7 @@ main#projects-page > section > .project > .main {
   --gap-l: 0.75rem;
   --gap-xl: 1rem;
   --gap-default: var(--gap-m);
-  gap: var(--gap-s) var(--gap-0);
+  gap: var(--gap-m) var(--gap-0);
   list-style-type: none;
 }
 main#projects-page > section > .project > .main > hr {
@@ -766,23 +766,6 @@ main#projects-page > section > .project > .main > li {
 }
 main#projects-page > section > .project > .main > li.block-header {
   font-weight: bold;
-  --margin-0: 0;
-  --margin-none: 0;
-  --margin-2xs: 0.1rem;
-  --margin-xs: 0.15rem;
-  --margin-s: 0.25rem;
-  --margin-m: 0.5rem;
-  --margin-l: 0.75rem;
-  --margin-xl: 1rem;
-  --margin-2xl: 1.5rem;
-  --margin-3xl: 2rem;
-  --margin-4xl: 5dvh;
-  --margin-5xl: 10dvh;
-  --margin-6xl: 15dvh;
-  --margin-7xl: 20dvh;
-  --margin-8xl: 25dvh;
-  --margin-default: var(--margin-m);
-  margin-bottom: var(--margin-s);
 }
 main#projects-page > section > .project > .main > li.block-header > div {
   display: flex;

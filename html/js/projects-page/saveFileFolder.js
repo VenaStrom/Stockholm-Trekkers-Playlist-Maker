@@ -5,12 +5,12 @@ const importSaveFile = () => {
         window.location.reload();
     });
 };
-const importButton = document.querySelector(".import-button");
+const importButton = document.querySelector(".import-save-file");
 importButton.addEventListener("click", importSaveFile);
 
 
 const openSaveFileFolder = async () => {
     explorer.open(await projects.getPath());
 };
-const openButton = document.querySelector(".open-folder-button");
+const openButton = document.querySelector(".open-saves-folder");
 openButton.addEventListener("click", openSaveFileFolder);
