@@ -1,30 +1,31 @@
 "use strict";
 
 const pageBornAt = new Date().getTime();
+console.info("Page born at: ", pageBornAt);
 
 const getID = () => {
     const pageURL = window.location.href;
 
     // Get an object with all the arguments in the url
-    const args = {};
-    pageURL.split("?").at(1).split("&").forEach((arg) => {
-        const [key, value] = arg.split("=");
-
-        args[key] = value;
-    });
+    const args = Object.fromEntries(new URLSearchParams(pageURL.split("?").at(-1)));
 
     // If the id already exists, return it
     if (args.id !== "new") {
+        console.info("ID already exists: ", args.id);
         return args.id;
     };
 
-    // Else, create a new id
+    console.info("Creating a new ID");
+
+    // If the id does not exist, create a new one
     const time = new Date().getTime();
 
     const id = time.toString() + pageBornAt.toString();
 
-    // This solution is not scalable in case you need more arguments in the url which probably won't be needed
-    window.location.href = window.location.href.replace("?id=new", "") + `?id=${id}`;
+    // Add the new id to the url
+    const updatedURL = new URL(pageURL);
+    updatedURL.searchParams.set("id", id);
+    window.location.href = updatedURL;
 
     return id;
 };
