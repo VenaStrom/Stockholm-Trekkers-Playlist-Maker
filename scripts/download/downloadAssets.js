@@ -16,7 +16,7 @@ const downloadStatus = {
     "percent": 0,
 };
 
-const videoFolder = path.join(__dirname, "../../assets/videos/")
+const videoFolder = path.join(__dirname, "..", "..", "assets", "videos");
 const downloadReferenceFile = path.join(__dirname, "..", "..", "assetDownloadInfo.json");
 
 const downloadPauses = (force = false) => {
@@ -203,4 +203,4 @@ const ipcHandlers = () => {
     });
 };
 
-module.exports = { ipcHandlers } ;
+module.exports = { ipcHandlers };

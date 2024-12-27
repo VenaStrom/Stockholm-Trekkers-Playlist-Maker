@@ -92,6 +92,9 @@ const ipcHandlers = () => {
     ipcMain.handle("project-get-all", (_) => {
         return projectGetAll();
     });
+    ipcMain.handle("get-projects-path", (_, ) => {
+        return saveFilesFolder;
+    });
 };
 
 module.exports = { ipcHandlers, projectGet, projectSave, projectDelete, projectGetAll };

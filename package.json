@@ -30,7 +30,9 @@
       "!.gitignore",
       "!.git/**",
       "!.vscode/**",
-      "!user-data/**"
+      "!user-data/**",
+      "!*.scss",
+      "!*.md"
     ],
     "win": {
       "target": "msi",

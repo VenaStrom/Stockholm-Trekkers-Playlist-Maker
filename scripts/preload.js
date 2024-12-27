@@ -29,6 +29,7 @@ contextBridge.exposeInMainWorld("projects", {
     save: (projectJSON) => ipcRenderer.invoke("project-save", projectJSON),
     delete: (id) => ipcRenderer.invoke("project-delete", id),
     getAll: () => ipcRenderer.invoke("project-get-all"),
+    getPath: () => ipcRenderer.invoke("get-projects-path"),
 });
 
 contextBridge.exposeInMainWorld("ffprobe", {
