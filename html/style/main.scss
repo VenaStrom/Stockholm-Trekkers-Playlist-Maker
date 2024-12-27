@@ -28,25 +28,23 @@
 }
 
 ::-webkit-scrollbar {
-    // display: none;
-    scrollbar-width: thin;
+    display: none;
 }
 
 //
 // Main Tree
 //
 html {
-    width: 100dvw;
-    height: 100dvh;
+    width: 100%;
+    max-width: 100dvw;
 }
 
 body {
     @include column($justify: start, $align: center);
-
+    
     background-color: var(--color-bg);
     color: var(--color-fg);
-
-    height: 100%;
+    
     width: 100%;
 
     &>* {
@@ -118,6 +116,7 @@ body {
 
             position: absolute;
             width: 100dvw;
+            max-width: 100dvw;
             text-align: center;
         }
     }

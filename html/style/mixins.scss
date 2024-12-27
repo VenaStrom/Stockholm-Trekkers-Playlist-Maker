@@ -226,7 +226,7 @@
 
     width: var(--width-#{$size});
     max-width: $max;
-}
+}   
 
 @mixin height($size: m, $max: 95dvw) {
     --height-2xs: 0.1rem;

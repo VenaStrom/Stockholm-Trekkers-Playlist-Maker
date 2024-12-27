@@ -106,8 +106,12 @@ main#projects-page {
                         @include gap(0, l);
 
                         &>p:first-child {
-                            width: 4ch;
+                            width: 5ch;
                             text-align: center;
+                        }
+
+                        &>p:last-child {
+                            width: 100%;
                         }
                     }
 
@@ -129,7 +133,7 @@ main#projects-page {
         &>.buttons {
             @include column($justify: end, $align: end);
             @include gap(m, 0);
-            @include margin($right: 3xl);
+            @include margin($right: 2xl);
 
             &>button {
                 @include row($justify: start, $align: center);

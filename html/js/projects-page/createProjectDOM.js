@@ -80,7 +80,7 @@ const unixTimeToDate = (unixTime) => {
 const stringToHTML = (string) => {
     const htmlLaunderer = document.createElement("div");
     htmlLaunderer.innerHTML = string.trim();
-
+    
     return htmlLaunderer.firstChild;
 };
 
@@ -101,18 +101,14 @@ const makeBlockHeaderLi = (options) => {
 const makeEpisodeLi = (time, episodeName) => {
     return stringToHTML(`
         <li class="episode">
-            <p>${time}</p>
-            -
-            <p>${episodeName}</p>
+            <p>${time}</p>-<p>${episodeName}</p>
         </li>`);
 };
 
 const makePauseLi = (time) => {
     return stringToHTML(`
         <li class="pause">
-            <p>${time}</p>
-            -
-            <p>pause</p>
+            <p>${time}</p>-<p>pause</p>
         </li>`);
 };
 
@@ -141,21 +137,21 @@ const createProjectDOM = (projectData) => {
     projectBody.appendChild(projectHeader);
     projectBody.appendChild(mainContent);
 
-    let i = 0;
-    for (const blockData of projectData.blocks) {
+    projectData.blocks.forEach((blockData, index) => {
         // Block header
         mainContent.appendChild(makeBlockHeaderLi(blockData.options));
         // Episodes
         blockData.episodes.forEach(episodeData => mainContent.appendChild(makeEpisodeLi(episodeData.startTime || blockData.startTime, episodeData.fileName)));
         // Pause
         mainContent.appendChild(makePauseLi(blockData.episodes.at(-1)?.endTime || blockData.startTime || "--:--"));
-        
+
         // Separator hairline
-        if (i < projectData.blocks.length - 1) {
+        if (index < projectData.blocks.length - 1) {
             mainContent.appendChild(stringToHTML(`<hr>`));
         }
-        i++;
-    }
+    });
+
+
 
     return projectBody;
 };

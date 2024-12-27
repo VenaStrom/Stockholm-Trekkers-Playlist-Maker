@@ -483,6 +483,15 @@ main#projects-page > p {
   margin-bottom: var(--margin-xl);
   margin-left: var(--margin-0);
   margin: var(--margin-3xl) var(--margin-0) var(--margin-xl) var(--margin-0);
+  --text-size-s: 0.9rem;
+  --text-size-m: 1rem;
+  --text-size-l: 1.1rem;
+  --text-size-xl: 1.25rem;
+  --text-size-2xl: 1.5rem;
+  --text-size-title: 2rem;
+  --text-size-x-title: 2.5rem;
+  --text-size-xx-title: 3rem;
+  font-size: var(--text-size-l);
 }
 main#projects-page > section {
   display: flex;
@@ -818,6 +827,13 @@ main#projects-page > section > .project > .main > li.episode, main#projects-page
   --gap-default: var(--gap-m);
   gap: var(--gap-0) var(--gap-l);
 }
+main#projects-page > section > .project > .main > li.episode > p:first-child, main#projects-page > section > .project > .main > li.pause > p:first-child {
+  width: 5ch;
+  text-align: center;
+}
+main#projects-page > section > .project > .main > li.episode > p:last-child, main#projects-page > section > .project > .main > li.pause > p:last-child {
+  width: 100%;
+}
 main#projects-page > section > .project > .main > li.pause {
   color: var(--color-mid);
 }
@@ -878,7 +894,7 @@ main#projects-page > .bottom > .buttons {
   --margin-7xl: 20dvh;
   --margin-8xl: 25dvh;
   --margin-default: var(--margin-m);
-  margin-right: var(--margin-3xl);
+  margin-right: var(--margin-2xl);
 }
 main#projects-page > .bottom > .buttons > button {
   display: flex;
@@ -951,12 +967,12 @@ main#projects-page > .bottom > .buttons > button:hover > img {
 }
 
 ::-webkit-scrollbar {
-  scrollbar-width: thin;
+  display: none;
 }
 
 html {
-  width: 100dvw;
-  height: 100dvh;
+  width: 100%;
+  max-width: 100dvw;
 }
 
 body {
@@ -966,7 +982,6 @@ body {
   align-items: center;
   background-color: var(--color-bg);
   color: var(--color-fg);
-  height: 100%;
   width: 100%;
 }
 body > * {
@@ -1077,6 +1092,7 @@ body > header > h1 {
   pointer-events: none;
   position: absolute;
   width: 100dvw;
+  max-width: 100dvw;
   text-align: center;
 }
 body > main {
