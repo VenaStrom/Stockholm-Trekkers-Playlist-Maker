@@ -11,11 +11,11 @@ document.addEventListener("keydown", (event) => {
     const target = event.target;
 
     if (
-        target.tagName === "button"
+        target.tagName === "BUTTON"
         ||
-        target.tagName === "input"
+        target.tagName === "INPUT"
         ||
-        target.tagName === "a"
+        target.tagName === "A"
     ) {
         event.preventDefault();
         target.click();
