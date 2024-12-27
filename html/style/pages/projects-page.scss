@@ -3,6 +3,7 @@
 main#projects-page {
     &>p {
         @include margin(3xl, 0, xl, 0);
+        @include text-size(l);
     }
 
     &>section {
@@ -103,6 +104,11 @@ main#projects-page {
                     &.pause {
                         @include margin(0, 0, 0, m);
                         @include gap(0, l);
+
+                        &>p:first-child {
+                            width: 4ch;
+                            text-align: center;
+                        }
                     }
 
                     &.pause {
