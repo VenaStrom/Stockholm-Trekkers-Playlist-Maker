@@ -1,6 +1,6 @@
 "use strict";
 
-// Big plus button for making a new project
+// Clicking the "New Project" will redirect to the editor with the id "new" so the id generator will know to make a new one
 const createNewProjectButton = document.querySelector(".make-new-project");
 createNewProjectButton.addEventListener("click", () => {
     window.location.href = "./playlist-editor.html?id=new";
