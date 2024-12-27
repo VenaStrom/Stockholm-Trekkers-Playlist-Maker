@@ -17,25 +17,32 @@
     "electron-builder": "^25.1.8",
     "sass": "^1.83.0"
   },
+  "dependencies": {
+    "ffprobe-static": "^3.1.0"
+  },
   "build": {
     "appId": "com.stockholm-trekkers.playlist-maker",
     "productName": "Stockholm Trekkers Playlist Maker",
     "electronLanguages": [
-      "en"
+      "en",
+      "sv"
     ],
     "asar": false,
     "files": [
-      "!dist/**",
-      "!assets/videos/**",
       "!.gitignore",
       "!.git/**",
+      "!.github/**",
       "!.vscode/**",
+      "!html/style/pages/*.scss",
+      "!html/style/*.scss",
+      "!assets/videos/**",
+      "!screenshots/**",
       "!user-data/**",
-      "!*.scss",
-      "!*.md"
+      "!docs/**",
+      "!dist/**"
     ],
     "win": {
-      "target": "msi",
+      "target": "nsis",
       "icon": "assets/images/stockholm-trekkers.ico"
     },
     "linux": {
@@ -47,8 +54,5 @@
       "icon": "assets/images/stockholm-trekkers-300x300.png",
       "synopsis": "A playlist maker for the Stockholm Trekkers."
     }
-  },
-  "dependencies": {
-    "ffprobe-static": "^3.1.0"
   }
 }
