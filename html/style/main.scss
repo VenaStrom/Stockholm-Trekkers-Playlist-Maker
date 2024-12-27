@@ -21,10 +21,10 @@
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    box-sizing: border-box !important;
 
-    font-family: "Bahnschrift", "Verdana", sans-serif;
-    color: var(--text-color);
+    font-family: "Bahnschrift", "Verdana", sans-serif !important;
+    color: var(--text-fg);
 }
 
 ::-webkit-scrollbar {
@@ -56,7 +56,6 @@ body {
     &>header {
         @include row($justify: start, $align: center);
         @include gap(0, m);
-        // @include padding(l, 2xl);
 
         background-color: var(--color-low);
 

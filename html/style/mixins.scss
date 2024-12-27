@@ -38,9 +38,12 @@
 //    \\   ||==/   |==|   ||    ||  ||\||  || _
 //   \==/  ||     ||  ||  \==/  ||  || ||  \==/
 //
-@mixin gap($first: false, $second: false, $column: false, $row: false) {
+@mixin gap($rowOrBoth: false, $column: false, $row: false) {
     --gap-0: 0;
     --gap-none: 0;
+    --gap-3xs: 0.05rem;
+    --gap-2xs: 0.1rem;
+    --gap-xs: 0.15rem;
     --gap-s: 0.25rem;
     --gap-m: 0.5rem;
     --gap-l: 0.75rem;
@@ -48,18 +51,18 @@
     --gap-default: var(--gap-m);
 
     // None defined: apply default gap
-    @if not $first and not $second and not $column and not $row {
+    @if not $rowOrBoth and not $column and not $row {
         gap: var(--gap-default);
     }
 
-    // First defined: set both gaps to first
-    @else if $first and not $second and not $column and not $row {
-        gap: var(--gap-#{$first});
+    // First defined: set both gaps to first argument
+    @else if $rowOrBoth and not $column and not $row {
+        gap: var(--gap-#{$rowOrBoth});
     }
 
-    // First and second defined: set both gaps respectively
-    @else if $first and $second and not $column and not $row {
-        gap: var(--gap-#{$first}) var(--gap-#{$second});
+    // First and column defined: set both gaps respectively
+    @else if $rowOrBoth and $column and not $row {
+        gap: var(--gap-#{$rowOrBoth}) var(--gap-#{$column});
     }
 
     @else {
@@ -94,6 +97,24 @@
     --padding-8xl: 25dvh;
     --padding-default: var(--padding-m);
 
+    // Non-positional arguments
+    @if $top {
+        padding-top: var(--padding-#{$top});
+    }
+
+    @if $right {
+        padding-right: var(--padding-#{$right});
+    }
+
+    @if $bottom {
+        padding-bottom: var(--padding-#{$bottom});
+    }
+
+    @if $left {
+        padding-left: var(--padding-#{$left});
+    }
+
+    // Positional arguments
     // None defined: apply default padding
     @if not $top and not $right and not $bottom and not $left {
         padding: var(--padding-default);
@@ -104,12 +125,7 @@
         padding: var(--padding-#{$top}) var(--padding-#{$right}) var(--padding-#{$bottom}) var(--padding-#{$left});
     }
 
-    // Three defined: error
-    @else if $top and $right and $bottom and not $left {
-        @error "Three padding values are not supported";
-    }
-
-    // Two defined: apply up down and side
+    // Two defined: apply up-down and side-side
     @else if $top and $right and not $bottom and not $left {
         padding: var(--padding-#{$top}) var(--padding-#{$right});
     }
@@ -117,10 +133,6 @@
     // One defined: apply to all sides
     @else if $top and not $right and not $bottom and not $left {
         padding: var(--padding-#{$top});
-    }
-
-    @else {
-        @error "Invalid padding values. Only use positional arguments";
     }
 }
 
@@ -142,6 +154,24 @@
     --margin-8xl: 25dvh;
     --margin-default: var(--margin-m);
 
+    // Non-positional arguments
+    @if $top {
+        margin-top: var(--margin-#{$top});
+    }
+
+    @if $right {
+        margin-right: var(--margin-#{$right});
+    }
+
+    @if $bottom {
+        margin-bottom: var(--margin-#{$bottom});
+    }
+
+    @if $left {
+        margin-left: var(--margin-#{$left});
+    }
+
+    // Positional arguments
     // None defined: apply default margin
     @if not $top and not $right and not $bottom and not $left {
         margin: var(--margin-default);
@@ -152,12 +182,7 @@
         margin: var(--margin-#{$top}) var(--margin-#{$right}) var(--margin-#{$bottom}) var(--margin-#{$left});
     }
 
-    // Three defined: error
-    @else if $top and $right and $bottom and not $left {
-        @error "Three margin values are not supported";
-    }
-
-    // Two defined: apply up down and side
+    // Two defined: apply up-down and side-side
     @else if $top and $right and not $bottom and not $left {
         margin: var(--margin-#{$top}) var(--margin-#{$right});
     }
@@ -165,10 +190,6 @@
     // One defined: apply to all sides
     @else if $top and not $right and not $bottom and not $left {
         margin: var(--margin-#{$top});
-    }
-
-    @else {
-        @error "Invalid margin values. Only use positional arguments";
     }
 }
 
@@ -203,7 +224,7 @@
 
     width: var(--width-#{$size});
 
-    @media (max-width: 800px) {
+    @media (max-width: 1000px) {
         width: calc(var(--width-#{$size}) * 2);
     }
 }
@@ -232,7 +253,7 @@
 
     height: var(--height-#{$size});
 
-    @media (max-width: 800px) {
+    @media (max-height: 600px) {
         height: calc(var(--height-#{$size}) * 2);
     }
 }
@@ -245,7 +266,7 @@
 //     ||    ||==  ||  ||    ||
 //
 @mixin text-size($size: m) {
-    --text-size-s: 0.75rem;
+    --text-size-s: 0.9rem;
     --text-size-m: 1rem;
     --text-size-l: 1.1rem;
     --text-size-xl: 1.25rem;
@@ -295,6 +316,11 @@
     border-radius: var(--border-radius-#{$radius});
 }
 
+@mixin outline() {
+    &:focus {
+        outline: var(--color-primary) solid 0.1rem;
+    }
+}
 
 // Functions
 //
@@ -302,11 +328,19 @@
 //   ||==  || ||  ||\||  ||      ||    ||  ||  ||  ||\||   \\                                                                                                                                               
 //   ||     |||   || ||  \==/    ||    ||   \==/   || ||  \==/                                                                                                                                         
 //
-@mixin icon($size: m, $hover: false) {
+@mixin icon($size: m, $filter: var(--filter-to-color-fg), $hover: true) {
+    --icon-size-5xs: 0.3rem;
+    --icon-size-4xs: 0.6rem;
+    --icon-size-3xs: 0.75rem;
+    --icon-size-2xs: 1rem;
     --icon-size-xs: 1.2rem;
     --icon-size-s: 2rem;
     --icon-size-m: 2.7rem;
     --icon-size-l: 4rem;
+    --icon-size-xl: 5rem;
+    --icon-size-2xl: 6rem;
+    --icon-size-3xl: 7rem;
+    --icon-size-4xl: 8rem;
 
     height: var(--icon-size-#{$size});
     width: var(--icon-size-#{$size});
@@ -315,20 +349,13 @@
 
     user-select: none;
 
-    &>* {
-        height: 100%;
-        width: 100%;
+    filter: $filter;
 
-        user-select: none;
-        pointer-events: none;
+    @if $hover {
+        cursor: pointer;
 
-        // Make the black, base icon, white
-        filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(290deg) brightness(104%) contrast(104%);
-
-        @if $hover {
-            &:active {
-                @include dim();
-            }
+        &:hover {
+            filter: var(--filter-to-color-primary);
         }
     }
 }
@@ -345,6 +372,8 @@
 
     min-width: 20ch;
     min-height: 5rem;
+
+    overflow: hidden; // Corners of header were showing
 
     &>* {
         width: 100%;
@@ -385,7 +414,7 @@
 
             // Base color
             background-color: var(--color-bg);
-            
+
             // Progress
             background-image: linear-gradient(var(--color-primary), var(--color-primary));
             background-repeat: no-repeat;

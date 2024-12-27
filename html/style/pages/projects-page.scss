@@ -1,1 +1,119 @@
 @use "../mixins.scss" as *; // Functions to style everything easier
+
+main#projects-page {
+    &>p {
+        @include margin(l, 0);
+    }
+
+    &>div {
+        @include column($justify: start, $align: center);
+        @include width(4xl);
+        @include gap(m, 0);
+
+        &>.make-new-project {
+            @include padding(0);
+            @include column($justify: center, $align: center);
+
+            width: 100%;
+            background-color: var(--color-bg);
+
+            &>img {
+                @include icon(4xl, $filter: var(--filter-to-color-fg));
+            }
+
+            &:hover {
+                @include border($color: var(--color-primary));
+
+                background-color: var(--color-low);
+
+                &>.header {
+                    font-weight: normal;
+                    color: var(--color-primary);
+                }
+            }
+        }
+
+        &>.project {
+            @include padding(0);
+            @include outline();
+
+            width: 100%;
+            background-color: var(--color-bg);
+
+            &:hover {
+                @include border($color: var(--color-primary));
+            }
+
+            &>.header {
+                @include row($justify: space-between, $align: center);
+                @include gap(0, m);
+
+                &>.project-date {
+                    @include row($justify: space-between, $align: center);
+                    @include gap(0, m);
+                }
+
+                &>.meta-data {
+                    @include row($justify: space-between, $align: center);
+                    @include gap(0, m);
+                    @include text-size(m);
+                    @include thin();
+                }
+
+                &>.delete {
+                    all: unset;
+
+                    @include icon(s);
+                    @include outline();
+
+                    &>img {
+                        width: 100%;
+                        height: 100%;
+                    }
+                }
+            }
+
+            &>.main {
+                @include gap(s, 0);
+
+                list-style-type: none;
+
+                &>li {
+                    @include row($justify: start, $align: center);
+                    @include gap(0, m);
+
+                    width: 100%;
+
+                    &.block-header {
+                        @include bold();
+
+                        &>div {
+                            @include row($justify: space-between, $align: center);
+                            @include gap(0, 3xs);
+                        }
+
+                        @include margin(s, 0, 0, 0);
+
+                        &:not(:first-child) {
+                            @include margin(l, 0, 0, 0);
+                        }
+                    }
+
+                    &.episode,
+                    &.pause {
+                        @include margin(0, 0, 0, m);
+                        @include gap(0, l);
+                    }
+
+                    &.pause {
+                        color: var(--color-mid); // Kinda iffy contrast
+                    }
+
+                    &:last-child {
+                        @include margin($bottom: s);
+                    }
+                }
+            }
+        }
+    }
+}

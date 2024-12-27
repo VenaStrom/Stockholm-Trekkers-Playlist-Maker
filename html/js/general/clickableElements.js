@@ -16,6 +16,8 @@ document.addEventListener("keydown", (event) => {
         target.tagName === "INPUT"
         ||
         target.tagName === "A"
+        ||
+        target.classList.contains("clickable")
     ) {
         event.preventDefault();
         target.click();

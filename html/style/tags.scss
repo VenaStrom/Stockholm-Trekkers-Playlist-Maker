@@ -5,10 +5,7 @@
 a,
 button,
 input {
-    &:focus {
-        @include border-radius(s);
-        outline: var(--color-primary) solid 0.1rem;
-    }
+    @include outline();
 }
 
 a {
