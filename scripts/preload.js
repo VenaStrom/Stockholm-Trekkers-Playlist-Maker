@@ -4,6 +4,10 @@ const { contextBridge, ipcRenderer, webUtils } = require("electron");
 
 contextBridge.exposeInMainWorld("webUtils", webUtils);
 
+contextBridge.exposeInMainWorld("main", {
+    sendConsole: (type, message) => ipcRenderer.invoke("send-console", type, message),
+});
+
 contextBridge.exposeInMainWorld("dialog", {
     confirmLeaveUnsaved: (message) => ipcRenderer.invoke("confirm-leave-unsaved", message),
     confirmLeaveExporting: (message) => ipcRenderer.invoke("confirm-leave-exporting", message),

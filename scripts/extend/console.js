@@ -3,7 +3,7 @@
 const { styleText } = require("node:util");
 const readline = require("node:readline");
 const path = require("node:path");
-const { BrowserWindow } = require("electron");
+const { BrowserWindow, ipcMain } = require("electron");
 
 
 // Call Trace //
@@ -98,13 +98,23 @@ Object.entries(colors).forEach(([methodName, color]) => {
             const prefix = styleText("bold", `[Main Process]` + (format.trace ? ` ${getTrace({ depth: 4, verbose: format.verboseTrace })}` : ""));
             const compiledArgs = format.passFirstArg ? [firstArg, ...args] : args;
 
+            // Don't pass renderer relays
+            // If any arg containts the string "[Renderer]", don't pass it to the renderer, again...
+            for (let index = 0; index < compiledArgs.length; index++) {
+                const arg = compiledArgs[index];
+                if (typeof arg === "string" && arg.includes("[Renderer]")) {
+                    return;
+                }
+            }
+
+            // Handle empty strings
             if (compiledArgs.length === 1 && compiledArgs.at(0) === "") {
-                window.webContents.executeJavaScript(
-                    `console.${methodName}("${prefix}", "Empty");`
+                window.webContents.executeJavaScript( // _console is a copy of the original console functions in the renderer
+                    `_console.${methodName}("${prefix}", "Empty");`
                 );
             } else {
-                window.webContents.executeJavaScript(
-                    `console.${methodName}("${prefix}", ...${JSON.stringify(compiledArgs)});`
+                window.webContents.executeJavaScript( // _console is a copy of the original console functions in the renderer
+                    `_console.${methodName}("${prefix}", ...${JSON.stringify(compiledArgs)});`
                 );
             }
         });
@@ -132,3 +142,12 @@ Object.entries(colors).forEach(([methodName, color]) => {
         originalFunction(...finalArgs);
     }
 });
+
+const ipcHandlers = () => {
+    ipcMain.handle("send-console", (event, type, args) => {
+        const prefix = styleText("yellow", `[Renderer]`);
+        console[type]({ _noTrace: true }, prefix, ...args);
+    });
+};
+
+module.exports = { ipcHandlers };

@@ -1,6 +1,6 @@
 "use strict";
 
-// Intercept all keydowns and if the target is a clickable element, click it
+// Intercept all key downs and if the target is a clickable element, click it
 document.addEventListener("keydown", (event) => {
     // Stop space from scrolling the page
     if (event.key === " ") { event.preventDefault() };
