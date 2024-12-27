@@ -116,26 +116,29 @@
 
 <body>
     <header>
-        <img class="logo" src="../../assets/images/stockholm-trekkers-300.png" alt="">
+        <img src="../../assets/images/stockholm-trekkers-300.png" alt="Logo">
 
         <div>
             <p>Stockholm Trekkers</p>
-            <p class="smaller">Playlist Maker</p>
+            <p>Playlist Maker</p>
         </div>
 
-        <p class="clickable" title="Try ctrl+s" id="save-status"></p>
+        <!-- <button title="Try ctrl+s" id="save-status"></button> -->
 
         <h1>Playlist Editor</h1>
-
-        <img class="clickable-icon clickable" id="back-button" title="Back to projects" tabindex="0"
-            src="../../assets/images/arrow_back_35dp_000000_FILL0_wght700_GRAD0_opsz40.png" alt="<">
     </header>
 
-    <main>
+    <main id="playlist-editor">
+        <div class="top">
+            <button class="back-button" title="Back to projects">
+                <img src="../../assets/images/arrow_back_35dp_000000_FILL0_wght700_GRAD0_opsz40.png" alt="<">
+            </button>
+        </div>
+
         <div class="date-input">
             <p>Trekdag at:</p>
             <input type="text" placeholder="YYYY-MM-DD"
-                title="Enter the date of the trekdag in the format, 'YYYY-MM-DD', for example '2024-09-14'">
+                title="Enter the date of the trekdag in the format, 'YYYY-MM-DD'. For example '2024-09-14'">
         </div>
 
         <p class="info-paragraph">
@@ -147,15 +150,14 @@
             The pauses are inserted automatically between the blocks at the correct length.
         </p>
 
+        <!-- 
         <section class="blocks">
-            <!-- Script inserts blocks here -->
 
             <div class="round-box create-block clickable" tabindex="0">
                 <div class="header">
                     <p>Create block</p>
                 </div>
 
-                <!-- The plus button and its wrapper -->
                 <div>
                     <img src="../../assets/images/add_35dp_000000_FILL0_wght700_GRAD0_opsz40.png" alt="+">
                 </div>
@@ -180,12 +182,11 @@
                 </div>
             </div>
 
-            <!-- Save and export button -->
             <div class="export-box round-box">
                 <button class="clickable save" tabindex="0">Save</button>
                 <button class="clickable export" tabindex="0">Save & Export</button>
             </div>
-        </div>
+        </div> -->
     </main>
 
     <footer>

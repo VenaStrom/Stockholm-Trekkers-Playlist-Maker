@@ -318,6 +318,27 @@ input[type=button]:hover {
   color: var(--color-low);
 }
 
+input[type=text] {
+  all: unset;
+  --border-radius-2xs: 0.1rem;
+  --border-radius-xs: 0.15rem;
+  --border-radius-s: 0.25rem;
+  --border-radius-m: 0.5rem;
+  --border-radius-l: 0.75rem;
+  --border-radius-xl: 1rem;
+  border-radius: var(--border-radius-m);
+  color: var(--color-fg);
+  background-color: var(--color-low);
+  cursor: text;
+}
+input[type=text]:focus {
+  outline: var(--color-primary) solid 0.1rem;
+}
+input[type=text]::-webkit-inner-spin-button {
+  display: none;
+  appearance: none;
+}
+
 hr {
   all: unset;
   --hairline-x-thin: 0.005rem;
@@ -975,6 +996,110 @@ main#projects-page > .bottom > .buttons > button:hover > img {
   filter: var(--filter-to-color-low);
 }
 
+main#playlist-editor {
+  --width-2xs: 0.1ch;
+  --width-xs: 0.5ch;
+  --width-s: 1ch;
+  --width-m: 10ch;
+  --width-l: 20ch;
+  --width-xl: 30ch;
+  --width-2xl: 40ch;
+  --width-3xl: 50ch;
+  --width-4xl: 60ch;
+  --width-5xl: 70ch;
+  --width-6xl: 80ch;
+  --width-7xl: 90ch;
+  --width-8xl: 100ch;
+  --width-9xl: 110ch;
+  --width-10xl: 120ch;
+  --width-11xl: 130ch;
+  --width-12xl: 140ch;
+  --width-13xl: 150ch;
+  --width-14xl: 160ch;
+  --width-15xl: 170ch;
+  --width-16xl: 180ch;
+  --width-max: 100dvw;
+  width: var(--width-5xl);
+  max-width: 95dvw;
+}
+main#playlist-editor > .top > .back-button {
+  all: unset;
+  --margin-0: 0;
+  --margin-none: 0;
+  --margin-2xs: 0.1rem;
+  --margin-xs: 0.15rem;
+  --margin-s: 0.25rem;
+  --margin-m: 0.5rem;
+  --margin-l: 0.75rem;
+  --margin-xl: 1rem;
+  --margin-2xl: 1.5rem;
+  --margin-3xl: 2rem;
+  --margin-4xl: 5dvh;
+  --margin-5xl: 10dvh;
+  --margin-6xl: 15dvh;
+  --margin-7xl: 20dvh;
+  --margin-8xl: 25dvh;
+  --margin-default: var(--margin-m);
+  margin-top: var(--margin-0);
+  margin-right: var(--margin-0);
+  margin-bottom: var(--margin-0);
+  margin-left: var(--margin-2xl);
+  margin: var(--margin-0) var(--margin-0) var(--margin-0) var(--margin-2xl);
+  --border-radius-2xs: 0.1rem;
+  --border-radius-xs: 0.15rem;
+  --border-radius-s: 0.25rem;
+  --border-radius-m: 0.5rem;
+  --border-radius-l: 0.75rem;
+  --border-radius-xl: 1rem;
+  border-radius: var(--border-radius-m);
+  --icon-size-5xs: 0.3rem;
+  --icon-size-4xs: 0.6rem;
+  --icon-size-3xs: 0.75rem;
+  --icon-size-2xs: 1rem;
+  --icon-size-xs: 1.2rem;
+  --icon-size-s: 2rem;
+  --icon-size-m: 2.7rem;
+  --icon-size-l: 4rem;
+  --icon-size-xl: 5rem;
+  --icon-size-2xl: 6rem;
+  --icon-size-3xl: 7rem;
+  --icon-size-4xl: 8rem;
+  height: var(--icon-size-l);
+  width: var(--icon-size-l);
+  aspect-ratio: 1/1;
+  user-select: none;
+  filter: var(--filter-to-color-fg);
+  cursor: pointer;
+}
+main#playlist-editor > .top > .back-button:focus {
+  outline: var(--color-primary) solid 0.1rem;
+}
+main#playlist-editor > .top > .back-button:hover {
+  filter: var(--filter-to-color-primary);
+}
+main#playlist-editor > .top > .back-button > img {
+  width: 100%;
+  height: 100%;
+}
+main#playlist-editor > .date-input {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: start;
+  align-items: center;
+}
+main#playlist-editor > .date-input > input {
+  --text-size-s: 0.9rem;
+  --text-size-m: 1rem;
+  --text-size-l: 1.1rem;
+  --text-size-xl: 1.25rem;
+  --text-size-2xl: 1.5rem;
+  --text-size-title: 2rem;
+  --text-size-x-title: 2.5rem;
+  --text-size-xx-title: 3rem;
+  font-size: var(--text-size-2xl);
+  text-align: center;
+}
+
 @font-face {
   font-family: "Bahnschrift";
   src: url("../../../assets/fonts/BAHNSCHRIFT.TTF") format("truetype");
@@ -1122,6 +1247,42 @@ body > main {
   justify-content: start;
   align-items: center;
   flex: 1;
+}
+body > main > .top {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: start;
+  align-items: center;
+  --width-2xs: 0.1ch;
+  --width-xs: 0.5ch;
+  --width-s: 1ch;
+  --width-m: 10ch;
+  --width-l: 20ch;
+  --width-xl: 30ch;
+  --width-2xl: 40ch;
+  --width-3xl: 50ch;
+  --width-4xl: 60ch;
+  --width-5xl: 70ch;
+  --width-6xl: 80ch;
+  --width-7xl: 90ch;
+  --width-8xl: 100ch;
+  --width-9xl: 110ch;
+  --width-10xl: 120ch;
+  --width-11xl: 130ch;
+  --width-12xl: 140ch;
+  --width-13xl: 150ch;
+  --width-14xl: 160ch;
+  --width-15xl: 170ch;
+  --width-16xl: 180ch;
+  --width-max: 100dvw;
+  width: var(--width-max);
+  max-width: 95dvw;
+  position: fixed;
+  top: calc(1.5rem + 9dvh);
+  pointer-events: none;
+}
+body > main > .top > * {
+  pointer-events: auto;
 }
 body > main > .bottom {
   display: flex;

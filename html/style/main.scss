@@ -126,6 +126,20 @@ body {
 
         flex: 1;
 
+        &>.top {
+            @include row($justify: start, $align: center);
+            @include width(max);
+
+            position: fixed;
+            top: calc(1.5rem + 9dvh);
+
+            pointer-events: none;
+
+            &>* {
+                pointer-events: auto;
+            }            
+        }
+
         &>.bottom {
             @include row($justify: start, $align: center);
             @include width(max);

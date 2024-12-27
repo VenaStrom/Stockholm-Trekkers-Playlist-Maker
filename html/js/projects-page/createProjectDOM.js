@@ -92,7 +92,7 @@ const makeBlockHeaderLi = (options) => {
     return stringToHTML(`
         <li class="block-header">
             <p>Block</p>
-            <div>
+            <div title="These dots represent which options are active for this block">
                 ${options.map(option => makeDot(option.checked)).join("")}
             </div>
         </li>`);
@@ -113,21 +113,21 @@ const makePauseLi = (time) => {
 };
 
 const createProjectDOM = (projectData) => {
-    const projectBody = stringToHTML(`<div class="round-box project clickable" tabindex="0"></div>`);
+    const projectBody = stringToHTML(`<div class="round-box project clickable" title="Load this project" tabindex="0"></div>`);
 
     const projectHeader = stringToHTML(
         `<div class="header">
-            <div class="project-date">
+            <div class="project-date" title="When the Trekdag will take place">
                 <p>Trekdag</p>
                 <h3>${projectData.date}</h3>
             </div>
     
-            <div class="meta-data">
+            <div class="meta-data" title="Someone created or modified this project at this date">
                 <p>Last modified: </p>
                 <p>${unixTimeToDate(projectData.dateModified)}</p>
             </div>
     
-            <button class="delete">
+            <button class="delete" title="Delete this project">
                 <img src="../../assets/images/delete_35dp_000000_FILL0_wght700_GRAD0_opsz40.png" alt="Delete">
             </button>
         </div>`);

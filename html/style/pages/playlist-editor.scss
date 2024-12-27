@@ -1,1 +1,30 @@
 @use "../mixins.scss" as *; // Functions to style everything easier
+
+main#playlist-editor {
+    @include width(5xl);
+
+    &>.top {
+        &>.back-button {
+            all: unset;
+
+            @include margin(0, 0, 0, 2xl);
+            @include outline();
+            @include border-radius(m);
+            @include icon(l);
+
+            &>img {
+                width: 100%;
+                height: 100%;
+            }
+        }
+    }
+
+    &>.date-input {
+        @include column($justify: start, $align: center);
+
+        &>input {
+            @include text-size(2xl);
+            text-align: center;
+        }
+    }
+}

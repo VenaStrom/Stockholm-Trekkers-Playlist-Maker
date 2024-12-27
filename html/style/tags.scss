@@ -16,7 +16,7 @@ a {
 
     cursor: pointer;
 
-    text-decoration: underline;    
+    text-decoration: underline;
 
     &:hover {
         color: var(--color-primary);
@@ -31,7 +31,7 @@ input[type="button"] {
     @include padding(m, xl);
     @include border-radius(m);
     @include border(thick);
-    
+
     cursor: pointer;
 
     background-color: var(--color-low);
@@ -45,8 +45,24 @@ input[type="button"] {
     }
 }
 
-// TODO - style inputs
+input[type="text"] {
+    // Reset
+    all: unset;
 
+    @include outline();
+    // @include padding(l);
+    @include border-radius(m);
+
+    color: var(--color-fg);
+    background-color: var(--color-low);
+
+    cursor: text;
+    
+    &::-webkit-inner-spin-button {
+        display: none;
+        appearance: none;
+    }
+}
 
 hr {
     @include hairline();

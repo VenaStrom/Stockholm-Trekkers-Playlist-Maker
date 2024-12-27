@@ -226,7 +226,7 @@
 
     width: var(--width-#{$size});
     max-width: $max;
-}   
+}
 
 @mixin height($size: m, $max: 95dvw) {
     --height-2xs: 0.1rem;
@@ -315,9 +315,9 @@
     border-radius: var(--border-radius-#{$radius});
 }
 
-@mixin outline() {
+@mixin outline($color: var(--color-primary)) {
     &:focus {
-        outline: var(--color-primary) solid 0.1rem;
+        outline: $color solid 0.1rem;
     }
 }
 
