@@ -200,62 +200,60 @@
 //    \\   ||    /    ||  ||\||  || _
 //   \==/  ||  ||=||  ||  || ||  \==/
 //
-@mixin width($size: m) {
-    --width-xs: 5dvw;
-    --width-s: 10dvw;
-    --width-m: 15dvw;
-    --width-l: 20dvw;
-    --width-xl: 25dvw;
-    --width-2xl: 30dvw;
-    --width-3xl: 35dvw;
-    --width-4xl: 40dvw;
-    --width-5xl: 45dvw;
-    --width-6xl: 50dvw;
-    --width-7xl: 55dvw;
-    --width-8xl: 60dvw;
-    --width-9xl: 65dvw;
-    --width-10xl: 70dvw;
-    --width-11xl: 75dvw;
-    --width-12xl: 80dvw;
-    --width-13xl: 85dvw;
-    --width-14xl: 90dvw;
-    --width-15xl: 95dvw;
+@mixin width($size: m, $max: 95dvw) {
+    --width-2xs: 0.1ch;
+    --width-xs: 0.5ch;
+    --width-s: 1ch;
+    --width-m: 10ch;
+    --width-l: 20ch;
+    --width-xl: 30ch;
+    --width-2xl: 40ch;
+    --width-3xl: 50ch;
+    --width-4xl: 60ch;
+    --width-5xl: 70ch;
+    --width-6xl: 80ch;
+    --width-7xl: 90ch;
+    --width-8xl: 100ch;
+    --width-9xl: 110ch;
+    --width-10xl: 120ch;
+    --width-11xl: 130ch;
+    --width-12xl: 140ch;
+    --width-13xl: 150ch;
+    --width-14xl: 160ch;
+    --width-15xl: 170ch;
+    --width-16xl: 180ch;
     --width-max: 100dvw;
 
     width: var(--width-#{$size});
-
-    @media (max-width: 1000px) {
-        width: calc(var(--width-#{$size}) * 2);
-    }
+    max-width: $max;
 }
 
-@mixin height($size: m) {
-    --height-xs: 5dvh;
-    --height-s: 10dvh;
-    --height-m: 15dvh;
-    --height-l: 20dvh;
-    --height-xl: 25dvh;
-    --height-2xl: 30dvh;
-    --height-3xl: 35dvh;
-    --height-4xl: 40dvh;
-    --height-5xl: 45dvh;
-    --height-6xl: 50dvh;
-    --height-7xl: 55dvh;
-    --height-8xl: 60dvh;
-    --height-9xl: 65dvh;
-    --height-10xl: 70dvh;
-    --height-11xl: 75dvh;
-    --height-12xl: 80dvh;
-    --height-13xl: 85dvh;
-    --height-14xl: 90dvh;
-    --height-15xl: 95dvh;
+@mixin height($size: m, $max: 95dvw) {
+    --height-2xs: 0.1rem;
+    --height-xs: 0.5rem;
+    --height-s: 1rem;
+    --height-m: 2rem;
+    --height-l: 3rem;
+    --height-xl: 4rem;
+    --height-2xl: 5rem;
+    --height-3xl: 6rem;
+    --height-4xl: 7rem;
+    --height-5xl: 8rem;
+    --height-6xl: 9rem;
+    --height-7xl: 10rem;
+    --height-8xl: 11rem;
+    --height-9xl: 12rem;
+    --height-10xl: 13rem;
+    --height-11xl: 14rem;
+    --height-12xl: 15rem;
+    --height-13xl: 16rem;
+    --height-14xl: 17rem;
+    --height-15xl: 18rem;
+    --height-16xl: 19rem;
     --height-max: 100dvh;
 
     height: var(--height-#{$size});
-
-    @media (max-height: 600px) {
-        height: calc(var(--height-#{$size}) * 2);
-    }
+    max-height: $max;
 }
 
 
@@ -360,8 +358,19 @@
     }
 }
 
-@mixin hairline($position, $thickness: 0.02rem) {
-    border-#{$position}: solid $thickness var(--color-gray);
+@mixin hairline($thickness: default, $color: var(--color-low)) {
+    all: unset;
+
+    --hairline-x-thin: 0.005rem;
+    --hairline-thin: 0.02rem;
+    --hairline-m: 0.05rem;
+    --hairline-thick: 0.1rem;
+    --hairline-default: var(--hairline-m);
+
+    width: 100%;
+    height: var(--hairline-#{$thickness});
+
+    background-color: $color;
 }
 
 @mixin round-box() {
