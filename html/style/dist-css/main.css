@@ -460,9 +460,11 @@ main#projects-page > p {
   --margin-7xl: 20dvh;
   --margin-8xl: 25dvh;
   --margin-default: var(--margin-m);
-  margin-top: var(--margin-l);
+  margin-top: var(--margin-3xl);
   margin-right: var(--margin-0);
-  margin: var(--margin-l) var(--margin-0);
+  margin-bottom: var(--margin-xl);
+  margin-left: var(--margin-0);
+  margin: var(--margin-3xl) var(--margin-0) var(--margin-xl) var(--margin-0);
 }
 main#projects-page > section {
   display: flex;
