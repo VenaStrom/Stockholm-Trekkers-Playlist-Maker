@@ -5,9 +5,9 @@ main#projects-page {
         @include margin(l, 0);
     }
 
-    &>div {
+    &>section {
         @include column($justify: start, $align: center);
-        @include width(4xl);
+        @include width(5xl);
         @include gap(m, 0);
 
         &>.make-new-project {
@@ -36,6 +36,8 @@ main#projects-page {
         &>.project {
             @include padding(0);
             @include outline();
+
+            cursor: pointer;
 
             width: 100%;
             background-color: var(--color-bg);
@@ -78,6 +80,10 @@ main#projects-page {
 
                 list-style-type: none;
 
+                &>hr {
+                    @include margin(m, 0);
+                }
+
                 &>li {
                     @include row($justify: start, $align: center);
                     @include gap(0, m);
@@ -86,16 +92,11 @@ main#projects-page {
 
                     &.block-header {
                         @include bold();
+                        @include margin($bottom: s);
 
                         &>div {
                             @include row($justify: space-between, $align: center);
                             @include gap(0, 3xs);
-                        }
-
-                        @include margin(s, 0, 0, 0);
-
-                        &:not(:first-child) {
-                            @include margin(l, 0, 0, 0);
                         }
                     }
 
@@ -111,6 +112,32 @@ main#projects-page {
 
                     &:last-child {
                         @include margin($bottom: s);
+                    }
+                }
+            }
+        }
+    }
+
+    &>.bottom {
+        @include row($justify: end, $align: center);
+
+        &>.buttons {
+            @include column($justify: end, $align: end);
+            @include gap(m, 0);
+            @include margin($right: 3xl);
+
+            &>button {
+                @include row($justify: start, $align: center);
+                @include gap(0, m);
+                @include padding($left: m, $right: m);
+
+                &>img {
+                    @include icon(s, $hover: false);
+                }
+
+                &:hover {
+                    &>img {
+                        filter: var(--filter-to-color-low);
                     }
                 }
             }

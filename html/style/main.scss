@@ -65,8 +65,8 @@ body {
         // Hide stuff if the window is too s
         @media (max-width: 800px) {
 
-            &>img+div,
-            &>h1 {
+            // &>h1,
+            &>img+div {
                 @include hidden();
             }
         }
@@ -88,14 +88,14 @@ body {
 
         // Logo
         &>img {
-            @include padding(m, 0, m, xl);
-
-            height: 100%;
+            @include padding(0, 0, 0, xl);
+            height: 80%;
         }
 
         // Org and program names
         &>img+div {
-            @include column($justify: center);
+            @include column($justify: center, $wrap: wrap);
+            @include gap(0, m);
 
             height: 100%;
 
@@ -126,6 +126,20 @@ body {
         @include column($justify: start, $align: center);
 
         flex: 1;
+
+        &>.bottom {
+            @include row($justify: start, $align: center);
+            @include width(max);
+
+            position: fixed;
+            bottom: 1.5rem;
+
+            pointer-events: none;
+
+            &>* {
+                pointer-events: auto;
+            }
+        }
     }
 
     &>footer {

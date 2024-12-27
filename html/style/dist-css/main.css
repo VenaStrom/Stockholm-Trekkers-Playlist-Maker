@@ -300,6 +300,18 @@ input[type=button]:hover {
   color: var(--color-low);
 }
 
+hr {
+  all: unset;
+  --hairline-x-thin: 0.005rem;
+  --hairline-thin: 0.02rem;
+  --hairline-m: 0.05rem;
+  --hairline-thick: 0.1rem;
+  --hairline-default: var(--hairline-m);
+  width: 100%;
+  height: var(--hairline-default);
+  background-color: var(--color-low);
+}
+
 main#download-page {
   --margin-0: 0;
   --margin-none: 0;
@@ -379,32 +391,30 @@ main#download-page > p:last-of-type {
   margin: var(--margin-0) var(--margin-0) var(--margin-3xl) var(--margin-0);
 }
 main#download-page > .round-box {
-  --width-xs: 5dvw;
-  --width-s: 10dvw;
-  --width-m: 15dvw;
-  --width-l: 20dvw;
-  --width-xl: 25dvw;
-  --width-2xl: 30dvw;
-  --width-3xl: 35dvw;
-  --width-4xl: 40dvw;
-  --width-5xl: 45dvw;
-  --width-6xl: 50dvw;
-  --width-7xl: 55dvw;
-  --width-8xl: 60dvw;
-  --width-9xl: 65dvw;
-  --width-10xl: 70dvw;
-  --width-11xl: 75dvw;
-  --width-12xl: 80dvw;
-  --width-13xl: 85dvw;
-  --width-14xl: 90dvw;
-  --width-15xl: 95dvw;
+  --width-2xs: 0.1ch;
+  --width-xs: 0.5ch;
+  --width-s: 1ch;
+  --width-m: 10ch;
+  --width-l: 20ch;
+  --width-xl: 30ch;
+  --width-2xl: 40ch;
+  --width-3xl: 50ch;
+  --width-4xl: 60ch;
+  --width-5xl: 70ch;
+  --width-6xl: 80ch;
+  --width-7xl: 90ch;
+  --width-8xl: 100ch;
+  --width-9xl: 110ch;
+  --width-10xl: 120ch;
+  --width-11xl: 130ch;
+  --width-12xl: 140ch;
+  --width-13xl: 150ch;
+  --width-14xl: 160ch;
+  --width-15xl: 170ch;
+  --width-16xl: 180ch;
   --width-max: 100dvw;
-  width: var(--width-2xl);
-}
-@media (max-width: 1000px) {
-  main#download-page > .round-box {
-    width: calc(var(--width-2xl) * 2);
-  }
+  width: var(--width-3xl);
+  max-width: 95dvw;
 }
 main#download-page > .round-box > .main > p {
   width: 100%;
@@ -454,32 +464,35 @@ main#projects-page > p {
   margin-right: var(--margin-0);
   margin: var(--margin-l) var(--margin-0);
 }
-main#projects-page > div {
+main#projects-page > section {
   display: flex;
   flex-flow: column nowrap;
   justify-content: start;
   align-items: center;
-  --width-xs: 5dvw;
-  --width-s: 10dvw;
-  --width-m: 15dvw;
-  --width-l: 20dvw;
-  --width-xl: 25dvw;
-  --width-2xl: 30dvw;
-  --width-3xl: 35dvw;
-  --width-4xl: 40dvw;
-  --width-5xl: 45dvw;
-  --width-6xl: 50dvw;
-  --width-7xl: 55dvw;
-  --width-8xl: 60dvw;
-  --width-9xl: 65dvw;
-  --width-10xl: 70dvw;
-  --width-11xl: 75dvw;
-  --width-12xl: 80dvw;
-  --width-13xl: 85dvw;
-  --width-14xl: 90dvw;
-  --width-15xl: 95dvw;
+  --width-2xs: 0.1ch;
+  --width-xs: 0.5ch;
+  --width-s: 1ch;
+  --width-m: 10ch;
+  --width-l: 20ch;
+  --width-xl: 30ch;
+  --width-2xl: 40ch;
+  --width-3xl: 50ch;
+  --width-4xl: 60ch;
+  --width-5xl: 70ch;
+  --width-6xl: 80ch;
+  --width-7xl: 90ch;
+  --width-8xl: 100ch;
+  --width-9xl: 110ch;
+  --width-10xl: 120ch;
+  --width-11xl: 130ch;
+  --width-12xl: 140ch;
+  --width-13xl: 150ch;
+  --width-14xl: 160ch;
+  --width-15xl: 170ch;
+  --width-16xl: 180ch;
   --width-max: 100dvw;
-  width: var(--width-4xl);
+  width: var(--width-5xl);
+  max-width: 95dvw;
   --gap-0: 0;
   --gap-none: 0;
   --gap-3xs: 0.05rem;
@@ -492,12 +505,7 @@ main#projects-page > div {
   --gap-default: var(--gap-m);
   gap: var(--gap-m) var(--gap-0);
 }
-@media (max-width: 1000px) {
-  main#projects-page > div {
-    width: calc(var(--width-4xl) * 2);
-  }
-}
-main#projects-page > div > .make-new-project {
+main#projects-page > section > .make-new-project {
   --padding-0: 0;
   --padding-none: 0;
   --padding-2xs: 0.1rem;
@@ -523,7 +531,7 @@ main#projects-page > div > .make-new-project {
   width: 100%;
   background-color: var(--color-bg);
 }
-main#projects-page > div > .make-new-project > img {
+main#projects-page > section > .make-new-project > img {
   --icon-size-5xs: 0.3rem;
   --icon-size-4xs: 0.6rem;
   --icon-size-3xs: 0.75rem;
@@ -543,10 +551,10 @@ main#projects-page > div > .make-new-project > img {
   filter: var(--filter-to-color-fg);
   cursor: pointer;
 }
-main#projects-page > div > .make-new-project > img:hover {
+main#projects-page > section > .make-new-project > img:hover {
   filter: var(--filter-to-color-primary);
 }
-main#projects-page > div > .make-new-project:hover {
+main#projects-page > section > .make-new-project:hover {
   --border-thickness-thin: 0.1rem;
   --border-thickness-m: 0.2rem;
   --border-thickness-thick: 0.3rem;
@@ -554,11 +562,11 @@ main#projects-page > div > .make-new-project:hover {
   border: var(--border-thickness-m) solid var(--color-primary);
   background-color: var(--color-low);
 }
-main#projects-page > div > .make-new-project:hover > .header {
+main#projects-page > section > .make-new-project:hover > .header {
   font-weight: normal;
   color: var(--color-primary);
 }
-main#projects-page > div > .project {
+main#projects-page > section > .project {
   --padding-0: 0;
   --padding-none: 0;
   --padding-2xs: 0.1rem;
@@ -577,20 +585,21 @@ main#projects-page > div > .project {
   --padding-default: var(--padding-m);
   padding-top: var(--padding-0);
   padding: var(--padding-0);
+  cursor: pointer;
   width: 100%;
   background-color: var(--color-bg);
 }
-main#projects-page > div > .project:focus {
+main#projects-page > section > .project:focus {
   outline: var(--color-primary) solid 0.1rem;
 }
-main#projects-page > div > .project:hover {
+main#projects-page > section > .project:hover {
   --border-thickness-thin: 0.1rem;
   --border-thickness-m: 0.2rem;
   --border-thickness-thick: 0.3rem;
   --border-thickness-x-thick: 0.4rem;
   border: var(--border-thickness-m) solid var(--color-primary);
 }
-main#projects-page > div > .project > .header {
+main#projects-page > section > .project > .header {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
@@ -607,7 +616,7 @@ main#projects-page > div > .project > .header {
   --gap-default: var(--gap-m);
   gap: var(--gap-0) var(--gap-m);
 }
-main#projects-page > div > .project > .header > .project-date {
+main#projects-page > section > .project > .header > .project-date {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
@@ -624,7 +633,7 @@ main#projects-page > div > .project > .header > .project-date {
   --gap-default: var(--gap-m);
   gap: var(--gap-0) var(--gap-m);
 }
-main#projects-page > div > .project > .header > .meta-data {
+main#projects-page > section > .project > .header > .meta-data {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
@@ -651,7 +660,7 @@ main#projects-page > div > .project > .header > .meta-data {
   font-size: var(--text-size-m);
   font-weight: lighter;
 }
-main#projects-page > div > .project > .header > .delete {
+main#projects-page > section > .project > .header > .delete {
   all: unset;
   --icon-size-5xs: 0.3rem;
   --icon-size-4xs: 0.6rem;
@@ -672,17 +681,17 @@ main#projects-page > div > .project > .header > .delete {
   filter: var(--filter-to-color-fg);
   cursor: pointer;
 }
-main#projects-page > div > .project > .header > .delete:hover {
+main#projects-page > section > .project > .header > .delete:hover {
   filter: var(--filter-to-color-primary);
 }
-main#projects-page > div > .project > .header > .delete:focus {
+main#projects-page > section > .project > .header > .delete:focus {
   outline: var(--color-primary) solid 0.1rem;
 }
-main#projects-page > div > .project > .header > .delete > img {
+main#projects-page > section > .project > .header > .delete > img {
   width: 100%;
   height: 100%;
 }
-main#projects-page > div > .project > .main {
+main#projects-page > section > .project > .main {
   --gap-0: 0;
   --gap-none: 0;
   --gap-3xs: 0.05rem;
@@ -696,7 +705,28 @@ main#projects-page > div > .project > .main {
   gap: var(--gap-s) var(--gap-0);
   list-style-type: none;
 }
-main#projects-page > div > .project > .main > li {
+main#projects-page > section > .project > .main > hr {
+  --margin-0: 0;
+  --margin-none: 0;
+  --margin-2xs: 0.1rem;
+  --margin-xs: 0.15rem;
+  --margin-s: 0.25rem;
+  --margin-m: 0.5rem;
+  --margin-l: 0.75rem;
+  --margin-xl: 1rem;
+  --margin-2xl: 1.5rem;
+  --margin-3xl: 2rem;
+  --margin-4xl: 5dvh;
+  --margin-5xl: 10dvh;
+  --margin-6xl: 15dvh;
+  --margin-7xl: 20dvh;
+  --margin-8xl: 25dvh;
+  --margin-default: var(--margin-m);
+  margin-top: var(--margin-m);
+  margin-right: var(--margin-0);
+  margin: var(--margin-m) var(--margin-0);
+}
+main#projects-page > section > .project > .main > li {
   display: flex;
   flex-flow: row nowrap;
   justify-content: start;
@@ -714,7 +744,7 @@ main#projects-page > div > .project > .main > li {
   gap: var(--gap-0) var(--gap-m);
   width: 100%;
 }
-main#projects-page > div > .project > .main > li.block-header {
+main#projects-page > section > .project > .main > li.block-header {
   font-weight: bold;
   --margin-0: 0;
   --margin-none: 0;
@@ -732,13 +762,9 @@ main#projects-page > div > .project > .main > li.block-header {
   --margin-7xl: 20dvh;
   --margin-8xl: 25dvh;
   --margin-default: var(--margin-m);
-  margin-top: var(--margin-s);
-  margin-right: var(--margin-0);
-  margin-bottom: var(--margin-0);
-  margin-left: var(--margin-0);
-  margin: var(--margin-s) var(--margin-0) var(--margin-0) var(--margin-0);
+  margin-bottom: var(--margin-s);
 }
-main#projects-page > div > .project > .main > li.block-header > div {
+main#projects-page > section > .project > .main > li.block-header > div {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
@@ -755,30 +781,7 @@ main#projects-page > div > .project > .main > li.block-header > div {
   --gap-default: var(--gap-m);
   gap: var(--gap-0) var(--gap-3xs);
 }
-main#projects-page > div > .project > .main > li.block-header:not(:first-child) {
-  --margin-0: 0;
-  --margin-none: 0;
-  --margin-2xs: 0.1rem;
-  --margin-xs: 0.15rem;
-  --margin-s: 0.25rem;
-  --margin-m: 0.5rem;
-  --margin-l: 0.75rem;
-  --margin-xl: 1rem;
-  --margin-2xl: 1.5rem;
-  --margin-3xl: 2rem;
-  --margin-4xl: 5dvh;
-  --margin-5xl: 10dvh;
-  --margin-6xl: 15dvh;
-  --margin-7xl: 20dvh;
-  --margin-8xl: 25dvh;
-  --margin-default: var(--margin-m);
-  margin-top: var(--margin-l);
-  margin-right: var(--margin-0);
-  margin-bottom: var(--margin-0);
-  margin-left: var(--margin-0);
-  margin: var(--margin-l) var(--margin-0) var(--margin-0) var(--margin-0);
-}
-main#projects-page > div > .project > .main > li.episode, main#projects-page > div > .project > .main > li.pause {
+main#projects-page > section > .project > .main > li.episode, main#projects-page > section > .project > .main > li.pause {
   --margin-0: 0;
   --margin-none: 0;
   --margin-2xs: 0.1rem;
@@ -812,10 +815,10 @@ main#projects-page > div > .project > .main > li.episode, main#projects-page > d
   --gap-default: var(--gap-m);
   gap: var(--gap-0) var(--gap-l);
 }
-main#projects-page > div > .project > .main > li.pause {
+main#projects-page > section > .project > .main > li.pause {
   color: var(--color-mid);
 }
-main#projects-page > div > .project > .main > li:last-child {
+main#projects-page > section > .project > .main > li:last-child {
   --margin-0: 0;
   --margin-none: 0;
   --margin-2xs: 0.1rem;
@@ -833,6 +836,103 @@ main#projects-page > div > .project > .main > li:last-child {
   --margin-8xl: 25dvh;
   --margin-default: var(--margin-m);
   margin-bottom: var(--margin-s);
+}
+main#projects-page > .bottom {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: end;
+  align-items: center;
+}
+main#projects-page > .bottom > .buttons {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: end;
+  align-items: end;
+  --gap-0: 0;
+  --gap-none: 0;
+  --gap-3xs: 0.05rem;
+  --gap-2xs: 0.1rem;
+  --gap-xs: 0.15rem;
+  --gap-s: 0.25rem;
+  --gap-m: 0.5rem;
+  --gap-l: 0.75rem;
+  --gap-xl: 1rem;
+  --gap-default: var(--gap-m);
+  gap: var(--gap-m) var(--gap-0);
+  --margin-0: 0;
+  --margin-none: 0;
+  --margin-2xs: 0.1rem;
+  --margin-xs: 0.15rem;
+  --margin-s: 0.25rem;
+  --margin-m: 0.5rem;
+  --margin-l: 0.75rem;
+  --margin-xl: 1rem;
+  --margin-2xl: 1.5rem;
+  --margin-3xl: 2rem;
+  --margin-4xl: 5dvh;
+  --margin-5xl: 10dvh;
+  --margin-6xl: 15dvh;
+  --margin-7xl: 20dvh;
+  --margin-8xl: 25dvh;
+  --margin-default: var(--margin-m);
+  margin-right: var(--margin-3xl);
+}
+main#projects-page > .bottom > .buttons > button {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: start;
+  align-items: center;
+  --gap-0: 0;
+  --gap-none: 0;
+  --gap-3xs: 0.05rem;
+  --gap-2xs: 0.1rem;
+  --gap-xs: 0.15rem;
+  --gap-s: 0.25rem;
+  --gap-m: 0.5rem;
+  --gap-l: 0.75rem;
+  --gap-xl: 1rem;
+  --gap-default: var(--gap-m);
+  gap: var(--gap-0) var(--gap-m);
+  --padding-0: 0;
+  --padding-none: 0;
+  --padding-2xs: 0.1rem;
+  --padding-xs: 0.15rem;
+  --padding-s: 0.25rem;
+  --padding-m: 0.5rem;
+  --padding-l: 0.75rem;
+  --padding-xl: 1rem;
+  --padding-2xl: 1.5rem;
+  --padding-3xl: 2rem;
+  --padding-4xl: 5dvh;
+  --padding-5xl: 10dvh;
+  --padding-6xl: 15dvh;
+  --padding-7xl: 20dvh;
+  --padding-8xl: 25dvh;
+  --padding-default: var(--padding-m);
+  padding-right: var(--padding-m);
+  padding-left: var(--padding-m);
+}
+main#projects-page > .bottom > .buttons > button > img {
+  --icon-size-5xs: 0.3rem;
+  --icon-size-4xs: 0.6rem;
+  --icon-size-3xs: 0.75rem;
+  --icon-size-2xs: 1rem;
+  --icon-size-xs: 1.2rem;
+  --icon-size-s: 2rem;
+  --icon-size-m: 2.7rem;
+  --icon-size-l: 4rem;
+  --icon-size-xl: 5rem;
+  --icon-size-2xl: 6rem;
+  --icon-size-3xl: 7rem;
+  --icon-size-4xl: 8rem;
+  height: var(--icon-size-s);
+  width: var(--icon-size-s);
+  aspect-ratio: 1/1;
+  user-select: none;
+  filter: var(--filter-to-color-fg);
+}
+main#projects-page > .bottom > .buttons > button:hover > img {
+  filter: var(--filter-to-color-low);
 }
 
 @font-face {
@@ -890,7 +990,7 @@ body > header {
   height: 9dvh;
 }
 @media (max-width: 800px) {
-  body > header > img + div, body > header > h1 {
+  body > header > img + div {
     display: none !important;
   }
 }
@@ -920,18 +1020,29 @@ body > header > img {
   --padding-7xl: 20dvh;
   --padding-8xl: 25dvh;
   --padding-default: var(--padding-m);
-  padding-top: var(--padding-m);
+  padding-top: var(--padding-0);
   padding-right: var(--padding-0);
-  padding-bottom: var(--padding-m);
+  padding-bottom: var(--padding-0);
   padding-left: var(--padding-xl);
-  padding: var(--padding-m) var(--padding-0) var(--padding-m) var(--padding-xl);
-  height: 100%;
+  padding: var(--padding-0) var(--padding-0) var(--padding-0) var(--padding-xl);
+  height: 80%;
 }
 body > header > img + div {
   display: flex;
-  flex-flow: column nowrap;
+  flex-flow: column wrap;
   justify-content: center;
   align-items: start;
+  --gap-0: 0;
+  --gap-none: 0;
+  --gap-3xs: 0.05rem;
+  --gap-2xs: 0.1rem;
+  --gap-xs: 0.15rem;
+  --gap-s: 0.25rem;
+  --gap-m: 0.5rem;
+  --gap-l: 0.75rem;
+  --gap-xl: 1rem;
+  --gap-default: var(--gap-m);
+  gap: var(--gap-0) var(--gap-m);
   height: 100%;
 }
 body > header > img + div > p:first-of-type {
@@ -971,6 +1082,42 @@ body > main {
   justify-content: start;
   align-items: center;
   flex: 1;
+}
+body > main > .bottom {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: start;
+  align-items: center;
+  --width-2xs: 0.1ch;
+  --width-xs: 0.5ch;
+  --width-s: 1ch;
+  --width-m: 10ch;
+  --width-l: 20ch;
+  --width-xl: 30ch;
+  --width-2xl: 40ch;
+  --width-3xl: 50ch;
+  --width-4xl: 60ch;
+  --width-5xl: 70ch;
+  --width-6xl: 80ch;
+  --width-7xl: 90ch;
+  --width-8xl: 100ch;
+  --width-9xl: 110ch;
+  --width-10xl: 120ch;
+  --width-11xl: 130ch;
+  --width-12xl: 140ch;
+  --width-13xl: 150ch;
+  --width-14xl: 160ch;
+  --width-15xl: 170ch;
+  --width-16xl: 180ch;
+  --width-max: 100dvw;
+  width: var(--width-max);
+  max-width: 95dvw;
+  position: fixed;
+  bottom: 1.5rem;
+  pointer-events: none;
+}
+body > main > .bottom > * {
+  pointer-events: auto;
 }
 body > footer {
   display: flex;
