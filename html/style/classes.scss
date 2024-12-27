@@ -28,15 +28,20 @@
     word-break: break-all;
 
     &:active,
-    &:hover{
+    &:hover {
         // Override the default button styles
         all: unset;
-        
+
         cursor: pointer;
-        
+
         text-decoration: underline;
         word-break: break-all;
 
         color: var(--color-primary);
     }
+}
+
+.justify-between {
+    @include row(space-between, center);
+    width: 100%;
 }

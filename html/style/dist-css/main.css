@@ -4,6 +4,7 @@
   --color-mid: gray;
   --color-low: #1e1e1e;
   --color-primary: #ffd700;
+  --color-warning: #ff5b20;
   --filter-to-color-fg: invert(100%) sepia(4%) saturate(402%) hue-rotate(291deg) brightness(114%) contrast(90%);
   --filter-to-color-bg: invert(13%) sepia(15%) saturate(0%) hue-rotate(294deg) brightness(99%) contrast(89%);
   --filter-to-color-lo: invert(9%) sepia(0%) saturate(1964%) hue-rotate(138deg) brightness(98%) contrast(93%);
@@ -149,6 +150,28 @@
 .round-box > .main > button, .round-box > .main > input {
   align-self: center;
 }
+.round-box > .main .progress-bar {
+  --border-thickness-thin: 0.1rem;
+  --border-thickness-m: 0.2rem;
+  --border-thickness-thick: 0.3rem;
+  --border-thickness-x-thick: 0.4rem;
+  border: var(--border-thickness-thick) solid var(--color-low);
+  --border-radius-xs: 0.15rem;
+  --border-radius-s: 0.25rem;
+  --border-radius-m: 0.5rem;
+  --border-radius-l: 0.75rem;
+  --border-radius-xl: 1rem;
+  border-radius: var(--border-radius-m);
+  width: 100%;
+  height: 1.5rem;
+  background-color: var(--color-bg);
+  background-image: linear-gradient(var(--color-primary), var(--color-primary));
+  background-repeat: no-repeat;
+  background-size: 0%;
+}
+.round-box > .main .progress-bar.warning {
+  background-image: linear-gradient(var(--color-warning), var(--color-warning));
+}
 
 .open-path {
   all: unset;
@@ -161,6 +184,14 @@
   text-decoration: underline;
   word-break: break-all;
   color: var(--color-primary);
+}
+
+.justify-between {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
 
 a:focus,
@@ -324,7 +355,10 @@ main#download-page > .round-box {
     width: calc(var(--width-2xl) * 2);
   }
 }
-main#download-page > .round-box > .main > button {
+main#download-page > .round-box > .main > p {
+  width: 100%;
+}
+main#download-page > .round-box > .main > button, main#download-page > .round-box > .main > .progress-bar {
   --margin-0: 0;
   --margin-none: 0;
   --margin-2xs: 0.1rem;

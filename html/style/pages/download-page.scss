@@ -20,8 +20,14 @@ main#download-page {
     &>.round-box {
         @include width(2xl);
 
-        &>.main>button {
-            @include margin(m, 0, 0, 0)
+        &>.main {
+            &>p {
+                width: 100%;
+            }
+            &>button,
+            &>.progress-bar {
+                @include margin(m, 0, 0, 0);
+            }
         }
     }
 }

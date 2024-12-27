@@ -9,7 +9,7 @@ const path = require("node:path")
 const downloadStatus = {
     "fileCount": 0,
     "atFile": 0,
-    "status": "",
+    "status": "starting",
     "name": "",
     "size": 0,
     "received": 0,
@@ -78,7 +78,7 @@ const downloadPauses = (force = false) => {
 
         // If the video is already downloaded and we're not forcing, skip it
         if (fs.existsSync(videoFolder + file.name) && !force) {
-            console.info(`€${file.name} already downloaded. Skipping...`);
+            console.info(`${file.name} already downloaded. Skipping...`);
             getNextFile();
             return;
 
