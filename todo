@@ -38,27 +38,31 @@
 - [X] make more sophisticated exit dialog with back button
 - [X] silent ffprobe errors
 - [X] Autofocus the block time of a newly created block
-- [ ] Rewrite the downloading html and related js
-- [ ] make console.* more verbose. Maybe extend them?
+- [X] Rewrite the downloading html and related js
+- [X] make console.* more verbose. Maybe extend them?
+- [ ] Actually recolor icons to color-fg
 
 ## Features
-- [-] uninstaller som tar bort assets.
+- [ ] uninstaller som tar bort assets.
 - [-] handle another persons imported project
   - [ ] maybe prompt to find the project output folder if it can't find your files
 - [-] self signed cert.
 - [ ] importera spellista som textfil och få previews på avsnitten.
 - [ ] save time constantly while playing a playlist and go to that time on restart.
 - [ ] Move blocks around in the editor.
+  - [ ] Drag and drop mayhaps
+  - [X] Currently doable in the json file
 
 ## Fixes
 - [-] error handling när diskutrymmet tar slut under export
-  - [-] After a pretty long while you get an error in windows telling you it's full. Not optimal but still, it's something.
+  - [-] After a pretty long while you get an error in windows telling you it's full. Not optimal but still, it's something. Not sure about linux behavior.
 - [ ] What happens when the program closes mid download?
 - [X] Empty block with block time should show the block time in on the projects page.
-- [ ] Time validator for duplicate time only tags one at a time and removing all the non tagged times does not resolve the popup even though it should.
-- [ ] Validators do not get resolved on block deletion
-- [X] Leave dialog is broken. Centralize the * use or something
+- [ ] Have a look at all validator code
+  - [ ] Time validator for duplicate time only tags one at a time and removing all the non tagged times does not resolve the popup even though it should.
+  - [ ] Validators do not get resolved on block deletion
 - [ ] Have a look at all the event when loading and changing things in the editor
+- [X] Leave dialog is broken. Centralize the * use or something
 
 ## Patches 
 - [ ] z index on export popup
