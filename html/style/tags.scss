@@ -12,6 +12,8 @@ a {
     // Reset
     all: unset;
 
+    @include border-radius(xs); // For the outline when tabbing
+
     cursor: pointer;
 
     text-decoration: underline;    

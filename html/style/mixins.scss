@@ -305,6 +305,7 @@
 }
 
 @mixin border-radius($radius: m) {
+    --border-radius-2xs: 0.1rem;
     --border-radius-xs: 0.15rem;
     --border-radius-s: 0.25rem;
     --border-radius-m: 0.5rem;

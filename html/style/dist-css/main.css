@@ -50,6 +50,7 @@
   --margin-default: var(--margin-m);
   margin-top: var(--margin-xs);
   margin: var(--margin-xs);
+  --border-radius-2xs: 0.1rem;
   --border-radius-xs: 0.15rem;
   --border-radius-s: 0.25rem;
   --border-radius-m: 0.5rem;
@@ -168,6 +169,7 @@
   --border-thickness-thick: 0.3rem;
   --border-thickness-x-thick: 0.4rem;
   border: var(--border-thickness-thick) solid var(--color-low);
+  --border-radius-2xs: 0.1rem;
   --border-radius-xs: 0.15rem;
   --border-radius-s: 0.25rem;
   --border-radius-m: 0.5rem;
@@ -187,6 +189,13 @@
 
 .open-path {
   all: unset;
+  --border-radius-2xs: 0.1rem;
+  --border-radius-xs: 0.15rem;
+  --border-radius-s: 0.25rem;
+  --border-radius-m: 0.5rem;
+  --border-radius-l: 0.75rem;
+  --border-radius-xl: 1rem;
+  border-radius: var(--border-radius-xs);
   text-decoration: underline;
   word-break: break-all;
 }
@@ -229,6 +238,7 @@
   --border-thickness-thick: 0.3rem;
   --border-thickness-x-thick: 0.4rem;
   border: var(--border-thickness-thin) solid var(--color-bg);
+  --border-radius-2xs: 0.1rem;
   --border-radius-xs: 0.15rem;
   --border-radius-s: 0.25rem;
   --border-radius-m: 0.5rem;
@@ -249,6 +259,13 @@ input:focus {
 
 a {
   all: unset;
+  --border-radius-2xs: 0.1rem;
+  --border-radius-xs: 0.15rem;
+  --border-radius-s: 0.25rem;
+  --border-radius-m: 0.5rem;
+  --border-radius-l: 0.75rem;
+  --border-radius-xl: 1rem;
+  border-radius: var(--border-radius-xs);
   cursor: pointer;
   text-decoration: underline;
 }
@@ -278,6 +295,7 @@ input[type=button] {
   padding-top: var(--padding-m);
   padding-right: var(--padding-xl);
   padding: var(--padding-m) var(--padding-xl);
+  --border-radius-2xs: 0.1rem;
   --border-radius-xs: 0.15rem;
   --border-radius-s: 0.25rem;
   --border-radius-m: 0.5rem;

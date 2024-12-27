@@ -24,6 +24,8 @@
 .open-path {
     all: unset;
 
+    @include border-radius(xs); // For the outline when tabbing
+
     text-decoration: underline;
     word-break: break-all;
 
