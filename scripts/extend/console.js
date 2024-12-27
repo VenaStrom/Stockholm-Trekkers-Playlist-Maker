@@ -99,7 +99,7 @@ Object.entries(colors).forEach(([methodName, color]) => {
             const compiledArgs = format.passFirstArg ? [firstArg, ...args] : args;
 
             // Don't pass renderer relays
-            // If any arg containts the string "[Renderer]", don't pass it to the renderer, again...
+            // If any arg contains the string "[Renderer]", don't pass it to the renderer, again...
             for (let index = 0; index < compiledArgs.length; index++) {
                 const arg = compiledArgs[index];
                 if (typeof arg === "string" && arg.includes("[Renderer]")) {
@@ -123,7 +123,7 @@ Object.entries(colors).forEach(([methodName, color]) => {
         const colorize = (preColorArgs) => {
             for (let index = 0; index < preColorArgs.length; index++) {
                 const arg = preColorArgs[index];
-                if (typeof arg === "string") {
+                if (typeof arg === "string" && !arg.includes("[Renderer]")) {
                     preColorArgs[index] = styleText(color, arg);
                 }
             }
