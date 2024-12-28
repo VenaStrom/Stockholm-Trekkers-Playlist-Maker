@@ -341,7 +341,9 @@
 //
 @mixin border($thickness: m, $color: var(--color-low)) {
     --border-thickness-thin: 0.1rem;
+    --border-thickness-m-minus: 0.15rem;
     --border-thickness-m: 0.2rem;
+    --border-thickness-m-plus: 0.25rem;
     --border-thickness-thick: 0.3rem;
     --border-thickness-x-thick: 0.4rem;
 

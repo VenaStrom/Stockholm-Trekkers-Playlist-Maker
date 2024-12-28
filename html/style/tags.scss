@@ -112,7 +112,7 @@ input[type="checkbox"] {
 
     @include outline();
     @include border-radius(m);
-    @include border($thickness: thin, $color: var(--color-fg));
+    @include border($thickness: m-minus, $color: var(--color-fg));
 
     cursor: pointer;
 
@@ -121,9 +121,13 @@ input[type="checkbox"] {
 
     background-color: var(--color-bg);
 
+    &:hover:not(&:checked) {
+        border-color: var(--color-primary);
+    }
+
     &:checked {
         background-color: var(--color-primary);
-        border-color: var(--color-low);
+        @include border($thickness: m, $color: var(--color-bg));
     }
 }
 

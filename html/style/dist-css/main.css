@@ -57,7 +57,9 @@
   --border-radius-xl: 1rem;
   border-radius: var(--border-radius-l);
   --border-thickness-thin: 0.1rem;
+  --border-thickness-m-minus: 0.15rem;
   --border-thickness-m: 0.2rem;
+  --border-thickness-m-plus: 0.25rem;
   --border-thickness-thick: 0.3rem;
   --border-thickness-x-thick: 0.4rem;
   border: var(--border-thickness-m) solid var(--color-low);
@@ -163,7 +165,9 @@
 }
 .round-box > .main .progress-bar {
   --border-thickness-thin: 0.1rem;
+  --border-thickness-m-minus: 0.15rem;
   --border-thickness-m: 0.2rem;
+  --border-thickness-m-plus: 0.25rem;
   --border-thickness-thick: 0.3rem;
   --border-thickness-x-thick: 0.4rem;
   border: var(--border-thickness-thick) solid var(--color-low);
@@ -232,7 +236,9 @@
   user-select: none;
   filter: none;
   --border-thickness-thin: 0.1rem;
+  --border-thickness-m-minus: 0.15rem;
   --border-thickness-m: 0.2rem;
+  --border-thickness-m-plus: 0.25rem;
   --border-thickness-thick: 0.3rem;
   --border-thickness-x-thick: 0.4rem;
   border: var(--border-thickness-thin) solid var(--color-bg);
@@ -302,7 +308,9 @@ input[type=button] {
   --border-radius-xl: 1rem;
   border-radius: var(--border-radius-m);
   --border-thickness-thin: 0.1rem;
+  --border-thickness-m-minus: 0.15rem;
   --border-thickness-m: 0.2rem;
+  --border-thickness-m-plus: 0.25rem;
   --border-thickness-thick: 0.3rem;
   --border-thickness-x-thick: 0.4rem;
   border: var(--border-thickness-thick) solid var(--color-low);
@@ -430,10 +438,12 @@ input[type=checkbox] {
   --border-radius-xl: 1rem;
   border-radius: var(--border-radius-m);
   --border-thickness-thin: 0.1rem;
+  --border-thickness-m-minus: 0.15rem;
   --border-thickness-m: 0.2rem;
+  --border-thickness-m-plus: 0.25rem;
   --border-thickness-thick: 0.3rem;
   --border-thickness-x-thick: 0.4rem;
-  border: var(--border-thickness-thin) solid var(--color-fg);
+  border: var(--border-thickness-m-minus) solid var(--color-fg);
   cursor: pointer;
   height: 1.5rem;
   width: 1.5rem;
@@ -442,9 +452,18 @@ input[type=checkbox] {
 input[type=checkbox]:focus {
   outline: var(--color-primary) solid 0.1rem;
 }
+input[type=checkbox]:hover:not(input[type=checkbox]:checked) {
+  border-color: var(--color-primary);
+}
 input[type=checkbox]:checked {
   background-color: var(--color-primary);
-  border-color: var(--color-low);
+  --border-thickness-thin: 0.1rem;
+  --border-thickness-m-minus: 0.15rem;
+  --border-thickness-m: 0.2rem;
+  --border-thickness-m-plus: 0.25rem;
+  --border-thickness-thick: 0.3rem;
+  --border-thickness-x-thick: 0.4rem;
+  border: var(--border-thickness-m) solid var(--color-bg);
 }
 
 hr {
@@ -693,7 +712,9 @@ main#projects-page > section > .make-new-project {
   --border-radius-xl: 1rem;
   border-radius: var(--border-radius-l);
   --border-thickness-thin: 0.1rem;
+  --border-thickness-m-minus: 0.15rem;
   --border-thickness-m: 0.2rem;
+  --border-thickness-m-plus: 0.25rem;
   --border-thickness-thick: 0.3rem;
   --border-thickness-x-thick: 0.4rem;
   border: var(--border-thickness-m) solid var(--color-low);
@@ -822,7 +843,9 @@ main#projects-page > section > .make-new-project > .main > button, main#projects
 }
 main#projects-page > section > .make-new-project > .main .progress-bar {
   --border-thickness-thin: 0.1rem;
+  --border-thickness-m-minus: 0.15rem;
   --border-thickness-m: 0.2rem;
+  --border-thickness-m-plus: 0.25rem;
   --border-thickness-thick: 0.3rem;
   --border-thickness-x-thick: 0.4rem;
   border: var(--border-thickness-thick) solid var(--color-low);
@@ -864,7 +887,9 @@ main#projects-page > section > .make-new-project > img {
 }
 main#projects-page > section > .make-new-project:hover {
   --border-thickness-thin: 0.1rem;
+  --border-thickness-m-minus: 0.15rem;
   --border-thickness-m: 0.2rem;
+  --border-thickness-m-plus: 0.25rem;
   --border-thickness-thick: 0.3rem;
   --border-thickness-x-thick: 0.4rem;
   border: var(--border-thickness-m) solid var(--color-primary);
@@ -901,7 +926,9 @@ main#projects-page > section > .project:focus {
 }
 main#projects-page > section > .project:hover {
   --border-thickness-thin: 0.1rem;
+  --border-thickness-m-minus: 0.15rem;
   --border-thickness-m: 0.2rem;
+  --border-thickness-m-plus: 0.25rem;
   --border-thickness-thick: 0.3rem;
   --border-thickness-x-thick: 0.4rem;
   border: var(--border-thickness-m) solid var(--color-primary);
@@ -1519,7 +1546,9 @@ main#playlist-editor > section > .block {
   --border-radius-xl: 1rem;
   border-radius: var(--border-radius-l);
   --border-thickness-thin: 0.1rem;
+  --border-thickness-m-minus: 0.15rem;
   --border-thickness-m: 0.2rem;
+  --border-thickness-m-plus: 0.25rem;
   --border-thickness-thick: 0.3rem;
   --border-thickness-x-thick: 0.4rem;
   border: var(--border-thickness-m) solid var(--color-low);
@@ -1625,7 +1654,9 @@ main#playlist-editor > section > .block > .main > button, main#playlist-editor >
 }
 main#playlist-editor > section > .block > .main .progress-bar {
   --border-thickness-thin: 0.1rem;
+  --border-thickness-m-minus: 0.15rem;
   --border-thickness-m: 0.2rem;
+  --border-thickness-m-plus: 0.25rem;
   --border-thickness-thick: 0.3rem;
   --border-thickness-x-thick: 0.4rem;
   border: var(--border-thickness-thick) solid var(--color-low);
@@ -1727,6 +1758,10 @@ main#playlist-editor > section > .block > .header > .options {
   --gap-5xl: 10dvh;
   --gap-default: var(--gap-m);
   gap: var(--gap-0) var(--gap-l);
+  cursor: pointer;
+}
+main#playlist-editor > section > .block > .header > .options:hover > button {
+  color: var(--color-primary);
 }
 main#playlist-editor > section > .block > .header > .options > div {
   display: flex;
@@ -1762,7 +1797,6 @@ main#playlist-editor > section > .block > .header > .options > button {
   --border-radius-l: 0.75rem;
   --border-radius-xl: 1rem;
   border-radius: var(--border-radius-s);
-  cursor: pointer;
 }
 main#playlist-editor > section > .block > .header > .options > button:focus {
   outline: var(--color-primary) solid 0.1rem;
@@ -2134,7 +2168,9 @@ main#playlist-editor > section > .make-new-block {
   --border-radius-xl: 1rem;
   border-radius: var(--border-radius-l);
   --border-thickness-thin: 0.1rem;
+  --border-thickness-m-minus: 0.15rem;
   --border-thickness-m: 0.2rem;
+  --border-thickness-m-plus: 0.25rem;
   --border-thickness-thick: 0.3rem;
   --border-thickness-x-thick: 0.4rem;
   border: var(--border-thickness-m) solid var(--color-low);
@@ -2280,7 +2316,9 @@ main#playlist-editor > section > .make-new-block > .main > button, main#playlist
 }
 main#playlist-editor > section > .make-new-block > .main .progress-bar {
   --border-thickness-thin: 0.1rem;
+  --border-thickness-m-minus: 0.15rem;
   --border-thickness-m: 0.2rem;
+  --border-thickness-m-plus: 0.25rem;
   --border-thickness-thick: 0.3rem;
   --border-thickness-x-thick: 0.4rem;
   border: var(--border-thickness-thick) solid var(--color-low);
@@ -2322,7 +2360,9 @@ main#playlist-editor > section > .make-new-block > img {
 }
 main#playlist-editor > section > .make-new-block:hover {
   --border-thickness-thin: 0.1rem;
+  --border-thickness-m-minus: 0.15rem;
   --border-thickness-m: 0.2rem;
+  --border-thickness-m-plus: 0.25rem;
   --border-thickness-thick: 0.3rem;
   --border-thickness-x-thick: 0.4rem;
   border: var(--border-thickness-m) solid var(--color-primary);

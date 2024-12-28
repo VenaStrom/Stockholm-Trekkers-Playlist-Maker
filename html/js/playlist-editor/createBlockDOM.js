@@ -107,7 +107,7 @@ const createBlockDOM = (blockData = null) => {
             </button>
         </div>`);
 
-    const makeCategories = (options) => {
+    const makeOptionCategories = (options) => {
         const uniqueCategories = new Set(options.map(option => option.category || "default"));
 
         return [...uniqueCategories].map(category => {
@@ -118,8 +118,7 @@ const createBlockDOM = (blockData = null) => {
                 return `
                     <div title="${option.description}">
                         <p>${option.name}</p><input data-option-id="${option.id}" type="checkbox"${option.checked ? " checked" : ""}>
-                    </div>
-                `;
+                    </div>`;
             };
 
             // Create the category body
@@ -140,14 +139,28 @@ const createBlockDOM = (blockData = null) => {
         <div class="options-dropdown hidden">
             <hr>
 
-            ${makeCategories(blockData.options).join("")}
+            ${makeOptionCategories(blockData.options).join("")}
         </div > `);
 
     const episodeList = stringToHTML(`<ul class="main"></ul>`);
 
+    //
     // Attach event listeners
+    //
+    // Delete
     blockHeader.querySelector(".delete").addEventListener("click", deleteBlock);
+    // Options dropdown
     blockHeader.querySelector(".options").addEventListener("click", openOptionsDropdown);
+    // Clicking an options label toggles the checkbox
+    optionsDropdown.querySelectorAll("input[type='checkbox']").forEach(checkbox => {
+        // Clicking anywhere on the container toggles the checkbox
+        checkbox.parentElement.addEventListener("click", () => checkbox.click());
+        checkbox.addEventListener("click", (event) => event.stopPropagation());
+    });
+    // Update the option dots when the checkboxes are changed
+    optionsDropdown.querySelectorAll("input[type='checkbox']").forEach(checkbox => {
+        checkbox.addEventListener("click", () => updateOptionDots(blockBody));
+    });
 
     blockBody.appendChild(blockHeader);
     blockBody.appendChild(optionsDropdown);
@@ -165,14 +178,23 @@ const deleteBlock = (event) => {
         block.remove();
     }
 };
-const toggleCheckbox = (target) => {
-    target.checked = !target.checked;
-};
 const openOptionsDropdown = (event) => {
     const dropdown = event.target.closest(".header").parentElement.querySelector(".options-dropdown");
     dropdown.classList.toggle("hidden");
 };
+const updateOptionDots = (block) => {
+    const optionDots = block.querySelectorAll(".header .options .option-dot");
+    const options = block.querySelectorAll(".options-dropdown input[type='checkbox']");
 
+    options.forEach((option, index) => {
+        if (option.checked) {
+            optionDots[index].classList.add("active");
+        }
+        else {
+            optionDots[index].classList.remove("active");
+        }
+    });
+};
 
 // New block button
 document.querySelector(".make-new-block").addEventListener("click", () => {

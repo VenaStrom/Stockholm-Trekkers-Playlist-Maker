@@ -74,6 +74,14 @@ main#playlist-editor {
                 &>.options {
                     @include row($justify: start, $align: center);
                     @include gap(0, l);
+                    
+                    cursor: pointer;
+
+                    &:hover {
+                        &>button {
+                            color: var(--color-primary);
+                        }
+                    }
 
                     &>div {
                         @include row($justify: start, $align: center);
@@ -90,8 +98,6 @@ main#playlist-editor {
 
                         @include outline();
                         @include border-radius(s);
-
-                        cursor: pointer;
 
                         &:hover {
                             color: var(--color-primary);
