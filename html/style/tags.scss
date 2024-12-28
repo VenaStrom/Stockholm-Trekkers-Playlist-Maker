@@ -25,24 +25,25 @@ a {
 
 button,
 input[type="button"] {
-    // Reset
-    all: unset;
+    @include button();
+    // // Reset
+    // all: unset;
 
-    @include padding(m, xl);
-    @include border-radius(m);
-    @include border(thick);
+    // @include padding(m, xl);
+    // @include border-radius(m);
+    // @include border(thick);
 
-    cursor: pointer;
+    // cursor: pointer;
 
-    background-color: var(--color-low);
-    color: var(--color-fg);
+    // background-color: var(--color-low);
+    // color: var(--color-fg);
 
-    &:hover {
-        @include bold();
+    // &:hover {
+    //     @include bold();
 
-        background-color: var(--color-primary);
-        color: var(--color-low);
-    }
+    //     background-color: var(--color-primary);
+    //     color: var(--color-low);
+    // }
 }
 
 input[type="text"] {
@@ -61,6 +62,45 @@ input[type="text"] {
     &::-webkit-inner-spin-button {
         display: none;
         appearance: none;
+    }
+}
+
+input[type="file"] {
+    // Reset
+    all: unset;
+
+    @include outline();
+    @include border-radius(m);
+    // @include padding(s, l);
+
+    &::-webkit-file-upload-button {
+        visibility: hidden;
+        display: none;
+    }
+
+    &::before {
+        content: "Choose File";
+        display: inline-block;
+
+        white-space: nowrap;
+
+        -webkit-user-select: none;
+        user-select: none;
+        
+        cursor: pointer;
+
+        @include padding(l, xl);
+        @include border-radius(m);
+        @include thin();
+        
+        margin-right: 1ch;
+
+        background-color: var(--color-low);
+
+        &:hover {
+            background-color: var(--color-primary);
+            color: var(--color-low);
+        }
     }
 }
 

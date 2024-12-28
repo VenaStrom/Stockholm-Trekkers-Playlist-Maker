@@ -65,7 +65,7 @@
   min-height: 5rem;
   overflow: hidden;
 }
-.round-box > * {
+.round-box > .header, .round-box > .main {
   width: 100%;
 }
 .round-box > .header {
@@ -89,7 +89,10 @@
   --padding-7xl: 20dvh;
   --padding-8xl: 25dvh;
   --padding-default: var(--padding-m);
-  padding: var(--padding-m) var(--padding-l) var(--padding-s) var(--padding-l);
+  padding-top: var(--padding-m);
+  padding-right: var(--padding-l);
+  padding-bottom: var(--padding-s);
+  padding-left: var(--padding-l);
   --text-size-s: 0.9rem;
   --text-size-m: 1rem;
   --text-size-l: 1.1rem;
@@ -121,7 +124,10 @@
   --padding-7xl: 20dvh;
   --padding-8xl: 25dvh;
   --padding-default: var(--padding-m);
-  padding: var(--padding-m) var(--padding-xl);
+  padding-top: var(--padding-m);
+  padding-right: var(--padding-xl);
+  padding-bottom: var(--padding-m);
+  padding-left: var(--padding-xl);
   background-color: var(--color-low);
 }
 .round-box > .main {
@@ -145,7 +151,10 @@
   --padding-7xl: 20dvh;
   --padding-8xl: 25dvh;
   --padding-default: var(--padding-m);
-  padding: var(--padding-m) var(--padding-2xl) var(--padding-m) var(--padding-2xl);
+  padding-top: var(--padding-m);
+  padding-right: var(--padding-2xl);
+  padding-bottom: var(--padding-m);
+  padding-left: var(--padding-2xl);
   font-weight: lighter;
   flex: 1;
 }
@@ -281,7 +290,10 @@ input[type=button] {
   --padding-7xl: 20dvh;
   --padding-8xl: 25dvh;
   --padding-default: var(--padding-m);
-  padding: var(--padding-m) var(--padding-xl);
+  padding-top: var(--padding-m);
+  padding-right: var(--padding-xl);
+  padding-bottom: var(--padding-m);
+  padding-left: var(--padding-xl);
   --border-radius-2xs: 0.1rem;
   --border-radius-xs: 0.15rem;
   --border-radius-s: 0.25rem;
@@ -323,7 +335,10 @@ input[type=text] {
   --padding-7xl: 20dvh;
   --padding-8xl: 25dvh;
   --padding-default: var(--padding-m);
-  padding: var(--padding-m) var(--padding-l);
+  padding-top: var(--padding-m);
+  padding-right: var(--padding-l);
+  padding-bottom: var(--padding-m);
+  padding-left: var(--padding-l);
   --border-radius-2xs: 0.1rem;
   --border-radius-xs: 0.15rem;
   --border-radius-s: 0.25rem;
@@ -341,6 +356,66 @@ input[type=text]:focus {
 input[type=text]::-webkit-inner-spin-button {
   display: none;
   appearance: none;
+}
+
+input[type=file] {
+  all: unset;
+  --border-radius-2xs: 0.1rem;
+  --border-radius-xs: 0.15rem;
+  --border-radius-s: 0.25rem;
+  --border-radius-m: 0.5rem;
+  --border-radius-l: 0.75rem;
+  --border-radius-xl: 1rem;
+  border-radius: var(--border-radius-m);
+}
+input[type=file]:focus {
+  outline: var(--color-primary) solid 0.1rem;
+}
+input[type=file]::-webkit-file-upload-button {
+  visibility: hidden;
+  display: none;
+}
+input[type=file]::before {
+  content: "Choose File";
+  display: inline-block;
+  white-space: nowrap;
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: pointer;
+  --padding-0: 0;
+  --padding-none: 0;
+  --padding-2xs: 0.1rem;
+  --padding-xs: 0.15rem;
+  --padding-s: 0.25rem;
+  --padding-m: 0.5rem;
+  --padding-l: 0.75rem;
+  --padding-xl: 1rem;
+  --padding-2xl: 1.5rem;
+  --padding-3xl: 2rem;
+  --padding-4xl: 5dvh;
+  --padding-5xl: 10dvh;
+  --padding-6xl: 15dvh;
+  --padding-7xl: 20dvh;
+  --padding-8xl: 25dvh;
+  --padding-default: var(--padding-m);
+  padding-top: var(--padding-l);
+  padding-right: var(--padding-xl);
+  padding-bottom: var(--padding-l);
+  padding-left: var(--padding-xl);
+  --border-radius-2xs: 0.1rem;
+  --border-radius-xs: 0.15rem;
+  --border-radius-s: 0.25rem;
+  --border-radius-m: 0.5rem;
+  --border-radius-l: 0.75rem;
+  --border-radius-xl: 1rem;
+  border-radius: var(--border-radius-m);
+  font-weight: lighter;
+  margin-right: 1ch;
+  background-color: var(--color-low);
+}
+input[type=file]::before:hover {
+  background-color: var(--color-primary);
+  color: var(--color-low);
 }
 
 hr {
@@ -372,7 +447,10 @@ main#download-page {
   --margin-7xl: 20dvh;
   --margin-8xl: 25dvh;
   --margin-default: var(--margin-m);
-  margin: var(--margin-8xl) var(--margin-0) var(--margin-0) var(--margin-0);
+  margin-top: var(--margin-8xl);
+  margin-right: var(--margin-0);
+  margin-bottom: var(--margin-0);
+  margin-left: var(--margin-0);
 }
 main#download-page > p:first-of-type {
   --text-size-s: 0.9rem;
@@ -423,7 +501,10 @@ main#download-page > p:last-of-type {
   --margin-7xl: 20dvh;
   --margin-8xl: 25dvh;
   --margin-default: var(--margin-m);
-  margin: var(--margin-0) var(--margin-0) var(--margin-3xl) var(--margin-0);
+  margin-top: var(--margin-0);
+  margin-right: var(--margin-0);
+  margin-bottom: var(--margin-3xl);
+  margin-left: var(--margin-0);
 }
 main#download-page > .round-box {
   --width-2xs: 0.1ch;
@@ -471,7 +552,10 @@ main#download-page > .round-box > .main > button, main#download-page > .round-bo
   --margin-7xl: 20dvh;
   --margin-8xl: 25dvh;
   --margin-default: var(--margin-m);
-  margin: var(--margin-m) var(--margin-0) var(--margin-0) var(--margin-0);
+  margin-top: var(--margin-m);
+  margin-right: var(--margin-0);
+  margin-bottom: var(--margin-0);
+  margin-left: var(--margin-0);
 }
 
 main#projects-page > p {
@@ -491,7 +575,10 @@ main#projects-page > p {
   --margin-7xl: 20dvh;
   --margin-8xl: 25dvh;
   --margin-default: var(--margin-m);
-  margin: var(--margin-3xl) var(--margin-0) var(--margin-xl) var(--margin-0);
+  margin-top: var(--margin-3xl);
+  margin-right: var(--margin-0);
+  margin-bottom: var(--margin-xl);
+  margin-left: var(--margin-0);
   --text-size-s: 0.9rem;
   --text-size-m: 1rem;
   --text-size-l: 1.1rem;
@@ -540,6 +627,10 @@ main#projects-page > section {
   --gap-m: 0.5rem;
   --gap-l: 0.75rem;
   --gap-xl: 1rem;
+  --gap-2xl: 1.5rem;
+  --gap-3xl: 2rem;
+  --gap-4xl: 5dvh;
+  --gap-5xl: 10dvh;
   --gap-default: var(--gap-m);
   gap: var(--gap-m) var(--gap-0);
 }
@@ -604,7 +695,7 @@ main#projects-page > section > .make-new-project {
   width: 100%;
   background-color: var(--color-bg);
 }
-main#projects-page > section > .make-new-project > * {
+main#projects-page > section > .make-new-project > .header, main#projects-page > section > .make-new-project > .main {
   width: 100%;
 }
 main#projects-page > section > .make-new-project > .header {
@@ -628,7 +719,10 @@ main#projects-page > section > .make-new-project > .header {
   --padding-7xl: 20dvh;
   --padding-8xl: 25dvh;
   --padding-default: var(--padding-m);
-  padding: var(--padding-m) var(--padding-l) var(--padding-s) var(--padding-l);
+  padding-top: var(--padding-m);
+  padding-right: var(--padding-l);
+  padding-bottom: var(--padding-s);
+  padding-left: var(--padding-l);
   --text-size-s: 0.9rem;
   --text-size-m: 1rem;
   --text-size-l: 1.1rem;
@@ -660,7 +754,10 @@ main#projects-page > section > .make-new-project > .header:not(.none) {
   --padding-7xl: 20dvh;
   --padding-8xl: 25dvh;
   --padding-default: var(--padding-m);
-  padding: var(--padding-m) var(--padding-xl);
+  padding-top: var(--padding-m);
+  padding-right: var(--padding-xl);
+  padding-bottom: var(--padding-m);
+  padding-left: var(--padding-xl);
   background-color: var(--color-low);
 }
 main#projects-page > section > .make-new-project > .main {
@@ -684,7 +781,10 @@ main#projects-page > section > .make-new-project > .main {
   --padding-7xl: 20dvh;
   --padding-8xl: 25dvh;
   --padding-default: var(--padding-m);
-  padding: var(--padding-m) var(--padding-2xl) var(--padding-m) var(--padding-2xl);
+  padding-top: var(--padding-m);
+  padding-right: var(--padding-2xl);
+  padding-bottom: var(--padding-m);
+  padding-left: var(--padding-2xl);
   font-weight: lighter;
   flex: 1;
 }
@@ -791,6 +891,10 @@ main#projects-page > section > .project > .header {
   --gap-m: 0.5rem;
   --gap-l: 0.75rem;
   --gap-xl: 1rem;
+  --gap-2xl: 1.5rem;
+  --gap-3xl: 2rem;
+  --gap-4xl: 5dvh;
+  --gap-5xl: 10dvh;
   --gap-default: var(--gap-m);
   gap: var(--gap-0) var(--gap-m);
   --padding-0: 0;
@@ -809,7 +913,6 @@ main#projects-page > section > .project > .header {
   --padding-7xl: 20dvh;
   --padding-8xl: 25dvh;
   --padding-default: var(--padding-m);
-  padding: var(--padding-default);
   padding-top: var(--padding-l);
   padding-bottom: var(--padding-l);
 }
@@ -827,6 +930,10 @@ main#projects-page > section > .project > .header > .project-date {
   --gap-m: 0.5rem;
   --gap-l: 0.75rem;
   --gap-xl: 1rem;
+  --gap-2xl: 1.5rem;
+  --gap-3xl: 2rem;
+  --gap-4xl: 5dvh;
+  --gap-5xl: 10dvh;
   --gap-default: var(--gap-m);
   gap: var(--gap-0) var(--gap-m);
 }
@@ -844,6 +951,10 @@ main#projects-page > section > .project > .header > .meta-data {
   --gap-m: 0.5rem;
   --gap-l: 0.75rem;
   --gap-xl: 1rem;
+  --gap-2xl: 1.5rem;
+  --gap-3xl: 2rem;
+  --gap-4xl: 5dvh;
+  --gap-5xl: 10dvh;
   --gap-default: var(--gap-m);
   gap: var(--gap-0) var(--gap-m);
   --text-size-s: 0.9rem;
@@ -898,6 +1009,10 @@ main#projects-page > section > .project > .main {
   --gap-m: 0.5rem;
   --gap-l: 0.75rem;
   --gap-xl: 1rem;
+  --gap-2xl: 1.5rem;
+  --gap-3xl: 2rem;
+  --gap-4xl: 5dvh;
+  --gap-5xl: 10dvh;
   --gap-default: var(--gap-m);
   gap: var(--gap-m) var(--gap-0);
   list-style-type: none;
@@ -919,7 +1034,10 @@ main#projects-page > section > .project > .main > hr {
   --margin-7xl: 20dvh;
   --margin-8xl: 25dvh;
   --margin-default: var(--margin-m);
-  margin: var(--margin-m) var(--margin-0);
+  margin-top: var(--margin-m);
+  margin-right: var(--margin-0);
+  margin-bottom: var(--margin-m);
+  margin-left: var(--margin-0);
 }
 main#projects-page > section > .project > .main > li {
   display: flex;
@@ -935,6 +1053,10 @@ main#projects-page > section > .project > .main > li {
   --gap-m: 0.5rem;
   --gap-l: 0.75rem;
   --gap-xl: 1rem;
+  --gap-2xl: 1.5rem;
+  --gap-3xl: 2rem;
+  --gap-4xl: 5dvh;
+  --gap-5xl: 10dvh;
   --gap-default: var(--gap-m);
   gap: var(--gap-0) var(--gap-m);
   width: 100%;
@@ -956,6 +1078,10 @@ main#projects-page > section > .project > .main > li.block-header > div {
   --gap-m: 0.5rem;
   --gap-l: 0.75rem;
   --gap-xl: 1rem;
+  --gap-2xl: 1.5rem;
+  --gap-3xl: 2rem;
+  --gap-4xl: 5dvh;
+  --gap-5xl: 10dvh;
   --gap-default: var(--gap-m);
   gap: var(--gap-0) var(--gap-3xs);
 }
@@ -976,7 +1102,10 @@ main#projects-page > section > .project > .main > li.episode, main#projects-page
   --margin-7xl: 20dvh;
   --margin-8xl: 25dvh;
   --margin-default: var(--margin-m);
-  margin: var(--margin-0) var(--margin-0) var(--margin-0) var(--margin-m);
+  margin-top: var(--margin-0);
+  margin-right: var(--margin-0);
+  margin-bottom: var(--margin-0);
+  margin-left: var(--margin-m);
   --gap-0: 0;
   --gap-none: 0;
   --gap-3xs: 0.05rem;
@@ -986,6 +1115,10 @@ main#projects-page > section > .project > .main > li.episode, main#projects-page
   --gap-m: 0.5rem;
   --gap-l: 0.75rem;
   --gap-xl: 1rem;
+  --gap-2xl: 1.5rem;
+  --gap-3xl: 2rem;
+  --gap-4xl: 5dvh;
+  --gap-5xl: 10dvh;
   --gap-default: var(--gap-m);
   gap: var(--gap-0) var(--gap-l);
 }
@@ -1010,7 +1143,10 @@ main#projects-page > section > .project > .main > li.episode > p:last-child, mai
   --margin-7xl: 20dvh;
   --margin-8xl: 25dvh;
   --margin-default: var(--margin-m);
-  margin: var(--margin-0) var(--margin-0) var(--margin-0) var(--margin-s);
+  margin-top: var(--margin-0);
+  margin-right: var(--margin-0);
+  margin-bottom: var(--margin-0);
+  margin-left: var(--margin-s);
   width: 100%;
 }
 main#projects-page > section > .project > .main > li.pause {
@@ -1033,7 +1169,6 @@ main#projects-page > section > .project > .main > li:last-child {
   --margin-7xl: 20dvh;
   --margin-8xl: 25dvh;
   --margin-default: var(--margin-m);
-  margin: var(--margin-default);
   margin-bottom: var(--margin-s);
 }
 main#projects-page > .bottom {
@@ -1056,6 +1191,10 @@ main#projects-page > .bottom > .buttons {
   --gap-m: 0.5rem;
   --gap-l: 0.75rem;
   --gap-xl: 1rem;
+  --gap-2xl: 1.5rem;
+  --gap-3xl: 2rem;
+  --gap-4xl: 5dvh;
+  --gap-5xl: 10dvh;
   --gap-default: var(--gap-m);
   gap: var(--gap-m) var(--gap-0);
   --margin-0: 0;
@@ -1074,7 +1213,6 @@ main#projects-page > .bottom > .buttons {
   --margin-7xl: 20dvh;
   --margin-8xl: 25dvh;
   --margin-default: var(--margin-m);
-  margin: var(--margin-default);
   margin-right: var(--margin-2xl);
 }
 main#projects-page > .bottom > .buttons > button {
@@ -1091,6 +1229,10 @@ main#projects-page > .bottom > .buttons > button {
   --gap-m: 0.5rem;
   --gap-l: 0.75rem;
   --gap-xl: 1rem;
+  --gap-2xl: 1.5rem;
+  --gap-3xl: 2rem;
+  --gap-4xl: 5dvh;
+  --gap-5xl: 10dvh;
   --gap-default: var(--gap-m);
   gap: var(--gap-0) var(--gap-m);
   --padding-0: 0;
@@ -1109,7 +1251,6 @@ main#projects-page > .bottom > .buttons > button {
   --padding-7xl: 20dvh;
   --padding-8xl: 25dvh;
   --padding-default: var(--padding-m);
-  padding: var(--padding-default);
   padding-right: var(--padding-m);
   padding-left: var(--padding-m);
 }
@@ -1159,7 +1300,7 @@ main#playlist-editor {
   --width-15xl: 170ch;
   --width-16xl: 180ch;
   --width-max: 100dvw;
-  width: var(--width-5xl);
+  width: var(--width-6xl);
   max-width: 95dvw;
 }
 main#playlist-editor > .top > .back-button {
@@ -1180,7 +1321,10 @@ main#playlist-editor > .top > .back-button {
   --margin-7xl: 20dvh;
   --margin-8xl: 25dvh;
   --margin-default: var(--margin-m);
-  margin: var(--margin-0) var(--margin-0) var(--margin-0) var(--margin-2xl);
+  margin-top: var(--margin-0);
+  margin-right: var(--margin-0);
+  margin-bottom: var(--margin-0);
+  margin-left: var(--margin-2xl);
   --border-radius-2xs: 0.1rem;
   --border-radius-xs: 0.15rem;
   --border-radius-s: 0.25rem;
@@ -1232,6 +1376,10 @@ main#playlist-editor > .date-input {
   --gap-m: 0.5rem;
   --gap-l: 0.75rem;
   --gap-xl: 1rem;
+  --gap-2xl: 1.5rem;
+  --gap-3xl: 2rem;
+  --gap-4xl: 5dvh;
+  --gap-5xl: 10dvh;
   --gap-default: var(--gap-m);
   gap: var(--gap-0) var(--gap-l);
   --margin-0: 0;
@@ -1250,7 +1398,6 @@ main#playlist-editor > .date-input {
   --margin-7xl: 20dvh;
   --margin-8xl: 25dvh;
   --margin-default: var(--margin-m);
-  margin: var(--margin-default);
   margin-top: var(--margin-3xl);
   margin-bottom: var(--margin-l);
 }
@@ -1288,9 +1435,464 @@ main#playlist-editor > section {
   --margin-7xl: 20dvh;
   --margin-8xl: 25dvh;
   --margin-default: var(--margin-m);
-  margin: var(--margin-default);
   margin-top: var(--margin-xl);
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: start;
+  align-items: center;
+  --gap-0: 0;
+  --gap-none: 0;
+  --gap-3xs: 0.05rem;
+  --gap-2xs: 0.1rem;
+  --gap-xs: 0.15rem;
+  --gap-s: 0.25rem;
+  --gap-m: 0.5rem;
+  --gap-l: 0.75rem;
+  --gap-xl: 1rem;
+  --gap-2xl: 1.5rem;
+  --gap-3xl: 2rem;
+  --gap-4xl: 5dvh;
+  --gap-5xl: 10dvh;
+  --gap-default: var(--gap-m);
+  gap: var(--gap-s) var(--gap-0);
   width: 100%;
+}
+main#playlist-editor > section > * {
+  width: 100%;
+}
+main#playlist-editor > section > .block {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: start;
+  align-items: center;
+  --margin-0: 0;
+  --margin-none: 0;
+  --margin-2xs: 0.1rem;
+  --margin-xs: 0.15rem;
+  --margin-s: 0.25rem;
+  --margin-m: 0.5rem;
+  --margin-l: 0.75rem;
+  --margin-xl: 1rem;
+  --margin-2xl: 1.5rem;
+  --margin-3xl: 2rem;
+  --margin-4xl: 5dvh;
+  --margin-5xl: 10dvh;
+  --margin-6xl: 15dvh;
+  --margin-7xl: 20dvh;
+  --margin-8xl: 25dvh;
+  --margin-default: var(--margin-m);
+  margin: var(--margin-xs);
+  --border-radius-2xs: 0.1rem;
+  --border-radius-xs: 0.15rem;
+  --border-radius-s: 0.25rem;
+  --border-radius-m: 0.5rem;
+  --border-radius-l: 0.75rem;
+  --border-radius-xl: 1rem;
+  border-radius: var(--border-radius-l);
+  --border-thickness-thin: 0.1rem;
+  --border-thickness-m: 0.2rem;
+  --border-thickness-thick: 0.3rem;
+  --border-thickness-x-thick: 0.4rem;
+  border: var(--border-thickness-m) solid var(--color-low);
+  min-width: 20ch;
+  min-height: 5rem;
+  overflow: hidden;
+}
+main#playlist-editor > section > .block > .header, main#playlist-editor > section > .block > .main {
+  width: 100%;
+}
+main#playlist-editor > section > .block > .header {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+  --padding-0: 0;
+  --padding-none: 0;
+  --padding-2xs: 0.1rem;
+  --padding-xs: 0.15rem;
+  --padding-s: 0.25rem;
+  --padding-m: 0.5rem;
+  --padding-l: 0.75rem;
+  --padding-xl: 1rem;
+  --padding-2xl: 1.5rem;
+  --padding-3xl: 2rem;
+  --padding-4xl: 5dvh;
+  --padding-5xl: 10dvh;
+  --padding-6xl: 15dvh;
+  --padding-7xl: 20dvh;
+  --padding-8xl: 25dvh;
+  --padding-default: var(--padding-m);
+  padding-top: var(--padding-m);
+  padding-right: var(--padding-l);
+  padding-bottom: var(--padding-s);
+  padding-left: var(--padding-l);
+  --text-size-s: 0.9rem;
+  --text-size-m: 1rem;
+  --text-size-l: 1.1rem;
+  --text-size-xl: 1.25rem;
+  --text-size-2xl: 1.5rem;
+  --text-size-title: 2rem;
+  --text-size-x-title: 2.5rem;
+  --text-size-xx-title: 3rem;
+  font-size: var(--text-size-l);
+}
+main#playlist-editor > section > .block > .header:not(.none) {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: start;
+  align-items: center;
+  --padding-0: 0;
+  --padding-none: 0;
+  --padding-2xs: 0.1rem;
+  --padding-xs: 0.15rem;
+  --padding-s: 0.25rem;
+  --padding-m: 0.5rem;
+  --padding-l: 0.75rem;
+  --padding-xl: 1rem;
+  --padding-2xl: 1.5rem;
+  --padding-3xl: 2rem;
+  --padding-4xl: 5dvh;
+  --padding-5xl: 10dvh;
+  --padding-6xl: 15dvh;
+  --padding-7xl: 20dvh;
+  --padding-8xl: 25dvh;
+  --padding-default: var(--padding-m);
+  padding-top: var(--padding-m);
+  padding-right: var(--padding-xl);
+  padding-bottom: var(--padding-m);
+  padding-left: var(--padding-xl);
+  background-color: var(--color-low);
+}
+main#playlist-editor > section > .block > .main {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: start;
+  align-items: start;
+  --padding-0: 0;
+  --padding-none: 0;
+  --padding-2xs: 0.1rem;
+  --padding-xs: 0.15rem;
+  --padding-s: 0.25rem;
+  --padding-m: 0.5rem;
+  --padding-l: 0.75rem;
+  --padding-xl: 1rem;
+  --padding-2xl: 1.5rem;
+  --padding-3xl: 2rem;
+  --padding-4xl: 5dvh;
+  --padding-5xl: 10dvh;
+  --padding-6xl: 15dvh;
+  --padding-7xl: 20dvh;
+  --padding-8xl: 25dvh;
+  --padding-default: var(--padding-m);
+  padding-top: var(--padding-m);
+  padding-right: var(--padding-2xl);
+  padding-bottom: var(--padding-m);
+  padding-left: var(--padding-2xl);
+  font-weight: lighter;
+  flex: 1;
+}
+main#playlist-editor > section > .block > .main > button, main#playlist-editor > section > .block > .main > input {
+  align-self: center;
+}
+main#playlist-editor > section > .block > .main .progress-bar {
+  --border-thickness-thin: 0.1rem;
+  --border-thickness-m: 0.2rem;
+  --border-thickness-thick: 0.3rem;
+  --border-thickness-x-thick: 0.4rem;
+  border: var(--border-thickness-thick) solid var(--color-low);
+  --border-radius-2xs: 0.1rem;
+  --border-radius-xs: 0.15rem;
+  --border-radius-s: 0.25rem;
+  --border-radius-m: 0.5rem;
+  --border-radius-l: 0.75rem;
+  --border-radius-xl: 1rem;
+  border-radius: var(--border-radius-m);
+  width: 100%;
+  height: 1.5rem;
+  background-color: var(--color-bg);
+  background-image: linear-gradient(var(--color-primary), var(--color-primary));
+  background-repeat: no-repeat;
+  background-size: 0%;
+}
+main#playlist-editor > section > .block > .main .progress-bar.warning {
+  background-image: linear-gradient(var(--color-warning), var(--color-warning));
+}
+main#playlist-editor > section > .block > .header {
+  --text-size-s: 0.9rem;
+  --text-size-m: 1rem;
+  --text-size-l: 1.1rem;
+  --text-size-xl: 1.25rem;
+  --text-size-2xl: 1.5rem;
+  --text-size-title: 2rem;
+  --text-size-x-title: 2.5rem;
+  --text-size-xx-title: 3rem;
+  font-size: var(--text-size-m);
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between !important;
+  align-items: center;
+}
+main#playlist-editor > section > .block > .header > .start-time {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: start;
+  align-items: center;
+  --gap-0: 0;
+  --gap-none: 0;
+  --gap-3xs: 0.05rem;
+  --gap-2xs: 0.1rem;
+  --gap-xs: 0.15rem;
+  --gap-s: 0.25rem;
+  --gap-m: 0.5rem;
+  --gap-l: 0.75rem;
+  --gap-xl: 1rem;
+  --gap-2xl: 1.5rem;
+  --gap-3xl: 2rem;
+  --gap-4xl: 5dvh;
+  --gap-5xl: 10dvh;
+  --gap-default: var(--gap-m);
+  gap: var(--gap-0) var(--gap-m);
+}
+main#playlist-editor > section > .block > .header > .start-time > input {
+  --padding-0: 0;
+  --padding-none: 0;
+  --padding-2xs: 0.1rem;
+  --padding-xs: 0.15rem;
+  --padding-s: 0.25rem;
+  --padding-m: 0.5rem;
+  --padding-l: 0.75rem;
+  --padding-xl: 1rem;
+  --padding-2xl: 1.5rem;
+  --padding-3xl: 2rem;
+  --padding-4xl: 5dvh;
+  --padding-5xl: 10dvh;
+  --padding-6xl: 15dvh;
+  --padding-7xl: 20dvh;
+  --padding-8xl: 25dvh;
+  --padding-default: var(--padding-m);
+  padding-top: var(--padding-m);
+  padding-right: var(--padding-0);
+  padding-bottom: var(--padding-m);
+  padding-left: var(--padding-0);
+  background-color: var(--color-bg);
+  width: 8ch;
+  text-align: center;
+}
+main#playlist-editor > section > .block > .header > .options {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: start;
+  align-items: center;
+  --gap-0: 0;
+  --gap-none: 0;
+  --gap-3xs: 0.05rem;
+  --gap-2xs: 0.1rem;
+  --gap-xs: 0.15rem;
+  --gap-s: 0.25rem;
+  --gap-m: 0.5rem;
+  --gap-l: 0.75rem;
+  --gap-xl: 1rem;
+  --gap-2xl: 1.5rem;
+  --gap-3xl: 2rem;
+  --gap-4xl: 5dvh;
+  --gap-5xl: 10dvh;
+  --gap-default: var(--gap-m);
+  gap: var(--gap-0) var(--gap-l);
+}
+main#playlist-editor > section > .block > .header > .options > div {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: start;
+  align-items: center;
+  --gap-0: 0;
+  --gap-none: 0;
+  --gap-3xs: 0.05rem;
+  --gap-2xs: 0.1rem;
+  --gap-xs: 0.15rem;
+  --gap-s: 0.25rem;
+  --gap-m: 0.5rem;
+  --gap-l: 0.75rem;
+  --gap-xl: 1rem;
+  --gap-2xl: 1.5rem;
+  --gap-3xl: 2rem;
+  --gap-4xl: 5dvh;
+  --gap-5xl: 10dvh;
+  --gap-default: var(--gap-m);
+  gap: var(--gap-0) var(--gap-2xs);
+}
+main#playlist-editor > section > .block > .header > .options > div > .option-dot {
+  height: 1rem;
+  width: 1rem;
+}
+main#playlist-editor > section > .block > .header > .options > button {
+  all: unset;
+  --border-radius-2xs: 0.1rem;
+  --border-radius-xs: 0.15rem;
+  --border-radius-s: 0.25rem;
+  --border-radius-m: 0.5rem;
+  --border-radius-l: 0.75rem;
+  --border-radius-xl: 1rem;
+  border-radius: var(--border-radius-s);
+  cursor: pointer;
+}
+main#playlist-editor > section > .block > .header > .options > button:focus {
+  outline: var(--color-primary) solid 0.1rem;
+}
+main#playlist-editor > section > .block > .header > .options > button:hover {
+  color: var(--color-primary);
+}
+main#playlist-editor > section > .block > .header > .options > button > span {
+  --text-size-s: 0.9rem;
+  --text-size-m: 1rem;
+  --text-size-l: 1.1rem;
+  --text-size-xl: 1.25rem;
+  --text-size-2xl: 1.5rem;
+  --text-size-title: 2rem;
+  --text-size-x-title: 2.5rem;
+  --text-size-xx-title: 3rem;
+  font-size: var(--text-size-s);
+}
+main#playlist-editor > section > .block > .header > .delete {
+  all: unset;
+  --icon-size-5xs: 0.3rem;
+  --icon-size-4xs: 0.6rem;
+  --icon-size-3xs: 0.75rem;
+  --icon-size-2xs: 1rem;
+  --icon-size-xs: 1.2rem;
+  --icon-size-s: 2rem;
+  --icon-size-m: 2.7rem;
+  --icon-size-l: 4rem;
+  --icon-size-xl: 5rem;
+  --icon-size-2xl: 6rem;
+  --icon-size-3xl: 7rem;
+  --icon-size-4xl: 8rem;
+  height: var(--icon-size-s);
+  width: var(--icon-size-s);
+  aspect-ratio: 1/1;
+  user-select: none;
+  filter: var(--filter-to-color-fg);
+  cursor: pointer;
+}
+main#playlist-editor > section > .block > .header > .delete:hover {
+  filter: var(--filter-to-color-primary);
+}
+main#playlist-editor > section > .block > .header > .delete:focus {
+  outline: var(--color-primary) solid 0.1rem;
+}
+main#playlist-editor > section > .block > .header > .delete > img {
+  width: 100%;
+  height: 100%;
+}
+main#playlist-editor > section > .block > .main {
+  --margin-0: 0;
+  --margin-none: 0;
+  --margin-2xs: 0.1rem;
+  --margin-xs: 0.15rem;
+  --margin-s: 0.25rem;
+  --margin-m: 0.5rem;
+  --margin-l: 0.75rem;
+  --margin-xl: 1rem;
+  --margin-2xl: 1.5rem;
+  --margin-3xl: 2rem;
+  --margin-4xl: 5dvh;
+  --margin-5xl: 10dvh;
+  --margin-6xl: 15dvh;
+  --margin-7xl: 20dvh;
+  --margin-8xl: 25dvh;
+  --margin-default: var(--margin-m);
+  margin-top: var(--margin-s);
+  margin-right: var(--margin-0);
+  margin-bottom: var(--margin-s);
+  margin-left: var(--margin-0);
+  --padding-0: 0;
+  --padding-none: 0;
+  --padding-2xs: 0.1rem;
+  --padding-xs: 0.15rem;
+  --padding-s: 0.25rem;
+  --padding-m: 0.5rem;
+  --padding-l: 0.75rem;
+  --padding-xl: 1rem;
+  --padding-2xl: 1.5rem;
+  --padding-3xl: 2rem;
+  --padding-4xl: 5dvh;
+  --padding-5xl: 10dvh;
+  --padding-6xl: 15dvh;
+  --padding-7xl: 20dvh;
+  --padding-8xl: 25dvh;
+  --padding-default: var(--padding-m);
+  padding-left: var(--padding-0);
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: start;
+  align-items: center;
+  --gap-0: 0;
+  --gap-none: 0;
+  --gap-3xs: 0.05rem;
+  --gap-2xs: 0.1rem;
+  --gap-xs: 0.15rem;
+  --gap-s: 0.25rem;
+  --gap-m: 0.5rem;
+  --gap-l: 0.75rem;
+  --gap-xl: 1rem;
+  --gap-2xl: 1.5rem;
+  --gap-3xl: 2rem;
+  --gap-4xl: 5dvh;
+  --gap-5xl: 10dvh;
+  --gap-default: var(--gap-m);
+  gap: var(--gap-m) var(--gap-0);
+  list-style-type: none;
+}
+main#playlist-editor > section > .block > .main > .episode {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: start;
+  align-items: center;
+  width: 100%;
+}
+main#playlist-editor > section > .block > .main > .episode > .time {
+  --padding-0: 0;
+  --padding-none: 0;
+  --padding-2xs: 0.1rem;
+  --padding-xs: 0.15rem;
+  --padding-s: 0.25rem;
+  --padding-m: 0.5rem;
+  --padding-l: 0.75rem;
+  --padding-xl: 1rem;
+  --padding-2xl: 1.5rem;
+  --padding-3xl: 2rem;
+  --padding-4xl: 5dvh;
+  --padding-5xl: 10dvh;
+  --padding-6xl: 15dvh;
+  --padding-7xl: 20dvh;
+  --padding-8xl: 25dvh;
+  --padding-default: var(--padding-m);
+  padding-top: var(--padding-0);
+  padding-right: var(--padding-2xl);
+  padding-bottom: var(--padding-0);
+  padding-left: var(--padding-2xl);
+}
+main#playlist-editor > section > .block > .main > .episode > input {
+  flex: 1;
+}
+main#playlist-editor > section > .block > .main > hr {
+  --margin-0: 0;
+  --margin-none: 0;
+  --margin-2xs: 0.1rem;
+  --margin-xs: 0.15rem;
+  --margin-s: 0.25rem;
+  --margin-m: 0.5rem;
+  --margin-l: 0.75rem;
+  --margin-xl: 1rem;
+  --margin-2xl: 1.5rem;
+  --margin-3xl: 2rem;
+  --margin-4xl: 5dvh;
+  --margin-5xl: 10dvh;
+  --margin-6xl: 15dvh;
+  --margin-7xl: 20dvh;
+  --margin-8xl: 25dvh;
+  --margin-default: var(--margin-m);
+  margin-left: var(--margin-2xl);
+  width: 95%;
 }
 main#playlist-editor > section > .make-new-block {
   display: flex;
@@ -1353,7 +1955,7 @@ main#playlist-editor > section > .make-new-block {
   width: 100%;
   background-color: var(--color-bg);
 }
-main#playlist-editor > section > .make-new-block > * {
+main#playlist-editor > section > .make-new-block > .header, main#playlist-editor > section > .make-new-block > .main {
   width: 100%;
 }
 main#playlist-editor > section > .make-new-block > .header {
@@ -1377,7 +1979,10 @@ main#playlist-editor > section > .make-new-block > .header {
   --padding-7xl: 20dvh;
   --padding-8xl: 25dvh;
   --padding-default: var(--padding-m);
-  padding: var(--padding-m) var(--padding-l) var(--padding-s) var(--padding-l);
+  padding-top: var(--padding-m);
+  padding-right: var(--padding-l);
+  padding-bottom: var(--padding-s);
+  padding-left: var(--padding-l);
   --text-size-s: 0.9rem;
   --text-size-m: 1rem;
   --text-size-l: 1.1rem;
@@ -1409,7 +2014,10 @@ main#playlist-editor > section > .make-new-block > .header:not(.none) {
   --padding-7xl: 20dvh;
   --padding-8xl: 25dvh;
   --padding-default: var(--padding-m);
-  padding: var(--padding-m) var(--padding-xl);
+  padding-top: var(--padding-m);
+  padding-right: var(--padding-xl);
+  padding-bottom: var(--padding-m);
+  padding-left: var(--padding-xl);
   background-color: var(--color-low);
 }
 main#playlist-editor > section > .make-new-block > .main {
@@ -1433,7 +2041,10 @@ main#playlist-editor > section > .make-new-block > .main {
   --padding-7xl: 20dvh;
   --padding-8xl: 25dvh;
   --padding-default: var(--padding-m);
-  padding: var(--padding-m) var(--padding-2xl) var(--padding-m) var(--padding-2xl);
+  padding-top: var(--padding-m);
+  padding-right: var(--padding-2xl);
+  padding-bottom: var(--padding-m);
+  padding-left: var(--padding-2xl);
   font-weight: lighter;
   flex: 1;
 }
@@ -1543,6 +2154,10 @@ body > header {
   --gap-m: 0.5rem;
   --gap-l: 0.75rem;
   --gap-xl: 1rem;
+  --gap-2xl: 1.5rem;
+  --gap-3xl: 2rem;
+  --gap-4xl: 5dvh;
+  --gap-5xl: 10dvh;
   --gap-default: var(--gap-m);
   gap: var(--gap-0) var(--gap-m);
   background-color: var(--color-low);
@@ -1580,7 +2195,10 @@ body > header > img {
   --padding-7xl: 20dvh;
   --padding-8xl: 25dvh;
   --padding-default: var(--padding-m);
-  padding: var(--padding-0) var(--padding-0) var(--padding-0) var(--padding-xl);
+  padding-top: var(--padding-0);
+  padding-right: var(--padding-0);
+  padding-bottom: var(--padding-0);
+  padding-left: var(--padding-xl);
   height: 80%;
 }
 body > header > img + div {
@@ -1597,6 +2215,10 @@ body > header > img + div {
   --gap-m: 0.5rem;
   --gap-l: 0.75rem;
   --gap-xl: 1rem;
+  --gap-2xl: 1.5rem;
+  --gap-3xl: 2rem;
+  --gap-4xl: 5dvh;
+  --gap-5xl: 10dvh;
   --gap-default: var(--gap-m);
   gap: var(--gap-0) var(--gap-m);
   height: 100%;
@@ -1733,7 +2355,10 @@ body > footer {
   --padding-7xl: 20dvh;
   --padding-8xl: 25dvh;
   --padding-default: var(--padding-m);
-  padding: var(--padding-m) var(--padding-0);
+  padding-top: var(--padding-m);
+  padding-right: var(--padding-0);
+  padding-bottom: var(--padding-m);
+  padding-left: var(--padding-0);
 }
 
 /*# sourceMappingURL=main.css.map */
