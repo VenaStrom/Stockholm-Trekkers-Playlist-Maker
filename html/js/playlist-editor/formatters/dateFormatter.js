@@ -64,7 +64,9 @@ const interpretDate = (date) => {
         }
         else if (date < new Date().getDate()) {
             // If the day has passed, assume it's next month
-            return `${new Date().getFullYear()}-${new Date().getMonth() + 2}-${date.padStart(2, "0")}`;
+            const newDate = new Date();
+            newDate.setMonth(newDate.getMonth() + 1);
+            return `${newDate.getFullYear()}-${newDate.getMonth() + 1}-${date.padStart(2, "0")}`;
         }
     }
 
