@@ -90,5 +90,6 @@ document.addEventListener("keydown", (event) => {
 });
 
 // Back button click event
-const backButton = document.querySelector("#back-button");
+const backButton = document.querySelector(".back-button");
+console.log(backButton);
 backButton.addEventListener("click", handleLeaving);

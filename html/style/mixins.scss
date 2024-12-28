@@ -79,7 +79,7 @@
     }
 }
 
-@mixin padding($top: false, $right: false, $bottom: false, $left: false) {
+@mixin padding($first: false, $second: false, $third: false, $fourth: false, $top: false, $right: false, $bottom: false, $left: false) {
     --padding-0: 0;
     --padding-none: 0;
     --padding-2xs: 0.1rem;
@@ -97,6 +97,30 @@
     --padding-8xl: 25dvh;
     --padding-default: var(--padding-m);
 
+    $non-positional: $top and $right and $bottom and $left;
+
+    // Positional arguments
+    // None defined: apply default padding
+    @if not $first and not $second and not $third and not $fourth and not $non-positional {
+        padding: var(--padding-default);
+    }
+
+    // Four defined: apply to all sides
+    @else if $first and $second and $third and $fourth and not $non-positional {
+        padding: var(--padding-#{$first}) var(--padding-#{$second}) var(--padding-#{$third}) var(--padding-#{$fourth});
+    }
+
+    // Two defined: apply up-down and side-side
+    @else if $first and $second and not $third and not $fourth and not $non-positional {
+        padding: var(--padding-#{$first}) var(--padding-#{$second});
+    }
+
+    // One defined: apply to all sides
+    @else if $first and not $second and not $third and not $fourth and not $non-positional {
+        padding: var(--padding-#{$first});
+    }
+
+
     // Non-positional arguments
     @if $top {
         padding-top: var(--padding-#{$top});
@@ -113,30 +137,9 @@
     @if $left {
         padding-left: var(--padding-#{$left});
     }
-
-    // Positional arguments
-    // None defined: apply default padding
-    @if not $top and not $right and not $bottom and not $left {
-        padding: var(--padding-default);
-    }
-
-    // Four defined: apply to all sides
-    @else if $top and $right and $bottom and $left {
-        padding: var(--padding-#{$top}) var(--padding-#{$right}) var(--padding-#{$bottom}) var(--padding-#{$left});
-    }
-
-    // Two defined: apply up-down and side-side
-    @else if $top and $right and not $bottom and not $left {
-        padding: var(--padding-#{$top}) var(--padding-#{$right});
-    }
-
-    // One defined: apply to all sides
-    @else if $top and not $right and not $bottom and not $left {
-        padding: var(--padding-#{$top});
-    }
 }
 
-@mixin margin($top: false, $right: false, $bottom: false, $left: false) {
+@mixin margin($first: false, $second: false, $third: false, $fourth: false, $top: false, $right: false, $bottom: false, $left: false) {
     --margin-0: 0;
     --margin-none: 0;
     --margin-2xs: 0.1rem;
@@ -154,6 +157,30 @@
     --margin-8xl: 25dvh;
     --margin-default: var(--margin-m);
 
+    $non-positional: $top and $right and $bottom and $left;
+
+    // Positional arguments
+    // None defined: apply default margin
+    @if not $first and not $second and not $third and not $fourth and not $non-positional {
+        margin: var(--margin-default);
+    }
+
+    // Four defined: apply to all sides
+    @else if $first and $second and $third and $fourth and not $non-positional {
+        margin: var(--margin-#{$first}) var(--margin-#{$second}) var(--margin-#{$third}) var(--margin-#{$fourth});
+    }
+
+    // Two defined: apply up-down and side-side
+    @else if $first and $second and not $third and not $fourth and not $non-positional {
+        margin: var(--margin-#{$first}) var(--margin-#{$second});
+    }
+
+    // One defined: apply to all sides
+    @else if $first and not $second and not $third and not $fourth and not $non-positional {
+        margin: var(--margin-#{$first});
+    }
+
+
     // Non-positional arguments
     @if $top {
         margin-top: var(--margin-#{$top});
@@ -169,27 +196,6 @@
 
     @if $left {
         margin-left: var(--margin-#{$left});
-    }
-
-    // Positional arguments
-    // None defined: apply default margin
-    @if not $top and not $right and not $bottom and not $left {
-        margin: var(--margin-default);
-    }
-
-    // Four defined: apply to all sides
-    @else if $top and $right and $bottom and $left {
-        margin: var(--margin-#{$top}) var(--margin-#{$right}) var(--margin-#{$bottom}) var(--margin-#{$left});
-    }
-
-    // Two defined: apply up-down and side-side
-    @else if $top and $right and not $bottom and not $left {
-        margin: var(--margin-#{$top}) var(--margin-#{$right});
-    }
-
-    // One defined: apply to all sides
-    @else if $top and not $right and not $bottom and not $left {
-        margin: var(--margin-#{$top});
     }
 }
 
@@ -433,6 +439,30 @@
             &.warning {
                 background-image: linear-gradient(var(--color-warning), var(--color-warning));
             }
+        }
+    }
+}
+
+@mixin new-element-button {
+    @include round-box();
+    @include padding(0);
+    @include column($justify: center, $align: center);
+
+    width: 100%;
+    background-color: var(--color-bg);
+
+    &>img {
+        @include icon(4xl, $filter: var(--filter-to-color-fg), $hover: false);
+    }
+
+    &:hover {
+        @include border($color: var(--color-primary));
+
+        background-color: var(--color-low);
+
+        &>.header {
+            font-weight: normal;
+            color: var(--color-primary);
         }
     }
 }

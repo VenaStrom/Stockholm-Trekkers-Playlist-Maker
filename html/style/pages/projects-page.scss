@@ -12,26 +12,7 @@ main#projects-page {
         @include gap(m, 0);
 
         &>.make-new-project {
-            @include padding(0);
-            @include column($justify: center, $align: center);
-
-            width: 100%;
-            background-color: var(--color-bg);
-
-            &>img {
-                @include icon(4xl, $filter: var(--filter-to-color-fg));
-            }
-
-            &:hover {
-                @include border($color: var(--color-primary));
-
-                background-color: var(--color-low);
-
-                &>.header {
-                    font-weight: normal;
-                    color: var(--color-primary);
-                }
-            }
+            @include new-element-button();
         }
 
         &>.project {
@@ -50,6 +31,7 @@ main#projects-page {
             &>.header {
                 @include row($justify: space-between, $align: center);
                 @include gap(0, m);
+                @include padding($top: l, $bottom: l);
 
                 &>.project-date {
                     @include row($justify: space-between, $align: center);

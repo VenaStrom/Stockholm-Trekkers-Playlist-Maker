@@ -50,14 +50,14 @@ input[type="text"] {
     all: unset;
 
     @include outline();
-    // @include padding(l);
+    @include padding(m, l);
     @include border-radius(m);
 
     color: var(--color-fg);
     background-color: var(--color-low);
 
     cursor: text;
-    
+
     &::-webkit-inner-spin-button {
         display: none;
         appearance: none;

@@ -48,7 +48,6 @@
   --margin-7xl: 20dvh;
   --margin-8xl: 25dvh;
   --margin-default: var(--margin-m);
-  margin-top: var(--margin-xs);
   margin: var(--margin-xs);
   --border-radius-2xs: 0.1rem;
   --border-radius-xs: 0.15rem;
@@ -90,10 +89,6 @@
   --padding-7xl: 20dvh;
   --padding-8xl: 25dvh;
   --padding-default: var(--padding-m);
-  padding-top: var(--padding-m);
-  padding-right: var(--padding-l);
-  padding-bottom: var(--padding-s);
-  padding-left: var(--padding-l);
   padding: var(--padding-m) var(--padding-l) var(--padding-s) var(--padding-l);
   --text-size-s: 0.9rem;
   --text-size-m: 1rem;
@@ -126,8 +121,6 @@
   --padding-7xl: 20dvh;
   --padding-8xl: 25dvh;
   --padding-default: var(--padding-m);
-  padding-top: var(--padding-m);
-  padding-right: var(--padding-xl);
   padding: var(--padding-m) var(--padding-xl);
   background-color: var(--color-low);
 }
@@ -152,10 +145,6 @@
   --padding-7xl: 20dvh;
   --padding-8xl: 25dvh;
   --padding-default: var(--padding-m);
-  padding-top: var(--padding-m);
-  padding-right: var(--padding-2xl);
-  padding-bottom: var(--padding-m);
-  padding-left: var(--padding-2xl);
   padding: var(--padding-m) var(--padding-2xl) var(--padding-m) var(--padding-2xl);
   font-weight: lighter;
   flex: 1;
@@ -292,8 +281,6 @@ input[type=button] {
   --padding-7xl: 20dvh;
   --padding-8xl: 25dvh;
   --padding-default: var(--padding-m);
-  padding-top: var(--padding-m);
-  padding-right: var(--padding-xl);
   padding: var(--padding-m) var(--padding-xl);
   --border-radius-2xs: 0.1rem;
   --border-radius-xs: 0.15rem;
@@ -320,6 +307,23 @@ input[type=button]:hover {
 
 input[type=text] {
   all: unset;
+  --padding-0: 0;
+  --padding-none: 0;
+  --padding-2xs: 0.1rem;
+  --padding-xs: 0.15rem;
+  --padding-s: 0.25rem;
+  --padding-m: 0.5rem;
+  --padding-l: 0.75rem;
+  --padding-xl: 1rem;
+  --padding-2xl: 1.5rem;
+  --padding-3xl: 2rem;
+  --padding-4xl: 5dvh;
+  --padding-5xl: 10dvh;
+  --padding-6xl: 15dvh;
+  --padding-7xl: 20dvh;
+  --padding-8xl: 25dvh;
+  --padding-default: var(--padding-m);
+  padding: var(--padding-m) var(--padding-l);
   --border-radius-2xs: 0.1rem;
   --border-radius-xs: 0.15rem;
   --border-radius-s: 0.25rem;
@@ -368,10 +372,6 @@ main#download-page {
   --margin-7xl: 20dvh;
   --margin-8xl: 25dvh;
   --margin-default: var(--margin-m);
-  margin-top: var(--margin-8xl);
-  margin-right: var(--margin-0);
-  margin-bottom: var(--margin-0);
-  margin-left: var(--margin-0);
   margin: var(--margin-8xl) var(--margin-0) var(--margin-0) var(--margin-0);
 }
 main#download-page > p:first-of-type {
@@ -423,10 +423,6 @@ main#download-page > p:last-of-type {
   --margin-7xl: 20dvh;
   --margin-8xl: 25dvh;
   --margin-default: var(--margin-m);
-  margin-top: var(--margin-0);
-  margin-right: var(--margin-0);
-  margin-bottom: var(--margin-3xl);
-  margin-left: var(--margin-0);
   margin: var(--margin-0) var(--margin-0) var(--margin-3xl) var(--margin-0);
 }
 main#download-page > .round-box {
@@ -475,10 +471,6 @@ main#download-page > .round-box > .main > button, main#download-page > .round-bo
   --margin-7xl: 20dvh;
   --margin-8xl: 25dvh;
   --margin-default: var(--margin-m);
-  margin-top: var(--margin-m);
-  margin-right: var(--margin-0);
-  margin-bottom: var(--margin-0);
-  margin-left: var(--margin-0);
   margin: var(--margin-m) var(--margin-0) var(--margin-0) var(--margin-0);
 }
 
@@ -499,10 +491,6 @@ main#projects-page > p {
   --margin-7xl: 20dvh;
   --margin-8xl: 25dvh;
   --margin-default: var(--margin-m);
-  margin-top: var(--margin-3xl);
-  margin-right: var(--margin-0);
-  margin-bottom: var(--margin-xl);
-  margin-left: var(--margin-0);
   margin: var(--margin-3xl) var(--margin-0) var(--margin-xl) var(--margin-0);
   --text-size-s: 0.9rem;
   --text-size-m: 1rem;
@@ -556,6 +544,42 @@ main#projects-page > section {
   gap: var(--gap-m) var(--gap-0);
 }
 main#projects-page > section > .make-new-project {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: start;
+  align-items: center;
+  --margin-0: 0;
+  --margin-none: 0;
+  --margin-2xs: 0.1rem;
+  --margin-xs: 0.15rem;
+  --margin-s: 0.25rem;
+  --margin-m: 0.5rem;
+  --margin-l: 0.75rem;
+  --margin-xl: 1rem;
+  --margin-2xl: 1.5rem;
+  --margin-3xl: 2rem;
+  --margin-4xl: 5dvh;
+  --margin-5xl: 10dvh;
+  --margin-6xl: 15dvh;
+  --margin-7xl: 20dvh;
+  --margin-8xl: 25dvh;
+  --margin-default: var(--margin-m);
+  margin: var(--margin-xs);
+  --border-radius-2xs: 0.1rem;
+  --border-radius-xs: 0.15rem;
+  --border-radius-s: 0.25rem;
+  --border-radius-m: 0.5rem;
+  --border-radius-l: 0.75rem;
+  --border-radius-xl: 1rem;
+  border-radius: var(--border-radius-l);
+  --border-thickness-thin: 0.1rem;
+  --border-thickness-m: 0.2rem;
+  --border-thickness-thick: 0.3rem;
+  --border-thickness-x-thick: 0.4rem;
+  border: var(--border-thickness-m) solid var(--color-low);
+  min-width: 20ch;
+  min-height: 5rem;
+  overflow: hidden;
   --padding-0: 0;
   --padding-none: 0;
   --padding-2xs: 0.1rem;
@@ -572,7 +596,6 @@ main#projects-page > section > .make-new-project {
   --padding-7xl: 20dvh;
   --padding-8xl: 25dvh;
   --padding-default: var(--padding-m);
-  padding-top: var(--padding-0);
   padding: var(--padding-0);
   display: flex;
   flex-flow: column nowrap;
@@ -580,6 +603,116 @@ main#projects-page > section > .make-new-project {
   align-items: center;
   width: 100%;
   background-color: var(--color-bg);
+}
+main#projects-page > section > .make-new-project > * {
+  width: 100%;
+}
+main#projects-page > section > .make-new-project > .header {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+  --padding-0: 0;
+  --padding-none: 0;
+  --padding-2xs: 0.1rem;
+  --padding-xs: 0.15rem;
+  --padding-s: 0.25rem;
+  --padding-m: 0.5rem;
+  --padding-l: 0.75rem;
+  --padding-xl: 1rem;
+  --padding-2xl: 1.5rem;
+  --padding-3xl: 2rem;
+  --padding-4xl: 5dvh;
+  --padding-5xl: 10dvh;
+  --padding-6xl: 15dvh;
+  --padding-7xl: 20dvh;
+  --padding-8xl: 25dvh;
+  --padding-default: var(--padding-m);
+  padding: var(--padding-m) var(--padding-l) var(--padding-s) var(--padding-l);
+  --text-size-s: 0.9rem;
+  --text-size-m: 1rem;
+  --text-size-l: 1.1rem;
+  --text-size-xl: 1.25rem;
+  --text-size-2xl: 1.5rem;
+  --text-size-title: 2rem;
+  --text-size-x-title: 2.5rem;
+  --text-size-xx-title: 3rem;
+  font-size: var(--text-size-l);
+}
+main#projects-page > section > .make-new-project > .header:not(.none) {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: start;
+  align-items: center;
+  --padding-0: 0;
+  --padding-none: 0;
+  --padding-2xs: 0.1rem;
+  --padding-xs: 0.15rem;
+  --padding-s: 0.25rem;
+  --padding-m: 0.5rem;
+  --padding-l: 0.75rem;
+  --padding-xl: 1rem;
+  --padding-2xl: 1.5rem;
+  --padding-3xl: 2rem;
+  --padding-4xl: 5dvh;
+  --padding-5xl: 10dvh;
+  --padding-6xl: 15dvh;
+  --padding-7xl: 20dvh;
+  --padding-8xl: 25dvh;
+  --padding-default: var(--padding-m);
+  padding: var(--padding-m) var(--padding-xl);
+  background-color: var(--color-low);
+}
+main#projects-page > section > .make-new-project > .main {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: start;
+  align-items: start;
+  --padding-0: 0;
+  --padding-none: 0;
+  --padding-2xs: 0.1rem;
+  --padding-xs: 0.15rem;
+  --padding-s: 0.25rem;
+  --padding-m: 0.5rem;
+  --padding-l: 0.75rem;
+  --padding-xl: 1rem;
+  --padding-2xl: 1.5rem;
+  --padding-3xl: 2rem;
+  --padding-4xl: 5dvh;
+  --padding-5xl: 10dvh;
+  --padding-6xl: 15dvh;
+  --padding-7xl: 20dvh;
+  --padding-8xl: 25dvh;
+  --padding-default: var(--padding-m);
+  padding: var(--padding-m) var(--padding-2xl) var(--padding-m) var(--padding-2xl);
+  font-weight: lighter;
+  flex: 1;
+}
+main#projects-page > section > .make-new-project > .main > button, main#projects-page > section > .make-new-project > .main > input {
+  align-self: center;
+}
+main#projects-page > section > .make-new-project > .main .progress-bar {
+  --border-thickness-thin: 0.1rem;
+  --border-thickness-m: 0.2rem;
+  --border-thickness-thick: 0.3rem;
+  --border-thickness-x-thick: 0.4rem;
+  border: var(--border-thickness-thick) solid var(--color-low);
+  --border-radius-2xs: 0.1rem;
+  --border-radius-xs: 0.15rem;
+  --border-radius-s: 0.25rem;
+  --border-radius-m: 0.5rem;
+  --border-radius-l: 0.75rem;
+  --border-radius-xl: 1rem;
+  border-radius: var(--border-radius-m);
+  width: 100%;
+  height: 1.5rem;
+  background-color: var(--color-bg);
+  background-image: linear-gradient(var(--color-primary), var(--color-primary));
+  background-repeat: no-repeat;
+  background-size: 0%;
+}
+main#projects-page > section > .make-new-project > .main .progress-bar.warning {
+  background-image: linear-gradient(var(--color-warning), var(--color-warning));
 }
 main#projects-page > section > .make-new-project > img {
   --icon-size-5xs: 0.3rem;
@@ -599,10 +732,6 @@ main#projects-page > section > .make-new-project > img {
   aspect-ratio: 1/1;
   user-select: none;
   filter: var(--filter-to-color-fg);
-  cursor: pointer;
-}
-main#projects-page > section > .make-new-project > img:hover {
-  filter: var(--filter-to-color-primary);
 }
 main#projects-page > section > .make-new-project:hover {
   --border-thickness-thin: 0.1rem;
@@ -633,7 +762,6 @@ main#projects-page > section > .project {
   --padding-7xl: 20dvh;
   --padding-8xl: 25dvh;
   --padding-default: var(--padding-m);
-  padding-top: var(--padding-0);
   padding: var(--padding-0);
   cursor: pointer;
   width: 100%;
@@ -665,6 +793,25 @@ main#projects-page > section > .project > .header {
   --gap-xl: 1rem;
   --gap-default: var(--gap-m);
   gap: var(--gap-0) var(--gap-m);
+  --padding-0: 0;
+  --padding-none: 0;
+  --padding-2xs: 0.1rem;
+  --padding-xs: 0.15rem;
+  --padding-s: 0.25rem;
+  --padding-m: 0.5rem;
+  --padding-l: 0.75rem;
+  --padding-xl: 1rem;
+  --padding-2xl: 1.5rem;
+  --padding-3xl: 2rem;
+  --padding-4xl: 5dvh;
+  --padding-5xl: 10dvh;
+  --padding-6xl: 15dvh;
+  --padding-7xl: 20dvh;
+  --padding-8xl: 25dvh;
+  --padding-default: var(--padding-m);
+  padding: var(--padding-default);
+  padding-top: var(--padding-l);
+  padding-bottom: var(--padding-l);
 }
 main#projects-page > section > .project > .header > .project-date {
   display: flex;
@@ -772,8 +919,6 @@ main#projects-page > section > .project > .main > hr {
   --margin-7xl: 20dvh;
   --margin-8xl: 25dvh;
   --margin-default: var(--margin-m);
-  margin-top: var(--margin-m);
-  margin-right: var(--margin-0);
   margin: var(--margin-m) var(--margin-0);
 }
 main#projects-page > section > .project > .main > li {
@@ -831,10 +976,6 @@ main#projects-page > section > .project > .main > li.episode, main#projects-page
   --margin-7xl: 20dvh;
   --margin-8xl: 25dvh;
   --margin-default: var(--margin-m);
-  margin-top: var(--margin-0);
-  margin-right: var(--margin-0);
-  margin-bottom: var(--margin-0);
-  margin-left: var(--margin-m);
   margin: var(--margin-0) var(--margin-0) var(--margin-0) var(--margin-m);
   --gap-0: 0;
   --gap-none: 0;
@@ -869,10 +1010,6 @@ main#projects-page > section > .project > .main > li.episode > p:last-child, mai
   --margin-7xl: 20dvh;
   --margin-8xl: 25dvh;
   --margin-default: var(--margin-m);
-  margin-top: var(--margin-0);
-  margin-right: var(--margin-0);
-  margin-bottom: var(--margin-0);
-  margin-left: var(--margin-s);
   margin: var(--margin-0) var(--margin-0) var(--margin-0) var(--margin-s);
   width: 100%;
 }
@@ -896,6 +1033,7 @@ main#projects-page > section > .project > .main > li:last-child {
   --margin-7xl: 20dvh;
   --margin-8xl: 25dvh;
   --margin-default: var(--margin-m);
+  margin: var(--margin-default);
   margin-bottom: var(--margin-s);
 }
 main#projects-page > .bottom {
@@ -936,6 +1074,7 @@ main#projects-page > .bottom > .buttons {
   --margin-7xl: 20dvh;
   --margin-8xl: 25dvh;
   --margin-default: var(--margin-m);
+  margin: var(--margin-default);
   margin-right: var(--margin-2xl);
 }
 main#projects-page > .bottom > .buttons > button {
@@ -970,6 +1109,7 @@ main#projects-page > .bottom > .buttons > button {
   --padding-7xl: 20dvh;
   --padding-8xl: 25dvh;
   --padding-default: var(--padding-m);
+  padding: var(--padding-default);
   padding-right: var(--padding-m);
   padding-left: var(--padding-m);
 }
@@ -1040,10 +1180,6 @@ main#playlist-editor > .top > .back-button {
   --margin-7xl: 20dvh;
   --margin-8xl: 25dvh;
   --margin-default: var(--margin-m);
-  margin-top: var(--margin-0);
-  margin-right: var(--margin-0);
-  margin-bottom: var(--margin-0);
-  margin-left: var(--margin-2xl);
   margin: var(--margin-0) var(--margin-0) var(--margin-0) var(--margin-2xl);
   --border-radius-2xs: 0.1rem;
   --border-radius-xs: 0.15rem;
@@ -1070,6 +1206,7 @@ main#playlist-editor > .top > .back-button {
   user-select: none;
   filter: var(--filter-to-color-fg);
   cursor: pointer;
+  cursor: pointer;
 }
 main#playlist-editor > .top > .back-button:focus {
   outline: var(--color-primary) solid 0.1rem;
@@ -1083,9 +1220,43 @@ main#playlist-editor > .top > .back-button > img {
 }
 main#playlist-editor > .date-input {
   display: flex;
-  flex-flow: column nowrap;
-  justify-content: start;
+  flex-flow: row nowrap;
+  justify-content: center;
   align-items: center;
+  --gap-0: 0;
+  --gap-none: 0;
+  --gap-3xs: 0.05rem;
+  --gap-2xs: 0.1rem;
+  --gap-xs: 0.15rem;
+  --gap-s: 0.25rem;
+  --gap-m: 0.5rem;
+  --gap-l: 0.75rem;
+  --gap-xl: 1rem;
+  --gap-default: var(--gap-m);
+  gap: var(--gap-0) var(--gap-l);
+  --margin-0: 0;
+  --margin-none: 0;
+  --margin-2xs: 0.1rem;
+  --margin-xs: 0.15rem;
+  --margin-s: 0.25rem;
+  --margin-m: 0.5rem;
+  --margin-l: 0.75rem;
+  --margin-xl: 1rem;
+  --margin-2xl: 1.5rem;
+  --margin-3xl: 2rem;
+  --margin-4xl: 5dvh;
+  --margin-5xl: 10dvh;
+  --margin-6xl: 15dvh;
+  --margin-7xl: 20dvh;
+  --margin-8xl: 25dvh;
+  --margin-default: var(--margin-m);
+  margin: var(--margin-default);
+  margin-top: var(--margin-3xl);
+  margin-bottom: var(--margin-l);
+}
+main#playlist-editor > .date-input > p {
+  width: 20ch;
+  text-align: right;
 }
 main#playlist-editor > .date-input > input {
   --text-size-s: 0.9rem;
@@ -1097,7 +1268,231 @@ main#playlist-editor > .date-input > input {
   --text-size-x-title: 2.5rem;
   --text-size-xx-title: 3rem;
   font-size: var(--text-size-2xl);
+  width: 14ch;
   text-align: center;
+}
+main#playlist-editor > section {
+  --margin-0: 0;
+  --margin-none: 0;
+  --margin-2xs: 0.1rem;
+  --margin-xs: 0.15rem;
+  --margin-s: 0.25rem;
+  --margin-m: 0.5rem;
+  --margin-l: 0.75rem;
+  --margin-xl: 1rem;
+  --margin-2xl: 1.5rem;
+  --margin-3xl: 2rem;
+  --margin-4xl: 5dvh;
+  --margin-5xl: 10dvh;
+  --margin-6xl: 15dvh;
+  --margin-7xl: 20dvh;
+  --margin-8xl: 25dvh;
+  --margin-default: var(--margin-m);
+  margin: var(--margin-default);
+  margin-top: var(--margin-xl);
+  width: 100%;
+}
+main#playlist-editor > section > .make-new-block {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: start;
+  align-items: center;
+  --margin-0: 0;
+  --margin-none: 0;
+  --margin-2xs: 0.1rem;
+  --margin-xs: 0.15rem;
+  --margin-s: 0.25rem;
+  --margin-m: 0.5rem;
+  --margin-l: 0.75rem;
+  --margin-xl: 1rem;
+  --margin-2xl: 1.5rem;
+  --margin-3xl: 2rem;
+  --margin-4xl: 5dvh;
+  --margin-5xl: 10dvh;
+  --margin-6xl: 15dvh;
+  --margin-7xl: 20dvh;
+  --margin-8xl: 25dvh;
+  --margin-default: var(--margin-m);
+  margin: var(--margin-xs);
+  --border-radius-2xs: 0.1rem;
+  --border-radius-xs: 0.15rem;
+  --border-radius-s: 0.25rem;
+  --border-radius-m: 0.5rem;
+  --border-radius-l: 0.75rem;
+  --border-radius-xl: 1rem;
+  border-radius: var(--border-radius-l);
+  --border-thickness-thin: 0.1rem;
+  --border-thickness-m: 0.2rem;
+  --border-thickness-thick: 0.3rem;
+  --border-thickness-x-thick: 0.4rem;
+  border: var(--border-thickness-m) solid var(--color-low);
+  min-width: 20ch;
+  min-height: 5rem;
+  overflow: hidden;
+  --padding-0: 0;
+  --padding-none: 0;
+  --padding-2xs: 0.1rem;
+  --padding-xs: 0.15rem;
+  --padding-s: 0.25rem;
+  --padding-m: 0.5rem;
+  --padding-l: 0.75rem;
+  --padding-xl: 1rem;
+  --padding-2xl: 1.5rem;
+  --padding-3xl: 2rem;
+  --padding-4xl: 5dvh;
+  --padding-5xl: 10dvh;
+  --padding-6xl: 15dvh;
+  --padding-7xl: 20dvh;
+  --padding-8xl: 25dvh;
+  --padding-default: var(--padding-m);
+  padding: var(--padding-0);
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background-color: var(--color-bg);
+}
+main#playlist-editor > section > .make-new-block > * {
+  width: 100%;
+}
+main#playlist-editor > section > .make-new-block > .header {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+  --padding-0: 0;
+  --padding-none: 0;
+  --padding-2xs: 0.1rem;
+  --padding-xs: 0.15rem;
+  --padding-s: 0.25rem;
+  --padding-m: 0.5rem;
+  --padding-l: 0.75rem;
+  --padding-xl: 1rem;
+  --padding-2xl: 1.5rem;
+  --padding-3xl: 2rem;
+  --padding-4xl: 5dvh;
+  --padding-5xl: 10dvh;
+  --padding-6xl: 15dvh;
+  --padding-7xl: 20dvh;
+  --padding-8xl: 25dvh;
+  --padding-default: var(--padding-m);
+  padding: var(--padding-m) var(--padding-l) var(--padding-s) var(--padding-l);
+  --text-size-s: 0.9rem;
+  --text-size-m: 1rem;
+  --text-size-l: 1.1rem;
+  --text-size-xl: 1.25rem;
+  --text-size-2xl: 1.5rem;
+  --text-size-title: 2rem;
+  --text-size-x-title: 2.5rem;
+  --text-size-xx-title: 3rem;
+  font-size: var(--text-size-l);
+}
+main#playlist-editor > section > .make-new-block > .header:not(.none) {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: start;
+  align-items: center;
+  --padding-0: 0;
+  --padding-none: 0;
+  --padding-2xs: 0.1rem;
+  --padding-xs: 0.15rem;
+  --padding-s: 0.25rem;
+  --padding-m: 0.5rem;
+  --padding-l: 0.75rem;
+  --padding-xl: 1rem;
+  --padding-2xl: 1.5rem;
+  --padding-3xl: 2rem;
+  --padding-4xl: 5dvh;
+  --padding-5xl: 10dvh;
+  --padding-6xl: 15dvh;
+  --padding-7xl: 20dvh;
+  --padding-8xl: 25dvh;
+  --padding-default: var(--padding-m);
+  padding: var(--padding-m) var(--padding-xl);
+  background-color: var(--color-low);
+}
+main#playlist-editor > section > .make-new-block > .main {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: start;
+  align-items: start;
+  --padding-0: 0;
+  --padding-none: 0;
+  --padding-2xs: 0.1rem;
+  --padding-xs: 0.15rem;
+  --padding-s: 0.25rem;
+  --padding-m: 0.5rem;
+  --padding-l: 0.75rem;
+  --padding-xl: 1rem;
+  --padding-2xl: 1.5rem;
+  --padding-3xl: 2rem;
+  --padding-4xl: 5dvh;
+  --padding-5xl: 10dvh;
+  --padding-6xl: 15dvh;
+  --padding-7xl: 20dvh;
+  --padding-8xl: 25dvh;
+  --padding-default: var(--padding-m);
+  padding: var(--padding-m) var(--padding-2xl) var(--padding-m) var(--padding-2xl);
+  font-weight: lighter;
+  flex: 1;
+}
+main#playlist-editor > section > .make-new-block > .main > button, main#playlist-editor > section > .make-new-block > .main > input {
+  align-self: center;
+}
+main#playlist-editor > section > .make-new-block > .main .progress-bar {
+  --border-thickness-thin: 0.1rem;
+  --border-thickness-m: 0.2rem;
+  --border-thickness-thick: 0.3rem;
+  --border-thickness-x-thick: 0.4rem;
+  border: var(--border-thickness-thick) solid var(--color-low);
+  --border-radius-2xs: 0.1rem;
+  --border-radius-xs: 0.15rem;
+  --border-radius-s: 0.25rem;
+  --border-radius-m: 0.5rem;
+  --border-radius-l: 0.75rem;
+  --border-radius-xl: 1rem;
+  border-radius: var(--border-radius-m);
+  width: 100%;
+  height: 1.5rem;
+  background-color: var(--color-bg);
+  background-image: linear-gradient(var(--color-primary), var(--color-primary));
+  background-repeat: no-repeat;
+  background-size: 0%;
+}
+main#playlist-editor > section > .make-new-block > .main .progress-bar.warning {
+  background-image: linear-gradient(var(--color-warning), var(--color-warning));
+}
+main#playlist-editor > section > .make-new-block > img {
+  --icon-size-5xs: 0.3rem;
+  --icon-size-4xs: 0.6rem;
+  --icon-size-3xs: 0.75rem;
+  --icon-size-2xs: 1rem;
+  --icon-size-xs: 1.2rem;
+  --icon-size-s: 2rem;
+  --icon-size-m: 2.7rem;
+  --icon-size-l: 4rem;
+  --icon-size-xl: 5rem;
+  --icon-size-2xl: 6rem;
+  --icon-size-3xl: 7rem;
+  --icon-size-4xl: 8rem;
+  height: var(--icon-size-4xl);
+  width: var(--icon-size-4xl);
+  aspect-ratio: 1/1;
+  user-select: none;
+  filter: var(--filter-to-color-fg);
+}
+main#playlist-editor > section > .make-new-block:hover {
+  --border-thickness-thin: 0.1rem;
+  --border-thickness-m: 0.2rem;
+  --border-thickness-thick: 0.3rem;
+  --border-thickness-x-thick: 0.4rem;
+  border: var(--border-thickness-m) solid var(--color-primary);
+  background-color: var(--color-low);
+}
+main#playlist-editor > section > .make-new-block:hover > .header {
+  font-weight: normal;
+  color: var(--color-primary);
 }
 
 @font-face {
@@ -1129,6 +1524,7 @@ body {
   background-color: var(--color-bg);
   color: var(--color-fg);
   width: 100%;
+  min-height: 100dvh;
 }
 body > * {
   width: 100%;
@@ -1184,10 +1580,6 @@ body > header > img {
   --padding-7xl: 20dvh;
   --padding-8xl: 25dvh;
   --padding-default: var(--padding-m);
-  padding-top: var(--padding-0);
-  padding-right: var(--padding-0);
-  padding-bottom: var(--padding-0);
-  padding-left: var(--padding-xl);
   padding: var(--padding-0) var(--padding-0) var(--padding-0) var(--padding-xl);
   height: 80%;
 }
@@ -1281,7 +1673,7 @@ body > main > .top {
   top: calc(1.5rem + 9dvh);
   pointer-events: none;
 }
-body > main > .top > * {
+body > main > .top * {
   pointer-events: auto;
 }
 body > main > .bottom {
@@ -1317,7 +1709,7 @@ body > main > .bottom {
   bottom: 1.5rem;
   pointer-events: none;
 }
-body > main > .bottom > * {
+body > main > .bottom * {
   pointer-events: auto;
 }
 body > footer {
@@ -1341,8 +1733,6 @@ body > footer {
   --padding-7xl: 20dvh;
   --padding-8xl: 25dvh;
   --padding-default: var(--padding-m);
-  padding-top: var(--padding-m);
-  padding-right: var(--padding-0);
   padding: var(--padding-m) var(--padding-0);
 }
 

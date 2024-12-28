@@ -12,6 +12,8 @@ main#playlist-editor {
             @include border-radius(m);
             @include icon(l);
 
+            cursor: pointer;
+
             &>img {
                 width: 100%;
                 height: 100%;
@@ -20,11 +22,30 @@ main#playlist-editor {
     }
 
     &>.date-input {
-        @include column($justify: start, $align: center);
+        @include row($justify: center, $align: center);
+        @include gap(0, l);
+        @include margin($top: 3xl, $bottom: l);
+
+        &>p {
+            width: 20ch;
+            text-align: right;
+        }
 
         &>input {
             @include text-size(2xl);
+
+            width: 14ch;
+
             text-align: center;
+        }
+    }
+
+    &>section {
+        @include margin($top: xl);
+        width: 100%;
+
+        &>.make-new-block {
+            @include new-element-button();
         }
     }
 }
