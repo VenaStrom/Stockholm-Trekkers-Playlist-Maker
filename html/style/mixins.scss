@@ -48,6 +48,10 @@
     --gap-m: 0.5rem;
     --gap-l: 0.75rem;
     --gap-xl: 1rem;
+    --gap-2xl: 1.5rem;
+    --gap-3xl: 2rem;
+    --gap-4xl: 5dvh;
+    --gap-5xl: 10dvh;
     --gap-default: var(--gap-m);
 
     // None defined: apply default gap
@@ -97,45 +101,62 @@
     --padding-8xl: 25dvh;
     --padding-default: var(--padding-m);
 
-    $non-positional: $top and $right and $bottom and $left;
+    $positional: $first or $second or $third or $fourth;
+    $non-positional: $top or $right or $bottom or $left;
 
-    // Positional arguments
-    // None defined: apply default padding
-    @if not $first and not $second and not $third and not $fourth and not $non-positional {
+    @if $positional and $non-positional {
+        @error "Cannot mix positional and non-positional arguments";
+    }
+
+    @else if $non-positional and not $positional {
+        @if $top {
+            padding-top: var(--padding-#{$top});
+        }
+
+        @if $right {
+            padding-right: var(--padding-#{$right});
+        }
+
+        @if $bottom {
+            padding-bottom: var(--padding-#{$bottom});
+        }
+
+        @if $left {
+            padding-left: var(--padding-#{$left});
+        }
+    }
+
+    @else if $positional and not $non-positional {
+
+        // Four defined: apply to all sides
+        @if $first and $second and $third and $fourth {
+            padding-top: var(--padding-#{$first});
+            padding-right: var(--padding-#{$second});
+            padding-bottom: var(--padding-#{$third});
+            padding-left: var(--padding-#{$fourth});
+        }
+
+        // Three defined: error
+        @else if $first and $second and $third and not $fourth {
+            @error "Cannot define three positional arguments";
+        }
+
+        // Two defined: apply up-down and side-side
+        @else if $first and $second and not $third and not $fourth {
+            padding-top: var(--padding-#{$first});
+            padding-right: var(--padding-#{$second});
+            padding-bottom: var(--padding-#{$first});
+            padding-left: var(--padding-#{$second});
+        }
+
+        // One defined: apply to all sides
+        @else if $first and not $second and not $third and not $fourth {
+            padding: var(--padding-#{$first});
+        }
+    }
+
+    @else {
         padding: var(--padding-default);
-    }
-
-    // Four defined: apply to all sides
-    @else if $first and $second and $third and $fourth and not $non-positional {
-        padding: var(--padding-#{$first}) var(--padding-#{$second}) var(--padding-#{$third}) var(--padding-#{$fourth});
-    }
-
-    // Two defined: apply up-down and side-side
-    @else if $first and $second and not $third and not $fourth and not $non-positional {
-        padding: var(--padding-#{$first}) var(--padding-#{$second});
-    }
-
-    // One defined: apply to all sides
-    @else if $first and not $second and not $third and not $fourth and not $non-positional {
-        padding: var(--padding-#{$first});
-    }
-
-
-    // Non-positional arguments
-    @if $top {
-        padding-top: var(--padding-#{$top});
-    }
-
-    @if $right {
-        padding-right: var(--padding-#{$right});
-    }
-
-    @if $bottom {
-        padding-bottom: var(--padding-#{$bottom});
-    }
-
-    @if $left {
-        padding-left: var(--padding-#{$left});
     }
 }
 
@@ -157,45 +178,62 @@
     --margin-8xl: 25dvh;
     --margin-default: var(--margin-m);
 
-    $non-positional: $top and $right and $bottom and $left;
+    $positional: $first or $second or $third or $fourth;
+    $non-positional: $top or $right or $bottom or $left;
 
-    // Positional arguments
-    // None defined: apply default margin
-    @if not $first and not $second and not $third and not $fourth and not $non-positional {
+    @if $positional and $non-positional {
+        @error "Cannot mix positional and non-positional arguments";
+    }
+
+    @else if $non-positional and not $positional {
+        @if $top {
+            margin-top: var(--margin-#{$top});
+        }
+
+        @if $right {
+            margin-right: var(--margin-#{$right});
+        }
+
+        @if $bottom {
+            margin-bottom: var(--margin-#{$bottom});
+        }
+
+        @if $left {
+            margin-left: var(--margin-#{$left});
+        }
+    }
+
+    @else if $positional and not $non-positional {
+
+        // Four defined: apply to all sides
+        @if $first and $second and $third and $fourth {
+            margin-top: var(--margin-#{$first});
+            margin-right: var(--margin-#{$second});
+            margin-bottom: var(--margin-#{$third});
+            margin-left: var(--margin-#{$fourth});
+        }
+
+        // Three defined: error
+        @else if $first and $second and $third and not $fourth {
+            @error "Cannot define three positional arguments";
+        }
+
+        // Two defined: apply up-down and side-side
+        @else if $first and $second and not $third and not $fourth {
+            margin-top: var(--margin-#{$first});
+            margin-right: var(--margin-#{$second});
+            margin-bottom: var(--margin-#{$first});
+            margin-left: var(--margin-#{$second});
+        }
+
+        // One defined: apply to all sides
+        @else if $first and not $second and not $third and not $fourth {
+            margin: var(--margin-#{$first});
+        }
+    }
+
+    @else {
         margin: var(--margin-default);
-    }
-
-    // Four defined: apply to all sides
-    @else if $first and $second and $third and $fourth and not $non-positional {
-        margin: var(--margin-#{$first}) var(--margin-#{$second}) var(--margin-#{$third}) var(--margin-#{$fourth});
-    }
-
-    // Two defined: apply up-down and side-side
-    @else if $first and $second and not $third and not $fourth and not $non-positional {
-        margin: var(--margin-#{$first}) var(--margin-#{$second});
-    }
-
-    // One defined: apply to all sides
-    @else if $first and not $second and not $third and not $fourth and not $non-positional {
-        margin: var(--margin-#{$first});
-    }
-
-
-    // Non-positional arguments
-    @if $top {
-        margin-top: var(--margin-#{$top});
-    }
-
-    @if $right {
-        margin-right: var(--margin-#{$right});
-    }
-
-    @if $bottom {
-        margin-bottom: var(--margin-#{$bottom});
-    }
-
-    @if $left {
-        margin-left: var(--margin-#{$left});
     }
 }
 
@@ -391,7 +429,8 @@
 
     overflow: hidden; // Corners of header were showing
 
-    &>* {
+    &>.header,
+    &>.main {
         width: 100%;
     }
 
@@ -464,5 +503,26 @@
             font-weight: normal;
             color: var(--color-primary);
         }
+    }
+}
+
+@mixin button {
+    // Reset
+    all: unset;
+
+    @include padding(m, xl);
+    @include border-radius(m);
+    @include border(thick);
+
+    cursor: pointer;
+
+    background-color: var(--color-low);
+    color: var(--color-fg);
+
+    &:hover {
+        @include bold();
+
+        background-color: var(--color-primary);
+        color: var(--color-low);
     }
 }
