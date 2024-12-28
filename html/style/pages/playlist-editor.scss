@@ -147,6 +147,7 @@ main#playlist-editor {
 
         &>.make-new-block {
             @include new-element-button();
+            @include margin($bottom: 3xl);
         }
     }
 }

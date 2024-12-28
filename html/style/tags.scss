@@ -71,7 +71,9 @@ input[type="file"] {
 
     @include outline();
     @include border-radius(m);
-    // @include padding(s, l);
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
 
     &::-webkit-file-upload-button {
         visibility: hidden;

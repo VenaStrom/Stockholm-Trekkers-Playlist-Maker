@@ -367,6 +367,8 @@ input[type=file] {
   --border-radius-l: 0.75rem;
   --border-radius-xl: 1rem;
   border-radius: var(--border-radius-m);
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 input[type=file]:focus {
   outline: var(--color-primary) solid 0.1rem;
@@ -1954,6 +1956,23 @@ main#playlist-editor > section > .make-new-block {
   align-items: center;
   width: 100%;
   background-color: var(--color-bg);
+  --margin-0: 0;
+  --margin-none: 0;
+  --margin-2xs: 0.1rem;
+  --margin-xs: 0.15rem;
+  --margin-s: 0.25rem;
+  --margin-m: 0.5rem;
+  --margin-l: 0.75rem;
+  --margin-xl: 1rem;
+  --margin-2xl: 1.5rem;
+  --margin-3xl: 2rem;
+  --margin-4xl: 5dvh;
+  --margin-5xl: 10dvh;
+  --margin-6xl: 15dvh;
+  --margin-7xl: 20dvh;
+  --margin-8xl: 25dvh;
+  --margin-default: var(--margin-m);
+  margin-bottom: var(--margin-3xl);
 }
 main#playlist-editor > section > .make-new-block > .header, main#playlist-editor > section > .make-new-block > .main {
   width: 100%;
