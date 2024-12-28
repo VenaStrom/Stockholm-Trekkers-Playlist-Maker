@@ -116,6 +116,49 @@ main#playlist-editor {
                 }
             }
 
+            &>.options-dropdown {
+                @include column($justify: start, $align: start);
+                @include gap(m, 0);
+                @include padding($bottom: m);
+
+                background-color: var(--color-low);
+                width: 100%;
+
+                &>hr {
+                    @include hairline($color: var(--color-bg));
+                }
+
+                &>.options-category {
+                    @include column($justify: start, $align: start);
+                    @include margin(0, xl);
+
+                    &>p {
+                        @include text-size(l);
+                    }
+
+                    &>div {
+                        @include row($justify: start, $align: start, $wrap: wrap);
+                        @include gap(0, 3xl);
+                        @include margin(0, xl);
+
+                        &>div {
+                            @include row($justify: start, $align: center);
+                            @include gap(0, xs);
+
+                            @include text-size(s);
+                            @include thin();
+
+                            cursor: pointer;
+                            user-select: none;
+
+                            &>input {
+                                @include margin(s);
+                            }
+                        }
+                    }
+                }
+            }
+
             &>.main {
                 @include margin(s, 0);
                 @include padding($left: 0);

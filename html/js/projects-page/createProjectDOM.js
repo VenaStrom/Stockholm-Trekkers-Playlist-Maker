@@ -84,37 +84,40 @@ const stringToHTML = (string) => {
     return htmlLaunderer.firstChild;
 };
 
-const makeBlockHeaderLi = (options) => {
-    const makeDot = (isActive) => {
-        return `<div class="option-dot${isActive ? " active" : ""}"></div>`;
+const createProjectDOM = (projectData) => {
+    //
+    // Repeated DOM elements
+    //
+    const makeBlockHeaderLi = (options) => {
+        const makeDot = (isActive) => {
+            return `<div class="option-dot${isActive ? " active" : ""}"></div>`;
+        };
+
+        return stringToHTML(`
+            <li class="block-header">
+                <p>Block</p>
+                <div title="These dots represent which options are active for this block">
+                    ${options.map(option => makeDot(option.checked)).join("")}
+                </div>
+            </li>`);
+    };
+    const makeEpisodeLi = (time, episodeName) => {
+        return stringToHTML(`
+            <li class="episode">
+                <p>${time}</p>-<p>${episodeName}</p>
+            </li>`);
+    };
+    const makePauseLi = (time) => {
+        return stringToHTML(`
+            <li class="pause">
+                <p>${time}</p>-<p>pause</p>
+            </li>`);
     };
 
-    return stringToHTML(`
-        <li class="block-header">
-            <p>Block</p>
-            <div title="These dots represent which options are active for this block">
-                ${options.map(option => makeDot(option.checked)).join("")}
-            </div>
-        </li>`);
-};
-
-const makeEpisodeLi = (time, episodeName) => {
-    return stringToHTML(`
-        <li class="episode">
-            <p>${time}</p>-<p>${episodeName}</p>
-        </li>`);
-};
-
-const makePauseLi = (time) => {
-    return stringToHTML(`
-        <li class="pause">
-            <p>${time}</p>-<p>pause</p>
-        </li>`);
-};
-
-const createProjectDOM = (projectData) => {
+    //
+    // Unique DOM elements
+    //
     const projectBody = stringToHTML(`<div class="round-box project clickable" title="Load this project" tabindex="0"></div>`);
-
     const projectHeader = stringToHTML(
         `<div class="header">
             <div class="project-date" title="When the Trekdag will take place">
@@ -137,6 +140,9 @@ const createProjectDOM = (projectData) => {
     projectBody.appendChild(projectHeader);
     projectBody.appendChild(mainContent);
 
+    // 
+    // Add repeated DOM elements to the project body via the main content element
+    // 
     projectData.blocks.forEach((blockData, index) => {
         // Block header
         mainContent.appendChild(makeBlockHeaderLi(blockData.options));
@@ -160,11 +166,13 @@ const createProjectDOM = (projectData) => {
     return projectBody;
 };
 
+//
+// Event listener callbacks
+//
 const openProject = (id) => {
     console.info(`Opening project with id: ${id}`);
     window.location.href = `./playlist-editor.html?id=${id}`;
 };
-
 const deleteProject = (id) => {
     if (confirm("Are you sure you want to delete this project forever?")) {
         console.info(`Deleting project with id: ${id}`);

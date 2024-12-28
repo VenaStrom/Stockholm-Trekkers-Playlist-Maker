@@ -88,13 +88,13 @@ input[type="file"] {
 
         -webkit-user-select: none;
         user-select: none;
-        
+
         cursor: pointer;
 
         @include padding(l, xl);
         @include border-radius(m);
         @include thin();
-        
+
         margin-right: 1ch;
 
         background-color: var(--color-low);
@@ -103,6 +103,27 @@ input[type="file"] {
             background-color: var(--color-primary);
             color: var(--color-low);
         }
+    }
+}
+
+input[type="checkbox"] {
+    // Reset
+    all: unset;
+
+    @include outline();
+    @include border-radius(m);
+    @include border($thickness: thin, $color: var(--color-fg));
+
+    cursor: pointer;
+
+    height: 1.5rem;
+    width: 1.5rem;
+
+    background-color: var(--color-bg);
+
+    &:checked {
+        background-color: var(--color-primary);
+        border-color: var(--color-low);
     }
 }
 

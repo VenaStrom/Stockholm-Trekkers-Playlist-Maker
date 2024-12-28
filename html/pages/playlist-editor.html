@@ -12,97 +12,33 @@
 
     <!-- Styling -->
     <link rel="stylesheet" href="../style/dist-css/main.css">
-    <!-- <link rel="stylesheet" href="../style/common.css" -->
-    <!-- <link rel="stylesheet" href="../style/playlist-editor.css" -->
 
-    <!-- Scripts -->
+    <!-- General Scripts -->
     <script src="../js/general/extendConsole.js"></script>
     <script defer src="../js/general/saveStatusHandler.js"></script>
     <script defer src="../js/general/clickableElements.js"></script>
     <script defer src="../js/general/openFilePath.js"></script>
+    <!-- Page Specific Scripts -->
+    <script defer src="../js/playlist-editor/blockOptions.js"></script>
     <script defer src="../js/playlist-editor/idGenerator.js"></script>
-    <script defer src="../js/playlist-editor/validator/dateValidator.js"></script>
-    <script defer src="../js/playlist-editor/validator/timeValidator.js"></script>
-    <script defer src="../js/playlist-editor/validator/warningPopup.js"></script>
-    <script defer src="../js/playlist-editor/event-callbacks/leavingPage.js"></script>
-    <script defer src="../js/playlist-editor/event-callbacks/optionsMenu.js"></script>
-    <script defer src="../js/playlist-editor/event-callbacks/setStartTimes.js"></script>
+    <script defer src="../js/playlist-editor/createBlockDOM.js"></script>
+    <script defer src="../js/playlist-editor/backButton.js"></script>
+    <!-- <script defer src="../js/playlist-editor/"></script> -->
+
+    <!-- <script defer src="../js/playlist-editor/validator/dateValidator.js"></script> -->
+    <!-- <script defer src="../js/playlist-editor/validator/timeValidator.js"></script> -->
+    <!-- <script defer src="../js/playlist-editor/validator/warningPopup.js"></script> -->
+    <!-- <script defer src="../js/playlist-editor/event-callbacks/leavingPage.js"></script> -->
+    <!-- <script defer src="../js/playlist-editor/event-callbacks/optionsMenu.js"></script> -->
+    <!-- <script defer src="../js/playlist-editor/event-callbacks/setStartTimes.js"></script> -->
     <!-- <script defer src="../js/playlist-editor/element-creators/createBlock.js"></script> -->
     <!-- <script defer src="../js/playlist-editor/element-creators/createEpisode.js"></script> -->
     <!-- <script defer src="../js/playlist-editor/element-creators/populateDOM.js"></script> -->
-    <script defer src="../js/playlist-editor/exporting/exportStatus.js"></script>
-    <script defer src="../js/playlist-editor/file-handling/save.js"></script>
-    <script defer src="../js/playlist-editor/file-handling/load.js"></script>
-    <script defer src="../js/playlist-editor/formatters/dateFormatter.js"></script>
-    <script defer src="../js/playlist-editor/formatters/timeFormatter.js"></script>
-
-    <!-- Template block -->
-    <div class="round-box block-template hidden">
-        <div class="header">
-            <div class="time">
-                <p>Start time: </p>
-                <input type="text" placeholder="hhmm" onblur="dateValidator(this)">
-            </div>
-
-            <div class="open-options clickable" onclick="expandOptions(this)" tabindex="0">
-                <div class="option-preview-dot"></div>
-                <div class="option-preview-dot"></div>
-                <div class="option-preview-dot"></div>
-                <div class="option-preview-dot"></div>
-                <p>Options ▼</p>
-            </div>
-
-            <img class="clickable-icon clickable" id="delete-block" onclick="deleteBlockDOM(this)" tabindex="0" title="Delete this block"
-                src="../../assets/images/delete_35dp_000000_FILL0_wght700_GRAD0_opsz40.png" alt="Delete">
-
-            <div class="options" onchange="updateDots(this)">
-                <div class="leading">
-                    <p>Add a leading:</p>
-
-                    <div>
-                        <div class="clickable" tabindex="0" title="This adds a 1 min countdown before the block. This should pretty much always be on.">
-                            <input type="checkbox" checked id="leading-countdown" data-file-name="pause_1_min_countdown.mp4" data-length-seconds="60" tabindex="-1">
-                            <p>countdown</p>
-                        </div>
-
-                        <div class="clickable" tabindex="0" title="This adds a 1 min clip of the emergency procedures before the block.">
-                            <input type="checkbox" checked id="leading-emergency-routine" data-file-name="pause_1_min_emergency.mp4" data-length-seconds="59" tabindex="-1">
-                            <p>emergency routine</p>
-                        </div>
-
-                        <div class="clickable" tabindex="0" title="This adds a 1 min clip that reminds viewers to show respect to each other with regard to the 2020s pandemic.">
-                            <input type="checkbox" id="leading-covid-disclaimer" data-file-name="pause_1_min_covid.mp4" data-length-seconds="60" tabindex="-1">
-                            <p>covid disclaimer</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="trailing">
-                    <p>Add a trailing:</p>
-
-                    <div>
-                        <div class="clickable" tabindex="0" title="This adds a 20 second clip at the end of the block that reminds visitors to sign in.">
-                            <input type="checkbox" id="trailing-sign-in-reminder" data-file-name="sign_in_reminder.mp4" data-length-seconds="19" tabindex="-1">
-                            <p>sign-in reminder</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Episodes go here -->
-    </div>
-
-    <!-- Template episode -->
-    <div class="episode-template hidden">
-        <div class="time">
-            <p>--:--</p>
-        </div>
-
-        <div class="file clickable" tabindex="0">
-            <input type="file" tabindex="-1">
-        </div>
-    </div>
+    <!-- <script defer src="../js/playlist-editor/exporting/exportStatus.js"></script> -->
+    <!-- <script defer src="../js/playlist-editor/file-handling/save.js"></script> -->
+    <!-- <script defer src="../js/playlist-editor/file-handling/load.js"></script> -->
+    <!-- <script defer src="../js/playlist-editor/formatters/dateFormatter.js"></script> -->
+    <!-- <script defer src="../js/playlist-editor/formatters/timeFormatter.js"></script> -->
 </head>
 
 <body>
@@ -143,7 +79,7 @@
         </p>
 
         <section>
-            <div class="block">
+            <!-- <div class="block">
                 <div class="header">
                     <div class="start-time">
                         <p>Block Start:</p>
@@ -164,34 +100,50 @@
                     <button class="delete" title="Delete this block forever">
                         <img src="../../assets/images/delete_35dp_000000_FILL0_wght700_GRAD0_opsz40.png" alt="Delete block">
                     </button>
+                </div>
 
-                    <div class="options-dropdown hidden">
-                        <div class="leading-options">
+                <div class="options-dropdown">
+                    <hr>
 
+                    <div class="options-category">
+                        <p>Leading Clips</p>
+                        <div>
+                            <div>
+                                <p>Stuffz:</p><input type="checkbox">
+                            </div>
+                            <div>
+                                <p>Other Stuffz:</p> <input type="checkbox">
+                            </div>
                         </div>
+                    </div>
 
-                        <div class="trailing-options">
-
+                    <div class="options-category">
+                        <p>Trailing Clips</p>
+                        <div>
+                            <div>
+                                <p>Stuffz:</p><input type="checkbox">
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <ul class="main">
+
                     <li class="episode">
                         <p class="time">--:--</p>
 
                         <input type="file" title="Click to select a file to add to the playlist">
                     </li>
-                    
+
                     <hr>
-                    
+
                     <li class="episode">
                         <p class="time">--:--</p>
 
                         <input type="file" title="Click to select a file to add to the playlist">
                     </li>
                 </ul>
-            </div>
+            </div> -->
 
             <button class="make-new-block" title="Press this button to create a new project" tabindex="0">
                 <div class="header">

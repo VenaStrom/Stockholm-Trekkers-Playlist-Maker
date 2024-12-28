@@ -420,6 +420,33 @@ input[type=file]::before:hover {
   color: var(--color-low);
 }
 
+input[type=checkbox] {
+  all: unset;
+  --border-radius-2xs: 0.1rem;
+  --border-radius-xs: 0.15rem;
+  --border-radius-s: 0.25rem;
+  --border-radius-m: 0.5rem;
+  --border-radius-l: 0.75rem;
+  --border-radius-xl: 1rem;
+  border-radius: var(--border-radius-m);
+  --border-thickness-thin: 0.1rem;
+  --border-thickness-m: 0.2rem;
+  --border-thickness-thick: 0.3rem;
+  --border-thickness-x-thick: 0.4rem;
+  border: var(--border-thickness-thin) solid var(--color-fg);
+  cursor: pointer;
+  height: 1.5rem;
+  width: 1.5rem;
+  background-color: var(--color-bg);
+}
+input[type=checkbox]:focus {
+  outline: var(--color-primary) solid 0.1rem;
+}
+input[type=checkbox]:checked {
+  background-color: var(--color-primary);
+  border-color: var(--color-low);
+}
+
 hr {
   all: unset;
   --hairline-x-thin: 0.005rem;
@@ -1784,6 +1811,187 @@ main#playlist-editor > section > .block > .header > .delete:focus {
 main#playlist-editor > section > .block > .header > .delete > img {
   width: 100%;
   height: 100%;
+}
+main#playlist-editor > section > .block > .options-dropdown {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: start;
+  align-items: start;
+  --gap-0: 0;
+  --gap-none: 0;
+  --gap-3xs: 0.05rem;
+  --gap-2xs: 0.1rem;
+  --gap-xs: 0.15rem;
+  --gap-s: 0.25rem;
+  --gap-m: 0.5rem;
+  --gap-l: 0.75rem;
+  --gap-xl: 1rem;
+  --gap-2xl: 1.5rem;
+  --gap-3xl: 2rem;
+  --gap-4xl: 5dvh;
+  --gap-5xl: 10dvh;
+  --gap-default: var(--gap-m);
+  gap: var(--gap-m) var(--gap-0);
+  --padding-0: 0;
+  --padding-none: 0;
+  --padding-2xs: 0.1rem;
+  --padding-xs: 0.15rem;
+  --padding-s: 0.25rem;
+  --padding-m: 0.5rem;
+  --padding-l: 0.75rem;
+  --padding-xl: 1rem;
+  --padding-2xl: 1.5rem;
+  --padding-3xl: 2rem;
+  --padding-4xl: 5dvh;
+  --padding-5xl: 10dvh;
+  --padding-6xl: 15dvh;
+  --padding-7xl: 20dvh;
+  --padding-8xl: 25dvh;
+  --padding-default: var(--padding-m);
+  padding-bottom: var(--padding-m);
+  background-color: var(--color-low);
+  width: 100%;
+}
+main#playlist-editor > section > .block > .options-dropdown > hr {
+  all: unset;
+  --hairline-x-thin: 0.005rem;
+  --hairline-thin: 0.02rem;
+  --hairline-m: 0.05rem;
+  --hairline-thick: 0.1rem;
+  --hairline-default: var(--hairline-m);
+  width: 100%;
+  height: var(--hairline-default);
+  background-color: var(--color-bg);
+}
+main#playlist-editor > section > .block > .options-dropdown > .options-category {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: start;
+  align-items: start;
+  --margin-0: 0;
+  --margin-none: 0;
+  --margin-2xs: 0.1rem;
+  --margin-xs: 0.15rem;
+  --margin-s: 0.25rem;
+  --margin-m: 0.5rem;
+  --margin-l: 0.75rem;
+  --margin-xl: 1rem;
+  --margin-2xl: 1.5rem;
+  --margin-3xl: 2rem;
+  --margin-4xl: 5dvh;
+  --margin-5xl: 10dvh;
+  --margin-6xl: 15dvh;
+  --margin-7xl: 20dvh;
+  --margin-8xl: 25dvh;
+  --margin-default: var(--margin-m);
+  margin-top: var(--margin-0);
+  margin-right: var(--margin-xl);
+  margin-bottom: var(--margin-0);
+  margin-left: var(--margin-xl);
+}
+main#playlist-editor > section > .block > .options-dropdown > .options-category > p {
+  --text-size-s: 0.9rem;
+  --text-size-m: 1rem;
+  --text-size-l: 1.1rem;
+  --text-size-xl: 1.25rem;
+  --text-size-2xl: 1.5rem;
+  --text-size-title: 2rem;
+  --text-size-x-title: 2.5rem;
+  --text-size-xx-title: 3rem;
+  font-size: var(--text-size-l);
+}
+main#playlist-editor > section > .block > .options-dropdown > .options-category > div {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: start;
+  align-items: start;
+  --gap-0: 0;
+  --gap-none: 0;
+  --gap-3xs: 0.05rem;
+  --gap-2xs: 0.1rem;
+  --gap-xs: 0.15rem;
+  --gap-s: 0.25rem;
+  --gap-m: 0.5rem;
+  --gap-l: 0.75rem;
+  --gap-xl: 1rem;
+  --gap-2xl: 1.5rem;
+  --gap-3xl: 2rem;
+  --gap-4xl: 5dvh;
+  --gap-5xl: 10dvh;
+  --gap-default: var(--gap-m);
+  gap: var(--gap-0) var(--gap-3xl);
+  --margin-0: 0;
+  --margin-none: 0;
+  --margin-2xs: 0.1rem;
+  --margin-xs: 0.15rem;
+  --margin-s: 0.25rem;
+  --margin-m: 0.5rem;
+  --margin-l: 0.75rem;
+  --margin-xl: 1rem;
+  --margin-2xl: 1.5rem;
+  --margin-3xl: 2rem;
+  --margin-4xl: 5dvh;
+  --margin-5xl: 10dvh;
+  --margin-6xl: 15dvh;
+  --margin-7xl: 20dvh;
+  --margin-8xl: 25dvh;
+  --margin-default: var(--margin-m);
+  margin-top: var(--margin-0);
+  margin-right: var(--margin-xl);
+  margin-bottom: var(--margin-0);
+  margin-left: var(--margin-xl);
+}
+main#playlist-editor > section > .block > .options-dropdown > .options-category > div > div {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: start;
+  align-items: center;
+  --gap-0: 0;
+  --gap-none: 0;
+  --gap-3xs: 0.05rem;
+  --gap-2xs: 0.1rem;
+  --gap-xs: 0.15rem;
+  --gap-s: 0.25rem;
+  --gap-m: 0.5rem;
+  --gap-l: 0.75rem;
+  --gap-xl: 1rem;
+  --gap-2xl: 1.5rem;
+  --gap-3xl: 2rem;
+  --gap-4xl: 5dvh;
+  --gap-5xl: 10dvh;
+  --gap-default: var(--gap-m);
+  gap: var(--gap-0) var(--gap-xs);
+  --text-size-s: 0.9rem;
+  --text-size-m: 1rem;
+  --text-size-l: 1.1rem;
+  --text-size-xl: 1.25rem;
+  --text-size-2xl: 1.5rem;
+  --text-size-title: 2rem;
+  --text-size-x-title: 2.5rem;
+  --text-size-xx-title: 3rem;
+  font-size: var(--text-size-s);
+  font-weight: lighter;
+  cursor: pointer;
+  user-select: none;
+}
+main#playlist-editor > section > .block > .options-dropdown > .options-category > div > div > input {
+  --margin-0: 0;
+  --margin-none: 0;
+  --margin-2xs: 0.1rem;
+  --margin-xs: 0.15rem;
+  --margin-s: 0.25rem;
+  --margin-m: 0.5rem;
+  --margin-l: 0.75rem;
+  --margin-xl: 1rem;
+  --margin-2xl: 1.5rem;
+  --margin-3xl: 2rem;
+  --margin-4xl: 5dvh;
+  --margin-5xl: 10dvh;
+  --margin-6xl: 15dvh;
+  --margin-7xl: 20dvh;
+  --margin-8xl: 25dvh;
+  --margin-default: var(--margin-m);
+  margin: var(--margin-s);
 }
 main#playlist-editor > section > .block > .main {
   --margin-0: 0;
