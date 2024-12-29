@@ -20,7 +20,7 @@ const getTrace = (options = { depth: 2 }) => {
     Error.prepareStackTrace = originalPrepareStackTrace; // Restore the original Error.prepareStackTrace
 
     // Format and return the file name and line number
-    return callee.toString().split("/").at(-1).replace(")", "").replace("\n", "");
+    return callee.toString().split("/").at(-1).replace(")", "").replace("\n", "") + ":";
 };
 
 Object.entries(_console).forEach(([type, originalFunction]) => {
