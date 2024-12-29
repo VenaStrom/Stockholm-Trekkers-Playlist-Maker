@@ -91,7 +91,7 @@ const makeEpisodeDOM = (episodeData = null) => {
     if (!episodeData.filePath || !episodeData.fileName) {
         return episodeBody;
     }
-    
+
     // Visually set the file input 
     const dataTransfer = new DataTransfer();
     const file = new File([new Blob()], episodeData.fileName);
@@ -99,16 +99,21 @@ const makeEpisodeDOM = (episodeData = null) => {
     const fileInput = episodeBody.querySelector("input[type='file']");
     fileInput.files = dataTransfer.files;
     fileInput.dataset.filePath = episodeData.filePath;
-    
+
     return episodeBody;
 };
 
 const makeBlockDOM = (blockData = null) => {
+    // 
+    // Argument handling
+    // 
     blockData = blockData || {
         startTime: "",
         options: [...blockOptions],
         episodes: [],
     }
+    
+    blockData.options = migrateOptions(blockData.options);
 
     const blockBody = stringToHTML(`<div class="block"></div>`);
 
@@ -132,6 +137,9 @@ const makeBlockDOM = (blockData = null) => {
             </button>
         </div>`);
 
+    //
+    // Options dropdown
+    //
     const makeOptionCategories = (options) => {
         const uniqueCategories = new Set(options.map(option => option.category || "default"));
 
@@ -167,6 +175,10 @@ const makeBlockDOM = (blockData = null) => {
             ${makeOptionCategories(blockData.options).join("")}
         </div > `);
 
+
+    // 
+    // Episodes
+    // 
     const episodeList = stringToHTML(`<ul class="main"></ul>`);
 
     blockData.episodes.forEach(episodeData => {
@@ -195,6 +207,9 @@ const makeBlockDOM = (blockData = null) => {
         checkbox.addEventListener("click", () => updateOptionDots(blockBody));
     });
 
+    //
+    // Add all elements to the block
+    //
     blockBody.appendChild(blockHeader);
     blockBody.appendChild(optionsDropdown);
     blockBody.appendChild(episodeList);
