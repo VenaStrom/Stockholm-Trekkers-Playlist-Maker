@@ -163,12 +163,12 @@ const createProjectDOM = (projectData) => {
 // Event listener callbacks
 //
 const openProject = (id) => {
-    console.info(`Opening project with id: ${id}`);
+    console.info(`Opening project \n ID: ${id}`);
     window.location.href = `./playlist-editor.html?id=${id}`;
 };
 const deleteProject = (id) => {
     if (confirm("Are you sure you want to delete this project forever?")) {
-        console.info(`Deleting project with id: ${id}`);
+        console.info(`Deleting project \n ID: ${id}`);
         projects.delete(id);
         window.location.reload();
     }

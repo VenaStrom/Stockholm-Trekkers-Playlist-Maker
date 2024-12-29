@@ -7,7 +7,7 @@ const path = require("node:path")
 const { saveFilesFolder } = require("../../main.js");
 
 const projectGet = (id) => {
-    console.info(`Getting project: ${id}`);
+    console.info(`Getting project: \n ID: ${id}`);
 
     if (!id) {
         console.error("No ID provided for the project get");
@@ -25,13 +25,13 @@ const projectGet = (id) => {
     if (data) {
         return data;
     } else {
-        console.error(`Error reading project file: ${filePath}`);
+        console.error(`Error reading project file (${filePath || "no file path"})`);
         return null;
     }
 };
 
 const projectSave = (projectData) => {
-    console.info(`Saving project: ${projectData.date} - ${projectData.id}`);
+    console.info(`Saving project: \n ID: ${projectData.date} \n date: ${projectData.id}`);
 
     if (!projectData) {
         console.error("No project data provided for the project save");
@@ -52,7 +52,7 @@ const projectSave = (projectData) => {
 };
 
 const projectDelete = (id) => {
-    console.info(`Deleting project: ${id}`);
+    console.info(`Deleting project \n ID: ${id}`);
 
     if (!id) {
         console.error("No ID provided for the project delete");
@@ -92,7 +92,7 @@ const ipcHandlers = () => {
     ipcMain.handle("project-get-all", (_) => {
         return projectGetAll();
     });
-    ipcMain.handle("get-projects-path", (_, ) => {
+    ipcMain.handle("get-projects-path", (_) => {
         return saveFilesFolder;
     });
 };

@@ -1,6 +1,8 @@
 "use strict";
 
 const startExportProcess = () => {
+    console.info("Exporting...");
+
     const exportOverlayAndWindow = stringToHTML(`
     <div class="export-overlay">
         <div class="round-box">
@@ -9,10 +11,24 @@ const startExportProcess = () => {
             </div>
 
             <div class="main">
-        
+                <ul>
+                    <li>Avoid exporting to a USB drive. <a href="https://github.com/viggoStrom/Stockholm-Trekkers-Playlist-Maker/blob/main/docs/information-about-exporting.md">Learn more</a></li>
+                    <li>A playlist can be 20 GB or more.</li>
+                    <li>The exported folder is not zipped.</li>
+                </ul>
+
+                <button class="start-export">I understand, continue</button>
             </div>
         </div>
     </div>`);
+
+    // Button functionality
+    exportOverlayAndWindow.querySelector("button.start-export").addEventListener("click", () => { startExport(); });
+    
+    const startExport = () => {
+        exporter.start(getID());
+        displayExportStatus(); 
+    };
 
     const stopPageInteraction = () => {
         // Class defined in playlist-editor.scss
@@ -51,13 +67,15 @@ const startExportProcess = () => {
         };
 
         // Update the window so it shows progress
-        exportOverlayAndWindow.querySelector("round-box").innerHTML = `
+        exportOverlayAndWindow.querySelector(".round-box").innerHTML = `
         <div class="header">
             <p>Exporting</p>
         </div>
 
         <div class="main">
             <p class="status-text">${status.message}</p>
+
+            <button class="open-path" data-open-path="${status.exportLocation}">Exporting here</button>
 
             <div>
                 <span class="progress-bar"></span>
@@ -81,10 +99,7 @@ const startExportProcess = () => {
 
             // Status text
             const statusText = exportOverlayAndWindow.querySelector(".status-text");
-            statusText.innerHTML = `
-                ${status.message}
-                <button class="open-path" data-open-path="${status.exportLocation}">Exporting to...</button>
-            `.trim();
+            statusText.innerHTML = status.message;
         });
 
         const cancelExport = () => {
@@ -100,6 +115,4 @@ const startExportProcess = () => {
         // Cancel button functionality
         exportOverlayAndWindow.querySelector("button.cancel").addEventListener("click", cancelExport);
     };
-
-    displayExportStatus();
 };

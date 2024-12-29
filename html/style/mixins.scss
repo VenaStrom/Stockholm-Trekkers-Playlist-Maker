@@ -244,7 +244,7 @@
 //    \\   ||    /    ||  ||\||  || _
 //   \==/  ||  ||=||  ||  || ||  \==/
 //
-@mixin width($size: m, $max: 95dvw) {
+@mixin width($size: m, $max: 95dvw, $min: auto) {
     --width-2xs: 0.1ch;
     --width-xs: 0.5ch;
     --width-s: 1ch;
@@ -270,9 +270,10 @@
 
     width: var(--width-#{$size});
     max-width: $max;
+    min-width: var(--width-#{$min});
 }
 
-@mixin height($size: m, $max: 95dvw) {
+@mixin height($size: m, $max: 95dvw, $min: auto) {
     --height-2xs: 0.1rem;
     --height-xs: 0.5rem;
     --height-s: 1rem;
@@ -298,6 +299,7 @@
 
     height: var(--height-#{$size});
     max-height: $max;
+    min-height: var(--height-#{$min});
 }
 
 

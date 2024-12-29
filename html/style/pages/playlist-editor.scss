@@ -256,7 +256,6 @@ main#playlist-editor {
 
     &>.round-box {
         @include width(5xl);
-        @include height(12xl);
         @include border(thick);
 
         user-select: text;
@@ -268,25 +267,27 @@ main#playlist-editor {
         }
 
         &>.main {
-            &>p {
-                @include margin($top: l);
-                width: 100%;
-                text-align: center;
+            @include column($justify: start, $align: center);
+            @include gap(l, 0);
+
+            &>p:first-of-type {
+                @include padding($top: l);
             }
 
+            // For the export tips
+            &>ul {
+                @include column($justify: start, $align: start);
+                @include gap(m, 0);
+                @include margin(l, xl);
+                @include thin();
+            }
+
+            // Progress bar wrapper
             &>div {
                 @include column($justify: center, $align: center);
+                @include margin(m, 0);
 
-                flex: 1;
                 width: 100%;
-
-                &>.progress-bar {
-                    width: 100%;
-                }
-            }
-
-            &>button {
-                @include margin(xs);
             }
         }
     }

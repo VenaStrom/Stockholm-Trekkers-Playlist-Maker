@@ -6,7 +6,6 @@ const path = require("node:path");
 const fs = require("node:fs");
 const appCloseHandlers = require("./scripts/dialogs/handleAppClose.js");
 
-
 // User Data Path //
 const userDataFolder = path.join(path.resolve(__dirname), "user-data");
 if (!fs.existsSync(userDataFolder)) fs.mkdirSync(userDataFolder);
@@ -51,6 +50,9 @@ const createMainWindow = () => {
     mainWindow.loadFile("./html/pages/download-page.html");
     mainWindow.maximize();
     mainWindow.focus();
+
+    // Anchor tags open in the default browser
+    require("./scripts/extend/anchorRedirect.js").setup(mainWindow);
 };
 
 app.once("ready", () => {

@@ -69,8 +69,6 @@ saveButton.addEventListener("click", () => { saveProject(); });
 const exportButton = document.querySelector("button.export");
 exportButton.addEventListener("click", () => {
     saveProject().then(() => {
-        console.info("exporting...");
-        // exporter.start(getID());
         startExportProcess();
     });
 });

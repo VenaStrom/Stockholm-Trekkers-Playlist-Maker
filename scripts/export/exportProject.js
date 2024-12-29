@@ -27,21 +27,6 @@ const projectExport = (id) => {
     exportStatus.progress = "5%";
     exportStatus.message = "Making folders...";
 
-    // Prompt with information about the export
-    dialog.showMessageBoxSync({
-        type: "info",
-        buttons: ["OK"],
-        title: "Good to know about exporting",
-        message: `
-CAUTION:
-* Directly exporting to a USB drive can cause the program to hang. Always export to a system drive.
-* Make sure you have enough space on your drive for the project. A project is usually around 20 GB.
-
-Your export speed is very dependent on your disk speed, so you should export to a system drive to mitigate the risk of the program hanging and generally speed up the export.
-
-After that, you can zip the file, upload it to the cloud, and also transfer it to a USB drive to bring to the Trekdag.
-`});
-
     // Prompt to select the output folder
     const chosenFolder = dialog.showOpenDialogSync({
         properties: ["openDirectory"],
@@ -125,6 +110,7 @@ const ipcHandlers = () => {
             fs.rmSync(exportStatus.exportLocation, { recursive: true });
         }
 
+        exportStatus.progress = "100%";
         exportStatus.message = "Export cancelled";
     });
 };
