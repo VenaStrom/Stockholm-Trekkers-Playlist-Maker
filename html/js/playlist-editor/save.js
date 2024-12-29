@@ -61,12 +61,15 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
-// Save button and save & export button
+// Save button
 const saveButton = document.querySelector("button.save");
 saveButton.addEventListener("click", () => { saveProject(); });
+
+// Export button
 const exportButton = document.querySelector("button.export");
 exportButton.addEventListener("click", () => {
     saveProject().then(() => {
         console.info("exporting...");
+        exporter.start(getID());
     });
 });
