@@ -61,39 +61,38 @@ const blockOptions = [
 // Since option formats have been updated, handle old formats
 //
 const migrateOptions = (options) => {
+    const optionsLookup = Object.fromEntries(blockOptions.map(option => [option.id, option]));
+
     // Missing name
     if (options.some(option => !option.name)) {
         // Try to use the existing options to find the name
         console.warn("Some options have no name, trying to find the name in the options list. Falls back to ID otherwise");
 
-        const nameLookup = Object.fromEntries(blockOptions.map(option => [option.id, option.name]));
-
         options.forEach(option => {
             if (!option.name) {
-                option.name = nameLookup[option.id] || option.id;
+                option.name = optionsLookup[option.id]?.name || option.id;
             }
         });
     }
 
     // Missing description
     if (options.some(option => !option.description)) {
-        console.warn("Some options have no description, using the name as the description");
+        console.warn("Some options have no description, trying to find the description in the options list");
+
         options.forEach(option => {
             if (!option.description) {
-                option.description = option.name;
+                option.description = optionsLookup[option.id]?.description || "No description available";
             }
         });
     }
 
     // Missing category
     if (options.some(option => !option.category)) {
-        console.warn("Some options have no category, trying to find the category via ID. Falls back to 'default' otherwise");
-
-        const categoryLookup = Object.fromEntries(blockOptions.map(option => [option.id, option.category]));
+        console.warn("Some options have no category, trying to find the category via ID. Falls back to default category otherwise");
 
         options.forEach(option => {
             if (!option.category) {
-                option.category = categoryLookup[option.id] || "default";
+                option.category = optionsLookup[option.id]?.category || "default";
             }
         });
     }
