@@ -1,9 +1,22 @@
+// Keys: the category id that is used for the options in the blockOptions array
+// Values: the name of the category that is displayed in the UI
 const blockOptionsCategoryLookup = {
     "leading": "Leading Clips",
     "trailing": "Trailing Clips",
-    "default": "Options" // Fallback to this
+    "default": "Options" // Fallback to this if the category is not found
 };
 
+
+// Template option:
+// {
+//     id: "a-unique-id",
+//     category: "one-of-the-categories", // See blockOptionsCategoryLookup
+//     name: "The Name You See In The UI",
+//     checked: true, // Default state
+//     duration: "60", // Duration of the clip in seconds
+//     fileName: "the-same-name-as-the-name-in-assetDownloadInfo-json.mp4", 
+//     description: "A longer descriptive text that explains what this option does",
+// },
 const blockOptions = [
     {
         id: "leading-countdown",
