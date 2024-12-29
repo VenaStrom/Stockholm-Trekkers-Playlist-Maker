@@ -21,3 +21,6 @@ const isSaved = () => {
 const isUnsaved = () => {
     return document.title.includes(unsavedStateChar);
 };
+
+document.addEventListener("unsavedState", setUnsavedState);
+document.addEventListener("savedState", setSavedState);

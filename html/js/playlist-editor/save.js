@@ -48,6 +48,7 @@ const saveProject = () => {
     return projects.save(projectData).then((response) => {
         if (response) {
             console.info("Project saved successfully");
+            document.dispatchEvent(new Event("savedState"));
         } else {
             console.error("Project save failed");
         }
@@ -71,4 +72,27 @@ exportButton.addEventListener("click", () => {
     saveProject().then(() => {
         startExportProcess();
     });
+});
+
+// Save indicator in the header
+document.addEventListener("unsavedState", () => {
+    const saveIndicator = document.querySelector(".save-indicator");
+    saveIndicator.textContent = "Unsaved changes*";
+    saveIndicator.classList.remove("hidden");
+});
+document.addEventListener("savedState", () => {
+    const saveIndicator = document.querySelector(".save-indicator");
+    saveIndicator.textContent = "Saved";
+
+    setTimeout(() => {
+        // After a while, if the state is still saved, hide the indicator
+        if (isSaved()) {
+            saveIndicator.classList.add("hidden");
+        }
+    }, 2000);
+});
+
+// On any change, tell everyone that the state is unsaved
+document.addEventListener("change", () => {
+    document.dispatchEvent(new Event("unsavedState"));
 });
