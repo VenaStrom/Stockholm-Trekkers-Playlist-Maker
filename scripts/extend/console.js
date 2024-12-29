@@ -145,7 +145,7 @@ Object.entries(colors).forEach(([methodName, color]) => {
 
 const ipcHandlers = () => {
     ipcMain.handle("send-console", (event, type, args) => {
-        const prefix = styleText("yellow", `[Renderer]`);
+        const prefix = styleText("gray", `[Renderer]`);
         console[type]({ _noTrace: true }, prefix, ...args);
     });
 };
