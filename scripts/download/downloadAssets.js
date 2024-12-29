@@ -19,32 +19,23 @@ const downloadStatus = {
 const videoFolder = path.join(__dirname, "..", "..", "assets", "videos");
 const downloadReferenceFile = path.join(__dirname, "..", "..", "assetDownloadInfo.json");
 
-const downloadPauses = (force = false) => {
+const downloadPauses = () => {
     downloadStatus.status = "starting";
 
-    // If force downloading, delete the folder just to make sure
-    if (force) {
-        console.info("Force downloading...");
-        fs.rmSync(videoFolder, { recursive: true });
-    } else {
-        console.info("Looking for files...");
-    };
-
-    // Check if the video folder exists and make it if it doesn't
-    if (!fs.existsSync(videoFolder)) {
-        fs.mkdirSync(videoFolder, { recursive: true });
-    };
+    console.info("Removing old files...");
+    fs.rmSync(videoFolder, { recursive: true });
+    fs.mkdirSync(videoFolder, { recursive: true });
 
     // Get the URLs of the files that are gonna be downloaded, from fileURLs.json
-    const fileURLs = JSON.parse(fs.readFileSync(downloadReferenceFile));
-    const fileIDs = fileURLs.videos;
+    const downloadReferences = JSON.parse(fs.readFileSync(downloadReferenceFile));
+    const videoAssetsInfo = downloadReferences.videos;
     let index = 0;
 
     // Keep track of the download status
-    downloadStatus.fileCount = fileIDs.length;
+    downloadStatus.fileCount = videoAssetsInfo.length;
     downloadStatus.atFile = index;
 
-    // Headless browser to download the files
+    // Headless browser which will download the files
     const browser = new BrowserWindow({
         show: false,
     });
@@ -54,13 +45,13 @@ const downloadPauses = (force = false) => {
         index++;
 
         // When all the files are downloaded, close the browser
-        if (index >= fileIDs.length) {
+        if (index >= videoAssetsInfo.length) {
             console.info("All videos downloaded");
             downloadStatus.status = "completed";
             setTimeout(() => { browser.close(); }, 1000);
 
         } else {
-            getFile(fileIDs[index]);
+            getFile(videoAssetsInfo[index]);
         }
     }
 
@@ -77,7 +68,7 @@ const downloadPauses = (force = false) => {
         }
 
         // If the video is already downloaded and we're not forcing, skip it
-        if (fs.existsSync(videoFolder + file.name) && !force) {
+        if (fs.existsSync(videoFolder + file.name)) {
             console.info(`${file.name} already downloaded. Skipping...`);
             getNextFile();
             return;
@@ -146,13 +137,13 @@ const downloadPauses = (force = false) => {
             });
         });
 
-        // Start the actual download in a kinda of janky way
+        // Start the actual download, in a janky way
         setTimeout(() => {
-            browser.loadURL(fileURLs.urlTemplate + file.id);
+            browser.loadURL(downloadReferences.urlTemplate + file.id);
             browser.webContents.on("did-finish-load", () => {
                 // Clicks the download button on the loaded page
                 // This will break if Google changes how Drive works 
-                // Theres a try-catch block in there but that's only gonna do so much
+                // There's a try-catch block in there but that's only gonna do so much
                 browser.webContents.executeJavaScript(`
                     try{
                         document.getElementById("uc-download-link").click();
@@ -164,8 +155,8 @@ const downloadPauses = (force = false) => {
     };
 
     // Start the recursive download
-    // The reason it's recursive is due to issues i had with having multiple download streams at once
-    getFile(fileIDs[index]);
+    // The reason it's recursive is due to issues I had with having multiple download streams at once
+    getFile(videoAssetsInfo[index]);
 };
 
 
@@ -180,22 +171,14 @@ const ipcHandlers = () => {
 
     // Gives a simple true or false if all the files are downloaded to check if you need to download at all
     ipcMain.handle("check-for-local-files", () => {
-        const fileURLs = JSON.parse(fs.readFileSync(downloadReferenceFile));
-        const fileIDs = fileURLs.videos;
+        const downloadReferences = JSON.parse(fs.readFileSync(downloadReferenceFile));
+        const fileNames = downloadReferences.videos.map(file => file.name);
 
-        let fileCount = 0;
+        // Look for the files in the video folder
+        const existingFiles = fs.readdirSync(videoFolder);
+        const allFilesExist = fileNames.every(fileName => existingFiles.includes(fileName));
 
-        fileIDs.forEach(file => {
-            if (fs.existsSync(path.join(__dirname, "../../assets/videos", file.name))) {
-                fileCount++;
-            }
-        });
-
-        if (fileCount === fileIDs.length && fileCount === 0) {
-            console.error("No files found");
-        }
-
-        return (fileCount === fileIDs.length && fileCount > 0);
+        return allFilesExist;
     });
 
     ipcMain.handle("get-assets-path", () => {
