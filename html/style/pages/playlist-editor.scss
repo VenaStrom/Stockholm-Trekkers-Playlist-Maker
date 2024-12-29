@@ -74,7 +74,7 @@ main#playlist-editor {
                 &>.options {
                     @include row($justify: start, $align: center);
                     @include gap(0, l);
-                    
+
                     cursor: pointer;
 
                     &:hover {
@@ -197,6 +197,32 @@ main#playlist-editor {
         &>.make-new-block {
             @include new-element-button();
             @include margin($bottom: 3xl);
+        }
+    }
+
+    &>.bottom {
+        @include row($justify: end, $align: center);
+
+        &>.buttons {
+            @include column($justify: end, $align: end);
+            @include gap(m, 0);
+            @include margin($right: 2xl);
+
+            &>button {
+                @include row($justify: start, $align: center);
+                @include gap(0, m);
+                @include padding($left: l, $right: l);
+
+                &>img {
+                    @include icon(s, $hover: false);
+                }
+
+                &:hover {
+                    &>img {
+                        filter: var(--filter-to-color-low);
+                    }
+                }
+            }
         }
     }
 }
