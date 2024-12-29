@@ -378,9 +378,13 @@ input[type=file] {
   white-space: nowrap;
   text-overflow: ellipsis;
   cursor: pointer;
+  color: var(--color-fg);
 }
 input[type=file]:focus {
   outline: var(--color-primary) solid 0.1rem;
+}
+input[type=file].empty {
+  color: var(--color-mid);
 }
 input[type=file]::-webkit-file-upload-button {
   visibility: hidden;
@@ -429,9 +433,11 @@ input[type=file]::before {
   font-weight: lighter;
   margin-right: 1ch;
   background-color: var(--color-low);
+  color: var(--color-fg);
 }
 input[type=file]:hover {
   background-color: var(--color-low);
+  color: var(--color-fg);
 }
 input[type=file]:hover::before {
   font-weight: bold;

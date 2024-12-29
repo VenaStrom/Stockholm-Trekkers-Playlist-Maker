@@ -26,24 +26,6 @@ a {
 button,
 input[type="button"] {
     @include button();
-    // // Reset
-    // all: unset;
-
-    // @include padding(m, xl);
-    // @include border-radius(m);
-    // @include border(thick);
-
-    // cursor: pointer;
-
-    // background-color: var(--color-low);
-    // color: var(--color-fg);
-
-    // &:hover {
-    //     @include bold();
-
-    //     background-color: var(--color-primary);
-    //     color: var(--color-low);
-    // }
 }
 
 input[type="text"] {
@@ -77,6 +59,12 @@ input[type="file"] {
 
     cursor: pointer;
 
+    color: var(--color-fg);
+
+    &.empty {
+        color: var(--color-mid);
+    }
+
     &::-webkit-file-upload-button {
         visibility: hidden;
         display: none;
@@ -99,10 +87,13 @@ input[type="file"] {
         margin-right: 1ch;
 
         background-color: var(--color-low);
+        color: var(--color-fg);
+
     }
 
     &:hover {
         background-color: var(--color-low);
+        color: var(--color-fg);
     }
 
     &:hover::before {

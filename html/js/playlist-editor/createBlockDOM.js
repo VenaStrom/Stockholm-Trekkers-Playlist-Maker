@@ -74,7 +74,7 @@ const stringToHTML = (string) => {
     return htmlLaunderer.firstChild;
 };
 
-const createEpisodeDOM = (episodeData = null) => {
+const makeEpisodeDOM = (episodeData = null) => {
     episodeData = episodeData || {
         filePath: null,
         fileName: null,
@@ -91,7 +91,7 @@ const createEpisodeDOM = (episodeData = null) => {
     if (!episodeData.filePath || !episodeData.fileName) {
         return episodeBody;
     }
-
+    
     // Visually set the file input 
     const dataTransfer = new DataTransfer();
     const file = new File([new Blob()], episodeData.fileName);
@@ -99,11 +99,11 @@ const createEpisodeDOM = (episodeData = null) => {
     const fileInput = episodeBody.querySelector("input[type='file']");
     fileInput.files = dataTransfer.files;
     fileInput.dataset.filePath = episodeData.filePath;
-
+    
     return episodeBody;
 };
 
-const createBlockDOM = (blockData = null) => {
+const makeBlockDOM = (blockData = null) => {
     blockData = blockData || {
         startTime: "",
         options: [...blockOptions],
@@ -114,7 +114,7 @@ const createBlockDOM = (blockData = null) => {
 
     const blockHeader = stringToHTML(`
         <div class="header">
-            <div class="start-time">
+            <div class="start-time" title="When this block will start playing. Options will offset from this time so the first episode will always start at the defined block start time">
                 <p>Block Start</p>
                 <input type="text" placeholder="hhmm" value="${blockData.startTime}">
             </div>
@@ -170,11 +170,11 @@ const createBlockDOM = (blockData = null) => {
     const episodeList = stringToHTML(`<ul class="main"></ul>`);
 
     blockData.episodes.forEach(episodeData => {
-        episodeList.appendChild(createEpisodeDOM(episodeData));
+        episodeList.appendChild(makeEpisodeDOM(episodeData));
     });
     // Make sure there are at least 2 episodes
     while (episodeList.querySelectorAll(".episode").length < 2) {
-        episodeList.appendChild(createEpisodeDOM());
+        episodeList.appendChild(makeEpisodeDOM());
     }
 
     //
@@ -230,10 +230,10 @@ const updateOptionDots = (block) => {
 };
 
 // New block button
-document.querySelector(".make-new-block").addEventListener("click", () => {
+const createBlock = (blockData = null) => {
     const newBlockButton = document.querySelector(".make-new-block");
-    newBlockButton.insertAdjacentElement("beforebegin", createBlockDOM());
-});
+    newBlockButton.insertAdjacentElement("beforebegin", makeBlockDOM(blockData));
 
-// Initial block
-document.querySelector(".make-new-block").click();
+    document.dispatchEvent(new Event("input")); // For emptyInputStyling.js
+};
+document.querySelector(".make-new-block").addEventListener("click", () => createBlock());
