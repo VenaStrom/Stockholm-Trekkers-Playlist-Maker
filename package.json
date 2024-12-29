@@ -9,7 +9,7 @@
   "scripts": {
     "start": "electron .",
     "build": "yarn sass-build && electron-builder",
-    "sass": "sass --watch html/style/main.scss:html/style/dist-css/main.css",
+    "sass": "sass --style compressed --watch html/style/main.scss:html/style/dist-css/main.css",
     "sass-build": "sass --style compressed html/style/main.scss:html/style/dist-css/main.css"
   },
   "devDependencies": {
