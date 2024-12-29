@@ -25,7 +25,7 @@ const getTrace = (options = { depth: 2 }) => {
 
 Object.entries(_console).forEach(([type, originalFunction]) => {
     console[type] = (...args) => {
-        const prefix = getTrace();
+        const prefix = getTrace() + "\n";
         main.sendConsole(type, [prefix, ...args]);
         originalFunction(prefix, ...args);
     };
