@@ -37,8 +37,8 @@ const createMainWindow = () => {
 
     // Handle when the app can close with and without a dialog
     mainWindow.isMain = true; // Allow things to find this window
-    mainWindow.once("close", appCloseHandlers.onClose);
-    mainWindow.once("closed", appCloseHandlers.onClosed);
+    mainWindow.on("close", appCloseHandlers.onClose);
+    mainWindow.on("closed", appCloseHandlers.onClosed);
 
     // Load and show the main window at the download assets page
     mainWindow.loadFile("./html/pages/download-page.html");
