@@ -270,6 +270,7 @@ main#playlist-editor {
             @include column($justify: start, $align: center);
             @include gap(l, 0);
 
+            // Export status text 
             &>p:first-of-type {
                 @include padding($top: l);
             }
@@ -278,16 +279,20 @@ main#playlist-editor {
             &>ul {
                 @include column($justify: start, $align: start);
                 @include gap(m, 0);
-                @include margin(l, xl);
+                @include margin(l, l);
                 @include thin();
             }
 
-            // Progress bar wrapper
-            &>div {
+            &>.progress-bar-wrapper {
                 @include column($justify: center, $align: center);
                 @include margin(m, 0);
 
                 width: 80%;
+            }
+
+            &>.button-container {
+                @include row($justify: center, $align: center);
+                @include gap(0, l);
             }
         }
     }

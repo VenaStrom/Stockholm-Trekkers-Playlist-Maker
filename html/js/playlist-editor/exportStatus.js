@@ -44,7 +44,10 @@ const startExportProcess = () => {
                     <li>The exported folder is not zipped.</li>
                 </ul>
         
-                <button class="start-export">I understand, continue</button>
+                <div class="button-container">
+                    <button class="start-export">I understand, continue</button>
+                    <button class="cancel">Cancel</button>
+                </div>
             </div>
         </div>
     </div>`);
@@ -53,6 +56,9 @@ const startExportProcess = () => {
     exportWindow.querySelector("button.start-export").addEventListener("click", () => {
         exporter.start(getID());
         displayExportStatus();
+    });
+    exportWindow.querySelector("button.cancel").addEventListener("click", () => {
+        closeWindow();
     });
 
     openWindow();
@@ -78,7 +84,7 @@ const startExportProcess = () => {
 
             <button class="open-path" data-open-path="${status.exportLocation}">Exporting here</button>
 
-            <div>
+            <div class="progress-bar-wrapper">
                 <span class="progress-bar"></span>
             </div>
 
@@ -149,7 +155,7 @@ const startExportProcess = () => {
             <div class="main">
                 <p class="status-text">${status.message}</p>
 
-                <div>
+                <div class="progress-bar-wrapper">
                     <span class="progress-bar warning"></span>
                 </div> 
 
@@ -177,7 +183,7 @@ const startExportProcess = () => {
             <div class="main">
                 <p class="status-text">${status.message}</p>
 
-                <div>
+                <div class="progress-bar-wrapper">
                     <span class="progress-bar warning"></span>
                 </div> 
 
@@ -206,7 +212,7 @@ const startExportProcess = () => {
 
                 <button class="open-path" data-open-path="${status.exportLocation}">Open Export Location</button>
 
-                <div>
+                <div class="progress-bar-wrapper">
                     <span class="progress-bar"></span>
                 </div>
 

@@ -41,10 +41,10 @@ html {
 
 body {
     @include column($justify: start, $align: center);
-    
+
     background-color: var(--color-bg);
     color: var(--color-fg);
-    
+
     width: 100%;
     min-height: 100dvh;
 
@@ -95,6 +95,7 @@ body {
         &>img+div {
             @include column($justify: center, $wrap: wrap);
             @include gap(0, m);
+            @include margin($right: 3xl);
 
             height: 100%;
 
@@ -106,6 +107,10 @@ body {
             &>p:last-of-type {
                 @include thin();
             }
+        }
+
+        &>.save-indicator {
+            @include margin($left: l);
         }
 
         // Page title
@@ -138,7 +143,7 @@ body {
 
             & * {
                 pointer-events: auto;
-            }            
+            }
         }
 
         &>.bottom {
