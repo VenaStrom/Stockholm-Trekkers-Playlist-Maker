@@ -85,15 +85,13 @@ main#projects-page {
                     &.episode,
                     &.pause {
                         @include margin(0, 0, 0, m);
-                        @include gap(0, l);
 
                         &>p:first-child {
-                            width: 6ch;
+                            width: 8rch;
                             text-align: center;
                         }
 
                         &>p:last-child {
-                            @include margin(0, 0, 0, s);
                             width: 100%;
                         }
                     }

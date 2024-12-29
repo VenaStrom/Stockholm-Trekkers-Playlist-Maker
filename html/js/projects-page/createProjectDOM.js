@@ -104,13 +104,13 @@ const createProjectDOM = (projectData) => {
     const makeEpisodeLi = (time, episodeName) => {
         return stringToHTML(`
             <li class="episode">
-                <p>${time}</p>-<p>${episodeName}</p>
+                <p>${time}</p><p>${episodeName}</p>
             </li>`);
     };
     const makePauseLi = (time) => {
         return stringToHTML(`
             <li class="pause">
-                <p>${time}</p>-<p>pause</p>
+                <p>${time}</p><p>pause</p>
             </li>`);
     };
 

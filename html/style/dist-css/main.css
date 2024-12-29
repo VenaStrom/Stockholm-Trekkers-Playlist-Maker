@@ -1179,47 +1179,12 @@ main#projects-page > section > .project > .main > li.episode, main#projects-page
   margin-right: var(--margin-0);
   margin-bottom: var(--margin-0);
   margin-left: var(--margin-m);
-  --gap-0: 0;
-  --gap-none: 0;
-  --gap-3xs: 0.05rem;
-  --gap-2xs: 0.1rem;
-  --gap-xs: 0.15rem;
-  --gap-s: 0.25rem;
-  --gap-m: 0.5rem;
-  --gap-l: 0.75rem;
-  --gap-xl: 1rem;
-  --gap-2xl: 1.5rem;
-  --gap-3xl: 2rem;
-  --gap-4xl: 5dvh;
-  --gap-5xl: 10dvh;
-  --gap-default: var(--gap-m);
-  gap: var(--gap-0) var(--gap-l);
 }
 main#projects-page > section > .project > .main > li.episode > p:first-child, main#projects-page > section > .project > .main > li.pause > p:first-child {
-  width: 6ch;
+  width: 8rch;
   text-align: center;
 }
 main#projects-page > section > .project > .main > li.episode > p:last-child, main#projects-page > section > .project > .main > li.pause > p:last-child {
-  --margin-0: 0;
-  --margin-none: 0;
-  --margin-2xs: 0.1rem;
-  --margin-xs: 0.15rem;
-  --margin-s: 0.25rem;
-  --margin-m: 0.5rem;
-  --margin-l: 0.75rem;
-  --margin-xl: 1rem;
-  --margin-2xl: 1.5rem;
-  --margin-3xl: 2rem;
-  --margin-4xl: 5dvh;
-  --margin-5xl: 10dvh;
-  --margin-6xl: 15dvh;
-  --margin-7xl: 20dvh;
-  --margin-8xl: 25dvh;
-  --margin-default: var(--margin-m);
-  margin-top: var(--margin-0);
-  margin-right: var(--margin-0);
-  margin-bottom: var(--margin-0);
-  margin-left: var(--margin-s);
   width: 100%;
 }
 main#projects-page > section > .project > .main > li.pause {
