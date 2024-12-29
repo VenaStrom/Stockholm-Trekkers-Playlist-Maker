@@ -20,7 +20,7 @@ const getTrace = (options = { depth: 2, verbose: false }) => {
     // Get the file name and line number from the stack frame
     const fileName = options.verbose ? path.relative(process.cwd(), callee.getFileName()) : path.basename(callee.getFileName());
     // Make trace gray
-    const fileNameAndLine = styleText(["reset", "gray"], `${fileName}:${callee.getLineNumber()}:`);
+    const fileNameAndLine = styleText(["reset", "gray"], `[Main] ${fileName}:${callee.getLineNumber()}:`);
 
     return fileNameAndLine;
 };
@@ -145,7 +145,8 @@ Object.entries(colors).forEach(([methodName, color]) => {
 
 const ipcHandlers = () => {
     ipcMain.handle("send-console", (event, type, args) => {
-        const prefix = styleText("gray", `[Renderer]`);
+        const trace = args.shift();
+        const prefix = styleText("gray", `[Renderer] ${trace}`);
         console[type]({ _noTrace: true }, prefix, ...args);
     });
 };
