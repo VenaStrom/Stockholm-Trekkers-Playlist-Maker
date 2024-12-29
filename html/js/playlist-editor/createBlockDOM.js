@@ -129,7 +129,7 @@ const makeBlockDOM = (blockData = null) => {
                     ${blockData.options.map(option => `<div class="option-dot${option.checked ? " active" : ""}"></div>`).join("")}
                 </div>
 
-                <button>Options<span>▼▲</span></button>
+                <button>Options<span>▼</span></button>
             </div>
 
             <button class="delete" title="Delete this block forever">
@@ -227,8 +227,19 @@ const deleteBlock = (event) => {
     }
 };
 const openOptionsDropdown = (event) => {
+    // Toggle the dropdown
     const dropdown = event.target.closest(".header").parentElement.querySelector(".options-dropdown");
     dropdown.classList.toggle("hidden");
+
+    // Change the arrow
+    const isOpen = !dropdown.classList.contains("hidden");
+    const arrowStates = {
+        open: "▲",
+        closed: "▼",
+    }
+    const header = event.target.closest(".header");
+    const arrow = header.querySelector(".options button span");
+    arrow.textContent = isOpen ? arrowStates.open : arrowStates.closed;
 };
 const updateOptionDots = (block) => {
     const optionDots = block.querySelectorAll(".header .options .option-dot");
