@@ -7,13 +7,9 @@ const leavePage = () => {
     window.location.href = "./projects-page.html";
 };
 
-
+// Clicking back button
 document.querySelector(".back-button").addEventListener("click", () => {
-    if (
-        isUnsaved()
-        &&
-        wantsToLeave()
-    ) {
+    if (isUnsaved() && wantsToLeave()) {
         leavePage();
         return;
     }
