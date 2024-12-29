@@ -15,7 +15,12 @@ const loadProjectData = async (id) => {
     }
 
     // Set the date input
-    document.querySelector(".date-input input[type='text']").value = projectData.date;
+    const dateInput = document.querySelector(".date-input input[type='text']");
+    dateInput.value = projectData.date;
+    dateInput.addEventListener("blur", (event) => {
+        event.target.value = interpretDate(event.target.value);
+    });
+    dateInput.dispatchEvent(new Event("blur"));
 
     // Load all blocks, one at a time
     projectData.blocks.forEach(blockData => {

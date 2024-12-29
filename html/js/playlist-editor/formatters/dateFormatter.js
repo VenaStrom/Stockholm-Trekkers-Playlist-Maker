@@ -72,8 +72,3 @@ const interpretDate = (date) => {
 
     return date;
 };
-
-// Add the formatter to the date input
-document.querySelector(".date-input>input").addEventListener("blur", (event) => {
-    event.target.value = interpretDate(event.target.value);
-});

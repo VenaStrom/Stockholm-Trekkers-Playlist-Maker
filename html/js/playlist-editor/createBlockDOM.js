@@ -38,7 +38,7 @@ const makeBlockDOM = (blockData = null) => {
         options: [...blockOptions],
         episodes: [],
     }
-    
+
     blockData.options = migrateOptions(blockData.options);
 
     const blockBody = stringToHTML(`<div class="block"></div>`);
@@ -62,6 +62,11 @@ const makeBlockDOM = (blockData = null) => {
             <img src="../../assets/images/delete_35dp_000000_FILL0_wght700_GRAD0_opsz40.png" alt="Delete block">
         </button>
     </div>`);
+
+    blockHeader.querySelector(".start-time input").addEventListener("blur", (event) => {
+        event.target.value = interpretTime(event.target.value);
+    });
+    blockHeader.querySelector(".start-time input").dispatchEvent(new Event("blur"));
 
     //
     // Options dropdown
