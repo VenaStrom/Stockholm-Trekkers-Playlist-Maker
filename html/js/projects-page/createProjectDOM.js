@@ -77,13 +77,6 @@ const unixTimeToDate = (unixTime) => {
     return date.toLocaleDateString("en", { year: "numeric", weekday: "short", month: "short", day: "numeric" })
 };
 
-const stringToHTML = (string) => {
-    const htmlLaunderer = document.createElement("div");
-    htmlLaunderer.innerHTML = string.trim();
-
-    return htmlLaunderer.firstChild;
-};
-
 const createProjectDOM = (projectData) => {
     //
     // Repeated DOM elements
@@ -94,24 +87,24 @@ const createProjectDOM = (projectData) => {
         };
 
         return stringToHTML(`
-            <li class="block-header">
-                <p>Block</p>
-                <div title="These dots represent which options are active for this block">
-                    ${options.map(option => makeDot(option.checked)).join("")}
-                </div>
-            </li>`);
+        <li class="block-header">
+            <p>Block</p>
+            <div title="These dots represent which options are active for this block">
+                ${options.map(option => makeDot(option.checked)).join("")}
+            </div>
+        </li>`);
     };
     const makeEpisodeLi = (time, episodeName) => {
         return stringToHTML(`
-            <li class="episode">
-                <p>${time}</p><p>${episodeName}</p>
-            </li>`);
+        <li class="episode">
+            <p>${time}</p><p>${episodeName}</p>
+        </li>`);
     };
     const makePauseLi = (time) => {
         return stringToHTML(`
-            <li class="pause">
-                <p>${time}</p><p>pause</p>
-            </li>`);
+        <li class="pause">
+            <p>${time}</p><p>pause</p>
+        </li>`);
     };
 
     //
@@ -119,21 +112,21 @@ const createProjectDOM = (projectData) => {
     //
     const projectBody = stringToHTML(`<div class="round-box project clickable" title="Load this project" tabindex="0"></div>`);
     const projectHeader = stringToHTML(
-        `<div class="header">
-            <div class="project-date" title="When the Trekdag will take place">
-                <p>Trekdag</p>
-                <h3>${projectData.date}</h3>
-            </div>
-    
-            <div class="meta-data" title="Someone created or modified this project at this date">
-                <p>Last modified: </p>
-                <p>${unixTimeToDate(projectData.dateModified)}</p>
-            </div>
-    
-            <button class="delete" title="Delete this project">
-                <img src="../../assets/images/delete_35dp_000000_FILL0_wght700_GRAD0_opsz40.png" alt="Delete">
-            </button>
-        </div>`);
+    `<div class="header">
+        <div class="project-date" title="When the Trekdag will take place">
+            <p>Trekdag</p>
+            <h3>${projectData.date}</h3>
+        </div>
+
+        <div class="meta-data" title="Someone created or modified this project at this date">
+            <p>Last modified: </p>
+            <p>${unixTimeToDate(projectData.dateModified)}</p>
+        </div>
+
+        <button class="delete" title="Delete this project">
+            <img src="../../assets/images/delete_35dp_000000_FILL0_wght700_GRAD0_opsz40.png" alt="Delete">
+        </button>
+    </div>`);
 
     const mainContent = stringToHTML(`<ul class="main"></ul>`);
 

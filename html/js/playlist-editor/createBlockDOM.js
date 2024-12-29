@@ -67,13 +67,6 @@
 //     </ul>
 // </div>
 
-const stringToHTML = (string) => {
-    const htmlLaunderer = document.createElement("div");
-    htmlLaunderer.innerHTML = string.trim();
-
-    return htmlLaunderer.firstChild;
-};
-
 const makeEpisodeDOM = (episodeData = null) => {
     episodeData = episodeData || {
         filePath: null,
@@ -83,10 +76,10 @@ const makeEpisodeDOM = (episodeData = null) => {
     }
 
     const episodeBody = stringToHTML(`
-        <li class="episode">
-            <p class="time" title="When this episode will start playing">${episodeData.startTime}</p>
-            <input type="file" title="Click to select a file to add to the playlist">
-        </li>`);
+    <li class="episode">
+        <p class="time" title="When this episode will start playing">${episodeData.startTime}</p>
+        <input type="file" title="Click to select a file to add to the playlist">
+    </li>`);
 
     if (!episodeData.filePath || !episodeData.fileName) {
         return episodeBody;
@@ -118,24 +111,24 @@ const makeBlockDOM = (blockData = null) => {
     const blockBody = stringToHTML(`<div class="block"></div>`);
 
     const blockHeader = stringToHTML(`
-        <div class="header">
-            <div class="start-time" title="When this block will start playing. Options will offset from this time so the first episode will always start at the defined block start time">
-                <p>Block Start</p>
-                <input type="text" placeholder="hhmm" value="${blockData.startTime}">
+    <div class="header">
+        <div class="start-time" title="When this block will start playing. Options will offset from this time so the first episode will always start at the defined block start time">
+            <p>Block Start</p>
+            <input type="text" placeholder="hhmm" value="${blockData.startTime}">
+        </div>
+
+        <div class="options">
+            <div>
+                ${blockData.options.map(option => `<div class="option-dot${option.checked ? " active" : ""}"></div>`).join("")}
             </div>
 
-            <div class="options">
-                <div>
-                    ${blockData.options.map(option => `<div class="option-dot${option.checked ? " active" : ""}"></div>`).join("")}
-                </div>
+            <button>Options<span>▼</span></button>
+        </div>
 
-                <button>Options<span>▼</span></button>
-            </div>
-
-            <button class="delete" title="Delete this block forever">
-                <img src="../../assets/images/delete_35dp_000000_FILL0_wght700_GRAD0_opsz40.png" alt="Delete block">
-            </button>
-        </div>`);
+        <button class="delete" title="Delete this block forever">
+            <img src="../../assets/images/delete_35dp_000000_FILL0_wght700_GRAD0_opsz40.png" alt="Delete block">
+        </button>
+    </div>`);
 
     //
     // Options dropdown
@@ -149,31 +142,31 @@ const makeBlockDOM = (blockData = null) => {
 
             const makeOptionCheckbox = (option) => {
                 return `
-                    <div title="${option.description}">
-                        <p>${option.name}</p><input data-id="${option.id}" type="checkbox"${option.checked ? " checked" : ""}>
-                    </div>`;
+                <div title="${option.description}">
+                    <p>${option.name}</p><input data-id="${option.id}" type="checkbox"${option.checked ? " checked" : ""}>
+                </div>`;
             };
 
             // Create the category body
             const categoryBody = `
-                <div class="options-category">
-                    <p>${blockOptionsCategoryLookup[category]}</p>
+            <div class="options-category">
+                <p>${blockOptionsCategoryLookup[category]}</p>
 
-                    <div>
-                        ${optionsInCategory.map(makeOptionCheckbox).join("")}
-                    </div>
-                </div>`;
+                <div>
+                    ${optionsInCategory.map(makeOptionCheckbox).join("")}
+                </div>
+            </div>`;
 
             return categoryBody;
         });
     };
 
     const optionsDropdown = stringToHTML(`
-        <div class="options-dropdown hidden">
-            <hr>
+    <div class="options-dropdown hidden">
+        <hr>
 
-            ${makeOptionCategories(blockData.options).join("")}
-        </div > `);
+        ${makeOptionCategories(blockData.options).join("")}
+    </div > `);
 
 
     // 
