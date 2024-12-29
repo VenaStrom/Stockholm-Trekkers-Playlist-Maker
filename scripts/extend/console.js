@@ -95,7 +95,7 @@ Object.entries(colors).forEach(([methodName, color]) => {
 
         // Relay to Renderer
         BrowserWindow.getAllWindows().forEach((window) => {
-            const prefix = styleText("bold", `[Main Process]` + (format.trace ? ` ${getTrace({ depth: 4, verbose: format.verboseTrace })}` : ""));
+            const prefix = styleText("bold", (format.trace ? getTrace({ depth: 4, verbose: format.verboseTrace}) : ""));
             const compiledArgs = format.passFirstArg ? [firstArg, ...args] : args;
 
             // Don't pass renderer relays
