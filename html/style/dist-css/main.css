@@ -377,6 +377,7 @@ input[type=file] {
   border-radius: var(--border-radius-m);
   white-space: nowrap;
   text-overflow: ellipsis;
+  cursor: pointer;
 }
 input[type=file]:focus {
   outline: var(--color-primary) solid 0.1rem;
@@ -391,7 +392,6 @@ input[type=file]::before {
   white-space: nowrap;
   -webkit-user-select: none;
   user-select: none;
-  cursor: pointer;
   --padding-0: 0;
   --padding-none: 0;
   --padding-2xs: 0.1rem;
@@ -408,22 +408,33 @@ input[type=file]::before {
   --padding-7xl: 20dvh;
   --padding-8xl: 25dvh;
   --padding-default: var(--padding-m);
-  padding-top: var(--padding-l);
-  padding-right: var(--padding-xl);
-  padding-bottom: var(--padding-l);
-  padding-left: var(--padding-xl);
+  padding-top: var(--padding-m);
+  padding-right: var(--padding-l);
+  padding-bottom: var(--padding-m);
+  padding-left: var(--padding-l);
   --border-radius-2xs: 0.1rem;
   --border-radius-xs: 0.15rem;
   --border-radius-s: 0.25rem;
   --border-radius-m: 0.5rem;
   --border-radius-l: 0.75rem;
   --border-radius-xl: 1rem;
-  border-radius: var(--border-radius-m);
+  border-radius: var(--border-radius-l);
+  --border-thickness-thin: 0.1rem;
+  --border-thickness-m-minus: 0.15rem;
+  --border-thickness-m: 0.2rem;
+  --border-thickness-m-plus: 0.25rem;
+  --border-thickness-thick: 0.3rem;
+  --border-thickness-x-thick: 0.4rem;
+  border: var(--border-thickness-thick) solid var(--color-low);
   font-weight: lighter;
   margin-right: 1ch;
   background-color: var(--color-low);
 }
-input[type=file]::before:hover {
+input[type=file]:hover {
+  background-color: var(--color-low);
+}
+input[type=file]:hover::before {
+  font-weight: bold;
   background-color: var(--color-primary);
   color: var(--color-low);
 }

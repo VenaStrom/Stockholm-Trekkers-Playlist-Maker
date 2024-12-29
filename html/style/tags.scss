@@ -75,6 +75,8 @@ input[type="file"] {
     white-space: nowrap;
     text-overflow: ellipsis;
 
+    cursor: pointer;
+
     &::-webkit-file-upload-button {
         visibility: hidden;
         display: none;
@@ -89,20 +91,24 @@ input[type="file"] {
         -webkit-user-select: none;
         user-select: none;
 
-        cursor: pointer;
-
-        @include padding(l, xl);
-        @include border-radius(m);
+        @include padding(m, l);
+        @include border-radius(l);
+        @include border(thick);
         @include thin();
 
         margin-right: 1ch;
 
         background-color: var(--color-low);
+    }
 
-        &:hover {
-            background-color: var(--color-primary);
-            color: var(--color-low);
-        }
+    &:hover {
+        background-color: var(--color-low);
+    }
+
+    &:hover::before {
+        @include bold();
+        background-color: var(--color-primary);
+        color: var(--color-low);
     }
 }
 
