@@ -73,41 +73,6 @@
 .round-box > .header {
   display: flex;
   flex-flow: row nowrap;
-  justify-content: center;
-  align-items: center;
-  --padding-0: 0;
-  --padding-none: 0;
-  --padding-2xs: 0.1rem;
-  --padding-xs: 0.15rem;
-  --padding-s: 0.25rem;
-  --padding-m: 0.5rem;
-  --padding-l: 0.75rem;
-  --padding-xl: 1rem;
-  --padding-2xl: 1.5rem;
-  --padding-3xl: 2rem;
-  --padding-4xl: 5dvh;
-  --padding-5xl: 10dvh;
-  --padding-6xl: 15dvh;
-  --padding-7xl: 20dvh;
-  --padding-8xl: 25dvh;
-  --padding-default: var(--padding-m);
-  padding-top: var(--padding-m);
-  padding-right: var(--padding-l);
-  padding-bottom: var(--padding-s);
-  padding-left: var(--padding-l);
-  --text-size-s: 0.9rem;
-  --text-size-m: 1rem;
-  --text-size-l: 1.1rem;
-  --text-size-xl: 1.25rem;
-  --text-size-2xl: 1.5rem;
-  --text-size-title: 2rem;
-  --text-size-x-title: 2.5rem;
-  --text-size-xx-title: 3rem;
-  font-size: var(--text-size-l);
-}
-.round-box > .header:not(.none) {
-  display: flex;
-  flex-flow: row nowrap;
   justify-content: start;
   align-items: center;
   --padding-0: 0;
@@ -130,6 +95,15 @@
   padding-right: var(--padding-xl);
   padding-bottom: var(--padding-m);
   padding-left: var(--padding-xl);
+  --text-size-s: 0.9rem;
+  --text-size-m: 1rem;
+  --text-size-l: 1.1rem;
+  --text-size-xl: 1.25rem;
+  --text-size-2xl: 1.5rem;
+  --text-size-title: 2rem;
+  --text-size-x-title: 2.5rem;
+  --text-size-xx-title: 3rem;
+  font-size: var(--text-size-l);
   background-color: var(--color-low);
 }
 .round-box > .main {
@@ -768,41 +742,6 @@ main#projects-page > section > .make-new-project > .header, main#projects-page >
 main#projects-page > section > .make-new-project > .header {
   display: flex;
   flex-flow: row nowrap;
-  justify-content: center;
-  align-items: center;
-  --padding-0: 0;
-  --padding-none: 0;
-  --padding-2xs: 0.1rem;
-  --padding-xs: 0.15rem;
-  --padding-s: 0.25rem;
-  --padding-m: 0.5rem;
-  --padding-l: 0.75rem;
-  --padding-xl: 1rem;
-  --padding-2xl: 1.5rem;
-  --padding-3xl: 2rem;
-  --padding-4xl: 5dvh;
-  --padding-5xl: 10dvh;
-  --padding-6xl: 15dvh;
-  --padding-7xl: 20dvh;
-  --padding-8xl: 25dvh;
-  --padding-default: var(--padding-m);
-  padding-top: var(--padding-m);
-  padding-right: var(--padding-l);
-  padding-bottom: var(--padding-s);
-  padding-left: var(--padding-l);
-  --text-size-s: 0.9rem;
-  --text-size-m: 1rem;
-  --text-size-l: 1.1rem;
-  --text-size-xl: 1.25rem;
-  --text-size-2xl: 1.5rem;
-  --text-size-title: 2rem;
-  --text-size-x-title: 2.5rem;
-  --text-size-xx-title: 3rem;
-  font-size: var(--text-size-l);
-}
-main#projects-page > section > .make-new-project > .header:not(.none) {
-  display: flex;
-  flex-flow: row nowrap;
   justify-content: start;
   align-items: center;
   --padding-0: 0;
@@ -825,6 +764,15 @@ main#projects-page > section > .make-new-project > .header:not(.none) {
   padding-right: var(--padding-xl);
   padding-bottom: var(--padding-m);
   padding-left: var(--padding-xl);
+  --text-size-s: 0.9rem;
+  --text-size-m: 1rem;
+  --text-size-l: 1.1rem;
+  --text-size-xl: 1.25rem;
+  --text-size-2xl: 1.5rem;
+  --text-size-title: 2rem;
+  --text-size-x-title: 2.5rem;
+  --text-size-xx-title: 3rem;
+  font-size: var(--text-size-l);
   background-color: var(--color-low);
 }
 main#projects-page > section > .make-new-project > .main {
@@ -1544,41 +1492,6 @@ main#playlist-editor > section > .block > .header, main#playlist-editor > sectio
 main#playlist-editor > section > .block > .header {
   display: flex;
   flex-flow: row nowrap;
-  justify-content: center;
-  align-items: center;
-  --padding-0: 0;
-  --padding-none: 0;
-  --padding-2xs: 0.1rem;
-  --padding-xs: 0.15rem;
-  --padding-s: 0.25rem;
-  --padding-m: 0.5rem;
-  --padding-l: 0.75rem;
-  --padding-xl: 1rem;
-  --padding-2xl: 1.5rem;
-  --padding-3xl: 2rem;
-  --padding-4xl: 5dvh;
-  --padding-5xl: 10dvh;
-  --padding-6xl: 15dvh;
-  --padding-7xl: 20dvh;
-  --padding-8xl: 25dvh;
-  --padding-default: var(--padding-m);
-  padding-top: var(--padding-m);
-  padding-right: var(--padding-l);
-  padding-bottom: var(--padding-s);
-  padding-left: var(--padding-l);
-  --text-size-s: 0.9rem;
-  --text-size-m: 1rem;
-  --text-size-l: 1.1rem;
-  --text-size-xl: 1.25rem;
-  --text-size-2xl: 1.5rem;
-  --text-size-title: 2rem;
-  --text-size-x-title: 2.5rem;
-  --text-size-xx-title: 3rem;
-  font-size: var(--text-size-l);
-}
-main#playlist-editor > section > .block > .header:not(.none) {
-  display: flex;
-  flex-flow: row nowrap;
   justify-content: start;
   align-items: center;
   --padding-0: 0;
@@ -1601,6 +1514,15 @@ main#playlist-editor > section > .block > .header:not(.none) {
   padding-right: var(--padding-xl);
   padding-bottom: var(--padding-m);
   padding-left: var(--padding-xl);
+  --text-size-s: 0.9rem;
+  --text-size-m: 1rem;
+  --text-size-l: 1.1rem;
+  --text-size-xl: 1.25rem;
+  --text-size-2xl: 1.5rem;
+  --text-size-title: 2rem;
+  --text-size-x-title: 2.5rem;
+  --text-size-xx-title: 3rem;
+  font-size: var(--text-size-l);
   background-color: var(--color-low);
 }
 main#playlist-editor > section > .block > .main {
@@ -2197,41 +2119,6 @@ main#playlist-editor > section > .make-new-block > .header, main#playlist-editor
 main#playlist-editor > section > .make-new-block > .header {
   display: flex;
   flex-flow: row nowrap;
-  justify-content: center;
-  align-items: center;
-  --padding-0: 0;
-  --padding-none: 0;
-  --padding-2xs: 0.1rem;
-  --padding-xs: 0.15rem;
-  --padding-s: 0.25rem;
-  --padding-m: 0.5rem;
-  --padding-l: 0.75rem;
-  --padding-xl: 1rem;
-  --padding-2xl: 1.5rem;
-  --padding-3xl: 2rem;
-  --padding-4xl: 5dvh;
-  --padding-5xl: 10dvh;
-  --padding-6xl: 15dvh;
-  --padding-7xl: 20dvh;
-  --padding-8xl: 25dvh;
-  --padding-default: var(--padding-m);
-  padding-top: var(--padding-m);
-  padding-right: var(--padding-l);
-  padding-bottom: var(--padding-s);
-  padding-left: var(--padding-l);
-  --text-size-s: 0.9rem;
-  --text-size-m: 1rem;
-  --text-size-l: 1.1rem;
-  --text-size-xl: 1.25rem;
-  --text-size-2xl: 1.5rem;
-  --text-size-title: 2rem;
-  --text-size-x-title: 2.5rem;
-  --text-size-xx-title: 3rem;
-  font-size: var(--text-size-l);
-}
-main#playlist-editor > section > .make-new-block > .header:not(.none) {
-  display: flex;
-  flex-flow: row nowrap;
   justify-content: start;
   align-items: center;
   --padding-0: 0;
@@ -2254,6 +2141,15 @@ main#playlist-editor > section > .make-new-block > .header:not(.none) {
   padding-right: var(--padding-xl);
   padding-bottom: var(--padding-m);
   padding-left: var(--padding-xl);
+  --text-size-s: 0.9rem;
+  --text-size-m: 1rem;
+  --text-size-l: 1.1rem;
+  --text-size-xl: 1.25rem;
+  --text-size-2xl: 1.5rem;
+  --text-size-title: 2rem;
+  --text-size-x-title: 2.5rem;
+  --text-size-xx-title: 3rem;
+  font-size: var(--text-size-l);
   background-color: var(--color-low);
 }
 main#playlist-editor > section > .make-new-block > .main {

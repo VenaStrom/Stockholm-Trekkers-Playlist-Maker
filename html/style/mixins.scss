@@ -437,17 +437,11 @@
     }
 
     &>.header {
-        @include row($justify: center, $align: center);
-        @include padding(m, l, s, l);
+        @include row($justify: start, $align: center);
+        @include padding(m, xl);
         @include text-size(l);
 
-        // With infill
-        &:not(.none) {
-            @include row($justify: start, $align: center);
-            @include padding(m, xl);
-
-            background-color: var(--color-low);
-        }
+        background-color: var(--color-low);
     }
 
     &>.main {
