@@ -74,8 +74,33 @@ const stringToHTML = (string) => {
     return htmlLaunderer.firstChild;
 };
 
-const createEpisodeDOM = () => {
+const createEpisodeDOM = (episodeData = null) => {
+    episodeData = episodeData || {
+        filePath: null,
+        fileName: null,
+        startTime: "--:--",
+        endTime: null,
+    }
 
+    const episodeBody = stringToHTML(`
+        <li class="episode">
+            <p class="time" title="When this episode will start playing">${episodeData.startTime}</p>
+            <input type="file" title="Click to select a file to add to the playlist">
+        </li>`);
+
+    if (!episodeData.filePath || !episodeData.fileName) {
+        return episodeBody;
+    }
+
+    // Visually set the file input 
+    const dataTransfer = new DataTransfer();
+    const file = new File([new Blob()], episodeData.fileName);
+    dataTransfer.items.add(file);
+    const fileInput = episodeBody.querySelector("input[type='file']");
+    fileInput.files = dataTransfer.files;
+    fileInput.dataset.filePath = episodeData.filePath;
+
+    return episodeBody;
 };
 
 const createBlockDOM = (blockData = null) => {
@@ -143,6 +168,14 @@ const createBlockDOM = (blockData = null) => {
         </div > `);
 
     const episodeList = stringToHTML(`<ul class="main"></ul>`);
+
+    blockData.episodes.forEach(episodeData => {
+        episodeList.appendChild(createEpisodeDOM(episodeData));
+    });
+    // Make sure there are at least 2 episodes
+    while (episodeList.querySelectorAll(".episode").length < 2) {
+        episodeList.appendChild(createEpisodeDOM());
+    }
 
     //
     // Attach event listeners
