@@ -5,13 +5,7 @@ const { app, BrowserWindow } = require("electron");
 const path = require("node:path");
 const fs = require("node:fs");
 const appCloseHandlers = require("./scripts/dialogs/handleAppClose.js");
-
-// User Data Path //
-const userDataFolder = path.join(path.resolve(__dirname), "user-data");
-if (!fs.existsSync(userDataFolder)) fs.mkdirSync(userDataFolder);
-const saveFilesFolder = path.join(userDataFolder, "save-files");
-if (!fs.existsSync(saveFilesFolder)) fs.mkdirSync(saveFilesFolder);
-
+const { userDataFolder, saveFilesFolder, videoAssetsFolder, downloadReferenceFile } = require("./filePaths.js");
 
 // MIGRATION PATCH //
 // Migrate the old save files to the new save files folder
@@ -72,10 +66,4 @@ app.once("ready", () => {
     ];
     ipcHandlers.forEach(handler => handler());
     console.info(`Registered ${ipcHandlers.length} IPC Handlers`);
-
-
-
-    console.info({ _noTrace: true }, ""); // Trailing margin for prettiness reasons :)
 });
-
-module.exports = { userDataFolder, saveFilesFolder };

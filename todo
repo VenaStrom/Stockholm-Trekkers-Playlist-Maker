@@ -52,6 +52,7 @@
 - [ ] Move blocks around in the editor.
   - [ ] Drag and drop mayhaps
   - [X] Currently doable in the json file
+- [ ] makePS1 could be on a worker thread or at least be async
 
 ## Fixes
 - [-] error handling när diskutrymmet tar slut under export

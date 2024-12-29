@@ -1,15 +1,23 @@
 "use strict";
-require("../extend/console.js"); // Adds more verbose logging to the console and colors!
 
 const { parentPort } = require("worker_threads");
 const fs = require("node:fs");
 const path = require("node:path");
+const { userDataFolder, saveFilesFolder, videoAssetsFolder, downloadReferenceFile } = require("../../filePaths.js");
+
+
+// Simple extension of console logging to add a prefix to all logs
+const _console = { log: console.log, error: console.error, warn: console.warn, info: console.info, debug: console.debug };
+Object.keys(_console).forEach((key) => {
+    console[key] = (...args) => {
+        _console[key](`[Worker] ${args}`);
+    }
+});
 
 const exportStatus = {};
 
 const copyAllAssets = (projectData, exportLocation, saveFilesFolder) => {
     // Copies the pause clips to the output folder
-    const pauseFolder = path.join(__dirname, "..", "assets", "videos");
 
     // Update export status
     exportStatus.type = "status"; // This is added so the parent thread knows how to handle the post
@@ -20,7 +28,7 @@ const copyAllAssets = (projectData, exportLocation, saveFilesFolder) => {
     // Copy the entire pauses folder to the output folder in /pauses
     console.info("Copying pauses...");
     fs.mkdirSync(path.join(exportLocation, "pauses"));
-    fs.cpSync(pauseFolder, path.join(exportLocation, "pauses"), { recursive: true });
+    fs.cpSync(videoAssetsFolder, path.join(exportLocation, "pauses"), { recursive: true });
 
     // Make episodes folder
     fs.mkdirSync(path.join(exportLocation, "episodes"));
@@ -36,13 +44,13 @@ const copyAllAssets = (projectData, exportLocation, saveFilesFolder) => {
         block.episodes.forEach((episode, episodeIndex) => {
 
             // Update export status
-            exportStatus.progress = `${20 + (80 / projectData.blocks.length / block.episodes.length) * (blockIndex * block.episodes.length + episodeIndex)}%`; // Gets a percent inbetween 20 and 100 based on which episode and block you are on
+            exportStatus.progress = `${20 + (80 / projectData.blocks.length / block.episodes.length) * (blockIndex * block.episodes.length + episodeIndex)}%`; // Gets a percent in between 20 and 100 based on which episode and block you are on
             parentPort.postMessage(exportStatus);
 
             // Check if the file path is missing or if the file is missing
             if (!episode.filePath || !fs.existsSync(episode.filePath)) {
                 console.error(`Cannot find ${episode.fileName}. The file path (${episode.filePath}) might be incorrect or the file is missing.`);
-                parentPort.postMessage({ type: "error", message: `Cannot find ${episode.fileName}. The file path (${episode.filePath ?? "empty string"}) might be incorrect or the file is missing.` });
+                parentPort.postMessage({ type: "error", message: `Cannot find ${episode.fileName}. The file path (${episode.filePath || "empty string"}) might be incorrect or the file is missing.` });
                 return;
             }
 
@@ -63,12 +71,14 @@ const copyAllAssets = (projectData, exportLocation, saveFilesFolder) => {
     fs.copyFileSync(path.join(saveFilesFolder, `${projectData.id}.json`), path.join(exportLocation, "project-save-file", `${projectData.id}.json`));
 
     // Update export status
-    exportStatus.message = "Done!";
+    exportStatus.message = "Export complete";
     exportStatus.progress = "100%";
+    exportStatus.status = "success";
     parentPort.postMessage(exportStatus);
 };
 
 
+// When main tells the worker to start working
 parentPort.on("message", (message) => {
     console.info("Worker started working");
     copyAllAssets(message.projectData, message.exportLocation, message.saveFilesFolder);

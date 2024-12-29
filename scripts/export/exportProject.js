@@ -8,6 +8,7 @@ const os = require("node:os");
 const fs = require("node:fs");
 const { projectGet } = require("../ipc-handlers/projectGetters.js");
 const makePS1 = require("./createPS1.js");
+const { userDataFolder, saveFilesFolder, videoAssetsFolder, downloadReferenceFile } = require("../../filePaths.js");
 
 // Assigned later in the projectExport function to a worker thread that copies all the assets
 let copyWorker;
@@ -16,74 +17,116 @@ let copyWorker;
 const exportStatus = {
     progress: "0%",
     message: "Making folders...",
-    exportLocation: "",
+    status: "exporting",
+    exportLocation: null,
 };
 
 // The main export function that is called when the user wants to export a project
 const projectExport = (id) => {
-    console.info(`Exporting project with id: ${id}`);
+    console.info(`Exporting project \n ID: ${id}`);
 
     // Update export status
     exportStatus.progress = "5%";
     exportStatus.message = "Making folders...";
 
+    // Get JSON object of the project
+    const projectData = projectGet(id);
+    if (!projectData) {
+        console.error("Project not found");
+        exportStatus.message = "Project not found";
+        exportStatus.status = "error";
+        exportStatus.progress = "100%";
+        return;
+    }
+    if (
+        !projectData.blocks
+        ||
+        projectData.blocks.length === 0
+        ||
+        !projectData.blocks.map(data => data.episodes).flat().length === 0
+    ) {
+        console.error("Project has no episodes");
+        exportStatus.message = "Project has no episodes";
+        exportStatus.status = "error";
+        exportStatus.progress = "100%";
+        return;
+    }
+
     // Prompt to select the output folder
     const chosenFolder = dialog.showOpenDialogSync({
         properties: ["openDirectory"],
         buttonLabel: "Export here",
-        title: "The project folder will end up here",
-        message: "The project folder will end up here",
-        defaultPath: path.join(os.homedir()),
+        title: "Choose export location",
+        message: "Choose export location",
+        defaultPath: path.join(os.homedir()), // OS agnostic home directory. Avoids opening System32 on Windows 
     });
 
-    // If the user cancels the export, return
-    if (!chosenFolder) { return; };
-
-    // Get JSON object of the project
-    const projectData = projectGet(id);
+    // If the user cancels the export
+    if (!chosenFolder || chosenFolder.length === 0) {
+        exportStatus.message = "Export cancelled";
+        exportStatus.status = "cancelled";
+        exportStatus.progress = "100%";
+        return;
+    };
 
     const exportLocation = path.join(chosenFolder.at(0), projectData.date);
     exportStatus.exportLocation = exportLocation;
 
-    // Override existing folder confirmation
+    // Overwrite existing folder with confirmation
     if (fs.existsSync(exportLocation)) {
-        if (
-            dialog.showMessageBoxSync({
-                type: "question",
-                buttons: ["Yes", "No"],
-                title: "Export",
-                message: "The project folder already exists. Do you want to overwrite it? \n\n Clicking no will cancel the export.",
-                defaultId: 1,
-                cancelId: 1,
-            })
-        ) {
+        const wantsToOverwrite = dialog.showMessageBoxSync({
+            type: "question",
+            buttons: ["Yes, overwrite", "No, cancel"],
+            title: "Export",
+            message: "The playlist already exists at this location. Do you want to overwrite it?",
+            defaultId: 1,
+            cancelId: 1,
+        })
+
+        if (wantsToOverwrite === 1) {
+            exportStatus.message = "Export cancelled";
+            exportStatus.status = "cancelled";
+            exportStatus.progress = "100%";
             return;
         }
+
         // If the user wants to overwrite the folder, delete the old folder
         fs.rmSync(exportLocation, { recursive: true });
     }
 
-    // Make project folder
+    // Make folder at export location
     fs.mkdirSync(exportLocation);
 
     // Make the ps1 script
-    makePS1(projectData, exportLocation);
+    makePS1(exportStatus, projectData, exportLocation);
 
     // Makes a worker thread to copy all the assets and relay its status to the main thread
-    copyWorker = new Worker(path.join(__dirname, "workerExport.js"));
+    copyWorker = new Worker(path.join(__dirname, "copyWorker.js"));
     copyWorker.on("message", (message) => { // This updates the export status in the main scope
+        // Status update
         if (message.type === "status") {
             exportStatus.message = message.message;
             exportStatus.progress = message.progress;
+            exportStatus.status = message.status;
             console.info(`${parseFloat(message.progress).toFixed(2)}% - ${message.message}`);
+            return;
+        }
+        // Error handling
+        if (message.type === "error") {
+            console.error(`Error on worker thread: \n message.stack: ${message.stack} \n message.message: ${message.message}`);
 
-        } else if (message.type === "error") {
-            exportStatus.message = `ERROR: ${message.message}. Export cancelled.`;
+            exportStatus.message = message.message;
+            exportStatus.status = "error";
             exportStatus.progress = "100%";
-            console.error(message.message);
 
             // Stop the worker thread that's copying all the assets
             copyWorker.terminate();
+
+            // Remove the exported project folder
+            if (fs.existsSync(exportLocation)) {
+                fs.rmSync(exportLocation, { recursive: true });
+            }
+            return;
         }
     });
 
@@ -112,6 +155,7 @@ const ipcHandlers = () => {
 
         exportStatus.progress = "100%";
         exportStatus.message = "Export cancelled";
+        exportStatus.status = "cancelled";
     });
 };
 

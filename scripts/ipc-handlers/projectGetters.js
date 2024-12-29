@@ -4,7 +4,8 @@ require("../extend/console.js"); // Adds more verbose logging to the console and
 const { ipcMain } = require("electron");
 const fs = require("node:fs");
 const path = require("node:path")
-const { saveFilesFolder } = require("../../main.js");
+const { userDataFolder, saveFilesFolder, videoAssetsFolder, downloadReferenceFile } = require("../../filePaths.js");
+
 
 const projectGet = (id) => {
     console.info(`Getting project: \n ID: ${id}`);

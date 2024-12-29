@@ -3,7 +3,8 @@ require("../extend/console.js"); // Adds more verbose logging to the console and
 
 const { BrowserWindow, ipcMain } = require("electron");
 const fs = require("fs");
-const path = require("node:path")
+const path = require("node:path");
+const { userDataFolder, saveFilesFolder, videoAssetsFolder, downloadReferenceFile } = require("../../filePaths.js");
 
 // The object returned to the renderer process to show the download status
 const downloadStatus = {
@@ -16,15 +17,12 @@ const downloadStatus = {
     "percent": 0,
 };
 
-const videoFolder = path.join(__dirname, "..", "..", "assets", "videos");
-const downloadReferenceFile = path.join(__dirname, "..", "..", "assetDownloadInfo.json");
-
 const downloadPauses = () => {
     downloadStatus.status = "starting";
 
     console.info("Removing old files...");
-    fs.rmSync(videoFolder, { recursive: true });
-    fs.mkdirSync(videoFolder, { recursive: true });
+    fs.rmSync(videoAssetsFolder, { recursive: true });
+    fs.mkdirSync(videoAssetsFolder, { recursive: true });
 
     // Get the URLs of the files that are gonna be downloaded, from fileURLs.json
     const downloadReferences = JSON.parse(fs.readFileSync(downloadReferenceFile));
@@ -63,12 +61,12 @@ const downloadPauses = () => {
         }
 
         // Check if video folder exists and make it if it doesn't
-        if (!fs.existsSync(videoFolder)) {
-            fs.mkdirSync(videoFolder, { recursive: true });
+        if (!fs.existsSync(videoAssetsFolder)) {
+            fs.mkdirSync(videoAssetsFolder, { recursive: true });
         }
 
         // If the video is already downloaded and we're not forcing, skip it
-        if (fs.existsSync(videoFolder + file.name)) {
+        if (fs.existsSync(path.join(videoAssetsFolder, file.name))) {
             console.info(`${file.name} already downloaded. Skipping...`);
             getNextFile();
             return;
@@ -85,7 +83,7 @@ const downloadPauses = () => {
         browser.webContents.session.once("will-download", (event, item, webContents) => {
 
             // Sets where the file will save to
-            item.setSavePath(path.join(videoFolder, file.name));
+            item.setSavePath(path.join(videoAssetsFolder, file.name));
 
             // On any update in the download it checks the state and does stuff accordingly
             item.on("updated", (event, state) => {
@@ -94,7 +92,7 @@ const downloadPauses = () => {
                     downloadStatus.status = "failed";
 
                     // Delete the file if it's interrupted as to not leave a half-downloaded file
-                    fs.rmSync(path.join(videoFolder, file.name));
+                    fs.rmSync(path.join(videoAssetsFolder, file.name));
 
                 } else if (state === "progressing") {
                     if (item.isPaused()) {
@@ -102,7 +100,7 @@ const downloadPauses = () => {
                         downloadStatus.status = "failed";
 
                         // Delete the file if it's paused
-                        fs.rmSync(path.join(videoFolder, file.name));
+                        fs.rmSync(path.join(videoAssetsFolder, file.name));
 
                     } else {
                         // This happens when everything is going well
@@ -132,7 +130,7 @@ const downloadPauses = () => {
                     downloadStatus.status = "failed";
 
                     // Delete the file if it fails
-                    fs.rmSync(path.join(videoFolder, file.name));
+                    fs.rmSync(path.join(videoAssetsFolder, file.name));
                 }
             });
         });
@@ -175,14 +173,14 @@ const ipcHandlers = () => {
         const fileNames = downloadReferences.videos.map(file => file.name);
 
         // Look for the files in the video folder
-        const existingFiles = fs.readdirSync(videoFolder);
+        const existingFiles = fs.readdirSync(videoAssetsFolder);
         const allFilesExist = fileNames.every(fileName => existingFiles.includes(fileName));
 
         return allFilesExist;
     });
 
     ipcMain.handle("get-assets-path", () => {
-        return videoFolder;
+        return videoAssetsFolder;
     });
 };
 

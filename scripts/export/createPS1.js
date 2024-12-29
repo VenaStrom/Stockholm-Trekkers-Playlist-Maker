@@ -2,9 +2,10 @@
 require("../extend/console.js"); // Adds more verbose logging to the console and colors!
 
 const path = require("node:path");
+const fs = require("node:fs");
 
 // Make the ps1 "harness" that runs VLC and runs the correct episodes at the correct times
-const makePS1 = (projectData, exportLocation) => {
+const makePS1 = (exportStatus, projectData, exportLocation) => {
     console.info("Making ps1 script...");
 
     // Update export status
@@ -199,7 +200,7 @@ Insert-Pause -pausePath '/pauses/pause_30_min.mp4' -playImmediately $false
         block.options.forEach((option) => {
             if (option.checked && option.id.includes("leading")) {
                 const clipPath = `/pauses/${option.fileName}`;
-                thisBlock.push(insertLeadingClip(clipPath, playImmediately = isFirst));
+                thisBlock.push(insertLeadingClip(clipPath, isFirst));
                 isFirst = false;
             }
         });
@@ -209,7 +210,7 @@ Insert-Pause -pausePath '/pauses/pause_30_min.mp4' -playImmediately $false
         // Push the episodes in the block
         thisBlock.push(`# Episodes in block ${index + 1}`);
         block.episodes.forEach((episode) => {
-            thisBlock.push(playEpisode(`/episodes/${episode.fileName}`, playImmediately = isFirst));
+            thisBlock.push(playEpisode(`/episodes/${episode.fileName}`, isFirst));
             isFirst = false;
         });
 

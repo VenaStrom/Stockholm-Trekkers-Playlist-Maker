@@ -2,11 +2,11 @@
 require("../extend/console.js"); // Adds more verbose logging to the console and colors!
 
 const { ipcMain, dialog } = require("electron");
-const fs = require("fs");
-const path = require("path");
-const os = require("os");
+const fs = require("node:fs");
+const path = require("node:path");
+const os = require("node:os");
+const { userDataFolder, saveFilesFolder, videoAssetsFolder, downloadReferenceFile } = require("../../filePaths.js");
 
-const { saveFilesFolder } = require("../../main.js");
 
 const showDialog = async () => {
     return dialog.showOpenDialog({
