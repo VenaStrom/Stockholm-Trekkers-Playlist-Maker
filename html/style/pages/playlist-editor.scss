@@ -227,4 +227,76 @@ main#playlist-editor {
             }
         }
     }
+
+
+}
+
+// 
+// Export window
+// 
+.export-overlay {
+    @include column($justify: center, $align: center);
+
+    // Cover everything
+    position: fixed;
+    width: 100dvw;
+    height: 100dvh;
+    overflow: hidden;
+
+    // Darken the background
+    background-color: rgba(0, 0, 0, 0.5);
+
+    // Prevent clicking of anything else except the window
+    user-select: none;
+    z-index: 999;
+
+    &>* {
+        z-index: 1000;
+    }
+
+    &>.round-box {
+        @include width(5xl);
+        @include height(12xl);
+        @include border(thick);
+
+        user-select: text;
+        pointer-events: all;
+
+        &>.header {
+            @include text-size(xl);
+            @include padding($top: l, $bottom: l);
+        }
+
+        &>.main {
+            &>p {
+                @include margin($top: l);
+                width: 100%;
+                text-align: center;
+            }
+
+            &>div {
+                @include column($justify: center, $align: center);
+
+                flex: 1;
+                width: 100%;
+
+                &>.progress-bar {
+                    width: 100%;
+                }
+            }
+
+            &>button {
+                @include margin(xs);
+            }
+        }
+    }
+}
+
+.stop-page-interactions {
+    user-select: none;
+    pointer-events: none;
+
+    width: 100dvw;
+    height: 100dvh;
+    overflow: hidden;
 }

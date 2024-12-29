@@ -431,6 +431,8 @@
 
     overflow: hidden; // Corners of header were showing
 
+    background-color: var(--color-bg);
+
     &>.header,
     &>.main {
         width: 100%;
@@ -502,7 +504,7 @@
     }
 }
 
-@mixin button {
+@mixin button() {
     // Reset
     all: unset;
 
@@ -511,6 +513,7 @@
     @include border(thick);
 
     cursor: pointer;
+    user-select: none;
 
     background-color: var(--color-low);
     color: var(--color-fg);

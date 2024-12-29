@@ -2,9 +2,9 @@
 require("../extend/console.js"); // Adds more verbose logging to the console and colors!
 
 const { ipcMain, dialog } = require("electron");
-const { Worker } = require("worker_threads");
+const { Worker } = require("node:worker_threads");
 const path = require("node:path");
-const os = require("os");
+const os = require("node:os");
 const fs = require("node:fs");
 const { projectGet } = require("../ipc-handlers/projectGetters.js");
 const makePS1 = require("./createPS1.js");
@@ -118,10 +118,12 @@ const ipcHandlers = () => {
 
     ipcMain.handle("cancel-export", (_) => {
         // Stop the worker thread that's copying all the assets
-        copyWorker.terminate();
+        copyWorker?.terminate();
 
         // Remove the exported project folder
-        fs.rmSync(exportStatus.exportLocation, { recursive: true });
+        if (fs.existsSync(exportStatus.exportLocation)) {
+            fs.rmSync(exportStatus.exportLocation, { recursive: true });
+        }
 
         exportStatus.message = "Export cancelled";
     });
