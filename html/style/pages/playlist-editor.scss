@@ -179,7 +179,9 @@ main#playlist-editor {
                     width: 100%;
 
                     &>.time {
-                        @include padding(0, 2xl);
+                        @include text-size(l);
+                        width: 10rch;
+                        text-align: center;
                     }
 
                     &>input {

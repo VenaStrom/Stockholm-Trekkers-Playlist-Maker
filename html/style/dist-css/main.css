@@ -2111,26 +2111,17 @@ main#playlist-editor > section > .block > .main > .episode {
   width: 100%;
 }
 main#playlist-editor > section > .block > .main > .episode > .time {
-  --padding-0: 0;
-  --padding-none: 0;
-  --padding-2xs: 0.1rem;
-  --padding-xs: 0.15rem;
-  --padding-s: 0.25rem;
-  --padding-m: 0.5rem;
-  --padding-l: 0.75rem;
-  --padding-xl: 1rem;
-  --padding-2xl: 1.5rem;
-  --padding-3xl: 2rem;
-  --padding-4xl: 5dvh;
-  --padding-5xl: 10dvh;
-  --padding-6xl: 15dvh;
-  --padding-7xl: 20dvh;
-  --padding-8xl: 25dvh;
-  --padding-default: var(--padding-m);
-  padding-top: var(--padding-0);
-  padding-right: var(--padding-2xl);
-  padding-bottom: var(--padding-0);
-  padding-left: var(--padding-2xl);
+  --text-size-s: 0.9rem;
+  --text-size-m: 1rem;
+  --text-size-l: 1.1rem;
+  --text-size-xl: 1.25rem;
+  --text-size-2xl: 1.5rem;
+  --text-size-title: 2rem;
+  --text-size-x-title: 2.5rem;
+  --text-size-xx-title: 3rem;
+  font-size: var(--text-size-l);
+  width: 10rch;
+  text-align: center;
 }
 main#playlist-editor > section > .block > .main > .episode > input {
   flex: 1;
