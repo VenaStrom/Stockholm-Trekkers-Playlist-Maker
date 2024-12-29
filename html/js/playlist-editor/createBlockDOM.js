@@ -150,7 +150,7 @@ const makeBlockDOM = (blockData = null) => {
             const makeOptionCheckbox = (option) => {
                 return `
                     <div title="${option.description}">
-                        <p>${option.name}</p><input data-option-id="${option.id}" type="checkbox"${option.checked ? " checked" : ""}>
+                        <p>${option.name}</p><input data-id="${option.id}" type="checkbox"${option.checked ? " checked" : ""}>
                     </div>`;
             };
 

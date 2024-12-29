@@ -1,5 +1,8 @@
 "use strict";
 
+// 
+// Styling for empty file inputs
+// 
 document.addEventListener("input", () => {
     const allFileInputs = document.querySelectorAll("input[type='file']");
 

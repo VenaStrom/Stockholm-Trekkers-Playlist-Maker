@@ -1,7 +1,6 @@
 "use strict";
 
 const pageBornAt = new Date().getTime();
-console.info("Page born at: ", pageBornAt);
 
 const getID = () => {
     const pageURL = window.location.href;
@@ -11,7 +10,6 @@ const getID = () => {
 
     // If the id already exists, return it
     if (args.id !== "new") {
-        console.info("ID already exists: ", args.id);
         return args.id;
     };
 
