@@ -109,7 +109,7 @@ input[type="checkbox"] {
 
     @include outline();
     @include border-radius(m);
-    @include border($thickness: m-minus, $color: var(--color-fg));
+    @include border($thickness: thin, $color: var(--color-fg));
 
     cursor: pointer;
 

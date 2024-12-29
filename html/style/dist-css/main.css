@@ -460,7 +460,7 @@ input[type=checkbox] {
   --border-thickness-m-plus: 0.25rem;
   --border-thickness-thick: 0.3rem;
   --border-thickness-x-thick: 0.4rem;
-  border: var(--border-thickness-m-minus) solid var(--color-fg);
+  border: var(--border-thickness-thin) solid var(--color-fg);
   cursor: pointer;
   height: 1.5rem;
   width: 1.5rem;
