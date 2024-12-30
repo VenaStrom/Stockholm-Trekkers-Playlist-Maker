@@ -8,11 +8,6 @@ contextBridge.exposeInMainWorld("main", {
     sendConsole: (type, message) => ipcRenderer.invoke("send-console", type, message),
 });
 
-contextBridge.exposeInMainWorld("dialog", {
-    confirmLeaveUnsaved: (message) => ipcRenderer.invoke("confirm-leave-unsaved", message),
-    confirmLeaveExporting: (message) => ipcRenderer.invoke("confirm-leave-exporting", message),
-});
-
 contextBridge.exposeInMainWorld("appPath", {
     get: () => ipcRenderer.invoke("get-app-root"),
 });

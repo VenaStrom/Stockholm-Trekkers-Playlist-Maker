@@ -1,8 +1,8 @@
 "use strict";
 require("../extend/console.js"); // Adds more verbose logging to the console and colors!
 
-const { spawn } = require("node:child_process");
 const { ipcMain } = require("electron");
+const { spawn } = require("node:child_process");
 const path = require("node:path");
 
 const openFilePath = (folderPath) => {
@@ -14,7 +14,7 @@ const openFilePath = (folderPath) => {
     } else if (process.platform === "linux") { // Linux
         spawn("xdg-open", [fullPath]);
 
-    } else if (process.platform === "darwin") { // macOS which I don"t build for but why not have it here
+    } else if (process.platform === "darwin") { // macOS which I don't build for but why not have it here
         spawn("open", [fullPath]);
 
     } else {
@@ -28,4 +28,4 @@ const ipcHandlers = () => {
     });
 };
 
-module.exports = { ipcHandlers } ;
+module.exports = { ipcHandlers };
