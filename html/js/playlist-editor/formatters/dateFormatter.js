@@ -3,70 +3,99 @@
 const interpretDate = (date) => {
     date = date.replace(/\D/g, ""); // Only keep numbers
 
+    const num = (start, end) => {
+        return date.slice(start, end);
+    };
+
+    const format = (year, month, day) => {
+        year = year.toString().padStart(4, "0");
+        month = month.toString().padStart(2, "0");
+        day = day.toString().padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+    };
+
     if (date.length === 8) {
         // Assume the date is in the format YYYYMMDD
-        return `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6, 8)}`;
+        return format(num(0, 4), num(4, 6), num(6, 8));
     }
 
     if (date.length === 7) {
         // Assume the date is in the format YYYYMM0D
-        return `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6, 7).padStart(2, "0")}`;
+        return format(num(0, 4), num(4, 6), num(6, 8));
     }
 
     if (date.length === 6) {
         // Assume the date is in the format YYMMDD
-        const currentCentury = new Date().getFullYear().toString().slice(0, 2);
-        return `${currentCentury}${date.slice(0, 2)}-${date.slice(2, 4)}-${date.slice(4, 6)}`;
+        const year = new Date().getFullYear();
+        
+        return format(year, num(0, 2), num(2, 4));
     }
 
     if (date.length === 4) {
         // Assume the date is in the format MMDD
-        const currentYear = new Date().getFullYear();
-        return `${currentYear}-${date.slice(0, 2)}-${date.slice(2, 4)}`;
+        const year = new Date().getFullYear();
+        return format(year, num(0, 2), num(2, 4));
     }
 
     if (date.length === 3) {
-        const firstTwoDigits = date.slice(0, 2);
+        // Assume the date is in the format MDD or MM0D
+
+        const firstTwoDigits = parseInt(num(0, 2));
 
         if (firstTwoDigits <= 12) {
             // Assume the date is in the format MM0D
-            const currentYear = new Date().getFullYear();
-            return `${currentYear}-${date.slice(0, 2).padStart(2, "0")}-${date.slice(2, 3).padStart(2, "0")}`;
+            const year = new Date().getFullYear();
+            return format(year, num(0, 2), num(2, 3));
         }
-        else if (firstTwoDigits > 12) {
+        else {
             // Assume the date is in the format MDD
-            const currentYear = new Date().getFullYear();
-            return `${currentYear}-${date.slice(0, 1).padStart(2, "0")}-${date.slice(1, 3)}`;
+            const year = new Date().getFullYear();
+            return format(year, num(0, 1), num(1, 3));
         }
     }
 
     if (date.length === 2) {
         // Assume the date is in the format DD
 
-        if (date >= new Date().getDate()) {
-            // If the day hasn't passed, assume it's this month
-            return `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${date}`;
+        const currentDate = new Date().getDate();
+
+        if (date >= currentDate) {
+            // If it's in the future, assume it's this month
+            const year = new Date().getFullYear();
+            const month = new Date().getMonth() + 1;
+            return format(year, month, date);
         }
-        else if (date < new Date().getDate()) {
-            // If the day has passed, assume it's next month
+        if (date < currentDate) {
+            // If it's in the past, assume it's next month instead
             const newDate = new Date();
-            newDate.setMonth(newDate.getMonth() + 1);
-            return `${newDate.getFullYear()}-${newDate.getMonth() + 1}-${date}`;
+            newDate.setMonth(newDate.getMonth() + 1); // Handles rolling over to the next year
+
+            const year = newDate.getFullYear();
+            const month = newDate.getMonth() + 1;
+            return format(year, month, date);
         }
     }
 
     if (date.length === 1) {
         // Assume the date is in the format 0D
 
-        if (date >= new Date().getDate()) {
-            // If the day hasn't passed, assume it's this month
-            return `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${date.padStart(2, "0")}`;
+        const currentDate = new Date().getDate();
+
+        if (date >= currentDate) {
+            // If it's in the future, assume it's this month
+            const year = new Date().getFullYear();
+            const month = new Date().getMonth() + 1;
+            return format(year, month, num(0, 1));
         }
-        else if (date < new Date().getDate()) {
-            // If the day has passed, assume it's next month
+        if (date < currentDate) {
+            // If it's in the past, assume it's next month instead
             const newDate = new Date();
-            newDate.setMonth(newDate.getMonth() + 1);
-            return `${newDate.getFullYear()}-${newDate.getMonth() + 1}-${date.padStart(2, "0")}`;
+            newDate.setMonth(newDate.getMonth() + 1); // Handles rolling over to the next year
+
+            const year = newDate.getFullYear();
+            const month = newDate.getMonth() + 1;
+            return format(year, month, num(0, 1));
         }
     }
 
