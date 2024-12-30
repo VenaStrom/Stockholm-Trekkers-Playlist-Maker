@@ -12,11 +12,12 @@ const secondsToHhmm = (seconds) => {
     const hoursString = hours.toString().padStart(2, "0");
     const minutesString = minutes.toString().padStart(2, "0");
 
-    return `${hoursString}:${minutesString}`;
+    // Handle rollover
+    return `${hoursString % 24}:${minutesString}`;
 }
 
 const updateEpisodeTimes = async (block) => {
-    const episodes = [...block.querySelectorAll(".episode")];
+    const episodes = [...block.querySelectorAll(".episode")]; // Cast to array
 
     // Ignore if the block doesn't have a start time
     if (!block.querySelector(".start-time input[type='text']").value) {
