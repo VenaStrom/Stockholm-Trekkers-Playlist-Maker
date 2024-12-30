@@ -35,7 +35,7 @@ const updateEpisodeTimes = async (block) => {
         const fileInput = episode.querySelector("input[type='file']");
         const filePath = fileInput.dataset.filePath;
 
-        if (!filePath) {
+        if (!filePath || !fs.existsSync(filePath)) {
             return 0;
         }
 

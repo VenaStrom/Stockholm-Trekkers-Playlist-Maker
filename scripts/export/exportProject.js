@@ -21,6 +21,18 @@ const exportStatus = {
     exportLocation: null,
 };
 
+const errorStatus = (message) => {
+    exportStatus.message = message;
+    exportStatus.status = "error";
+    exportStatus.progress = "100%";
+};
+
+const cancelStatus = (message) => {
+    exportStatus.message = message;
+    exportStatus.status = "cancelled";
+    exportStatus.progress = "100%";
+};
+
 // The main export function that is called when the user wants to export a project
 const projectExport = (id) => {
     console.info(`Exporting project \n ID: ${id}`);
@@ -31,13 +43,14 @@ const projectExport = (id) => {
 
     // Get JSON object of the project
     const projectData = projectGet(id);
+
+    // Validate the project data
     if (!projectData) {
         console.error("Project not found");
-        exportStatus.message = "Project not found";
-        exportStatus.status = "error";
-        exportStatus.progress = "100%";
+        errorStatus("Project not found");
         return;
     }
+    // No episodes
     if (
         !projectData.blocks
         ||
@@ -46,11 +59,23 @@ const projectExport = (id) => {
         !projectData.blocks.map(data => data.episodes).flat().length === 0
     ) {
         console.error("Project has no episodes");
-        exportStatus.message = "Project has no episodes";
-        exportStatus.status = "error";
-        exportStatus.progress = "100%";
+        cancelStatus("Project has no episodes");
         return;
     }
+    // No/missing paths
+    const allEpisodes = projectData.blocks.map(data => data.episodes).flat();
+    if (allEpisodes.some(episode => !fs.existsSync(episode.path))) {
+
+        const suspectedPaths = allEpisodes
+            .filter(episode => !fs.existsSync(episode.path))
+            .map(episode => `<li>${episode.filePath}</li><li>${episode.filePath}</li><li>${episode.filePath}</li>`)
+            .join("");
+
+        console.error(`One or more files are missing or the file paths are wrong. Suspects: <ul class="missing-files">${suspectedPaths}</ul>`);
+        errorStatus(`One or more files are missing or the file paths are wrong. Suspects: <ul class="missing-files">${suspectedPaths}</ul>`);
+        return;
+    }
+
 
     // Prompt to select the output folder
     const chosenFolder = dialog.showOpenDialogSync({
@@ -63,13 +88,12 @@ const projectExport = (id) => {
 
     // If the user cancels the export
     if (!chosenFolder || chosenFolder.length === 0) {
-        exportStatus.message = "Export cancelled";
-        exportStatus.status = "cancelled";
-        exportStatus.progress = "100%";
+        console.info("Export cancelled");
+        cancelStatus("Export cancelled");
         return;
     };
 
-    const exportLocation = path.join(chosenFolder.at(0), projectData.date);
+    const exportLocation = path.join(chosenFolder[0], projectData.date);
     exportStatus.exportLocation = exportLocation;
 
     // Overwrite existing folder with confirmation
@@ -78,15 +102,14 @@ const projectExport = (id) => {
             type: "question",
             buttons: ["Yes, overwrite", "No, cancel"],
             title: "Export",
-            message: "The playlist already exists at this location. Do you want to overwrite it?",
+            message: "A playlist already exists at this location. Do you want to overwrite it?",
             defaultId: 1,
             cancelId: 1,
         })
 
         if (wantsToOverwrite === 1) {
-            exportStatus.message = "Export cancelled";
-            exportStatus.status = "cancelled";
-            exportStatus.progress = "100%";
+            console.info("Export cancelled");
+            cancelStatus("Export cancelled");
             return;
         }
 
@@ -105,19 +128,17 @@ const projectExport = (id) => {
     copyWorker.on("message", (message) => { // This updates the export status in the main scope
         // Status update
         if (message.type === "status") {
+            console.info(`${parseFloat(message.progress).toFixed(2)}% - ${message.message}`);
             exportStatus.message = message.message;
             exportStatus.progress = message.progress;
             exportStatus.status = message.status;
-            console.info(`${parseFloat(message.progress).toFixed(2)}% - ${message.message}`);
             return;
         }
         // Error handling
         if (message.type === "error") {
-            console.error(`Error on worker thread: \n message.stack: ${message.stack} \n message.message: ${message.message}`);
+            console.error(`Error on worker thread:\n${message.message}`);
 
-            exportStatus.message = message.message;
-            exportStatus.status = "error";
-            exportStatus.progress = "100%";
+            errorStatus(message.message);
 
             // Stop the worker thread that's copying all the assets
             copyWorker.terminate();
@@ -153,9 +174,7 @@ const ipcHandlers = () => {
             fs.rmSync(exportStatus.exportLocation, { recursive: true });
         }
 
-        exportStatus.progress = "100%";
-        exportStatus.message = "Export cancelled";
-        exportStatus.status = "cancelled";
+        cancelStatus("Export cancelled");
     });
 };
 

@@ -144,7 +144,6 @@ const startExportProcess = () => {
         // Display States
         // 
         const displayErrorState = () => {            
-            stopIntervals();
             exporter.cancel();
 
             exportWindow.querySelector(".round-box").innerHTML = `
@@ -162,6 +161,8 @@ const startExportProcess = () => {
                 <button class="close">Close</button>
             </div>`;
 
+            stopIntervals();
+
             // Set progress bar to 100%
             const progressBar = exportWindow.querySelector(".progress-bar");
             progressBar.style.backgroundSize = "100%";
@@ -172,7 +173,6 @@ const startExportProcess = () => {
             });
         };
         const displayCancelState = () => {
-            stopIntervals();
             exporter.cancel();
 
             exportWindow.querySelector(".round-box").innerHTML = `
@@ -190,6 +190,8 @@ const startExportProcess = () => {
                 <button class="close">Close</button>
             </div>`;
 
+            stopIntervals();
+
             // Set progress bar to 100%
             const progressBar = exportWindow.querySelector(".progress-bar");
             progressBar.style.backgroundSize = "100%";
@@ -200,8 +202,6 @@ const startExportProcess = () => {
             });
         };
         const displaySuccessState = () => {
-            stopIntervals();
-
             exportWindow.querySelector(".round-box").innerHTML = `
             <div class="header">
                 <p>Export Complete</p>
@@ -218,6 +218,8 @@ const startExportProcess = () => {
 
                 <button class="cancel">Close</button>
             </div>`;
+
+            stopIntervals();
 
             // Set progress bar to 100%
             const progressBar = exportWindow.querySelector(".progress-bar");

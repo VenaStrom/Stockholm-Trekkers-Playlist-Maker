@@ -51,8 +51,11 @@ const copyAllAssets = (projectData, exportLocation, saveFilesFolder) => {
 
             // Check if the file path is missing or if the file is missing
             if (!episode.filePath || !fs.existsSync(episode.filePath)) {
-                console.error(`Cannot find ${fileName}. The file path (${episode.filePath || "Missing file oath"}) might be incorrect or the file is missing.`);
-                parentPort.postMessage({ type: "error", message: `Cannot find ${fileName}. The file path (${episode.filePath || "empty string"}) might be incorrect or the file is missing.` });
+                console.error(`Cannot find ${fileName}. The file path (${episode.filePath || "missing file path"}) might be incorrect or the file is missing.`);
+                parentPort.postMessage({
+                    type: "error",
+                    message: `Cannot find ${fileName}. The file path (${episode.filePath || "empty string"}) might be incorrect or the file is missing.`
+                });
                 return;
             }
 

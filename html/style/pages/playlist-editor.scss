@@ -255,6 +255,7 @@ main#playlist-editor {
     }
 
     &>.round-box {
+        @include margin(xl, 0);
         @include width(5xl);
         @include border(thick);
 
@@ -271,8 +272,25 @@ main#playlist-editor {
             @include gap(l, 0);
 
             // Export status text 
-            &>p:first-of-type {
+            &>.status-text {
                 @include padding($top: l);
+            }
+
+            &>ul.missing-files {
+                @include padding(l);
+                @include padding($left: 2xl);
+                @include round-box();
+
+                max-height: 15rem;
+
+                overflow-y: scroll;
+                scrollbar-width: thin;
+                scrollbar-color: var(--color-low) var(--color-bg);                
+
+                &>li {
+                    @include text-size(2xs);
+                    @include thin();
+                }
             }
 
             // For the export tips

@@ -45,3 +45,7 @@ contextBridge.exposeInMainWorld("importer", {
 contextBridge.exposeInMainWorld("explorer", {
     open: (path) => ipcRenderer.invoke("open-file-path", path),
 });
+
+contextBridge.exposeInMainWorld("fs", {
+    existsSync: (path) => ipcRenderer.invoke("fs-exists-sync", path),
+});
