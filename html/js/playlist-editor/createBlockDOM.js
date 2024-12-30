@@ -30,16 +30,12 @@ const makeEpisodeDOM = (episodeData = null) => {
         fileInput.dataset.duration = episodeData.duration;
     }
 
-    fileInput.addEventListener("change", async () => {
+    fileInput.addEventListener("change", () => {
         if (fileInput.files.length !== 0) {
             // Get and save the full path of the file
             fileInput.dataset.filePath = webUtils.getPathForFile(fileInput.files[0]);
-
-            // Get and save the duration of the file
-            fileInput.dataset.duration = await getDuration(fileInput.dataset.filePath);
         }
     });
-    fileInput.dispatchEvent(new Event("change"));
 
     return episodeBody;
 };

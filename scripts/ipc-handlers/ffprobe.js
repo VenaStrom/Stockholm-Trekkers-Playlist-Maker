@@ -10,9 +10,8 @@ const ffprobe = require("ffprobe-static").path;
 const getVideoMetadata = (filePath) => {
     return new Promise((resolve, reject) => {
         execFile(ffprobe, [
-            "-v", "error",
+            // "-v", "error",
             "-show_format",
-            "-show_streams",
             "-print_format", "json",
             filePath
         ], (error, stdout, stderr) => {
@@ -26,15 +25,30 @@ const getVideoMetadata = (filePath) => {
     });
 }
 
+const getVideoDuration = async (filePath) => {
+    const metadata = await getVideoMetadata(filePath);
+    return metadata.format.duration;
+};
+
 const ipcHandlers = () => {
     // Handle when the renderer process requests metadata
     ipcMain.handle("get-metadata", async (event, filePath) => {
         if (!fs.existsSync(filePath)) {
             console.error(`File does not exist: ${filePath || "missing path"}`);
-            return undefined;
+            return null;
         }
 
         return await getVideoMetadata(filePath);
+    });
+
+    // Handle when the renderer process requests the duration
+    ipcMain.handle("get-duration", async (event, filePath) => {
+        if (!fs.existsSync(filePath)) {
+            console.error(`File does not exist: ${filePath || "missing path"}`);
+            return null;
+        }
+
+        return await getVideoDuration(filePath);
     });
 };
 

@@ -33,7 +33,8 @@ contextBridge.exposeInMainWorld("projects", {
 });
 
 contextBridge.exposeInMainWorld("ffprobe", {
-    get: (filePath) => ipcRenderer.invoke("get-metadata", filePath),
+    meta: (filePath) => ipcRenderer.invoke("get-metadata", filePath),
+    duration: (filePath) => ipcRenderer.invoke("get-duration", filePath),
 });
 
 contextBridge.exposeInMainWorld("exporter", {
