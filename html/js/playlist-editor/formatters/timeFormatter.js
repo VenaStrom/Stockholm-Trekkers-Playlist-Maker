@@ -40,8 +40,16 @@ const interpretTime = (time) => {
     }
 
     if (time.length === 2) {
-        // Assume format is HH:00
-        return format(num(0, 2), 0);
+        // Assume format is HH:00 or 0H:M0
+
+        if (parseInt(time) < 24) {
+            // Assume format is HH:00
+            return format(num(0, 2), 0);
+        }
+        else {
+            // Assume format is 0H:M0
+            return format(num(0, 1), num(1, 2) + "0");
+        }
     }
 
     if (time.length === 1) {

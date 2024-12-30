@@ -22,23 +22,29 @@ const attachPrompt = (target, messages) => {
         return;
     }
 
-    const window = stringToHTML(`<ul class="validation-window" data-validator-id="${target.dataset.validatorId}"><button class="open-path">Ignore</button></ul>`);
+    const prompt = stringToHTML(`<ul class="validation-window" data-validator-id="${target.dataset.validatorId}"><button class="open-path">Ignore</button></ul>`);
 
     // Ignore button functionality
-    window.querySelector(".open-path").addEventListener("click", () => {
-        window.remove();
+    prompt.querySelector(".open-path").addEventListener("click", () => {
+        prompt.remove();
     });
 
     // Add the messages
     messages.forEach(message => {
-        window.appendChild(stringToHTML(`<li>${message}</li>`));
+        prompt.appendChild(stringToHTML(`<li>${message}</li>`));
     });
 
     // Introduce it to the DOM
-    document.body.appendChild(window);
+    document.body.appendChild(prompt);
 
     // Position the window
-    const deltaWidth = window.offsetWidth - target.offsetWidth;
-    window.style.left = `${target.offsetLeft - deltaWidth / 2}px`;
-    window.style.top = `${target.offsetTop + target.offsetHeight + 3}px`;
+    const deltaWidth = prompt.offsetWidth - target.offsetWidth;
+    prompt.style.left = `${target.offsetLeft - deltaWidth / 2}px`;
+    prompt.style.top = `${target.offsetTop + target.offsetHeight + 3}px`;
+
+    // Move on window resize
+    window.addEventListener("resize", () => {
+        prompt.style.left = `${target.offsetLeft - deltaWidth / 2}px`;
+        prompt.style.top = `${target.offsetTop + target.offsetHeight + 3}px`;
+    });
 };

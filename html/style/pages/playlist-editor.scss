@@ -330,6 +330,7 @@ main#playlist-editor {
     @include border(m, $color: var(--color-warning));
     @include padding(s, l, l, 3xl);
     @include column($justify: center, $align: start);
+    @include gap(s, 0);
 
     width: max-content;
     min-width: 10rch;

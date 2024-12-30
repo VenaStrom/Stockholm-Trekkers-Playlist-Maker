@@ -59,5 +59,4 @@ const validateDateInput = (event) => {
 
     attachPrompt(target, warnings);
 };
-// dateInput.addEventListener("blur", validateDateInput);
 dateInput.addEventListener("validate-date", validateDateInput);

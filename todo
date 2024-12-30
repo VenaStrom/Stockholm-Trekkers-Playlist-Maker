@@ -30,14 +30,15 @@
 - [-] What happens when you don't have disk space?
   - [-] After a pretty long while you get an error in windows telling you it's full. Not optimal but still, it's something. Not sure about linux behavior.
   - [X] There is a text warning before exporting that won't prevent you but it might help.
-- [-] What happens when the program closes mid download?
+- [X] What happens when the program closes mid download?
   - [X] If you don't have all the files, it will delete the folder before downloading them all again. And in addition, when downloading, all files are .crdownload so that won't count as that unfinished file.
 - [X] Have a look at all validator code
-  - [ ] Time validator for duplicate time only tags one at a time and removing all the non tagged times does not resolve the popup even though it should.
-  - [ ] Validators do not get resolved on block deletion
+  - [X] Time validator for duplicate time only tags one at a time and removing all the non tagged times does not resolve the popup even though it should.
+  - [X] Validators do not get resolved on block deletion
 
 ## Patches 
 
 ## Easter Eggs
 - [X] first contact date in the validator.
-- [X] 47!
+- [X] 47! in the time validator.
+- [X] 1701 in the time validator.

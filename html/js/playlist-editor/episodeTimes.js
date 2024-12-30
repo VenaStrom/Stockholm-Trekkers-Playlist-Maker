@@ -67,6 +67,8 @@ const updateEpisodeTimes = async (block) => {
             if (isLast) {
                 const previousEndTime = episodes[index - 1]?.querySelector(".time");
                 episodeTime.textContent = previousEndTime?.dataset?.endTime || "--:--";
+
+                document.dispatchEvent(new Event ("validateTimes"));
             }
             return;
         }

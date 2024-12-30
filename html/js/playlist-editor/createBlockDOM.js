@@ -166,15 +166,16 @@ const makeBlockDOM = (blockData = null) => {
 
     // Make sure there's always an empty episode at the end
     episodeList.addEventListener("change", () => {
-        const episodes = episodeList.querySelectorAll(".episode");
-        const lastEpisode = episodes[episodes.length - 1];
+        const episodes = [...episodeList.querySelectorAll(".episode")];
+        const lastEpisode = episodes.at(-1);
 
         if (lastEpisode.querySelector("input[type='file']").files.length !== 0) {
             episodeList.appendChild(makeEpisodeDOM());
+            document.dispatchEvent(new Event("validateTimes")); // From timeValidator.js
         }
     });
     episodeList.dispatchEvent(new Event("change"));
-
+    
     // Close options dropdown when you start editing the block
     episodeList.addEventListener("change", closeOptionsDropdown);
 
@@ -200,8 +201,10 @@ const deleteBlock = (event) => {
     if (confirm("Are you sure you want to delete this block forever?")) {
         const block = event.target.closest(".block");
         block.remove();
+        document.dispatchEvent(new Event("validateTimes")); // From timeValidator.js
     }
 };
+
 const toggleOptionsDropdown = (event) => {
     const dropdown = event.target.closest(".header").parentElement.querySelector(".options-dropdown");
 
@@ -250,14 +253,16 @@ const updateOptionDots = (block) => {
     });
 };
 
-
-// New block button
 const createBlock = (blockData = null) => {
     const createBlockButton = document.querySelector(".make-new-block");
     createBlockButton.insertAdjacentElement("beforebegin", makeBlockDOM(blockData));
-
+    
     document.dispatchEvent(new Event("input")); // For emptyInputStyling.js
+    document.dispatchEvent(new Event("validateTimes")); // From timeValidator.js
+    
 };
+
+// New block button click
 document.querySelector(".make-new-block").addEventListener("click", () => {
     createBlock()
 
