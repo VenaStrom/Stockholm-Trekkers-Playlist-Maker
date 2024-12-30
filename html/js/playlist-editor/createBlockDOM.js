@@ -173,7 +173,7 @@ const makeBlockDOM = (blockData = null) => {
         }
     });
     episodeList.dispatchEvent(new Event("change"));
-    
+
     // Close options dropdown when you start editing the block
     episodeList.addEventListener("change", closeOptionsDropdown);
 
@@ -252,9 +252,15 @@ const updateOptionDots = (block) => {
 
 // New block button
 const createBlock = (blockData = null) => {
-    const newBlockButton = document.querySelector(".make-new-block");
-    newBlockButton.insertAdjacentElement("beforebegin", makeBlockDOM(blockData));
+    const createBlockButton = document.querySelector(".make-new-block");
+    createBlockButton.insertAdjacentElement("beforebegin", makeBlockDOM(blockData));
 
     document.dispatchEvent(new Event("input")); // For emptyInputStyling.js
 };
-document.querySelector(".make-new-block").addEventListener("click", () => createBlock());
+document.querySelector(".make-new-block").addEventListener("click", () => {
+    createBlock()
+
+    // Focus the block time
+    const newBlock = document.querySelector(".block:last-of-type");
+    newBlock.querySelector(".start-time input").focus();
+});
