@@ -2,12 +2,19 @@
 
 const interpretDate = (date) => {
     date = date.replace(/\D/g, ""); // Only keep numbers
+    date = date.slice(0, 8); // Only take the first 8 characters
 
     const num = (start, end) => {
         return date.slice(start, end);
     };
 
     const format = (year, month, day) => {
+        // Cap month at 12
+        if (parseInt(month) > 12) month = 12;
+        // Cap day depending on the month
+        const daysInMonth = new Date(year, month, 0).getDate();
+        if (parseInt(day) > daysInMonth) day = daysInMonth;
+
         year = year.toString().padStart(4, "0");
         month = month.toString().padStart(2, "0");
         day = day.toString().padStart(2, "0");
@@ -99,5 +106,6 @@ const interpretDate = (date) => {
         }
     }
 
+    // Fall back on returning the original date
     return date;
 };
