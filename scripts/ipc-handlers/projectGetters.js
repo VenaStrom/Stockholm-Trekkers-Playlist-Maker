@@ -8,7 +8,7 @@ const { userDataFolder, saveFilesFolder, videoAssetsFolder, downloadReferenceFil
 
 
 const projectGet = (id) => {
-    console.info(`Getting project\n ID: ${id}`);
+    console.info(`Getting project\n ID: ${id}`);
 
     if (!id) {
         console.error("No ID provided for the project get");
@@ -32,7 +32,7 @@ const projectGet = (id) => {
 };
 
 const projectSave = (projectData) => {
-    console.info(`Saving project\n ID: ${projectData.date}\n date: ${projectData.id}`);
+    console.info(`Saving project\n ID: ${projectData.date}\n date: ${projectData.id}`);
 
     if (!projectData) {
         console.error("No project data provided for the project save");
@@ -53,7 +53,7 @@ const projectSave = (projectData) => {
 };
 
 const projectDelete = (id) => {
-    console.info(`Deleting project\n ID: ${id}`);
+    console.info(`Deleting project\n ID: ${id}`);
 
     if (!id) {
         console.error("No ID provided for the project delete");
