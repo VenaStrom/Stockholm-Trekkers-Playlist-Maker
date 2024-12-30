@@ -21,9 +21,11 @@ const updateEpisodeTimes = async (block) => {
     // Ignore if the block doesn't have a start time
     if (!block.querySelector(".start-time input[type='text']").value) {
         episodes.forEach((episode) => {
-            episode.querySelector(".time").textContent = "--:--";
-            episode.querySelector(".time").dataset.endTime = "--:--";
-        });    
+            const timeDOM = episode.querySelector(".time");
+            timeDOM.classList.add("darken-text");
+            timeDOM.textContent = "--:--";
+            timeDOM.dataset.endTime = "--:--";
+        });
         return;
     }
 
@@ -53,11 +55,22 @@ const updateEpisodeTimes = async (block) => {
         const episodeDOM = episodes[index];
         const episodeTime = episodeDOM.querySelector(".time");
 
+        // Wipe the time if there is no duration
         if (!duration) {
+            episodeTime.classList.add("darken-text");
             episodeTime.textContent = "--:--";
+            episodeTime.dataset.endTime = "--:--";
+
+            // If it's the last episode, try to display previous end time
+            const isLast = index === durations.length - 1;
+            if (isLast) {
+                const previousEndTime = episodes[index - 1]?.querySelector(".time");
+                episodeTime.textContent = previousEndTime?.dataset?.endTime || "--:--";
+            }
             return;
         }
 
+        episodeTime.classList.remove("darken-text");
         episodeTime.textContent = secondsToHhmm(currentTime);
         currentTime += duration;
         episodeTime.dataset.endTime = secondsToHhmm(currentTime);
