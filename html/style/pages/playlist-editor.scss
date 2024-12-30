@@ -285,7 +285,7 @@ main#playlist-editor {
 
                 overflow-y: scroll;
                 scrollbar-width: thin;
-                scrollbar-color: var(--color-low) var(--color-bg);                
+                scrollbar-color: var(--color-low) var(--color-bg);
 
                 &>li {
                     @include text-size(2xs);
@@ -323,4 +323,33 @@ main#playlist-editor {
     width: 100dvw;
     height: 100dvh;
     overflow: hidden;
+}
+
+.validation-window {
+    @include round-box();
+    @include border(m, $color: var(--color-warning));
+    @include padding(s, l, l, 3xl);
+    @include column($justify: center, $align: start);
+
+    width: max-content;
+    min-width: 10rch;
+    max-width: 30rch;
+
+    position: absolute;
+
+    &>button {
+        @include thin();
+        @include darken-text();
+        @include text-size(s);
+
+        &:focus {
+            @include outline(var(--color-warning));
+        }
+
+        &:hover {
+            @include thin();
+            @include text-size(s);
+            color: var(--color-warning);
+        }
+    }
 }

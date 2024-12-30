@@ -61,5 +61,5 @@
 }
 
 .darken-text {
-    color: var(--color-mid);
+    @include darken-text();
 }

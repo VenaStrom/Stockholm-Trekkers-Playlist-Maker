@@ -22,6 +22,7 @@ const loadProjectData = async (id) => {
     dateInput.value = projectData.date;
     dateInput.addEventListener("blur", (event) => {
         event.target.value = interpretDate(event.target.value);
+        event.target.dispatchEvent(new Event("validate-date"));
     });
     dateInput.dispatchEvent(new Event("blur"));
 
