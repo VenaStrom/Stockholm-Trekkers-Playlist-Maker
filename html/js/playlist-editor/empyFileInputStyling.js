@@ -3,7 +3,7 @@
 // 
 // Styling for empty file inputs
 // 
-document.addEventListener("input", () => {
+const dimEmptyFileInputs = () => {
     const allFileInputs = document.querySelectorAll("input[type='file']");
 
     if (allFileInputs.length === 0 || !allFileInputs) {
@@ -19,4 +19,8 @@ document.addEventListener("input", () => {
             fileInput.classList.remove("empty");
         }
     });
-});
+};
+document.addEventListener("input", dimEmptyFileInputs);
+document.addEventListener("change", dimEmptyFileInputs);
+document.addEventListener("DOMContentLoaded", dimEmptyFileInputs);
+document.addEventListener("unsavedState", dimEmptyFileInputs);
