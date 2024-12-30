@@ -2,10 +2,10 @@
 
 const makeEpisodeDOM = (episodeData = null) => {
     episodeData = episodeData || {
-        filePath: null,
-        fileName: null,
+        filePath: "",
         startTime: "--:--",
-        endTime: null,
+        endTime: "",
+        duration: "",
     }
 
     const episodeBody = stringToHTML(`
@@ -14,17 +14,32 @@ const makeEpisodeDOM = (episodeData = null) => {
         <input type="file" title="Click to select a file to add to the playlist">
     </li>`);
 
-    if (!episodeData.filePath || !episodeData.fileName) {
-        return episodeBody;
+    const fileInput = episodeBody.querySelector("input[type='file']");
+
+    if (episodeData.filePath) {
+        // Visually set the file input 
+        const fileName = episodeData.filePath.split(/[/\\]/).at(-1);
+        const dataTransfer = new DataTransfer();
+        const file = new File([new Blob()], fileName);
+        dataTransfer.items.add(file);
+        fileInput.files = dataTransfer.files;
+
+        fileInput.dataset.filePath = episodeData.filePath;
+    }
+    if (episodeData.duration) {
+        fileInput.dataset.duration = episodeData.duration;
     }
 
-    // Visually set the file input 
-    const dataTransfer = new DataTransfer();
-    const file = new File([new Blob()], episodeData.fileName);
-    dataTransfer.items.add(file);
-    const fileInput = episodeBody.querySelector("input[type='file']");
-    fileInput.files = dataTransfer.files;
-    fileInput.dataset.filePath = episodeData.filePath;
+    fileInput.addEventListener("change", async () => {
+        if (fileInput.files.length !== 0) {
+            // Get and save the full path of the file
+            fileInput.dataset.filePath = webUtils.getPathForFile(fileInput.files[0]);
+
+            // Get and save the duration of the file
+            fileInput.dataset.duration = await getDuration(fileInput.dataset.filePath);
+        }
+    });
+    fileInput.dispatchEvent(new Event("change"));
 
     return episodeBody;
 };
@@ -63,10 +78,12 @@ const makeBlockDOM = (blockData = null) => {
         </button>
     </div>`);
 
-    blockHeader.querySelector(".start-time input").addEventListener("blur", (event) => {
+    // Event listeners for formatting and updating the episode times
+    const blockTimeInput = blockHeader.querySelector(".start-time input");
+    blockTimeInput.addEventListener("blur", (event) => {
         event.target.value = interpretTime(event.target.value);
     });
-    blockHeader.querySelector(".start-time input").dispatchEvent(new Event("blur"));
+    blockTimeInput.dispatchEvent(new Event("blur"));
 
     //
     // Options dropdown
@@ -119,6 +136,7 @@ const makeBlockDOM = (blockData = null) => {
     while (episodeList.querySelectorAll(".episode").length < 2) {
         episodeList.appendChild(makeEpisodeDOM());
     }
+
 
     //
     // Attach event listeners

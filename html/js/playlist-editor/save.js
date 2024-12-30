@@ -17,16 +17,15 @@ const JSONifyProject = () => {
         });
 
         const episodes = Array.from(block.querySelectorAll(".episode"))
-            .filter(episode => episode.querySelector("input[type='file']").value)
+            .filter(episode => episode.querySelector("input[type='file']").files.length !== 0)
             .map(episode => {
                 const fileInput = episode.querySelector("input[type='file']");
                 const timeDOM = episode.querySelector("p");
                 return {
-                    filePath: fileInput.dataset.filePath || null,
-                    fileName: fileInput.dataset.filePath?.split(/[/\\]/)?.at(-1) || null,
-                    startTime: timeDOM.textContent || null,
-                    endTime: timeDOM.dataset.endTime || null,
-                    duration: timeDOM.dataset.duration || null,
+                    filePath: fileInput.dataset.filePath || "",
+                    startTime: timeDOM.textContent || "",
+                    endTime: timeDOM.dataset.endTime || "",
+                    duration: fileInput.dataset.duration || "",
                 };
             });
 

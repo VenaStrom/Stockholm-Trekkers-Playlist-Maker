@@ -30,7 +30,7 @@ const ipcHandlers = () => {
     // Handle when the renderer process requests metadata
     ipcMain.handle("get-metadata", async (event, filePath) => {
         if (!fs.existsSync(filePath)) {
-            console.error(`File does not exist: ${filePath === "" ? "missing" : filePath}`);
+            console.error(`File does not exist: ${filePath || "missing path"}`);
             return undefined;
         }
 
@@ -38,4 +38,4 @@ const ipcHandlers = () => {
     });
 };
 
-module.exports = { ipcHandlers } ;
+module.exports = { ipcHandlers };

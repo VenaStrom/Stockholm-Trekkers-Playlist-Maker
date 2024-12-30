@@ -210,7 +210,7 @@ Insert-Pause -pausePath '/pauses/pause_30_min.mp4' -playImmediately $false
         // Push the episodes in the block
         thisBlock.push(`# Episodes in block ${index + 1}`);
         block.episodes.forEach((episode) => {
-            thisBlock.push(playEpisode(`/episodes/${episode.fileName}`, isFirst));
+            thisBlock.push(playEpisode(`/episodes/${path.basename(episode.filePath)}`, isFirst));
             isFirst = false;
         });
 

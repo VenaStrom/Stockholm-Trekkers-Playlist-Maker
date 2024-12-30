@@ -47,21 +47,23 @@ const copyAllAssets = (projectData, exportLocation, saveFilesFolder) => {
             exportStatus.progress = `${20 + (80 / projectData.blocks.length / block.episodes.length) * (blockIndex * block.episodes.length + episodeIndex)}%`; // Gets a percent in between 20 and 100 based on which episode and block you are on
             parentPort.postMessage(exportStatus);
 
+            const fileName = path.basename(episode.filePath);
+
             // Check if the file path is missing or if the file is missing
             if (!episode.filePath || !fs.existsSync(episode.filePath)) {
-                console.error(`Cannot find ${episode.fileName}. The file path (${episode.filePath}) might be incorrect or the file is missing.`);
-                parentPort.postMessage({ type: "error", message: `Cannot find ${episode.fileName}. The file path (${episode.filePath || "empty string"}) might be incorrect or the file is missing.` });
+                console.error(`Cannot find ${fileName}. The file path (${episode.filePath || "Missing file oath"}) might be incorrect or the file is missing.`);
+                parentPort.postMessage({ type: "error", message: `Cannot find ${fileName}. The file path (${episode.filePath || "empty string"}) might be incorrect or the file is missing.` });
                 return;
             }
 
             // If a file with the same name already exists in the output folder, don't copy again
-            if (fs.existsSync(path.join(exportLocation, "episodes", episode.fileName))) {
-                console.warn(`A file (${episode.fileName || "empty string"}) wasn't copied due to the project already containing a file with the same name. This should be expected behavior when showing multiples of the same file but it could also be bad if files accidentally were named the same thing.`);
+            if (fs.existsSync(path.join(exportLocation, "episodes", fileName))) {
+                console.warn(`A file (${fileName || "empty string"}) wasn't copied due to the project already containing a file with the same name. This should be expected behavior when showing multiples of the same file but it could also be bad if files accidentally were named the same thing.`);
                 return;
             };
 
             // Copy the episode to the output folder
-            fs.copyFileSync(episode.filePath, path.join(exportLocation, "episodes", episode.fileName));
+            fs.copyFileSync(episode.filePath, path.join(exportLocation, "episodes", fileName));
         });
     });
 

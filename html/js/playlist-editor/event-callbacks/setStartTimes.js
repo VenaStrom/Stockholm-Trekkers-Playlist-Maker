@@ -99,7 +99,7 @@ const setStartTimesInBlock = (block) => {
         const duration = parseFloat(episodeFileInput.dataset.duration); // Seconds
 
         // If the duration is unset, skip this episode
-        if (duration === undefined || isNaN(duration)) { return; }
+        if (!duration || isNaN(duration)) { return; }
 
         episodeTimeDOM.textContent = secondsToHHMM(head);
 

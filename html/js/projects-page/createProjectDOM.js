@@ -71,9 +71,9 @@ const createProjectDOM = (projectData) => {
         // Block header
         mainContent.appendChild(makeBlockHeaderLi(blockData.options));
         // Episodes
-        blockData.episodes.forEach(episodeData => mainContent.appendChild(makeEpisodeLi(episodeData.startTime || blockData.startTime, episodeData.fileName)));
+        blockData.episodes.forEach(episodeData => mainContent.appendChild(makeEpisodeLi(episodeData.startTime || blockData.startTime, episodeData.filePath?.split(/[/\\]/)?.at(-1) || "Missing file path")));
         // Pause
-        mainContent.appendChild(makePauseLi(blockData.episodes.at(-1)?.endTime || blockData.startTime || "--:--"));
+        mainContent.appendChild(makePauseLi(blockData.episodes?.at(-1)?.endTime || blockData.startTime || "--:--"));
 
         // Separator hairline
         if (index < projectData.blocks.length - 1) {
