@@ -125,13 +125,26 @@ const makeBlockDOM = (blockData = null) => {
     // 
     const episodeList = stringToHTML(`<ul class="main"></ul>`);
 
+    // Load all episodes
     blockData.episodes.forEach(episodeData => {
         episodeList.appendChild(makeEpisodeDOM(episodeData));
     });
-    // Make sure there are at least 2 episodes
-    while (episodeList.querySelectorAll(".episode").length < 2) {
+
+    // Make sure there are at least 1 episode
+    while (episodeList.querySelectorAll(".episode").length < 1) {
         episodeList.appendChild(makeEpisodeDOM());
     }
+
+    // Make sure there's always an empty episode at the end
+    episodeList.addEventListener("change", () => {
+        const episodes = episodeList.querySelectorAll(".episode");
+        const lastEpisode = episodes[episodes.length - 1];
+
+        if (lastEpisode.querySelector("input[type='file']").files.length !== 0) {
+            episodeList.appendChild(makeEpisodeDOM());
+        }
+    });
+    episodeList.dispatchEvent(new Event("change"));
 
 
     //
