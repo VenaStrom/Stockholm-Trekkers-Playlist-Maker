@@ -34,15 +34,27 @@ const interpretDate = (date) => {
 
     if (date.length === 6) {
         // Assume the date is in the format YYMMDD
-        const year = new Date().getFullYear();
-        
-        return format(year, num(0, 2), num(2, 4));
+        const currentCentury = new Date().getFullYear().toString().slice(0, 2);
+
+        const year = currentCentury + num(0, 2);
+
+        return format(year, num(2, 4), num(4, 6));
     }
 
     if (date.length === 4) {
         // Assume the date is in the format MMDD
         const year = new Date().getFullYear();
-        return format(year, num(0, 2), num(2, 4));
+        const assumedDate = format(year, num(0, 2), num(2, 4));
+
+        // If the date is in the future, assume it's correct
+        if (new Date(assumedDate) > new Date()) {
+            return assumedDate;
+        }
+
+        // If the date is in the past, assume it's next year instead
+        const returnDate = new Date(assumedDate);
+        returnDate.setFullYear(returnDate.getFullYear() + 1);
+        return format(returnDate.getFullYear(), returnDate.getMonth() + 1, returnDate.getDate());
     }
 
     if (date.length === 3) {
@@ -53,13 +65,32 @@ const interpretDate = (date) => {
         if (firstTwoDigits <= 12) {
             // Assume the date is in the format MM0D
             const year = new Date().getFullYear();
-            return format(year, num(0, 2), num(2, 3));
+            const assumedDate = format(year, num(0, 2), num(2, 3));
+
+            // If the date is in the future, assume it's correct
+            if (new Date(assumedDate) > new Date()) {
+                return assumedDate;
+            }
+
+            // If the date is in the past, assume it's next year instead
+            const returnDate = new Date(assumedDate);
+            returnDate.setFullYear(returnDate.getFullYear() + 1);
+            return format(returnDate.getFullYear(), returnDate.getMonth() + 1, returnDate.getDate());
         }
-        else {
-            // Assume the date is in the format MDD
-            const year = new Date().getFullYear();
-            return format(year, num(0, 1), num(1, 3));
+
+        // Assume the date is in the format MDD
+        const year = new Date().getFullYear();
+        const assumedDate = format(year, num(0, 1), num(1, 3));
+
+        // If the date is in the future, assume it's correct
+        if (new Date(assumedDate) > new Date()) {
+            return assumedDate;
         }
+
+        // If the date is in the past, assume it's next year instead
+        const returnDate = new Date(assumedDate);
+        returnDate.setFullYear(returnDate.getFullYear() + 1);
+        return format(returnDate.getFullYear(), returnDate.getMonth() + 1, returnDate.getDate());
     }
 
     if (date.length === 2) {
