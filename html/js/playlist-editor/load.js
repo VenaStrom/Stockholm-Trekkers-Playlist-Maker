@@ -7,11 +7,14 @@ const loadProjectData = async (id) => {
         return;
     }
 
-    const projectData = await projects.get(id);
+    let projectData = await projects.get(id);
 
     if (!projectData) {
         console.warn(`No project found with id: ${id}`);
-        return;
+        projectData = {
+            date: "",
+            blocks: [],
+        };
     }
 
     // Set the date input
@@ -26,6 +29,10 @@ const loadProjectData = async (id) => {
     projectData.blocks.forEach(blockData => {
         createBlock(blockData);
     });
+    // Make sure there is at least 1 block
+    if (document.querySelectorAll(".block").length === 0) {
+        createBlock();
+    }
 };
 
 loadProjectData(id)
