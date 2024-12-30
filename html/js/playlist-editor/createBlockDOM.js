@@ -57,8 +57,12 @@ const makeBlockDOM = (blockData = null) => {
 
     blockData.options = migrateOptions(blockData.options);
 
+
     const blockBody = stringToHTML(`<div class="block"></div>`);
 
+    // 
+    // Header
+    // 
     const blockHeader = stringToHTML(`
     <div class="header">
         <div class="start-time" title="When this block will start playing. Options will offset from this time so the first episode will always start at the defined block start time">
@@ -79,6 +83,11 @@ const makeBlockDOM = (blockData = null) => {
         </button>
     </div>`);
 
+    // Delete button
+    blockHeader.querySelector(".delete").addEventListener("click", deleteBlock);
+    // Options dropdown button
+    blockHeader.querySelector(".options").addEventListener("click", toggleOptionsDropdown);
+
     // Event listeners for formatting and updating the episode times
     const blockTimeInput = blockHeader.querySelector(".start-time input");
     blockTimeInput.addEventListener("blur", (event) => {
@@ -87,6 +96,7 @@ const makeBlockDOM = (blockData = null) => {
         // Update the episode times
         updateEpisodeTimes(blockBody); // From episodeTimes.js
     });
+
 
     //
     // Options dropdown
@@ -126,6 +136,17 @@ const makeBlockDOM = (blockData = null) => {
         ${makeOptionCategories(blockData.options).join("")}
     </div > `);
 
+    // Clicking an option label toggles its checkbox
+    optionsDropdown.querySelectorAll("input[type='checkbox']").forEach(checkbox => {
+        // Clicking anywhere on the container toggles the checkbox
+        checkbox.parentElement.addEventListener("click", () => checkbox.click());
+        checkbox.addEventListener("click", (event) => event.stopPropagation());
+    });
+    // Update the option dots when the checkboxes are changed
+    optionsDropdown.querySelectorAll("input[type='checkbox']").forEach(checkbox => {
+        checkbox.addEventListener("click", () => updateOptionDots(blockBody));
+    });
+
 
     // 
     // Episodes
@@ -152,25 +173,10 @@ const makeBlockDOM = (blockData = null) => {
         }
     });
     episodeList.dispatchEvent(new Event("change"));
+    
+    // Close options dropdown when you start editing the block
+    episodeList.addEventListener("change", closeOptionsDropdown);
 
-
-    //
-    // Attach event listeners
-    //
-    // Delete
-    blockHeader.querySelector(".delete").addEventListener("click", deleteBlock);
-    // Options dropdown
-    blockHeader.querySelector(".options").addEventListener("click", openOptionsDropdown);
-    // Clicking an options label toggles the checkbox
-    optionsDropdown.querySelectorAll("input[type='checkbox']").forEach(checkbox => {
-        // Clicking anywhere on the container toggles the checkbox
-        checkbox.parentElement.addEventListener("click", () => checkbox.click());
-        checkbox.addEventListener("click", (event) => event.stopPropagation());
-    });
-    // Update the option dots when the checkboxes are changed
-    optionsDropdown.querySelectorAll("input[type='checkbox']").forEach(checkbox => {
-        checkbox.addEventListener("click", () => updateOptionDots(blockBody));
-    });
 
     //
     // Add all elements to the block
@@ -185,6 +191,7 @@ const makeBlockDOM = (blockData = null) => {
     return blockBody;
 };
 
+
 //
 // Event listener callbacks
 // 
@@ -194,21 +201,40 @@ const deleteBlock = (event) => {
         block.remove();
     }
 };
-const openOptionsDropdown = (event) => {
-    // Toggle the dropdown
+const toggleOptionsDropdown = (event) => {
     const dropdown = event.target.closest(".header").parentElement.querySelector(".options-dropdown");
-    dropdown.classList.toggle("hidden");
+
+    if (dropdown.classList.contains("hidden")) {
+        openOptionsDropdown(event);
+    } else {
+        closeOptionsDropdown(event);
+    }
+};
+
+const openOptionsDropdown = (event) => {
+    // Show the dropdown
+    const block = event.target.closest(".block");
+    const dropdown = block.querySelector(".options-dropdown");
+    dropdown.classList.remove("hidden");
 
     // Change the arrow
-    const isOpen = !dropdown.classList.contains("hidden");
-    const arrowStates = {
-        open: "▲",
-        closed: "▼",
-    }
-    const header = event.target.closest(".header");
+    const header = block.querySelector(".header");
     const arrow = header.querySelector(".options button span");
-    arrow.textContent = isOpen ? arrowStates.open : arrowStates.closed;
+    arrow.textContent = "▲";
 };
+
+const closeOptionsDropdown = (event) => {
+    // Hide the dropdown
+    const block = event.target.closest(".block");
+    const dropdown = block.querySelector(".options-dropdown");
+    dropdown.classList.add("hidden");
+
+    // Change the arrow
+    const header = block.querySelector(".header");
+    const arrow = header.querySelector(".options button span");
+    arrow.textContent = "▼";
+};
+
 const updateOptionDots = (block) => {
     const optionDots = block.querySelectorAll(".header .options .option-dot");
     const options = block.querySelectorAll(".options-dropdown input[type='checkbox']");
@@ -222,6 +248,7 @@ const updateOptionDots = (block) => {
         }
     });
 };
+
 
 // New block button
 const createBlock = (blockData = null) => {
