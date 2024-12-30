@@ -1,13 +1,30 @@
 "use strict";
 
 const attachPrompt = (target, messages) => {
-    const window = stringToHTML(`<ul class="validation-window"><button class="open-path">Ignore</button></ul>`);
+    if (target.dataset.validatorId) {
+        // Remove the old prompts
+        [...document.querySelectorAll(`.validation-window[data-validator-id="${target.dataset.validatorId}"]`)]
+            .map(window => window.remove());
+    } else {
+        // Assign a new ID
+        // Get index of target in the parent
+        target.parentElement.querySelectorAll("*")
+            .forEach((element, index) => {
+                if (element === target) {
+                    target.dataset.validatorId = index;
+                }
+            });
+        target.dataset.validatorId += new Date().getTime();
+    }
 
-    // Only one prompt per target
-    document.querySelectorAll(`.validation-window[data-target="${target}"]`).forEach(window => window.remove());
-    window.dataset.target = target;
-    
-    // Ignore button
+    // Don't create a new prompt if there are no messages
+    if (messages.length === 0) {
+        return;
+    }
+
+    const window = stringToHTML(`<ul class="validation-window" data-validator-id="${target.dataset.validatorId}"><button class="open-path">Ignore</button></ul>`);
+
+    // Ignore button functionality
     window.querySelector(".open-path").addEventListener("click", () => {
         window.remove();
     });

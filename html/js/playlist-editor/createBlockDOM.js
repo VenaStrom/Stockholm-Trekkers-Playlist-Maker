@@ -92,6 +92,7 @@ const makeBlockDOM = (blockData = null) => {
     const blockTimeInput = blockHeader.querySelector(".start-time input");
     blockTimeInput.addEventListener("blur", (event) => {
         event.target.value = interpretTime(event.target.value);
+        document.dispatchEvent(new Event("validateTimes")); // From timeValidator.js
 
         // Update the episode times
         updateEpisodeTimes(blockBody); // From episodeTimes.js
