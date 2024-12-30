@@ -34,7 +34,12 @@ const makeEpisodeDOM = (episodeData = null) => {
         if (fileInput.files.length !== 0) {
             // Get and save the full path of the file
             fileInput.dataset.filePath = webUtils.getPathForFile(fileInput.files[0]);
+        } else {
+            fileInput.dataset.filePath = "";
         }
+
+        // Update the episode durations and start times
+        updateEpisodeTimes(episodeBody.closest(".block")); // From episodeTimes.js
     });
 
     return episodeBody;
@@ -78,8 +83,10 @@ const makeBlockDOM = (blockData = null) => {
     const blockTimeInput = blockHeader.querySelector(".start-time input");
     blockTimeInput.addEventListener("blur", (event) => {
         event.target.value = interpretTime(event.target.value);
+
+        // Update the episode times
+        updateEpisodeTimes(blockBody); // From episodeTimes.js
     });
-    blockTimeInput.dispatchEvent(new Event("blur"));
 
     //
     // Options dropdown
@@ -171,6 +178,9 @@ const makeBlockDOM = (blockData = null) => {
     blockBody.appendChild(blockHeader);
     blockBody.appendChild(optionsDropdown);
     blockBody.appendChild(episodeList);
+
+    // Make the time format and update the episode times
+    blockTimeInput.dispatchEvent(new Event("blur"));
 
     return blockBody;
 };

@@ -25,7 +25,7 @@ const JSONifyProject = () => {
                     filePath: fileInput.dataset.filePath || "",
                     startTime: timeDOM.textContent || "",
                     endTime: timeDOM.dataset.endTime || "",
-                    duration: fileInput.dataset.duration || "",
+                    duration: fileInput.dataset.duration || 0,
                 };
             });
 
