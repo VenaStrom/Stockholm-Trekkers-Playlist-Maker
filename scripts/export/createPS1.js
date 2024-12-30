@@ -19,7 +19,7 @@ const makePS1 = (exportStatus, projectData, exportLocation) => {
 # https://github.com/viggoStrom/Stockholm-Trekkers-Playlist-Maker
 # 
 # To use, simply run the script in PowerShell.
-# It will start the playlist at the set start time and play the subsequent episodes at their start times while automatically insetting pauses in between.
+# It will start the playlist at the set start time and play the subsequent episodes at their start times while automatically adding pauses in between.
 #
 
 $VLCpath = 'C:/Program Files/VideoLAN/VLC/vlc.exe'
