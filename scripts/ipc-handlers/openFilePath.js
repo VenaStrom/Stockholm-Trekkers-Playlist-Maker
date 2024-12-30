@@ -1,12 +1,19 @@
 "use strict";
 require("../extend/console.js"); // Adds more verbose logging to the console and colors!
 
-const { ipcMain } = require("electron");
+const { ipcMain, dialog } = require("electron");
 const { spawn } = require("node:child_process");
 const path = require("node:path");
+const fs = require("node:fs");
 
 const openFilePath = (folderPath) => {
     const fullPath = path.resolve(folderPath); // Resolves the absolute path
+
+    if (!fs.existsSync(fullPath)) { // Check if the path exists
+        console.error(`Path does not exist: ${fullPath}`);
+        dialog.showErrorBox("Error", `Path does not exist: ${fullPath}`);
+        return;
+    }
 
     if (process.platform === "win32") { // Windows
         spawn("explorer", [fullPath], { shell: true });

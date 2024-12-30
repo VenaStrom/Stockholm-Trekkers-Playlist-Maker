@@ -7,7 +7,8 @@
 - [-] make console.* more verbose. Maybe extend them?
   - [ ] Refactor and make main and renderer versions more consistent.
 - [ ] Actually recolor icons to color-fg instead of filters since filters affect the outline.
-- [ ] Handler openFilePath that leads to a non-existent folder.
+- [X] Handle openFilePath that leads to a non-existent folder.
+  - [X] Error dialog.
 
 ## Features
 - [ ] Remove video assets on uninstall. Now that the installer is NSIS this should be possible.
@@ -31,12 +32,12 @@
   - [X] There is a text warning before exporting that won't prevent you but it might help.
 - [-] What happens when the program closes mid download?
   - [X] If you don't have all the files, it will delete the folder before downloading them all again. And in addition, when downloading, all files are .crdownload so that won't count as that unfinished file.
-- [ ] Have a look at all validator code
+- [X] Have a look at all validator code
   - [ ] Time validator for duplicate time only tags one at a time and removing all the non tagged times does not resolve the popup even though it should.
   - [ ] Validators do not get resolved on block deletion
 
 ## Patches 
 
 ## Easter Eggs
-- [ ] first contact date in the validator.
-- [ ] 47!
+- [X] first contact date in the validator.
+- [X] 47!
