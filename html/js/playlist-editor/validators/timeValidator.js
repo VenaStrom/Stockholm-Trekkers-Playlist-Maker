@@ -105,7 +105,6 @@ const validateTime = (timeInput) => {
 
 const validateAllBlockTimes = () => {
     const blockTimes = [...document.querySelectorAll(".block .start-time input")];
-    console.log(blockTimes);
 
     blockTimes.forEach((blockTime) => {
         validateTime(blockTime);
