@@ -43,11 +43,6 @@
     }
 }
 
-.justify-between {
-    @include row(space-between, center);
-    width: 100%;
-}
-
 .option-dot {
     @include icon(3xs, $filter: none, $hover: false);
     @include border(thin, $color: var(--color-bg));

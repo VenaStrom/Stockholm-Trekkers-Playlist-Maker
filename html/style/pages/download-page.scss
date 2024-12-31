@@ -21,12 +21,17 @@ main#download-page {
         @include width(3xl);
 
         &>.main {
+            @include padding(xl, 3xl);
+            @include column($justify: start, $align: center);
+            @include gap(l, 0);
+
             &>p {
                 width: 100%;
             }
-            &>button,
+
             &>.progress-bar {
                 @include margin(m, 0, 0, 0);
+                width: 100%;
             }
         }
     }

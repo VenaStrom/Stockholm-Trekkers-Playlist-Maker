@@ -6,175 +6,188 @@ const fs = require("fs");
 const path = require("node:path");
 const { userDataFolder, saveFilesFolder, videoAssetsFolder, downloadReferenceFile } = require("../../filePaths.js");
 
-// The object returned to the renderer process to show the download status
-const downloadStatus = {
-    "fileCount": 0,
-    "atFile": 0,
-    "status": "starting",
-    "name": "",
-    "size": 0,
-    "received": 0,
-    "percent": 0,
-};
+const status = {
+    fileName: "",
+    fileCount: 0,
+    fileIndex: 0,
+    fileSizeMB: "0.00",
+    receivedMB: "0.00",
+    progress: "0%",
+    state: "starting",
+}
 
-const downloadPauses = () => {
-    downloadStatus.status = "starting";
+const errorState = (browser) => {
+    status.state = "failed";
+    status.progress = "100%";
 
-    console.info("Removing old files...");
+    // Close the browser
+    browser.close();
+
+    // Delete the files if it fails
     fs.rmSync(videoAssetsFolder, { recursive: true });
     fs.mkdirSync(videoAssetsFolder, { recursive: true });
+};
 
-    // Get the URLs of the files that are gonna be downloaded, from fileURLs.json
-    const downloadReferences = JSON.parse(fs.readFileSync(downloadReferenceFile));
-    const videoAssetsInfo = downloadReferences.videos;
-    let index = 0;
+const downloadFile = (url, destPath, fileName) => {
+    // return new Promise((resolve, reject) => {
+    //     console.log("Started download", fileName);
+    //     setTimeout(() => {
+    //         console.log("Finished download", fileName);
+    //         resolve();
+    //     }, 1000);
+    // });
 
-    // Keep track of the download status
-    downloadStatus.fileCount = videoAssetsInfo.length;
-    downloadStatus.atFile = index;
+    return new Promise((resolve, reject) => {
 
-    // Headless browser which will download the files
-    const browser = new BrowserWindow({
-        show: false,
-    });
+        status.fileName = fileName;
+        status.fileIndex++;
+        status.fileSizeMB = "0.00";
+        status.receivedMB = "0.00";
+        status.progress = "0%";
+        status.state = "downloading";
 
-    // Called at the end of each download or when a download is skipped
-    const getNextFile = () => {
-        index++;
+        console.info(`Starting download: ${fileName}`);
 
-        // When all the files are downloaded, close the browser
-        if (index >= videoAssetsInfo.length) {
-            console.info("All videos downloaded");
-            downloadStatus.status = "completed";
-            setTimeout(() => { browser.close(); }, 1000);
+        // Create a headless window to download via
+        const browser = new BrowserWindow({
+            show: false,
+        });
 
-        } else {
-            getFile(videoAssetsInfo[index]);
-        }
-    }
-
-    // Gets a specific file with a given ID
-    const getFile = (file) => {
-        if (!file) {
-            console.error("No file given");
-            return;
-        }
-
-        // Check if video folder exists and make it if it doesn't
-        if (!fs.existsSync(videoAssetsFolder)) {
-            fs.mkdirSync(videoAssetsFolder, { recursive: true });
-        }
-
-        // If the video is already downloaded and we're not forcing, skip it
-        if (fs.existsSync(path.join(videoAssetsFolder, file.name))) {
-            console.info(`${file.name} already downloaded. Skipping...`);
-            getNextFile();
-            return;
-
-        } else {
-            console.info(`Downloading ${file.name}`);
-        }
-
-        downloadStatus.status = "downloading";
-        downloadStatus.atFile = index;
-        downloadStatus.name = file.name;
-
-        // Sets where the downloaded file will end up and what to do when the download is under way and when it's done
+        // Set download dest path
         browser.webContents.session.once("will-download", (event, item, webContents) => {
+            // Set where the file will save to
+            item.setSavePath(destPath);
+        });
 
-            // Sets where the file will save to
-            item.setSavePath(path.join(videoAssetsFolder, file.name));
-
-            // On any update in the download it checks the state and does stuff accordingly
+        // Progress updates 
+        browser.webContents.session.on("will-download", (event, item, webContents) => {
             item.on("updated", (event, state) => {
+
+                // Fail state
                 if (state === "interrupted") {
-                    console.error(`Download of ${file.name} is interrupted`);
-                    downloadStatus.status = "failed";
+                    console.error(`Download of ${destPath} is interrupted`);
+                    errorState(browser);
 
-                    // Delete the file if it's interrupted as to not leave a half-downloaded file
-                    fs.rmSync(path.join(videoAssetsFolder, file.name));
-
-                } else if (state === "progressing") {
-                    if (item.isPaused()) {
-                        console.error(`Download of ${file.name} is paused`);
-                        downloadStatus.status = "failed";
-
-                        // Delete the file if it's paused
-                        fs.rmSync(path.join(videoAssetsFolder, file.name));
-
-                    } else {
-                        // This happens when everything is going well
-                        const receivedMB = (item.getReceivedBytes() / 1024 / 1024).toFixed(2);
-                        const fileSizeMB = (item.getTotalBytes() / 1024 / 1024).toFixed(0);
-                        const percent = (item.getReceivedBytes() / item.getTotalBytes() * 100).toFixed(0);
-
-                        // Make sure the renderer knows what's going on
-                        downloadStatus.size = fileSizeMB;
-                        downloadStatus.received = receivedMB;
-                        downloadStatus.percent = percent;
-
-                        // Logging in the backend console for debugging mostly
-                        console.info(`${file.name} received ${receivedMB} / ${fileSizeMB} MB ${percent}%`);
-                    }
+                    reject(`Download of ${destPath} is interrupted`);
+                    return;
                 }
-            });
 
-            // This fires *once* when the download is done
+                // Collect status data
+                const receivedMB = (item.getReceivedBytes() / 1048576).toFixed(2);
+                const fileSizeMB = (item.getTotalBytes() / 1048576).toFixed(2);
+                const progress = (item.getReceivedBytes() / item.getTotalBytes() * 100).toFixed(0) + "%";
+
+                status.fileSizeMB = fileSizeMB;
+                status.receivedMB = receivedMB;
+                status.progress = progress;
+            });
+        });
+
+        // When done
+        browser.webContents.session.once("will-download", (event, item, webContents) => {
             item.once("done", (event, state) => {
                 if (state === "completed") {
-                    console.info(`Download of ${file.name} completed successfully`);
-                    getNextFile();
+                    console.info(`Download of ${fileName} completed successfully`);
 
-                } else {
-                    console.error(`Download of ${file.name} failed with state: ${state}`);
-                    downloadStatus.status = "failed";
+                    // Close the browser
+                    setTimeout(() => { browser.close(); }, 500);
 
-                    // Delete the file if it fails
-                    fs.rmSync(path.join(videoAssetsFolder, file.name));
+                    resolve();
+                    return;
+                }
+                if (state === "interrupted") {
+                    console.error(`Download of ${fileName} failed with state: ${state}`);
+                    errorState(browser);
+
+                    reject(`Download of ${fileName} failed with state: ${state}`);
+                    return;
+                }
+                if (state === "cancelled") {
+                    console.error(`Download of ${fileName} was cancelled`);
+                    errorState(browser);
+
+                    reject(`Download of ${fileName} was cancelled`);
+                    return;
                 }
             });
         });
 
-        // Start the actual download, in a janky way
-        setTimeout(() => {
-            browser.loadURL(downloadReferences.urlTemplate + file.id);
-            browser.webContents.on("did-finish-load", () => {
-                // Clicks the download button on the loaded page
-                // This will break if Google changes how Drive works 
-                // There's a try-catch block in there but that's only gonna do so much
-                browser.webContents.executeJavaScript(`
-                    try{
-                        document.getElementById("uc-download-link").click();
-                    } catch (error) {
-                        console.error(error);
-                    }`);
-            });
-        }, 500);
-    };
 
-    // Start the recursive download
-    // The reason it's recursive is due to issues I had with having multiple download streams at once
-    getFile(videoAssetsInfo[index]);
+        // INFO:
+        // Downloading large files from Google Drive requires a confirmation since their anti-virus says it's too large.
+        // Therefor, smaller downloads don't need the following block of code to start. They will just start as soon as the page loads.
+
+        // Start download 
+        browser.webContents.on("did-finish-load", () => {
+            browser.webContents.executeJavaScript(`
+                try{
+                    document.getElementById("uc-download-link").click();
+                } catch (_) {}
+            `.trim());
+        });
+
+        // Finally, go to url
+        browser.loadURL(url);
+    });
 };
 
+const downloadAssets = () => {
+
+    // Wipe the old files
+    console.info("Removing old files...");
+    fs.rmSync(videoAssetsFolder, { recursive: true });
+    fs.mkdirSync(videoAssetsFolder, { recursive: true });
+
+    // What is going to be downloaded?
+    if (!fs.existsSync(downloadReferenceFile)) {
+        console.error(`Download reference file not found at ${downloadReferenceFile || "(missing path)"}`);
+        errorState(browser);
+    }
+    const assetDownloadInfo = JSON.parse(fs.readFileSync(downloadReferenceFile));
+
+    // File count
+    status.fileCount = assetDownloadInfo.videos.length;
+
+    // Compile the URLs
+    const urlBase = assetDownloadInfo.urlTemplate;
+    const assetData = assetDownloadInfo.videos.map((asset) => (
+        { url: `${urlBase}${asset.id}`, destPath: path.join(videoAssetsFolder, asset.name), fileName: asset.name }
+    ));
+
+    // Download the files one at a time   
+    assetData.reduce((promiseChain, currentTask) =>
+        promiseChain.then(() => downloadFile(currentTask.url, currentTask.destPath, currentTask.fileName)), Promise.resolve())
+        .then(() => {
+            status.fileIndex = status.fileCount;
+            status.state = "completed";
+            status.progress = "100%";
+
+            console.info("All downloads completed successfully");
+        })
+        .catch((error) => {
+            console.error(`An error occurred during the download process: ${error}`);
+            errorState(browser);
+        });
+};
 
 const ipcHandlers = () => {
-    ipcMain.handle("start-download", () => {
-        downloadPauses();
+    ipcMain.handle("start-download", async () => {
+        downloadAssets();
     });
 
     ipcMain.handle("get-download-status", () => {
-        return downloadStatus;
+        console.info(`Downloading ${status.fileName}:\n${status.receivedMB} / ${status.fileSizeMB} MB (${status.progress})`);
+        return status;
     });
 
     // Gives a simple true or false if all the files are downloaded to check if you need to download at all
     ipcMain.handle("check-for-local-files", () => {
-        const downloadReferences = JSON.parse(fs.readFileSync(downloadReferenceFile));
-        const fileNames = downloadReferences.videos.map(file => file.name);
+        const assetDownloadInfo = JSON.parse(fs.readFileSync(downloadReferenceFile));
+        const fileNames = assetDownloadInfo.videos.map(file => file.name);
 
         // Look for the files in the video folder
-        const existingFiles = fs.readdirSync(videoAssetsFolder);
-        const allFilesExist = fileNames.every(fileName => existingFiles.includes(fileName));
+        const assetsFolder = fs.readdirSync(videoAssetsFolder);
+        const allFilesExist = fileNames.every(fileName => assetsFolder.includes(fileName));
 
         return allFilesExist;
     });

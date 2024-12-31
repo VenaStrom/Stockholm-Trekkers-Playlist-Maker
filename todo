@@ -5,6 +5,7 @@
 
 ## Changes
 ###### changes to existing -functional- features
+- [ ] Console extension. Make verbose logging actually give a proper stack, not just an absolute path.
 
 ## Features
 ###### brand new features

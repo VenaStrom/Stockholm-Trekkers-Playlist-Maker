@@ -44,44 +44,46 @@ const displayProgressPrompt = () => {
                 Getting things ready, please wait...
             </p>
             <span class="progress-bar"></span>
-        </div>`;
+        </div>
+    `.trim();
 
-    const progressInterval = setInterval(() => {
+    const progressInterval = setInterval(async () => {
         assets.getStatus().then((status) => {
             const statusText = infoBox.querySelector("p");
             infoBox.querySelector(".progress-bar").classList.remove("warning"); // Reset error state
 
-
-            if (status.status === "starting") {
+            if (status.state === "starting") {
                 statusText.textContent = "Getting things ready, please wait...";
-                return;
-            } 
-            
-            if (status.status === "downloading") {
-                statusText.innerHTML = `Downloading video files...<br>
-                    <div class="justify-between">
-                        <p>Current file: ${status.name} ${status.received} / ${status.size} MB (${status.percent}%)</p>
-                        <p>${status.atFile} / ${status.fileCount} files.</p>
-                    </div>`;
-
-                infoBox.querySelector(".progress-bar").style.backgroundSize = `${status.percent}%`;
                 return;
             }
 
-            if (status.status === "completed") {
+            if (status.state === "downloading") {
+                statusText.innerHTML = `
+                    Downloading: ${status.fileName} 
+                    <br>
+                    Files: ${status.fileIndex} / ${status.fileCount} files
+                    <br>
+                    Progress: ${status.receivedMB} / ${status.fileSizeMB} MB
+                `.trim();
+
+                infoBox.querySelector(".progress-bar").style.backgroundSize = status.progress;
+                return;
+            }
+
+            if (status.state === "completed") {
                 clearInterval(progressInterval);
 
                 console.info("Download completed.");
-                
+
                 statusText.textContent = "Downloads completed.";
 
                 infoBox.querySelector(".progress-bar").style.backgroundSize = "100%";
 
                 displayMoveOnPrompt();
                 return;
-            } 
+            }
 
-            if (status.status === "failed") {
+            if (status.state === "failed") {
                 clearInterval(progressInterval);
 
                 console.error("Download failed.");
@@ -93,7 +95,7 @@ const displayProgressPrompt = () => {
                 return;
             }
         });
-    }, 250);
+    }, 500);
 };
 
 // Check if any file downloads are necessary
@@ -106,7 +108,7 @@ assets.allExist().then((theyExist) => {
 });
 
 const downloadAssets = () => {
-    assets.download(); // Async
+    assets.download(); // Start and forget
 
     displayProgressPrompt();
 };
