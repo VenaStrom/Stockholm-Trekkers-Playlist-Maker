@@ -5,6 +5,7 @@ const { app, BrowserWindow } = require("electron");
 const path = require("node:path");
 const fs = require("node:fs");
 const appCloseHandlers = require("./scripts/dialogs/handleAppClose.js");
+require("./filePaths.js").setup(app.getAppPath());
 const { userDataFolder, saveFilesFolder, videoAssetsFolder, downloadReferenceFile } = require("./filePaths.js");
 
 // MIGRATION PATCH //
@@ -27,9 +28,9 @@ const createMainWindow = () => {
         width: 1920,
         height: 1080,
         webPreferences: {
-            preload: path.join(__dirname, "scripts/preload.js"),
+            preload: path.join(__dirname, "scripts", "preload.js"),
         },
-        icon: path.join(__dirname, "assets/images/stockholm-trekkers-60.png"),
+        icon: path.join(__dirname, "assets", "images", "stockholm-trekkers-60.png"),
         frame: false,
         titleBarStyle: "hidden",
         titleBarOverlay: { color: "#1e1e1e", symbolColor: "#f2f2f2" },

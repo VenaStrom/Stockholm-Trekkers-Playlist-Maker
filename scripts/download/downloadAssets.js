@@ -1,4 +1,5 @@
 "use strict";
+// I have used the _revert option for all the console functions in this file since the extended console kills the stack for some reason. Can't be bothered to look into it now but that needs to be resolved.
 require("../extend/console.js"); // Adds more verbose logging to the console and colors!
 
 const { BrowserWindow, ipcMain } = require("electron");
@@ -20,7 +21,6 @@ const errorState = (browser) => {
     status.state = "failed";
     status.progress = "100%";
 
-    // Close the browser
     browser.close();
 
     // Delete the files if it fails
@@ -29,14 +29,6 @@ const errorState = (browser) => {
 };
 
 const downloadFile = (url, destPath, fileName) => {
-    // return new Promise((resolve, reject) => {
-    //     console.log("Started download", fileName);
-    //     setTimeout(() => {
-    //         console.log("Finished download", fileName);
-    //         resolve();
-    //     }, 1000);
-    // });
-
     return new Promise((resolve, reject) => {
 
         status.fileName = fileName;
@@ -46,7 +38,7 @@ const downloadFile = (url, destPath, fileName) => {
         status.progress = "0%";
         status.state = "downloading";
 
-        console.info(`Starting download: ${fileName}`);
+        console.info({ _noRenderer: true }, `Starting download: ${fileName}`);
 
         // Create a headless window to download via
         const browser = new BrowserWindow({
@@ -60,13 +52,15 @@ const downloadFile = (url, destPath, fileName) => {
         });
 
         // Progress updates 
-        browser.webContents.session.on("will-download", (event, item, webContents) => {
+        browser.webContents.session.once("will-download", (event, item, webContents) => {
             item.on("updated", (event, state) => {
 
                 // Fail state
                 if (state === "interrupted") {
-                    console.error(`Download of ${destPath} is interrupted`);
+                    console.error({ _noRenderer: true }, `Download of ${destPath} is interrupted`);
                     errorState(browser);
+
+                    item.removeAllListeners("updated");
 
                     reject(`Download of ${destPath} is interrupted`);
                     return;
@@ -80,6 +74,8 @@ const downloadFile = (url, destPath, fileName) => {
                 status.fileSizeMB = fileSizeMB;
                 status.receivedMB = receivedMB;
                 status.progress = progress;
+
+                console.info({ _noRenderer: true }, `Downloading ${status.fileName}:\n${status.receivedMB} / ${status.fileSizeMB} MB (${status.progress}) - ${status.state}`);
             });
         });
 
@@ -87,38 +83,31 @@ const downloadFile = (url, destPath, fileName) => {
         browser.webContents.session.once("will-download", (event, item, webContents) => {
             item.once("done", (event, state) => {
                 if (state === "completed") {
-                    console.info(`Download of ${fileName} completed successfully`);
+                    console.info({ _noRenderer: true }, `Download of ${fileName} completed successfully`);
 
-                    // Close the browser
-                    setTimeout(() => { browser.close(); }, 500);
+                    item.removeAllListeners("updated");
+
+                    browser.close();
 
                     resolve();
+
                     return;
                 }
-                if (state === "interrupted") {
-                    console.error(`Download of ${fileName} failed with state: ${state}`);
+                else {
+                    const errorMessage = `Download of ${fileName} failed with state: ${state}`;
+                    console.error({ _noRenderer: true }, errorMessage);
                     errorState(browser);
-
-                    reject(`Download of ${fileName} failed with state: ${state}`);
-                    return;
-                }
-                if (state === "cancelled") {
-                    console.error(`Download of ${fileName} was cancelled`);
-                    errorState(browser);
-
-                    reject(`Download of ${fileName} was cancelled`);
-                    return;
+                    reject(errorMessage);
                 }
             });
         });
-
 
         // INFO:
         // Downloading large files from Google Drive requires a confirmation since their anti-virus says it's too large.
         // Therefor, smaller downloads don't need the following block of code to start. They will just start as soon as the page loads.
 
         // Start download 
-        browser.webContents.on("did-finish-load", () => {
+        browser.webContents.once("did-stop-loading", () => {
             browser.webContents.executeJavaScript(`
                 try{
                     document.getElementById("uc-download-link").click();
@@ -127,21 +116,20 @@ const downloadFile = (url, destPath, fileName) => {
         });
 
         // Finally, go to url
-        browser.loadURL(url);
+        browser.webContents.loadURL(url, {}).catch((_) => { });
     });
 };
 
 const downloadAssets = () => {
 
     // Wipe the old files
-    console.info("Removing old files...");
+    console.info({ _noRenderer: true }, "Removing old files...");
     fs.rmSync(videoAssetsFolder, { recursive: true });
     fs.mkdirSync(videoAssetsFolder, { recursive: true });
 
-    // What is going to be downloaded?
+    // Look for what is going to be downloaded?
     if (!fs.existsSync(downloadReferenceFile)) {
-        console.error(`Download reference file not found at ${downloadReferenceFile || "(missing path)"}`);
-        errorState(browser);
+        console.error({ _noRenderer: true }, `Download reference file not found at ${downloadReferenceFile || "(missing path)"}`);
     }
     const assetDownloadInfo = JSON.parse(fs.readFileSync(downloadReferenceFile));
 
@@ -154,6 +142,7 @@ const downloadAssets = () => {
         { url: `${urlBase}${asset.id}`, destPath: path.join(videoAssetsFolder, asset.name), fileName: asset.name }
     ));
 
+
     // Download the files one at a time   
     assetData.reduce((promiseChain, currentTask) =>
         promiseChain.then(() => downloadFile(currentTask.url, currentTask.destPath, currentTask.fileName)), Promise.resolve())
@@ -162,21 +151,23 @@ const downloadAssets = () => {
             status.state = "completed";
             status.progress = "100%";
 
-            console.info("All downloads completed successfully");
+            console.info({ _noRenderer: true }, "All downloads completed successfully");
         })
         .catch((error) => {
-            console.error(`An error occurred during the download process: ${error}`);
-            errorState(browser);
+            console.error({ _noRenderer: true }, `An error occurred during the download process: ${error}`);
         });
 };
 
 const ipcHandlers = () => {
-    ipcMain.handle("start-download", async () => {
-        downloadAssets();
+    ipcMain.handle("start-download", () => {
+        try {
+            downloadAssets();
+        } catch (error) {
+            console.error({ _noRenderer: true }, `An error occurred while starting the download: ${error}`);
+        }
     });
 
     ipcMain.handle("get-download-status", () => {
-        console.info(`Downloading ${status.fileName}:\n${status.receivedMB} / ${status.fileSizeMB} MB (${status.progress})`);
         return status;
     });
 

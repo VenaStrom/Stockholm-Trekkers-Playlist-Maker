@@ -45,34 +45,37 @@ const getTrace = (options = { depth: 2, verbose: false }) => {
 
 // Hijack Console Functions
 Object.entries(_console).forEach(([type, originalFunction]) => {
-    const availableOptions = ["_noTrace", "_verboseTrace"];
+    // If the first argument is an object, and contains any of these, don't pass it
+    const availableOptions = ["_noTrace", "_verboseTrace", "_revert", "_noRenderer"];
 
     console[type] = (options, ...args) => {
+        // In case you don't wanna modify the console.log in a specific instance
+        if (options._revert) {
+            return originalFunction(...args);
+        }
+
         // Default options
         const config = {
             passFirstArg: true,
             trace: true,
             verboseTrace: false,
+            sendToRenderer: true,
         };
+
+        // Read Options
+        if (options && availableOptions.some((option) => options[option])) {
+            config.passFirstArg = false;
+            if (options._noTrace) config.trace = false;
+            if (options._verboseTrace) config.verboseTrace = true;
+            if (options._noRenderer) config.sendToRenderer = false;
+        }
 
         // Colorize the trace and the arguments if applicable 
         const prefix = styleText(_colors.trace, `[Main] ${getTrace()}:\n`);
         const verbosePrefix = styleText(_colors.trace, `[Main] ${getTrace({ verbose: true })}:\n`);
         const coloredArgs = [options, ...args]
-            .filter((arg) => typeof arg === "string")
-            .map((arg) => styleText(_colors[type], arg));
+            .map((arg) => typeof arg === "string" ? styleText(_colors[type], arg) : arg);
 
-        // Read Options
-        if (options && availableOptions.some((option) => options[option])) {
-            config.passFirstArg = false;
-
-            if (options._noTrace) {
-                config.trace = !options._noTrace;
-            }
-            if (options._verboseTrace) {
-                config.verboseTrace = options._verboseTrace;
-            }
-        }
 
         // Compile the arguments 
         const functionArgs = [];
@@ -92,6 +95,9 @@ Object.entries(_console).forEach(([type, originalFunction]) => {
 
         originalFunction(...functionArgs);
 
+        if (!config.sendToRenderer) {
+            return;
+        }
 
         // Send the call to the renderer
         BrowserWindow.getAllWindows().forEach((window) => {
