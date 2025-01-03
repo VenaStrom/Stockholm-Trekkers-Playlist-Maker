@@ -8,10 +8,6 @@ contextBridge.exposeInMainWorld("main", {
     sendConsole: (type, message) => ipcRenderer.invoke("send-console", type, message),
 });
 
-contextBridge.exposeInMainWorld("appPath", {
-    get: () => ipcRenderer.invoke("get-app-root"),
-});
-
 contextBridge.exposeInMainWorld("assets", {
     download: () => ipcRenderer.invoke("start-download"),
     getStatus: () => ipcRenderer.invoke("get-download-status"),

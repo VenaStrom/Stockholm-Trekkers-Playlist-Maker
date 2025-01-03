@@ -56,7 +56,6 @@ app.once("ready", () => {
         require("./scripts/ipc-handlers/importSaveFile.js").ipcHandlers,
         require("./scripts/ipc-handlers/projectGetters.js").ipcHandlers,
         require("./scripts/ipc-handlers/openFilePath.js").ipcHandlers,
-        require("./scripts/ipc-handlers/appPath.js").ipcHandlers,
         require("./scripts/ipc-handlers/ffprobe.js").ipcHandlers,
         require("./scripts/download/downloadAssets.js").ipcHandlers,
         require("./scripts/export/exportProject.js").ipcHandlers,
