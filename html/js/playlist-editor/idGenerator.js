@@ -9,7 +9,7 @@ const getID = () => {
     const args = Object.fromEntries(new URLSearchParams(pageURL.split("?").at(-1)));
 
     // If the id already exists, return it
-    if (args.id !== "new") {
+    if (args && args.id !== "new") {
         return args.id;
     };
 
