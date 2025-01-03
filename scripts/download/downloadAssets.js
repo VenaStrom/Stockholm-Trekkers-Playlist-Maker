@@ -1,6 +1,4 @@
 "use strict";
-// I have used the _revert option for all the console functions in this file since the extended console kills the stack for some reason. Can't be bothered to look into it now but that needs to be resolved.
-require("../extend/console.js"); // Adds more verbose logging to the console and colors!
 
 const { BrowserWindow, ipcMain } = require("electron");
 const fs = require("fs");
@@ -38,7 +36,7 @@ const downloadFile = (url, destPath, fileName) => {
         status.progress = "0%";
         status.state = "downloading";
 
-        console.info({ _noRenderer: true }, `Starting download: ${fileName}`);
+        console.info(`Starting download: ${fileName}`);
 
         // Create a headless window to download via
         const browser = new BrowserWindow({
@@ -57,7 +55,7 @@ const downloadFile = (url, destPath, fileName) => {
 
                 // Fail state
                 if (state === "interrupted") {
-                    console.error({ _noRenderer: true }, `Download of ${destPath} is interrupted`);
+                    console.error(`Download of ${destPath} is interrupted`);
                     errorState(browser);
 
                     item.removeAllListeners("updated");
@@ -75,7 +73,7 @@ const downloadFile = (url, destPath, fileName) => {
                 status.receivedMB = receivedMB;
                 status.progress = progress;
 
-                console.info({ _noRenderer: true }, `Downloading ${status.fileName}:\n${status.receivedMB} / ${status.fileSizeMB} MB (${status.progress}) - ${status.state}`);
+                console.info(`Downloading ${status.fileName}:\n${status.receivedMB} / ${status.fileSizeMB} MB (${status.progress}) - ${status.state}`);
             });
         });
 
@@ -83,7 +81,7 @@ const downloadFile = (url, destPath, fileName) => {
         browser.webContents.session.once("will-download", (event, item, webContents) => {
             item.once("done", (event, state) => {
                 if (state === "completed") {
-                    console.info({ _noRenderer: true }, `Download of ${fileName} completed successfully`);
+                    console.info(`Download of ${fileName} completed successfully`);
 
                     item.removeAllListeners("updated");
 
@@ -95,7 +93,7 @@ const downloadFile = (url, destPath, fileName) => {
                 }
                 else {
                     const errorMessage = `Download of ${fileName} failed with state: ${state}`;
-                    console.error({ _noRenderer: true }, errorMessage);
+                    console.error(errorMessage);
                     errorState(browser);
                     reject(errorMessage);
                 }
@@ -123,13 +121,13 @@ const downloadFile = (url, destPath, fileName) => {
 const downloadAssets = () => {
 
     // Wipe the old files
-    console.info({ _noRenderer: true }, "Removing old files...");
+    console.info("Removing old files...");
     fs.rmSync(videoAssetsFolder, { recursive: true });
     fs.mkdirSync(videoAssetsFolder, { recursive: true });
 
     // Look for what is going to be downloaded?
     if (!fs.existsSync(downloadReferenceFile)) {
-        console.error({ _noRenderer: true }, `Download reference file not found at ${downloadReferenceFile || "(missing path)"}`);
+        console.error(`Download reference file not found at ${downloadReferenceFile || "(missing path)"}`);
     }
     const assetDownloadInfo = JSON.parse(fs.readFileSync(downloadReferenceFile));
 
@@ -151,10 +149,10 @@ const downloadAssets = () => {
             status.state = "completed";
             status.progress = "100%";
 
-            console.info({ _noRenderer: true }, "All downloads completed successfully");
+            console.info("All downloads completed successfully");
         })
         .catch((error) => {
-            console.error({ _noRenderer: true }, `An error occurred during the download process: ${error}`);
+            console.error(`An error occurred during the download process: ${error}`);
         });
 };
 
@@ -163,7 +161,7 @@ const ipcHandlers = () => {
         try {
             downloadAssets();
         } catch (error) {
-            console.error({ _noRenderer: true }, `An error occurred while starting the download: ${error}`);
+            console.error(`An error occurred while starting the download: ${error}`);
         }
     });
 

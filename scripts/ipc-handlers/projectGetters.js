@@ -1,5 +1,4 @@
 "use strict";
-require("../extend/console.js"); // Adds more verbose logging to the console and colors!
 
 const { ipcMain } = require("electron");
 const fs = require("node:fs");

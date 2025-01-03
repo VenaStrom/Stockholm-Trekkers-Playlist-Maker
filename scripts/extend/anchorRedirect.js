@@ -1,5 +1,4 @@
 "use strict";
-require("./console.js");
 
 const setup = (browserWindow) => {
     browserWindow.webContents.on("will-navigate", (event) => {
