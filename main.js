@@ -1,11 +1,9 @@
 "use strict";
-require("./scripts/extend/console.js"); // Adds more verbose logging to the console and colors!
 
 const { app, BrowserWindow } = require("electron");
 const path = require("node:path");
 const fs = require("node:fs");
 const appCloseHandlers = require("./scripts/dialogs/handleAppClose.js");
-require("./filePaths.js").setup(app.getAppPath());
 const { userDataFolder, saveFilesFolder, videoAssetsFolder, downloadReferenceFile } = require("./filePaths.js");
 
 // MIGRATION PATCH //
@@ -63,7 +61,6 @@ app.once("ready", () => {
         require("./scripts/download/downloadAssets.js").ipcHandlers,
         require("./scripts/export/exportProject.js").ipcHandlers,
         require("./scripts/ipc-handlers/fs.js").ipcHandlers,
-        require("./scripts/extend/console.js").ipcHandlers,
     ];
     ipcHandlers.forEach(handler => handler());
     console.info(`Registered ${ipcHandlers.length} IPC Handlers`);
