@@ -8,7 +8,7 @@
   "description": "A playlist maker for the Stockholm Trekkers.",
   "scripts": {
     "start": "electron .",
-    "debug": "electron --trace-warnings --unhandled-rejections=strict .",
+    "debug": "electron --enable-logging .",
     "build": "yarn sass-build && electron-builder",
     "sass": "sass --style compressed --watch html/style/main.scss:html/style/dist-css/main.css",
     "sass-build": "sass --style compressed html/style/main.scss:html/style/dist-css/main.css"
