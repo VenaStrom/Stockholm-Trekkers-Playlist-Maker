@@ -26,10 +26,6 @@
     "appId": "com.stockholm-trekkers.playlist-maker",
     "productName": "Stockholm Trekkers Playlist Maker",
     "asar": false,
-    "electronLanguages": [
-      "en",
-      "sv"
-    ],
     "files": [
       "!.gitignore",
       "!.git/**",
@@ -44,7 +40,6 @@
       "!dist/**",
       "!node_modules/ffprobe-static/bin/**"
     ],
-    "forceCodeSigning": false,
     "win": {
       "target": "nsis",
       "icon": "assets/images/stockholm-trekkers.ico",
