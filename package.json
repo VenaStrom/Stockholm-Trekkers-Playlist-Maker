@@ -5,7 +5,7 @@
   "repository": "https://github.com/viggoStrom/Stockholm-Trekkers-Playlist-Maker.git",
   "author": "Viggo Ström",
   "license": "MIT",
-  "description": "A playlist maker for the Stockholm Trekkers.",
+  "description": "A playlist maker for the Stockholm Trekkers organization.",
   "scripts": {
     "start": "electron .",
     "debug": "electron --enable-logging .",
@@ -65,7 +65,7 @@
       "category": "AudioVideo",
       "maintainer": "Viggo Ström viggostrom05@gmail.com",
       "icon": "assets/images/stockholm-trekkers-300x300.png",
-      "synopsis": "A playlist maker for the Stockholm Trekkers.",
+      "synopsis": "A playlist maker for the Stockholm Trekkers organization.",
       "extraResources": [
         {
           "from": "node_modules/ffprobe-static/bin",
