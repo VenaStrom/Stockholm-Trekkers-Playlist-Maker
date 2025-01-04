@@ -47,7 +47,7 @@ The steps are the same for Windows and Linux. I have used [WSL](https://learn.mi
 4. Run `yarn build`
 5. The build will end up in the `dist` folder
 
-You may get a warning about unmet dependencies or "asar" but you can ignore those.
+You may get a warning about unmet dependencies or "asar" but you can ignore those. If you wish to know more about the asar warning, see the [documentation](docs/notes-on-asar.md).
 
 
 ## Documentation
@@ -56,3 +56,4 @@ You may get a warning about unmet dependencies or "asar" but you can ignore thos
 - [Renderer Styling](docs/renderer-styling.md)
 - [Changing File Paths](docs/changing-file-paths.md)
 - [Information About Exporting](docs/information-about-exporting.md)
+- [Notes on ASAR](docs/notes-on-asar.md)
