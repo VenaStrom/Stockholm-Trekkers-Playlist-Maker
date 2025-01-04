@@ -24,11 +24,11 @@
   "build": {
     "appId": "com.stockholm-trekkers.playlist-maker",
     "productName": "Stockholm Trekkers Playlist Maker",
+    "asar": false,
     "electronLanguages": [
       "en",
       "sv"
     ],
-    "asar": false,
     "files": [
       "!.gitignore",
       "!.git/**",
@@ -40,11 +40,23 @@
       "!screenshots/**",
       "!user-data/**",
       "!docs/**",
-      "!dist/**"
+      "!dist/**",
+      "!node_modules/ffprobe-static/bin/**"
     ],
+    "forceCodeSigning": false,
     "win": {
       "target": "nsis",
-      "icon": "assets/images/stockholm-trekkers.ico"
+      "sign": null,
+      "icon": "assets/images/stockholm-trekkers.ico",
+      "extraResources": [
+        {
+          "from": "node_modules/ffprobe-static/bin",
+          "to": "app/node_modules/ffprobe-static/bin",
+          "filter": [
+            "**/win32/**"
+          ]
+        }
+      ]
     },
     "linux": {
       "target": [
@@ -53,7 +65,16 @@
       "category": "AudioVideo",
       "maintainer": "Viggo Ström viggostrom05@gmail.com",
       "icon": "assets/images/stockholm-trekkers-300x300.png",
-      "synopsis": "A playlist maker for the Stockholm Trekkers."
+      "synopsis": "A playlist maker for the Stockholm Trekkers.",
+      "extraResources": [
+        {
+          "from": "node_modules/ffprobe-static/bin",
+          "to": "app/node_modules/ffprobe-static/bin",
+          "filter": [
+            "**/linux/**"
+          ]
+        }
+      ]
     }
   }
 }
