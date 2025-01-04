@@ -9,8 +9,9 @@
   "scripts": {
     "start": "electron .",
     "debug": "electron --enable-logging .",
-    "build": "yarn sass-build && electron-builder",
-    "sass": "sass --style compressed --watch html/style/main.scss:html/style/dist-css/main.css",
+    "build": "yarn install && yarn sass-build && electron-builder",
+    "build-debug": "yarn sass-build && electron-builder",
+    "sass": "sass --watch html/style/main.scss:html/style/dist-css/main.css",
     "sass-build": "sass --style compressed html/style/main.scss:html/style/dist-css/main.css"
   },
   "devDependencies": {

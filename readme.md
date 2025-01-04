@@ -43,9 +43,8 @@ The steps are the same for Windows and Linux. I have used [WSL](https://learn.mi
 #### Steps:
 1. Clone the repository
    * You may want to checkout to a specific tag e.g. `git checkout v2.1.0`
-2. Run `yarn install`
-4. Run `yarn build`
-5. The build will end up in the `dist` folder
+1. Run `yarn build`
+1. The build will end up in the `dist` folder
 
 You may get a warning about unmet dependencies or "asar" but you can ignore those. If you wish to know more about the asar warning, see the [documentation](docs/notes-on-asar.md).
 
