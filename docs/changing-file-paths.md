@@ -1,6 +1,6 @@
 # Changing File Paths
 
-All file paths *should* be collected in [filePaths.js](../filePaths.js) and referenced from there. 
+All file paths *should* be collected in [filePaths.js](../filePaths.js) and referenced from there. Two file paths are referenced in the [installer.nsh](../build/installer.nsh) script, namely the paths for `videoAssetsFolder` and the `userDataFolder`. They are used to delete them on uninstall.
 
 ### User Data Folder
 This is the root folder of where all user data is stored.
