@@ -5,7 +5,6 @@
 
 ## Changes
 ###### changes to existing -functional- features
-- [ ] Console extension. Make verbose logging actually give a proper stack, not just an absolute path.
 
 ## Features
 ###### brand new features
@@ -25,6 +24,7 @@
 - [-] Allow playlist to roll over midnight, currently it just tries to wait for 24:45 or whatever so it won't play. In the episodeTimes.js file you could the times over in the secondsToHhmm() function but then it would wait for that time regardless of the date. E.g. if it rolls over and the time is set to 1:45, it would theoretically play at 1:45 that morning morning.
   - [X] That behavior is fine i guess, better than times after 23:59 not playing at all.
   - [ ] Handle rollover more robustly in the ps1 file by reading the date but for now it's fine.
+- [ ] More verbose logging from the console functions in node.
 
 ## Fixes
 ###### structural or more complex fixes
