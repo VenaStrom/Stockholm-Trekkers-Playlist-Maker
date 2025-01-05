@@ -25,9 +25,6 @@
   "build": {
     "appId": "com.stockholm-trekkers.playlist-maker",
     "productName": "Stockholm Trekkers Playlist Maker",
-    "electronLanguages": [
-      "en"
-    ],
     "asar": false,
     "files": [
       "!.gitignore",
