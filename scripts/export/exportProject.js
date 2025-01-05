@@ -63,15 +63,21 @@ const projectExport = (id) => {
     }
     // No/missing paths
     const allEpisodes = projectData.blocks.map(data => data.episodes).flat();
-    if (allEpisodes.some(episode => !fs.existsSync(episode.path))) {
+    if (allEpisodes.some(episode => !fs.existsSync(episode.filePath))) {
 
         const suspectedPaths = allEpisodes
-            .filter(episode => !fs.existsSync(episode.path))
-            .map(episode => `<li>${episode.filePath}</li><li>${episode.filePath}</li><li>${episode.filePath}</li>`)
+            .filter(episode => !fs.existsSync(episode.filePath))
+            .map(episode => `<li>${episode.filePath}</li>`)
             .join("");
 
         console.error(`One or more files are missing or the file paths are wrong. Suspects: <ul class="missing-files">${suspectedPaths}</ul>`);
         errorStatus(`One or more files are missing or the file paths are wrong. Suspects: <ul class="missing-files">${suspectedPaths}</ul>`);
+        return;
+    }
+    // Missing date
+    if (!projectData.date) {
+        console.error("Project is missing a date");
+        errorStatus("Project is missing a date");
         return;
     }
 

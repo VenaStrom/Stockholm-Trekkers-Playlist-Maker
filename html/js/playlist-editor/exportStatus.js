@@ -22,7 +22,14 @@ const startExportProcess = () => {
     };
     const openWindow = () => {
         disablePageInteraction();
+
+        // Ensure only one instance is open
+        [...document.querySelectorAll(".export-overlay")].forEach(element => element.remove());
+
         document.body.appendChild(exportWindow);
+
+        // Move focus away from main page
+        document.body.querySelector("button.cancel").focus();
     };
     const closeWindow = () => {
         exportWindow.remove();
@@ -45,8 +52,8 @@ const startExportProcess = () => {
                 </ul>
         
                 <div class="button-container">
-                    <button class="start-export">I understand, continue</button>
                     <button class="cancel">Cancel</button>
+                    <button class="start-export">I understand, continue</button>
                 </div>
             </div>
         </div>
@@ -143,7 +150,7 @@ const startExportProcess = () => {
         // 
         // Display States
         // 
-        const displayErrorState = () => {            
+        const displayErrorState = () => {
             exporter.cancel();
 
             exportWindow.querySelector(".round-box").innerHTML = `
@@ -208,9 +215,9 @@ const startExportProcess = () => {
             </div>
 
             <div class="main">
-                <p class="status-text">${status.message}</p>
+                <p class="status-text">Export finished successfully!</p>
 
-                <button class="open-path" data-open-path="${status.exportLocation}">Open Export Location</button>
+                <button class="open-path" data-open-path="${status.exportLocation}">Export location</button>
 
                 <div class="progress-bar-wrapper">
                     <span class="progress-bar"></span>
