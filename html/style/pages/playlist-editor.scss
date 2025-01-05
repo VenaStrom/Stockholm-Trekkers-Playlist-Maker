@@ -1,0 +1,356 @@
+@use "../mixins.scss" as *; // Functions to style everything easier
+
+main#playlist-editor {
+    @include width(6xl);
+
+    &>.top {
+        &>.back-button {
+            all: unset;
+
+            @include margin(0, 0, 0, 2xl);
+            @include outline();
+            @include border-radius(m);
+            @include icon(l);
+
+            cursor: pointer;
+
+            &>img {
+                width: 100%;
+                height: 100%;
+            }
+        }
+    }
+
+    &>.date-input {
+        @include row($justify: center, $align: center);
+        @include gap(0, l);
+        @include margin($top: 3xl, $bottom: l);
+
+        &>p {
+            width: 20ch;
+            text-align: right;
+        }
+
+        &>input {
+            @include text-size(2xl);
+
+            width: 14ch;
+
+            text-align: center;
+        }
+    }
+
+    &>section {
+        @include margin($top: xl);
+        @include column($justify: start, $align: center);
+        @include gap(s, 0);
+
+        width: 100%;
+
+        &>* {
+            width: 100%;
+        }
+
+        &>.block {
+            @include round-box();
+
+            &>.header {
+                @include text-size(m);
+                @include row($justify: space-between !important, $align: center);
+
+                &>.start-time {
+                    @include row($justify: start, $align: center);
+                    @include gap(0, m);
+
+                    &>input {
+                        @include padding(m, 0);
+                        background-color: var(--color-bg);
+
+                        width: 8ch;
+                        text-align: center;
+                    }
+                }
+
+                &>.options {
+                    @include row($justify: start, $align: center);
+                    @include gap(0, l);
+
+                    cursor: pointer;
+
+                    &:hover {
+                        &>button {
+                            color: var(--color-primary);
+                        }
+                    }
+
+                    &>div {
+                        @include row($justify: start, $align: center);
+                        @include gap(0, 2xs);
+
+                        &>.option-dot {
+                            height: 1rem;
+                            width: 1rem;
+                        }
+                    }
+
+                    &>button {
+                        all: unset;
+
+                        @include outline();
+                        @include border-radius(s);
+
+                        &:hover {
+                            color: var(--color-primary);
+                        }
+
+                        &>span {
+                            @include text-size(s);
+                        }
+                    }
+                }
+
+                &>.delete {
+                    all: unset;
+
+                    @include icon(s);
+                    @include outline();
+
+                    &>img {
+                        width: 100%;
+                        height: 100%;
+                    }
+                }
+            }
+
+            &>.options-dropdown {
+                @include column($justify: start, $align: start);
+                @include gap(m, 0);
+                @include padding($bottom: m);
+
+                background-color: var(--color-low);
+                width: 100%;
+
+                &>hr {
+                    @include hairline($color: var(--color-bg));
+                }
+
+                &>.options-category {
+                    @include column($justify: start, $align: start);
+                    @include margin(0, xl);
+
+                    &>p {
+                        @include text-size(l);
+                    }
+
+                    &>div {
+                        @include row($justify: start, $align: start, $wrap: wrap);
+                        @include gap(0, 3xl);
+                        @include margin(0, xl);
+
+                        &>div {
+                            @include row($justify: start, $align: center);
+                            @include gap(0, xs);
+
+                            @include text-size(s);
+                            @include thin();
+
+                            cursor: pointer;
+                            user-select: none;
+
+                            &>input {
+                                @include margin(s);
+                            }
+                        }
+                    }
+                }
+            }
+
+            &>.main {
+                @include margin(s, 0);
+                @include padding($left: 0);
+                @include column($justify: start, $align: center);
+                @include gap(m, 0);
+
+                list-style-type: none;
+
+                &>.episode {
+                    @include row($justify: start, $align: center);
+
+                    width: 100%;
+
+                    &>.time {
+                        @include text-size(l);
+                        width: 10rch;
+                        text-align: center;
+                    }
+
+                    &>input {
+                        flex: 1;
+                    }
+                }
+
+                &>hr {
+                    @include margin($left: 2xl);
+                    width: 95%;
+                }
+            }
+        }
+
+        &>.make-new-block {
+            @include new-element-button();
+            @include margin($bottom: 3xl);
+        }
+    }
+
+    &>.bottom {
+        @include row($justify: end, $align: center);
+
+        &>.buttons {
+            @include column($justify: end, $align: end);
+            @include gap(m, 0);
+            @include margin($right: 2xl);
+
+            &>button {
+                @include row($justify: start, $align: center);
+                @include gap(0, m);
+                @include padding($left: l, $right: l);
+
+                &>img {
+                    @include icon(s, $hover: false);
+                }
+
+                &:hover {
+                    &>img {
+                        filter: var(--filter-to-color-low);
+                    }
+                }
+            }
+        }
+    }
+
+
+}
+
+// 
+// Export window
+// 
+.export-overlay {
+    @include column($justify: center, $align: center);
+
+    // Cover everything
+    position: fixed;
+    width: 100dvw;
+    height: 100dvh;
+    overflow: hidden;
+
+    // Darken the background
+    background-color: rgba(0, 0, 0, 0.5);
+
+    // Prevent clicking of anything else except the window
+    user-select: none;
+    z-index: 999;
+
+    &>* {
+        z-index: 1000;
+    }
+
+    &>.round-box {
+        @include margin(xl, 0);
+        @include width(5xl);
+        @include border(thick);
+
+        user-select: text;
+        pointer-events: all;
+
+        &>.header {
+            @include text-size(xl);
+            @include padding($top: l, $bottom: l);
+        }
+
+        &>.main {
+            @include column($justify: start, $align: center);
+            @include gap(l, 0);
+
+            // Export status text 
+            &>.status-text {
+                @include padding($top: l);
+            }
+
+            &>ul.missing-files {
+                @include padding(l);
+                @include padding($left: 2xl);
+                @include round-box();
+
+                max-height: 15rem;
+
+                overflow-y: scroll;
+                scrollbar-width: thin;
+                scrollbar-color: var(--color-low) var(--color-bg);
+
+                &>li {
+                    @include text-size(2xs);
+                    @include thin();
+                }
+            }
+
+            // For the export tips
+            &>ul {
+                @include column($justify: start, $align: start);
+                @include gap(m, 0);
+                @include margin(l, l);
+                @include thin();
+            }
+
+            &>.progress-bar-wrapper {
+                @include column($justify: center, $align: center);
+                @include margin(m, 0);
+
+                width: 80%;
+            }
+
+            &>.button-container {
+                @include row($justify: center, $align: center);
+                @include gap(0, l);
+            }
+        }
+    }
+}
+
+.stop-page-interactions {
+    user-select: none;
+    pointer-events: none;
+
+    width: 100dvw;
+    height: 100dvh;
+    overflow: hidden;
+}
+
+.validation-window {
+    @include round-box();
+    @include border(m, $color: var(--color-warning));
+    @include padding(s, l, l, 3xl);
+    @include column($justify: center, $align: start);
+    @include gap(s, 0);
+
+    width: max-content;
+    min-width: 10rch;
+    max-width: 30rch;
+
+    position: absolute;
+
+    &>button {
+        @include thin();
+        @include darken-text();
+        @include text-size(s);
+
+        &:focus {
+            @include outline(var(--color-warning));
+        }
+
+        &:hover {
+            @include thin();
+            @include text-size(s);
+            color: var(--color-warning);
+        }
+    }
+}

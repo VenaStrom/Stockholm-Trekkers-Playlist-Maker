@@ -1,0 +1,133 @@
+@use "variables.scss" as *;
+@use "mixins.scss" as *; // Functions to style everything easier
+
+// Focus outline
+a,
+button,
+input {
+    @include outline();
+}
+
+a {
+    // Reset
+    all: unset;
+
+    @include border-radius(xs); // For the outline when tabbing
+
+    cursor: pointer;
+
+    text-decoration: underline;
+
+    &:hover {
+        color: var(--color-primary);
+    }
+}
+
+button,
+input[type="button"] {
+    @include button();
+}
+
+input[type="text"] {
+    // Reset
+    all: unset;
+
+    @include outline();
+    @include padding(m, l);
+    @include border-radius(m);
+
+    color: var(--color-fg);
+    background-color: var(--color-low);
+
+    cursor: text;
+
+    &::-webkit-inner-spin-button {
+        display: none;
+        appearance: none;
+    }
+}
+
+input[type="file"] {
+    // Reset
+    all: unset;
+
+    @include outline();
+    @include border-radius(m);
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    cursor: pointer;
+
+    color: var(--color-fg);
+
+    &.empty {
+        color: var(--color-mid);
+    }
+
+    &::-webkit-file-upload-button {
+        visibility: hidden;
+        display: none;
+    }
+
+    &::before {
+        content: "Choose File";
+        display: inline-block;
+
+        white-space: nowrap;
+
+        -webkit-user-select: none;
+        user-select: none;
+
+        @include padding(m, l);
+        @include border-radius(l);
+        @include border(thick);
+        @include thin();
+
+        margin-right: 1ch;
+
+        background-color: var(--color-low);
+        color: var(--color-fg);
+
+    }
+
+    &:hover {
+        background-color: var(--color-low);
+        color: var(--color-fg);
+    }
+
+    &:hover::before {
+        @include bold();
+        background-color: var(--color-primary);
+        color: var(--color-low);
+    }
+}
+
+input[type="checkbox"] {
+    // Reset
+    all: unset;
+
+    @include outline();
+    @include border-radius(m);
+    @include border($thickness: thin, $color: var(--color-fg));
+
+    cursor: pointer;
+
+    height: 1.5rem;
+    width: 1.5rem;
+
+    background-color: var(--color-bg);
+
+    &:hover:not(&:checked) {
+        border-color: var(--color-primary);
+    }
+
+    &:checked {
+        background-color: var(--color-primary);
+        @include border($thickness: m, $color: var(--color-bg));
+    }
+}
+
+hr {
+    @include hairline();
+}

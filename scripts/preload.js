@@ -1,20 +1,18 @@
+"use strict";
+
 const { contextBridge, ipcRenderer, webUtils } = require("electron");
 
 contextBridge.exposeInMainWorld("webUtils", webUtils);
 
-contextBridge.exposeInMainWorld("dialog", {
-    confirmLeaveUnsaved: (message) => ipcRenderer.invoke("confirm-leave-unsaved", message),
-    confirmLeaveExporting: (message) => ipcRenderer.invoke("confirm-leave-exporting", message),
+contextBridge.exposeInMainWorld("main", {
+    sendConsole: (type, message) => ipcRenderer.invoke("send-console", type, message),
 });
 
-contextBridge.exposeInMainWorld("appPath", {
-    get: () => ipcRenderer.invoke("get-app-path"),
-});
-
-contextBridge.exposeInMainWorld("download", {
-    start: () => ipcRenderer.invoke("start-download"),
-    status: () => ipcRenderer.invoke("get-download-status"),
-    filesExist: () => ipcRenderer.invoke("check-for-local-files"),
+contextBridge.exposeInMainWorld("assets", {
+    download: () => ipcRenderer.invoke("start-download"),
+    getStatus: () => ipcRenderer.invoke("get-download-status"),
+    allExist: () => ipcRenderer.invoke("check-for-local-files"),
+    getPath: () => ipcRenderer.invoke("get-assets-path"),
 });
 
 contextBridge.exposeInMainWorld("projects", {
@@ -22,10 +20,12 @@ contextBridge.exposeInMainWorld("projects", {
     save: (projectJSON) => ipcRenderer.invoke("project-save", projectJSON),
     delete: (id) => ipcRenderer.invoke("project-delete", id),
     getAll: () => ipcRenderer.invoke("project-get-all"),
+    getPath: () => ipcRenderer.invoke("get-projects-path"),
 });
 
-contextBridge.exposeInMainWorld("metadata", {
-    get: (filePath) => ipcRenderer.invoke("get-metadata", filePath),
+contextBridge.exposeInMainWorld("ffprobe", {
+    meta: (filePath) => ipcRenderer.invoke("get-metadata", filePath),
+    duration: (filePath) => ipcRenderer.invoke("get-duration", filePath),
 });
 
 contextBridge.exposeInMainWorld("exporter", {
@@ -40,4 +40,8 @@ contextBridge.exposeInMainWorld("importer", {
 
 contextBridge.exposeInMainWorld("explorer", {
     open: (path) => ipcRenderer.invoke("open-file-path", path),
+});
+
+contextBridge.exposeInMainWorld("fs", {
+    existsSync: (path) => ipcRenderer.invoke("fs-exists-sync", path),
 });

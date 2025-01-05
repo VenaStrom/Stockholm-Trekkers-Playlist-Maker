@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Stockholm Trekkers Playlist Maker - Projects</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/stockholm-trekkers.ico" type="image/x-icon">
+
+    <!-- Styling -->
+    <link rel="stylesheet" href="../style/dist-css/main.css">
+
+    <!-- General Scripts -->
+    <script defer src="../js/general/clickableElements.js"></script>
+    <script defer src="../js/general/openFilePath.js"></script>
+    <script defer src="../js/general/saveStatusHandler.js"></script>
+    <script defer src="../js/general/stringToHtml.js"></script>
+    <!-- Page Specific Scripts -->
+    <script defer src="../js/projects-page/createProjectDOM.js"></script>
+    <script defer src="../js/projects-page/loadProjects.js"></script>
+    <script defer src="../js/projects-page/openSavesFolder.js"></script>
+</head>
+
+<body>
+    <header>
+        <img src="../../assets/images/stockholm-trekkers-300x300.png" alt="Logo">
+
+        <div>
+            <p>Stockholm Trekkers</p>
+            <p>Playlist Maker</p>
+        </div>
+
+        <h1>Projects</h1>
+    </header>
+
+    <main id="projects-page">
+        <p>Edit a previous project, make a new one, or import one from a file.</p>
+
+        <section>
+            <button class="make-new-project" title="Press this button to create a new project" tabindex="0">
+                <div class="header">
+                    <p>New Project</p>
+                </div>
+                <img src="../../assets/images/add_35dp_000000_FILL0_wght700_GRAD0_opsz40.png" alt="Crate new project">
+            </button>
+        </section>
+
+        <div class="bottom">
+            <div class="buttons">
+                <button class="import-save-file" title="Choose a file which will be copied to your projects folder">
+                    <img src="../../assets/images/download_24dp_000000_FILL0_wght400_GRAD0_opsz24.png" alt="">
+                    Import From File
+                </button>
+
+                <button class="open-saves-folder" title="Opens the folder where your projects are saved">
+                    <img src="../../assets/images/folder_open_24dp_000000_FILL0_wght400_GRAD0_opsz24.png" alt="">
+                    Open Your Projects Folder
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Author: Viggo Ström</p>
+        <p>Contact: <a href="mailto:viggostrom05@gmail.com?subject=Playlist%20Maker">ViggoStrom05@gmail.com</a></p>
+    </footer>
+</body>
+
+</html>

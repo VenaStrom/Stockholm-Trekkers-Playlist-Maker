@@ -1,119 +1,97 @@
+"use strict";
 
-// For now, auto saving is flat out disabled. You will have to save manually
-const autoSave = false;
-
-
-// Return the entire project as a JSON object
-const getJSONstruct = () => {
-    const date = document.querySelector(".date-input input[type='text']").value;
-
-    // Get all the DOM objects of the blocks that are not hidden
-    const blocks = document.querySelectorAll(".block:not(.hidden)");
-
-    const struct = {
-        date: date,
+const JSONifyProject = () => {
+    const projectData = {
+        date: document.querySelector(".date-input input[type='text']").value,
         id: getID(),
         dateModified: new Date().getTime(),
         blocks: [],
     };
 
-    // Loop through all the blocks and get the options and episodes and append them to the struct
-    blocks.forEach((block) => {
+    const blocks = document.querySelectorAll(".block");
 
-        // Get the options of the block and set them in the struct
-        const options = [];
-        block.querySelectorAll(".options input[type='checkbox']").forEach(optionDOM => {
-            options.push({
-                id: optionDOM.id,
-                checked: optionDOM.checked,
-                duration: optionDOM.dataset.lengthSeconds,
-                fileName: optionDOM.dataset.fileName,
-            });
+    blocks.forEach((block) => {
+        const options = [...blockOptions];
+        block.querySelectorAll(".options-dropdown input[type='checkbox']").forEach(optionCheckbox => {
+            options.find(option => option.id === optionCheckbox.dataset.id).checked = optionCheckbox.checked;
         });
 
-        // Loop through and export all the episodes as a list
-        const episodes = Array.from(block.querySelectorAll(".episode:not(.hidden)")) // only grab non-hidden episodes
-            .filter((episode) => {
-                // ignore the file inputs that are empty
+        const episodes = Array.from(block.querySelectorAll(".episode"))
+            .filter(episode => episode.querySelector("input[type='file']").files.length !== 0)
+            .map(episode => {
                 const fileInput = episode.querySelector("input[type='file']");
-                if (fileInput.value !== "") { return true; };
-
-            }).map((episode) => {
-                const fileInput = episode.querySelector("input[type='file']");
-                const timeDOM = episode.querySelector(".time p");
+                const timeDOM = episode.querySelector("p");
                 return {
-                    filePath: fileInput.getAttribute("data-file-path"),
-                    fileName: fileInput.value.split(/[/\\]/).at(-1), // a somewhat hacky way to get the file name from the path
-                    startTime: timeDOM.textContent,
-                    endTime: timeDOM.dataset.endTime,
-                    duration: timeDOM.dataset.duration,
+                    filePath: fileInput.dataset.filePath || "",
+                    startTime: timeDOM.textContent || "",
+                    endTime: timeDOM.dataset.endTime || "",
+                    duration: fileInput.dataset.duration || 0,
                 };
             });
 
-        struct.blocks.push({
-            startTime: block.querySelector(".header .time input[type='text']").value,
+        projectData.blocks.push({
+            startTime: block.querySelector(".header .start-time input[type='text']").value,
             options: options,
-            episodes: episodes
+            episodes: episodes,
         });
     });
 
-    return struct;
+    return projectData;
 };
-
-const saveStatusText = document.querySelector("header #save-status");
 
 const saveProject = () => {
-    const struct = getJSONstruct();
+    console.info("Saving project...");
 
-    projects.save(struct).then((response) => {
-        saveStatusText.textContent = "Saved";
+    const projectData = JSONifyProject();
 
-        setSavedState();
+    return projects.save(projectData).then((response) => {
+        if (response) {
+            console.info("Project saved successfully");
+            document.dispatchEvent(new Event("savedState"));
+        } else {
+            console.error("Project save failed");
+        }
     });
-};
+}
 
-
-// Actions leading to saving //
-
-// Save on the export button and start the export
-const exportButton = document.querySelector("button.export");
-exportButton.addEventListener("click", () => {
-    saveProject();
-
-    setTimeout(() => {
-        // Calls the exporter api in the preload.js script
-        exporter.start(getID());
-
-        // Starts updating the export status text and progress bar
-        startExportStatusGetter();
-    }, 500);
-});
-
-// Save button next to the export button
-const saveButton = document.querySelector("button.save");
-saveButton.addEventListener("click", () => {
-    saveProject();
-});
-
-// Ctrl + S to save
+// CTRL + S to save
 document.addEventListener("keydown", (event) => {
-    if (!(event.ctrlKey && event.key === "s")) { return };
-
-    event.preventDefault();
-    saveProject();
-});
-
-// Save project on change if autoSave is enabled
-document.addEventListener("change", () => {
-    saveStatusText.textContent = "Latest changes not saved*";
-    setUnsavedState();
-
-    if (autoSave) {
+    if (event.ctrlKey && event.key === "s") {
         saveProject();
     }
 });
 
-// Save on clicking the save status text
-saveStatusText.addEventListener("click", () => {
-    saveProject();
+// Save button
+const saveButton = document.querySelector("button.save");
+saveButton.addEventListener("click", () => { saveProject(); });
+
+// Export button
+const exportButton = document.querySelector("button.export");
+exportButton.addEventListener("click", () => {
+    saveProject().then(() => {
+        startExportProcess();
+    });
+});
+
+// Save indicator in the header
+document.addEventListener("unsavedState", () => {
+    const saveIndicator = document.querySelector(".save-indicator");
+    saveIndicator.textContent = "Unsaved changes*";
+    saveIndicator.classList.remove("hidden");
+});
+document.addEventListener("savedState", () => {
+    const saveIndicator = document.querySelector(".save-indicator");
+    saveIndicator.textContent = "Saved";
+
+    setTimeout(() => {
+        // After a while, if the state is still saved, hide the indicator
+        if (isSaved()) {
+            saveIndicator.classList.add("hidden");
+        }
+    }, 2000);
+});
+
+// On any change, tell everyone that the state is unsaved
+document.addEventListener("change", () => {
+    document.dispatchEvent(new Event("unsavedState"));
 });

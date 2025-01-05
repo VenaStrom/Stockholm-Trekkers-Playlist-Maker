@@ -1,0 +1,60 @@
+@use "variables.scss" as *;
+@use "mixins.scss" as *; // Functions to style everything easier
+
+.hidden {
+    @include hidden();
+}
+
+.italic {
+    @include italic();
+}
+
+.bold {
+    @include bold();
+}
+
+.thin {
+    @include thin();
+}
+
+.round-box {
+    @include round-box();
+}
+
+.open-path {
+    all: unset;
+
+    @include border-radius(xs); // For the outline when tabbing
+
+    text-decoration: underline;
+    word-break: break-all;
+
+    &:active,
+    &:hover {
+        // Override the default button styles
+        all: unset;
+
+        cursor: pointer;
+
+        text-decoration: underline;
+        word-break: break-all;
+
+        color: var(--color-primary);
+    }
+}
+
+.option-dot {
+    @include icon(3xs, $filter: none, $hover: false);
+    @include border(thin, $color: var(--color-bg));
+    @include border-radius(s);
+
+    background-color: var(--color-low);
+
+    &.active {
+        background-color: var(--color-primary);
+    }
+}
+
+.darken-text {
+    @include darken-text();
+}

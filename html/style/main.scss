@@ -1,0 +1,169 @@
+@use "variables.scss" as *;
+@use "mixins.scss" as *;
+@use "classes.scss" as *;
+@use "tags.scss" as *;
+// Page specific styles
+@use "pages/download-page.scss";
+@use "pages/projects-page.scss";
+@use "pages/playlist-editor.scss";
+
+//
+// Boilerplate
+//
+// Fonts
+@font-face {
+    font-family: "Bahnschrift";
+    // Path relative to the compiled CSS file which lies in /dist-css/ sub-directory
+    src: url("../../../assets/fonts/BAHNSCHRIFT.TTF") format("truetype");
+}
+
+// Reset
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box !important;
+
+    font-family: "Bahnschrift", "Verdana", sans-serif !important;
+    color: var(--text-fg);
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+//
+// Main Tree
+//
+html {
+    width: 100%;
+    max-width: 100dvw;
+    overflow-x: hidden;
+}
+
+body {
+    @include column($justify: start, $align: center);
+
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+
+    width: 100%;
+    min-height: 100dvh;
+
+    &>* {
+        width: 100%;
+    }
+
+    &>header {
+        @include row($justify: start, $align: center);
+        @include gap(0, m);
+
+        background-color: var(--color-low);
+
+        width: 100%;
+        height: 9dvh;
+
+        // Hide stuff if the window is too s
+        @media (max-width: 800px) {
+
+            // &>h1,
+            &>img+div {
+                @include hidden();
+            }
+        }
+
+        // Make entire header draggable to move the program window
+        & {
+            -webkit-app-region: drag;
+
+            &>button,
+            &>input,
+            &>a {
+                -webkit-app-region: no-drag;
+            }
+
+            &>*:not(button, input, a) {
+                user-select: none;
+            }
+        }
+
+        // Logo
+        &>img {
+            @include padding(0, 0, 0, xl);
+            height: 80%;
+        }
+
+        // Org and program names
+        &>img+div {
+            @include column($justify: center, $wrap: wrap);
+            @include gap(0, m);
+            @include margin($right: 3xl);
+
+            height: 100%;
+
+            &>p:first-of-type {
+                @include bold();
+                @include text-size(l);
+            }
+
+            &>p:last-of-type {
+                @include thin();
+            }
+        }
+
+        &>.save-indicator {
+            @include margin($left: l);
+        }
+
+        // Page title
+        &>h1 {
+            @include bold();
+            @include text-size(title);
+
+            pointer-events: none; // Otherwise the title will cover the entire header
+
+            position: absolute;
+            width: 100dvw;
+            max-width: 100dvw;
+            text-align: center;
+        }
+    }
+
+    &>main {
+        @include column($justify: start, $align: center);
+
+        flex: 1;
+
+        &>.top {
+            @include row($justify: start, $align: center);
+            @include width(max);
+
+            position: fixed;
+            top: calc(1.5rem + 9dvh);
+
+            pointer-events: none;
+
+            & * {
+                pointer-events: auto;
+            }
+        }
+
+        &>.bottom {
+            @include row($justify: start, $align: center);
+            @include width(max);
+
+            position: fixed;
+            bottom: 1.5rem;
+
+            pointer-events: none;
+
+            & * {
+                pointer-events: auto;
+            }
+        }
+    }
+
+    &>footer {
+        @include column($justify: center, $align: center);
+        @include padding(m, 0);
+    }
+}

@@ -5,6 +5,5 @@ dist/
 user-data/
 .vscode/settings.json
 *.todo
-*.cert
 *.pfx
 *.env

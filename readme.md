@@ -43,8 +43,22 @@ The steps are the same for Windows and Linux. I have used [WSL](https://learn.mi
 #### Steps:
 1. Clone the repository
    * You may want to checkout to a specific tag e.g. `git checkout v2.1.0`
+1. Run `yarn build`
+1. The build will end up in the `dist` folder
+
+You may get a warning about unmet dependencies or "asar" but you can ignore those. If you wish to know more about the asar warning, see the [documentation](docs/notes-on-asar.md).
+
+#### Steps:
+1. Clone the repository
+   * You may want to checkout to a specific tag e.g. `git checkout v2.1.0`
 2. Run `yarn install`
 4. Run `yarn build`
 5. The build will end up in the `dist` folder
 
-You may get a warning about unmet dependencies or "asar" but you can ignore those.
+## Documentation
+- [Adding a New Leading or Trailing Clip](docs/add-leading-or-trailing-clip.md)
+- [Adding a New File Asset to be Downloaded](docs/adding-a-file-download.md)
+- [Renderer Styling](docs/renderer-styling.md)
+- [Changing File Paths](docs/changing-file-paths.md)
+- [Information About Exporting](docs/information-about-exporting.md)
+- [Notes on ASAR](docs/notes-on-asar.md)

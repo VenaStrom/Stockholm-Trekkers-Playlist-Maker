@@ -1,18 +1,26 @@
 {
   "name": "stockholm-trekkers-playlist-maker",
-  "version": "2.4.0",
+  "version": "3.0.5",
   "main": "main.js",
   "repository": "https://github.com/viggoStrom/Stockholm-Trekkers-Playlist-Maker.git",
   "author": "Viggo Ström",
   "license": "MIT",
-  "description": "A playlist maker for the Stockholm Trekkers.",
+  "description": "A playlist maker for the Stockholm Trekkers organization.",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder"
+    "debug": "electron --enable-logging .",
+    "build": "yarn install && yarn sass-build && electron-builder",
+    "build-debug": "yarn sass-build && electron-builder",
+    "sass": "sass --watch html/style/main.scss:html/style/dist-css/main.css",
+    "sass-build": "sass --style compressed html/style/main.scss:html/style/dist-css/main.css"
   },
   "devDependencies": {
-    "electron": "^33.2.0",
-    "electron-builder": "^25.1.8"
+    "electron": "^33.3.0",
+    "electron-builder": "^25.1.8",
+    "sass": "^1.83.1"
+  },
+  "dependencies": {
+    "ffprobe-static": "^3.1.0"
   },
   "build": {
     "appId": "com.stockholm-trekkers.playlist-maker",
@@ -22,16 +30,31 @@
     ],
     "asar": false,
     "files": [
-      "!dist/**",
-      "!assets/videos/**",
       "!.gitignore",
       "!.git/**",
+      "!.github/**",
       "!.vscode/**",
-      "!user-data/**"
+      "!html/style/pages/*.scss",
+      "!html/style/*.scss",
+      "!assets/videos/**",
+      "!screenshots/**",
+      "!user-data/**",
+      "!docs/**",
+      "!dist/**",
+      "!node_modules/ffprobe-static/bin/**"
     ],
     "win": {
-      "target": "msi",
-      "icon": "assets/images/stockholm-trekkers.ico"
+      "target": "nsis",
+      "icon": "assets/images/stockholm-trekkers.ico",
+      "extraResources": [
+        {
+          "from": "node_modules/ffprobe-static/bin",
+          "to": "app/node_modules/ffprobe-static/bin",
+          "filter": [
+            "**/win32/**"
+          ]
+        }
+      ]
     },
     "linux": {
       "target": [
@@ -40,10 +63,16 @@
       "category": "AudioVideo",
       "maintainer": "Viggo Ström viggostrom05@gmail.com",
       "icon": "assets/images/stockholm-trekkers-300x300.png",
-      "synopsis": "A playlist maker for the Stockholm Trekkers."
+      "synopsis": "A playlist maker for the Stockholm Trekkers organization.",
+      "extraResources": [
+        {
+          "from": "node_modules/ffprobe-static/bin",
+          "to": "app/node_modules/ffprobe-static/bin",
+          "filter": [
+            "**/linux/**"
+          ]
+        }
+      ]
     }
-  },
-  "dependencies": {
-    "ffprobe-static": "^3.1.0"
   }
 }

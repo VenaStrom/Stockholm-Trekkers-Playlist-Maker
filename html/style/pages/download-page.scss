@@ -1,0 +1,38 @@
+@use "../mixins.scss" as *; // Functions to style everything easier
+
+main#download-page {
+    @include margin(8xl, 0, 0, 0);
+
+    &>p:first-of-type {
+        @include text-size(l);
+    }
+
+    &>h2 {
+        @include text-size(title);
+    }
+
+    &>p:last-of-type {
+        @include text-size(2xl);
+        @include thin();
+        @include margin(0, 0, 3xl, 0);
+    }
+
+    &>.round-box {
+        @include width(3xl);
+
+        &>.main {
+            @include padding(xl, 3xl);
+            @include column($justify: start, $align: center);
+            @include gap(l, 0);
+
+            &>p {
+                width: 100%;
+            }
+
+            &>.progress-bar {
+                @include margin(m, 0, 0, 0);
+                width: 100%;
+            }
+        }
+    }
+}
