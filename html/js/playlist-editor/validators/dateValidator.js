@@ -5,6 +5,11 @@ const dateValidator = (inputDate) => {
 
     const warnings = [];
 
+    // Empty date
+    if (inputDate === "") {
+        return warnings; // Don't scream at the user if the input is empty
+    };
+
     // Invalid date
     if (date == "Invalid Date") { // "=="" cause the types are different
         warnings.push("Not a valid date.");
