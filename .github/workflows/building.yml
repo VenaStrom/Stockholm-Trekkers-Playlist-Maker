@@ -28,7 +28,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: linux-build
-          path: dist/stockholm-trekkers-playlist-maker-setup.deb
+          path: dist/*.deb
 
   build-windows:
     name: Build on Windows
@@ -54,4 +54,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: windows-build
-          path: dist/stockholm-trekkers-playlist-maker-setup.exe
+          path: dist/*.exe
