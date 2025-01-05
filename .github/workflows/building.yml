@@ -24,6 +24,11 @@ jobs:
       - name: Build app
         run: yarn build --publish=never
 
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: stockholm-trekkers-playlist-maker-setup.deb
+
   build-windows:
     name: Build on Windows
     runs-on: windows-latest
@@ -43,3 +48,8 @@ jobs:
 
       - name: Build app
         run: yarn build --publish=never
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: stockholm-trekkers-playlist-maker-setup.exe
