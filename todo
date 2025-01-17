@@ -26,6 +26,7 @@
   - [-] Handle rollover more robustly in the ps1 file by reading the date but for now it's fine.
     - [X] Since the file is read linearly it should be fine.
 - [ ] More verbose logging from the console functions in node.
+- [ ] More dynamically add the pause clips inbetween blocks. Maybe add to cover the time between block start times, just in case.
 
 ## Fixes
 ###### structural or more complex fixes
