@@ -40,7 +40,8 @@
 ## Patches 
 ###### immediate, simple fixes
 - [ ] Emit validator recheck when deleting a block to avoid ghost validation windows. 
-- [ ] The time text of last episode in a block sometimes does not get grayed out
+- [ ] The time text of last episode in a block sometimes does not get grayed out.
+- [ ] Fix program hanging when deleting existing directories. i.e. look att all fs.rmSync and similar.
 
 
 ## Easter Eggs
