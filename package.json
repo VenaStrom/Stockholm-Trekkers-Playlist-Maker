@@ -17,6 +17,7 @@
   "devDependencies": {
     "electron": "^35.1.4",
     "electron-builder": "^26.0.12",
+    "electron-builder-squirrel-windows": "^26.0.12",
     "sass": "^1.86.3"
   },
   "dependencies": {
