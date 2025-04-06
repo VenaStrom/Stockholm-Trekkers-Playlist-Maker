@@ -48,12 +48,13 @@ const projectExport = (id) => {
         return;
     }
     // No episodes
+    const episodes = projectData.blocks.flatMap(data => data.episodes);
     if (
         !projectData.blocks
         ||
         projectData.blocks.length === 0
         ||
-        !(projectData.blocks.map(data => data.episodes).flat().length === 0)
+        !episodes
     ) {
         console.error("Project has no episodes");
         cancelStatus("Project has no episodes");
