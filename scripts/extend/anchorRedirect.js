@@ -1,5 +1,3 @@
-"use strict";
-
 const setup = (browserWindow) => {
     browserWindow.webContents.on("will-navigate", (event) => {
         if (event.url.includes("https://") || event.url.includes("http://")) {

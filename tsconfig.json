@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "strict": true,
+    "noImplicitAny": false,
+    "module": "NodeNext"
+  },
+  "exclude": [
+    "node_modules",
+    "html",
+  ]
+}

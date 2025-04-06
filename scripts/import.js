@@ -2,7 +2,7 @@ const { ipcMain, dialog } = require("electron");
 const fs = require("fs");
 const path = require("path");
 const os = require("os");
-const { projectsFolder } = require("./save/projects.js");
+const { saveFilesFolder } = require("../filePaths.js");
 
 const showDialog = () => {
     return dialog.showOpenDialog({
@@ -22,12 +22,12 @@ const showDialog = () => {
             const fileName = path.basename(filePath);
 
             // Make sure the projects folder exists
-            if (!fs.existsSync(projectsFolder)) {
-                fs.mkdirSync(projectsFolder);
+            if (!fs.existsSync(saveFilesFolder)) {
+                fs.mkdirSync(saveFilesFolder);
             }
 
             // Ask to overwrite if the file already exists
-            if (fs.existsSync(path.join(projectsFolder, fileName))) {
+            if (fs.existsSync(path.join(saveFilesFolder, fileName))) {
                 const result = dialog.showMessageBoxSync({
                     type: "warning",
                     title: "File Already Exists. Overwrite?",
@@ -36,11 +36,11 @@ const showDialog = () => {
                     defaultId: 1,
                 })
                 if (result === 0) {
-                    fs.rmSync(path.join(projectsFolder, fileName));
-                    fs.copyFileSync(filePath, path.join(projectsFolder, fileName));
+                    fs.rmSync(path.join(saveFilesFolder, fileName));
+                    fs.copyFileSync(filePath, path.join(saveFilesFolder, fileName));
                 }
             } else {
-                fs.copyFileSync(filePath, path.join(projectsFolder, fileName));
+                fs.copyFileSync(filePath, path.join(saveFilesFolder, fileName));
             }
         }
 

@@ -1,5 +1,3 @@
-"use strict";
-
 const { contextBridge, ipcRenderer, webUtils } = require("electron");
 
 contextBridge.exposeInMainWorld("webUtils", webUtils);

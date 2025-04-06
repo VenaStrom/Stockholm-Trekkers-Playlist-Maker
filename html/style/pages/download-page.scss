@@ -1,7 +1,7 @@
 @use "../mixins.scss" as *; // Functions to style everything easier
 
 main#download-page {
-    @include margin(8xl, 0, 0, 0);
+    @include margin(7xl, 0, 0, 0);
 
     &>p:first-of-type {
         @include text-size(l);

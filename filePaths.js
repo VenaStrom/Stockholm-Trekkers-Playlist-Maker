@@ -1,10 +1,8 @@
-"use strict";
-
 const path = require("node:path");
 const fs = require("node:fs");
 const os = require("node:os");
 
-const appName = JSON.parse(fs.readFileSync(path.join(__dirname, "package.json"))).name;
+const appName = JSON.parse(fs.readFileSync(path.join(__dirname, "package.json")).toString()).name;
 
 const externalDataFolder = path.join(os.homedir(), appName);
 if (!fs.existsSync(externalDataFolder)) fs.mkdirSync(externalDataFolder, { recursive: true });

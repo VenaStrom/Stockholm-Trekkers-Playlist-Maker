@@ -1,5 +1,3 @@
-"use strict";
-
 const { ipcMain } = require("electron");
 const fs = require("node:fs");
 const path = require("node:path")
@@ -20,7 +18,7 @@ const projectGet = (id) => {
         return null;
     }
 
-    const data = JSON.parse(fs.readFileSync(filePath));
+    const data = JSON.parse(fs.readFileSync(filePath).toString());
 
     if (data) {
         return data;
