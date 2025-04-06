@@ -1,5 +1,3 @@
-"use strict";
-
 const { app, BrowserWindow } = require("electron");
 const path = require("node:path");
 const fs = require("node:fs");

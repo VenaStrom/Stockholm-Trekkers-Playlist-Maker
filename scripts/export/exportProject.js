@@ -1,5 +1,3 @@
-"use strict";
-
 const { ipcMain, dialog } = require("electron");
 const { Worker } = require("node:worker_threads");
 const path = require("node:path");

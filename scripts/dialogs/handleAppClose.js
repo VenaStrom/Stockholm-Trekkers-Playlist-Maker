@@ -1,5 +1,3 @@
-"use strict";
-
 const { dialog, BrowserWindow } = require("electron");
 
 const onClose = (event) => {

@@ -1,5 +1,3 @@
-"use strict";
-
 const { ipcMain } = require("electron");
 const { execFile } = require("node:child_process");
 const fs = require("node:fs");

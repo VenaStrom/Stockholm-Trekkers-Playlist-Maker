@@ -1,5 +1,3 @@
-"use strict";
-
 const { ipcMain, dialog } = require("electron");
 const { spawn } = require("node:child_process");
 const path = require("node:path");
