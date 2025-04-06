@@ -17,6 +17,11 @@ const exportStatus = {};
 const copyAllAssets = (projectData, exportLocation, saveFilesFolder) => {
     // Copies the pause clips to the output folder
 
+    if (!parentPort) {
+        console.error("No parent port. This worker was not started correctly.");
+        return;
+    }
+
     // Update export status
     exportStatus.type = "status"; // This is added so the parent thread knows how to handle the post
     exportStatus.message = "Copying assets...";
@@ -40,6 +45,11 @@ const copyAllAssets = (projectData, exportLocation, saveFilesFolder) => {
     console.info("Copying episodes...");
     projectData.blocks.forEach((block, blockIndex) => {
         block.episodes.forEach((episode, episodeIndex) => {
+
+            if(!parentPort) {
+                console.error("No parent port. This worker was not started correctly.");
+                return;
+            }
 
             // Update export status
             exportStatus.progress = `${20 + (80 / projectData.blocks.length / block.episodes.length) * (blockIndex * block.episodes.length + episodeIndex)}%`; // Gets a percent in between 20 and 100 based on which episode and block you are on
@@ -82,7 +92,7 @@ const copyAllAssets = (projectData, exportLocation, saveFilesFolder) => {
 
 
 // When main tells the worker to start working
-parentPort.on("message", (message) => {
+parentPort && parentPort.on("message", (message) => {
     console.info("Worker started working");
     copyAllAssets(message.projectData, message.exportLocation, message.saveFilesFolder);
 });

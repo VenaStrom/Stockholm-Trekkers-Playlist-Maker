@@ -18,7 +18,7 @@ const projectGet = (id) => {
         return null;
     }
 
-    const data = JSON.parse(fs.readFileSync(filePath));
+    const data = JSON.parse(fs.readFileSync(filePath).toString());
 
     if (data) {
         return data;

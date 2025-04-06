@@ -85,7 +85,7 @@ const downloadFile = (url, destPath, fileName) => {
 
                     browser.close();
 
-                    resolve();
+                    resolve({});
 
                     return;
                 }
@@ -127,7 +127,7 @@ const downloadAssets = () => {
     if (!fs.existsSync(downloadReferenceFile)) {
         console.error(`Download reference file not found at ${downloadReferenceFile || "(missing path)"}`);
     }
-    const assetDownloadInfo = JSON.parse(fs.readFileSync(downloadReferenceFile));
+    const assetDownloadInfo = JSON.parse(fs.readFileSync(downloadReferenceFile).toString());
 
     // File count
     status.fileCount = assetDownloadInfo.videos.length;
@@ -169,7 +169,7 @@ const ipcHandlers = () => {
 
     // Gives a simple true or false if all the files are downloaded to check if you need to download at all
     ipcMain.handle("check-for-local-files", () => {
-        const assetDownloadInfo = JSON.parse(fs.readFileSync(downloadReferenceFile));
+        const assetDownloadInfo = JSON.parse(fs.readFileSync(downloadReferenceFile).toString());
         const fileNames = assetDownloadInfo.videos.map(file => file.name);
 
         // Look for the files in the video folder

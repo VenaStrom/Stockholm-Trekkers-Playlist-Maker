@@ -21,6 +21,7 @@ const showDialog = async () => {
         if (dialogResult.canceled) return;
 
         const sourceFilePath = dialogResult.filePaths.at(0);
+        if (!sourceFilePath) return;
         const fileName = path.basename(sourceFilePath);
         const destFilePath = path.join(saveFilesFolder, fileName);
 

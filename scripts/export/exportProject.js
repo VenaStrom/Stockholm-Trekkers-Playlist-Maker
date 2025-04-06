@@ -53,7 +53,7 @@ const projectExport = (id) => {
         ||
         projectData.blocks.length === 0
         ||
-        !projectData.blocks.map(data => data.episodes).flat().length === 0
+        !(projectData.blocks.map(data => data.episodes).flat().length === 0)
     ) {
         console.error("Project has no episodes");
         cancelStatus("Project has no episodes");
