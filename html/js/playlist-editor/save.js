@@ -11,9 +11,13 @@ const JSONifyProject = () => {
     const blocks = document.querySelectorAll(".block");
 
     blocks.forEach((block) => {
-        const options = [...blockOptions];
+        const options = JSON.parse(JSON.stringify(blockOptions)); // Clone the options
         block.querySelectorAll(".options-dropdown input[type='checkbox']").forEach(optionCheckbox => {
-            options.find(option => option.id === optionCheckbox.dataset.id).checked = optionCheckbox.checked;
+            const optionId = optionCheckbox.dataset.id;
+            const option = options.filter(opt => opt.id === optionId)[0];
+            if (option) {
+                option.checked = optionCheckbox.checked;
+            }
         });
 
         const episodes = Array.from(block.querySelectorAll(".episode"))
