@@ -11,6 +11,7 @@ const { userDataFolder, saveFilesFolder, videoAssetsFolder, downloadReferenceFil
 let copyWorker;
 
 // The frontend fetches this to update the export window it shows
+/** @type {{progress:string,message:string,status:string,exportLocation:string|null,}} */
 const exportStatus = {
     progress: "0%",
     message: "Making folders...",
@@ -174,7 +175,7 @@ const ipcHandlers = () => {
         copyWorker?.terminate();
 
         // Remove the exported project folder
-        if (fs.existsSync(exportStatus.exportLocation)) {
+        if (exportStatus.exportLocation && fs.existsSync(exportStatus.exportLocation)) {
             fs.rmSync(exportStatus.exportLocation, { recursive: true });
         }
 

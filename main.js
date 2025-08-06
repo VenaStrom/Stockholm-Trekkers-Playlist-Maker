@@ -20,6 +20,7 @@ if (fs.existsSync(oldSaveFilesFolder)) {
 
 
 const createMainWindow = () => {
+    /** @type {BrowserWindow & {isMain?:boolean}} */
     const mainWindow = new BrowserWindow({
         width: 1920,
         height: 1080,

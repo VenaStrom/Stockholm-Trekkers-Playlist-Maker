@@ -1,6 +1,6 @@
 {
   "name": "stockholm-trekkers-playlist-maker",
-  "version": "3.0.6",
+  "version": "3.0.7",
   "main": "main.js",
   "repository": "https://github.com/viggoStrom/Stockholm-Trekkers-Playlist-Maker.git",
   "author": "Viggo Ström",
@@ -15,10 +15,10 @@
     "sass-build": "sass --style compressed html/style/main.scss:html/style/dist-css/main.css"
   },
   "devDependencies": {
-    "electron": "^35.1.4",
+    "electron": "^37.2.6",
     "electron-builder": "^26.0.12",
     "electron-builder-squirrel-windows": "^26.0.12",
-    "sass": "^1.86.3"
+    "sass": "^1.90.0"
   },
   "dependencies": {
     "ffprobe-static": "^3.1.0"
