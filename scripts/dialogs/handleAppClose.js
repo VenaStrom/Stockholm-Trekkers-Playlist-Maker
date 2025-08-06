@@ -2,7 +2,10 @@ const { dialog, BrowserWindow } = require("electron");
 
 const onClose = (event) => {
     // Check if the window title contains any of the strings that require confirmation
-    const mainWindow = BrowserWindow.getAllWindows().find(window => window.isMain);
+    const mainWindow = BrowserWindow.getAllWindows().find(window =>
+        // @ts-expect-error - it's fine :)
+        window.isMain
+    );
     if (!mainWindow) return; // No main window found
     const isUnsaved = mainWindow.getTitle().includes("*");
 

@@ -1,10 +1,12 @@
 {
   "compilerOptions": {
+    "noEmit": true,
     "allowJs": true,
     "checkJs": true,
     "strict": true,
     "noImplicitAny": false,
-    "module": "NodeNext"
+    "module": "commonjs",
+    "target": "esnext"
   },
   "exclude": [
     "node_modules",
