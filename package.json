@@ -2,8 +2,8 @@
   "name": "stockholm-trekkers-playlist-maker",
   "version": "3.0.7",
   "main": "main.js",
-  "repository": "https://github.com/viggoStrom/Stockholm-Trekkers-Playlist-Maker.git",
-  "author": "Viggo Ström",
+  "repository": "https://github.com/VenaStrom/Stockholm-Trekkers-Playlist-Maker.git",
+  "author": "Vena Ström",
   "license": "MIT",
   "description": "A playlist maker for the Stockholm Trekkers organization.",
   "scripts": {
@@ -59,7 +59,7 @@
         "deb"
       ],
       "category": "AudioVideo",
-      "maintainer": "Viggo Ström viggostrom05@gmail.com",
+      "maintainer": "Vena Ström strom.vena+stplay@gmail.com",
       "icon": "assets/images/stockholm-trekkers-300x300.png",
       "synopsis": "A playlist maker for the Stockholm Trekkers organization.",
       "extraResources": [
