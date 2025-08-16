@@ -19,7 +19,7 @@ This desktop app is a tool we use to create playlists for our Star Trek viewing 
 The organization regularly organizes events where we watch Star Trek episodes and movies together. To watch these episodes that we choose in advance, we need to have a playlist ready. This program helps us create that playlist.
 
 ### Installation
-Navigate to the [releases](https://github.com/viggoStrom/Stockholm-Trekkers-Playlist-Maker/releases) page on GitHub and choose the latest version and open the `Assets` dropdown. Download the installer file (`.exe` for Windows. `.deb` for Linux) and run it. For the time being, the program is unsigned so you may get a warning when you run the installer. You need to ignore this warning to proceed with the installation. The program is safe and open source. If you don't trust me, you can have a look at the code.
+Navigate to the [releases](https://github.com/VenaStrom/Stockholm-Trekkers-Playlist-Maker/releases) page on GitHub and choose the latest version and open the `Assets` dropdown. Download the installer file (`.exe` for Windows. `.deb` for Linux) and run it. For the time being, the program is unsigned so you may get a warning when you run the installer. You need to ignore this warning to proceed with the installation. The program is safe and open source. If you don't trust me, you can have a look at the code.
 
 ### How to use it
 Once you get into the app the experience should be rather intuitive. On an overarching level, you pick create a project in which you add the video files you want to play. You set the start times for the different parts of the playlist and then you export the playlist to a folder. The app will guide you through the process. If you have any questions, feel free to ask me, Viggo. The goal of this app is for it to be easy to use and I am always looking for ways to improve it.
@@ -37,7 +37,7 @@ On export, the app creates a `.ps1` script (powershell) that acts as a *harness*
 #### On GitHub - Preferred
 GitHub has features that allow you to set up workflows to automate anything. This repository has a workflow that builds the app for you. 
 
-Navigate to the [GitHub Actions page](https://github.com/viggoStrom/Stockholm-Trekkers-Playlist-Maker/actions/workflows/building.yml) for this repository. Click on the `Build Electron App` workflow and look for the `Run workflow` button and in the popup that appears, click the green `Run workflow` button. The workflow will start and you can follow the progress in the `Actions` tab. Once it's done, it will show a green checkmark and on the page of that specific workflow run, you can download the installers as zip files. They are located in the `Artifacts` section.
+Navigate to the [GitHub Actions page](https://github.com/VenaStrom/Stockholm-Trekkers-Playlist-Maker/actions/workflows/building.yml) for this repository. Click on the `Build Electron App` workflow and look for the `Run workflow` button and in the popup that appears, click the green `Run workflow` button. The workflow will start and you can follow the progress in the `Actions` tab. Once it's done, it will show a green checkmark and on the page of that specific workflow run, you can download the installers as zip files. They are located in the `Artifacts` section.
 
 #### Locally
 Prerequisites:
