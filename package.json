@@ -60,7 +60,7 @@
       ],
       "category": "AudioVideo",
       "maintainer": "Vena Ström strom.vena+stplay@gmail.com",
-      "icon": "assets/images/stockholm-trekkers-300x300.png",
+      "icon": "assets/images/256x256.png",
       "synopsis": "A playlist maker for the Stockholm Trekkers organization.",
       "extraResources": [
         {
