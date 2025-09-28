@@ -46,6 +46,15 @@ const blockOptions = [
         description: "Adds a 1 minute clip, reminding the audience of our COVID-19 guidelines, before playing the first episode of the block",
     },
     {
+        id: "leading-sign-in-reminder",
+        category: "leading",
+        name: "Sign In Reminder",
+        checked: false, // Default value
+        duration: "19", // Seconds
+        fileName: "sign_in_reminder.mp4",
+        description: "Adds a 20 second clip, reminding the audience to sign the attendance sheet, after the last episode of the block",
+    },
+    {
         id: "trailing-sign-in-reminder",
         category: "trailing",
         name: "Sign In Reminder",
