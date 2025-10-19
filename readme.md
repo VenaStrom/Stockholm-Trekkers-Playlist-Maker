@@ -5,14 +5,14 @@ This desktop app is a tool we use to create playlists for our Star Trek viewing 
 
 <img width="70%" alt="Screenshots" src="screenshots/playlist-editor.png">
 <details>
-    <summary>More images</summary>
-    <img width="70%" alt="Screenshots" src="screenshots/pre-download.png">
-    <img width="70%" alt="Screenshots" src="screenshots/during-download.png">
-    <img width="70%" alt="Screenshots" src="screenshots/projects-page.png">
-    <img width="70%" alt="Screenshots" src="screenshots/playlist-editor.png">
-    <img width="70%" alt="Screenshots" src="screenshots/playlist-editor-validation.png">
-    <img width="70%" alt="Screenshots" src="screenshots/playlist-editor-block-options.png">
-    <img width="70%" alt="Screenshots" src="screenshots/playlist-editor-exporting.png">
+  <summary>More images</summary>
+  <img width="70%" alt="Screenshots" src="screenshots/pre-download.png">
+  <img width="70%" alt="Screenshots" src="screenshots/during-download.png">
+  <img width="70%" alt="Screenshots" src="screenshots/projects-page.png">
+  <img width="70%" alt="Screenshots" src="screenshots/playlist-editor.png">
+  <img width="70%" alt="Screenshots" src="screenshots/playlist-editor-validation.png">
+  <img width="70%" alt="Screenshots" src="screenshots/playlist-editor-block-options.png">
+  <img width="70%" alt="Screenshots" src="screenshots/playlist-editor-exporting.png">
 </details>
 
 ### Purpose
@@ -51,9 +51,9 @@ The steps are the same for Windows and Linux. I have used [WSL](https://learn.mi
 
 ##### Steps:
 1. Clone the repository
-   * You may want to checkout to a specific tag e.g. `git checkout v2.1.0`
-1. Run `yarn build`
-1. The build will end up in the `dist` folder
+  * You may want to checkout to a specific tag e.g. `git checkout v2.1.0`
+2. Run `yarn build`
+3. The build will end up in the `dist` folder
 
 You may get a warning about unmet dependencies or "asar" but you can ignore those. If you wish to know more about the asar warning, see the [documentation](docs/notes-on-asar.md).
 
