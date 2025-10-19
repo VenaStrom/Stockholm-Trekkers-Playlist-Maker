@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    stockholm_trekkers_playlist_maker_lib::run()
+  stockholm_trekkers_playlist_maker_lib::run()
 }
