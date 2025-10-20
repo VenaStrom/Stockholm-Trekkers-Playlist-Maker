@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "stockholm-trekkers-playlist-maker",
+  "productName": "Stockholm Trekkers Playlist Maker",
   "version": "0.0.0",
-  "identifier": "com.stockholm-trekkers.playlist-maker",
+  "identifier": "com.stockholm-trekkers.playlist-maker-tauri",
   "build": {
     "beforeDevCommand": "yarn dev",
     "devUrl": "http://localhost:1420",
@@ -12,9 +12,12 @@
   "app": {
     "windows": [
       {
-        "title": "stockholm-trekkers-playlist-maker",
-        "width": 800,
-        "height": 600
+        "title": "Stockholm Trekkers Playlist Maker",
+        "width": 1920,
+        "height": 1080,
+        "resizable": true,
+        "maximizable": true,
+        "maximized": true
       }
     ],
     "security": {
@@ -23,7 +26,7 @@
   },
   "bundle": {
     "active": true,
-    "targets": "all",
+    "targets": "deb",
     "icon": [
       "icons/128x128.png",
       "icons/128x128@2x.png",

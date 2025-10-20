@@ -8,6 +8,9 @@
 pub fn run() {
   tauri::Builder::default()
     .plugin(tauri_plugin_opener::init())
+    // .on_menu_event(|event| {
+    //   println!("menu event: {}", event.menu_item_id());
+    // })
     // .invoke_handler(tauri::generate_handler![greet])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");

@@ -1,7 +1,8 @@
+import React from "react";
 // import { invoke } from "@tauri-apps/api/core";
 import "./global.tw.css";
 
-function App() {
+export default function App() {
   // async function greet() {
   //   // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
   //   setGreetMsg(await invoke("greet", { name }));
@@ -9,8 +10,7 @@ function App() {
 
   return (
     <main className="">
+
     </main>
   );
 }
-
-export default App;
