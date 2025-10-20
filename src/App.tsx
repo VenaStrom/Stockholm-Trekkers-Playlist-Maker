@@ -1,12 +1,23 @@
-import React from "react";
-// import { invoke } from "@tauri-apps/api/core";
+import React, { useEffect, useState } from "react";
+import { invoke } from "@tauri-apps/api/core";
 import "./global.tw.css";
 
 export default function App() {
-  // async function greet() {
-  //   // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-  //   setGreetMsg(await invoke("greet", { name }));
-  // }
+  const [hasSetListeners, setHasSetListeners] = useState(false);
+
+  useEffect(() => {
+    if (hasSetListeners) return;
+    if (typeof window === "undefined") return;
+
+    window.addEventListener("keydown", (e) => {
+      if (e.ctrlKey && (e.key === "w" || e.key === "q")) {
+        e.preventDefault();
+        invoke("close");
+      }
+    });
+
+    setHasSetListeners(true);
+  });
 
   return (
     <main className="">
