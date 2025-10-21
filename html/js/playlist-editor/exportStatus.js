@@ -46,7 +46,7 @@ const startExportProcess = () => {
     
             <div class="main">
                 <ul>
-                    <li>Avoid exporting to a USB drive. <a href="https://github.com/viggoStrom/Stockholm-Trekkers-Playlist-Maker/blob/main/docs/information-about-exporting.md">Learn more</a></li>
+                    <li>Avoid exporting to a USB drive. <a href="https://github.com/VenaStrom/Stockholm-Trekkers-Playlist-Maker/blob/main/docs/information-about-exporting.md">Learn more</a></li>
                     <li>A playlist can be 20 GB or more.</li>
                     <li>The exported folder is not zipped.</li>
                 </ul>

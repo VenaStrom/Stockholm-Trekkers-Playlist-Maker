@@ -19,6 +19,6 @@ Exporting to a USB drive is slow and unreliable. Export to an internal drive and
 A playlist can vary a lot in size. For one Trekdag the playlist was 8 or 9 GB. For another, it was 25 GB. The size of the playlist depends on the number of episodes, their bitrates, resolutions, and lengths. The only important thing to do is to make sure you have enough space on the drive you are exporting to.
 
 ## Why is the Exported Folder Not Zipped?
-It could become a feature in the future but the complication of making sure the appropriate software is available in users OS and related issues make it a low priority. It's also about user choice, some users may want to keep the folder unzipped for whatever reason. I, Viggo, have been keeping unzipped versions of every playlist on the organizations hard drive ever since I took over.
+It could become a feature in the future but the complication of making sure the appropriate software is available in users OS and related issues make it a low priority. It's also about user choice, some users may want to keep the folder unzipped for whatever reason. I, Vena, have been keeping unzipped versions of every playlist on the organizations hard drive ever since I took over.
 
 Another motivation is that, zipping during the export process would slow it down. Making some cross-platform solution for zipping is also not gonna be as optimized as a native multi-threaded solution for instance.
