@@ -1,9 +1,38 @@
 @import "tailwindcss";
 
 @theme {
+  --color-flare-500: #f2f2f2;
+  --color-abyss-200: #808080;
+  --color-abyss-500: #2b2b2b;
+  --color-abyss-800: #1e1e1e;
+  --color-command-500: #ffd700;
+  --color-red-alert-500: #ff5b20;
+}
 
+@font-face {
+  font-family: "Bahnschrift";
+  src: url("/font/BAHNSCHRIFT.TTF") format("truetype");
 }
 
 @layer base {
-  
+  * {
+    font-family: "Bahnschrift", sans-serif;
+    @apply font-thin;
+  }
+
+  html {
+    @apply bg-abyss-500 text-flare-500 min-h-screen h-full;
+  }
+
+  body {
+    @apply h-full *:w-full flex flex-col items-center justify-start;
+
+    & > main {
+      @apply flex-1;
+    }
+  }
+
+  a {
+    @apply text-command-500 no-underline hover:underline underline-offset-2;
+  }
 }
