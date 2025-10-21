@@ -34,8 +34,23 @@ export default function App() {
 
     <footer className="flex flex-row justify-center items-center">
       <p className="flex flex-col">
-        <span>Made by: <a href="https://venastrom.se" target="_blank" rel="noreferrer">Vena Ström</a></span>
-        <span>Contact: <a href="mailto:strom.vena+playlistmaker@gmail.com?subject=Playlist%20Maker" target="_blank" rel="noreferrer">strom.vena@gmail.com</a></span>
+        <span>
+          Made by:{" "}
+          <a
+            href="https://venastrom.se"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Vena Ström
+          </a>
+        </span>
+        <span>
+          Contact:{" "}
+          <a
+            href="mailto:strom.vena+playlistmaker@gmail.com?subject=Playlist%20Maker"
+            target="_blank" rel="noreferrer">strom.vena@gmail.com
+          </a>
+        </span>
       </p>
     </footer>
   </>
