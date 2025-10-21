@@ -38,7 +38,6 @@ export default function App() {
     </header>
 
     <main className="">
-      {isDarkModeDebounced ? "True" : "False"}
     </main>
 
     <footer className="flex flex-row justify-center items-center">
