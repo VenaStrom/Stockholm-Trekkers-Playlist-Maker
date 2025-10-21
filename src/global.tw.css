@@ -33,6 +33,14 @@
   }
 
   a {
-    @apply text-command-500 no-underline hover:underline underline-offset-2;
+    @apply text-command-500 no-underline hover:underline underline-offset-2 cursor-pointer;
+  }
+
+  button {
+    @apply select-none cursor-pointer;
+  }
+
+  img {
+    @apply select-none pointer-events-none;
   }
 }
