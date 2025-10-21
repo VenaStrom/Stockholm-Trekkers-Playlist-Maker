@@ -1,12 +1,30 @@
 @import "tailwindcss";
 
-@theme {
+:root {
   --color-flare-500: #f2f2f2;
   --color-abyss-200: #808080;
-  --color-abyss-500: #2b2b2b;
-  --color-abyss-800: #1e1e1e;
+  --color-abyss-500: #1f1f1f;
+  --color-abyss-800: #181818;
   --color-command-500: #ffd700;
   --color-red-alert-500: #ff5b20;
+}
+@custom-variant light (&:is(.light *));
+.light {
+  --color-flare-500: #1f1f1f;
+  --color-abyss-200: #d4d4d4;
+  --color-abyss-500: #f0f0f0;
+  --color-abyss-800: #fafafa;
+  --color-command-500: #b8860b;
+  --color-red-alert-500: #d43c14;
+}
+
+@theme {
+  --color-flare-500: var(--color-flare-500);
+  --color-abyss-200: var(--color-abyss-200);
+  --color-abyss-500: var(--color-abyss-500);
+  --color-abyss-800: var(--color-abyss-800);
+  --color-command-500: var(--color-command-500);
+  --color-red-alert-500: var(--color-red-alert-500);
 }
 
 @font-face {
@@ -21,11 +39,11 @@
   }
 
   html {
-    @apply bg-abyss-500 text-flare-500 min-h-screen h-full;
+    @apply min-h-screen h-full;
   }
 
   body {
-    @apply h-full *:w-full flex flex-col items-center justify-start;
+    @apply bg-abyss-500 text-flare-500 h-full *:w-full flex flex-col items-center justify-start;
 
     & > main {
       @apply flex-1;

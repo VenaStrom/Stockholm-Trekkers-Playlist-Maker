@@ -9,10 +9,19 @@ export default function App() {
     if (hasSetListeners) return;
     if (typeof window === "undefined") return;
 
+    // Close program
     window.addEventListener("keydown", (e) => {
       if (e.ctrlKey && (e.key === "w" || e.key === "q")) {
         e.preventDefault();
         invoke("close");
+      }
+    });
+
+    // Toggle light/dark mode
+    window.addEventListener("keydown", (e) => {
+      if (e.ctrlKey && e.key === "l") {
+        e.preventDefault();
+        document.body.classList.toggle("light");
       }
     });
 
@@ -21,7 +30,7 @@ export default function App() {
 
   return (<>
     <header className="bg-abyss-800 p-2 px-5 flex flex-row items-center gap-x-2">
-      <img className="size-16" src="/icon/org/stockholm-trekkers-256x256.png" alt="Stockholm Trekkers Logo" />
+      <img className="size-14" src="/icon/org/stockholm-trekkers-256x256.png" alt="Stockholm Trekkers Logo" />
       <p className="h-full flex flex-col leading-3 justify-center">
         <span className="text-xl font-normal">Stockholm Trekkers</span>
         <span>Playlist Maker</span>
@@ -29,7 +38,7 @@ export default function App() {
     </header>
 
     <main className="">
-
+      {isDarkModeDebounced ? "True" : "False"}
     </main>
 
     <footer className="flex flex-row justify-center items-center">
