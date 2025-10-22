@@ -1,32 +1,44 @@
+import "./global.tw.css";
 import React, { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
-import "./global.tw.css";
 
 export default function App() {
-  const [hasSetListeners, setHasSetListeners] = useState(false);
+  const [lightMode, setLightMode] = useState(false);
 
   useEffect(() => {
-    if (hasSetListeners) return;
-    if (typeof window === "undefined") return;
-
     // Close program
-    window.addEventListener("keydown", (e) => {
+    const closeListener = (e: KeyboardEvent) => {
       if (e.ctrlKey && (e.key === "w" || e.key === "q")) {
         e.preventDefault();
         invoke("close");
       }
-    });
+    };
 
     // Toggle light/dark mode
-    window.addEventListener("keydown", (e) => {
+    const lightModeListener = (e: KeyboardEvent) => {
       if (e.ctrlKey && e.key === "l") {
+        console.log("Hit light mode");
         e.preventDefault();
-        document.body.classList.toggle("light");
+        setLightMode((prev) => !prev);
       }
-    });
+    };
 
-    setHasSetListeners(true);
+    window.addEventListener("keydown", closeListener);
+    window.addEventListener("keydown", lightModeListener);
+    return () => {
+      window.removeEventListener("keydown", closeListener);
+      window.removeEventListener("keydown", lightModeListener);
+    };
   });
+
+  // Apply light/dark mode
+  useEffect(() => {
+    if (lightMode) {
+      document.body.classList.add("light");
+    } else {
+      document.body.classList.remove("light");
+    }
+  }, [lightMode]);
 
   return (<>
     <header className="bg-abyss-800 p-2 px-5 flex flex-row items-center gap-x-2">
