@@ -27,3 +27,5 @@ dist-ssr
 tsconfig.node.tsbuildinfo
 vite.config.d.ts
 vite.config.js
+
+src-tauri/video-assets
