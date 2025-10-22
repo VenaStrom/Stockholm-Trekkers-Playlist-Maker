@@ -47,17 +47,17 @@ export default function App() {
         <span className="text-xl font-normal">Stockholm Trekkers</span>
         <span>Playlist Maker</span>
       </p>
+
+      <span className="flex-1"></span>
+
+      <p className="flex flex-col items-end leading-5 text-sm">
+        <span>Made by <a href="https://venastrom.se" target="_blank" rel="noreferrer">Vena Ström</a></span>
+        <span><a href="mailto:strom.vena+playlistmaker@gmail.com?subject=Playlist%20Maker" target="_blank" rel="noreferrer">strom.vena@gmail.com</a></span>
+      </p>
     </header>
 
     <main className="">
     </main>
-
-    <footer className="flex flex-row justify-center items-center">
-      <p className="flex flex-col items-center">
-        <span>Made by <a href="https://venastrom.se" target="_blank" rel="noreferrer">Vena Ström</a></span>
-        <span>Contact: <a href="mailto:strom.vena+playlistmaker@gmail.com?subject=Playlist%20Maker" target="_blank" rel="noreferrer">strom.vena@gmail.com</a></span>
-      </p>
-    </footer>
   </>
   );
 }
