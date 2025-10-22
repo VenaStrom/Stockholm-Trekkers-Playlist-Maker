@@ -1,7 +1,7 @@
 {
   "name": "stockholm-trekkers-playlist-maker",
   "private": true,
-  "version": "0.0.0",
+  "version": "4.0.0",
   "type": "module",
   "author": "Vena Ström <strom.vena+stplay@gmail.com>",
   "repository": "https://github.com/VenaStrom/Stockholm-Trekkers-Playlist-Maker.git",
