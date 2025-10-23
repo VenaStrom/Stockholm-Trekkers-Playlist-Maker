@@ -1,6 +1,7 @@
 import "./global.tw.css";
 import React, { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
+import ProjectCard from "./components/project-card";
 
 export default function App() {
   const [lightMode, setLightMode] = useState(false);
@@ -56,8 +57,12 @@ export default function App() {
       </p>
     </header>
 
-    <main className="">
+    <main className="w-full flex flex-col items-center">
+      <ul className="w-7/12 flex flex-col gap-y-3">
+        {new Array(10).fill(0).map((_, i) => (
+          <ProjectCard id="" key={i} />
+        ))}
+      </ul>
     </main>
-  </>
-  );
+  </>);
 }

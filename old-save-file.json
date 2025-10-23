@@ -1,0 +1,65 @@
+{
+  "date": "",
+  "id": "17611552157891761155215789",
+  "dateModified": 1761155220753,
+  "blocks": [
+    {
+      "startTime": "",
+      "options": [
+        {
+          "id": "leading-countdown",
+          "category": "leading",
+          "name": "Countdown",
+          "checked": true,
+          "duration": "60",
+          "fileName": "pause_1_min_countdown.mp4",
+          "description": "Adds a 1 minute countdown before playing the first episode of the block"
+        },
+        {
+          "id": "leading-emergency-routine",
+          "category": "leading",
+          "name": "Emergency Routine",
+          "checked": true,
+          "duration": "59",
+          "fileName": "pause_1_min_emergency.mp4",
+          "description": "Adds a 1 minute clip, describing our emergency routines, before playing the first episode of the block"
+        },
+        {
+          "id": "leading-covid-disclaimer",
+          "category": "leading",
+          "name": "COVID-19 Disclaimer",
+          "checked": false,
+          "duration": "60",
+          "fileName": "pause_1_min_covid.mp4",
+          "description": "Adds a 1 minute clip, reminding the audience of our COVID-19 guidelines, before playing the first episode of the block"
+        },
+        {
+          "id": "leading-sign-in-reminder",
+          "category": "leading",
+          "name": "Sign In Reminder",
+          "checked": false,
+          "duration": "19",
+          "fileName": "sign_in_reminder.mp4",
+          "description": "Adds a 20 second clip, reminding the audience to sign the attendance sheet, after the last episode of the block"
+        },
+        {
+          "id": "trailing-sign-in-reminder",
+          "category": "trailing",
+          "name": "Sign In Reminder",
+          "checked": false,
+          "duration": "19",
+          "fileName": "sign_in_reminder.mp4",
+          "description": "Adds a 20 second clip, reminding the audience to sign the attendance sheet, after the last episode of the block"
+        }
+      ],
+      "episodes": [
+        {
+          "filePath": "/home/vena/Documents/Participatory Design in Information Systems Development.pdf",
+          "startTime": "--:--",
+          "endTime": "--:--",
+          "duration": 0
+        }
+      ]
+    }
+  ]
+}

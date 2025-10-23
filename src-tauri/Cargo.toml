@@ -1,5 +1,5 @@
 [package]
-name = "stockholm-trekkers-playlist-maker-tauri"
+name = "stockholm-trekkers-playlist-maker"
 version = "4.0.0"
 description = "A playlist maker for the Stockholm Trekkers organization."
 authors = ["you"]
