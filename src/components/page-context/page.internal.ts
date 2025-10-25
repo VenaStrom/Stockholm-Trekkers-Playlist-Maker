@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import React, { createContext } from "react";
 import { Project } from "../../types";
 
 export const PageRoute = {
@@ -9,12 +9,12 @@ export type PageRoute = (typeof PageRoute)[keyof typeof PageRoute];
 
 export type PageContext = {
   route: PageRoute;
-  setRoute: (route: PageRoute) => void;
+  setRoute: React.Dispatch<React.SetStateAction<PageRoute>>;
   headerText: string;
-  setHeaderText: (text: string) => void;
+  setHeaderText: React.Dispatch<React.SetStateAction<string>>;
   projectId: string | null;
   projects: Project[];
-  setProjects: (projects: Project[]) => void;
+  setProjects: React.Dispatch<React.SetStateAction<Project[]>>;
 };
 export const PageContextDefaultValue: PageContext = {
   route: PageRoute.Projects,

@@ -2,12 +2,14 @@ import { useState } from "react";
 import { Project } from "../types";
 import { IconDeleteOutline, IconEditOutline, IconFileExportOutline } from "./icons";
 import Dialog from "./dialog";
+import { usePageContext } from "./page-context/use-page-context";
 
 export default function ProjectCard({
   project,
 }: {
   project: Project;
 }) {
+  const { setProjects } = usePageContext();
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
 
   return (<>
@@ -36,6 +38,7 @@ export default function ProjectCard({
           className="gap-x-1 pe-1 hover:bg-red-alert-500"
           onClick={() => {
             // Delete
+            setProjects((prevProjects) => prevProjects.filter((p) => p.id !== project.id));
             setDeleteDialogVisible(false);
           }}
         >
