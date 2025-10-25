@@ -10,6 +10,7 @@ export function PageProvider({ children }: { children: React.ReactNode }) {
     setRoute,
     headerText,
     setHeaderText,
+    projectId: null,
   };
 
   return (

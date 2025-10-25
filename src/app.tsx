@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import Projects from "./pages/projects";
 import { usePageContext } from "./components/page-context/use-page-context";
-import { PageRoutes } from "./components/page-context/page.internal";
+import { PageRoute } from "./components/page-context/page.internal";
 
 export default function App() {
   const [lightMode, setLightMode] = useState(false);
@@ -46,9 +46,6 @@ export default function App() {
     }
   }, [lightMode]);
 
-  // Routing
-  
-
   return (<>
     <header className="bg-abyss-800 p-2 px-5 flex flex-row items-center gap-x-2">
       <img className="size-14" src="/icon/org/stockholm-trekkers-256x256.png" alt="Stockholm Trekkers Logo" />
@@ -73,6 +70,6 @@ export default function App() {
       </p>
     </header>
 
-    {route === PageRoutes.Projects && <Projects />}
+    {route === PageRoute.Projects && <Projects />}
   </>);
 }
