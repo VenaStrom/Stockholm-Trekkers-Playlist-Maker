@@ -1,10 +1,11 @@
 import "./global.tw.css";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
-import ProjectCard from "./components/project-card";
+import Projects from "./pages/projects";
 
 export default function App() {
   const [lightMode, setLightMode] = useState(false);
+  const [headerText, setHeaderText] = useState("Projects");
 
   useEffect(() => {
     // Close program
@@ -49,7 +50,15 @@ export default function App() {
         <span>Playlist Maker</span>
       </p>
 
-      <span className="flex-1"></span>
+      <span className="flex-1">
+        {/* Outer absolute positioner with no pointer events */}
+        <span className="w-full h-18 pointer-events-none absolute top-0 left-0 flex flex-row justify-center items-center">
+          {/* Inner styled text */}
+          <span className="w-fit text-2xl font-normal pointer-events-auto">
+            {headerText}
+          </span>
+        </span>
+      </span>
 
       <p className="flex flex-col items-end leading-5 text-sm">
         <span>Made by <a href="https://venastrom.se" target="_blank" rel="noreferrer">Vena Ström</a></span>
@@ -57,12 +66,6 @@ export default function App() {
       </p>
     </header>
 
-    <main className="w-full flex flex-col items-center">
-      <ul className="w-7/12 flex flex-col gap-y-3">
-        {new Array(10).fill(0).map((_, i) => (
-          <ProjectCard id="" key={i} />
-        ))}
-      </ul>
-    </main>
+    <Projects />
   </>);
 }

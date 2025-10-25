@@ -1,12 +1,11 @@
-import React from "react";
 
 export default function ProjectCard({
-  id,
+  projectId,
 }: {
-  id: string;
+  projectId: string;
 }) {
   return (
-    <li className="w-full h-36 bg-abyss-800 rounded-sm">
+    <li className="w-full min-h-36 bg-abyss-800 rounded-sm">
 
     </li>
   );
