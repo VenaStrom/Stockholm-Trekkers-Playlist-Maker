@@ -5,9 +5,19 @@ import Projects from "./pages/projects";
 import { usePageContext } from "./components/page-context/use-page-context";
 import { PageRoute } from "./components/page-context/page.internal";
 import { setTheme } from "@tauri-apps/api/app";
+import { IconLightModeOutline } from "./components/icons";
 
 export default function App() {
-  const [lightMode, setLightMode] = useState(typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches);
+  const [lightMode, setLightMode] = useState(() => {
+    // Read local storage for theme preference
+    const prefersLight = localStorage.getItem("lightMode");
+    if (prefersLight !== null) {
+      return prefersLight === "true";
+    }
+
+    // If no preference, use system preference
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
+  });
 
   const { headerText, route } = usePageContext();
 
@@ -42,20 +52,25 @@ export default function App() {
     if (lightMode) {
       document.body.classList.add("light");
       setTheme("light");
+      localStorage.setItem("lightMode", "true");
     } else {
       document.body.classList.remove("light");
       setTheme("dark");
+      localStorage.setItem("lightMode", "false");
     }
   }, [lightMode]);
 
   return (<>
     <header className="bg-abyss-800 p-2 px-5 flex flex-row items-center gap-x-2">
+      {/* Logo */}
       <img className="size-14" src="/icon/org/stockholm-trekkers-256x256.png" alt="Stockholm Trekkers Logo" />
+      {/* App name */}
       <p className="h-full flex flex-col leading-3 justify-center">
         <span className="text-xl font-normal">Stockholm Trekkers</span>
         <span>Playlist Maker</span>
       </p>
 
+      {/* Spacer and header text */}
       <span className="flex-1">
         {/* Outer absolute positioner with no pointer events */}
         <span className="w-full h-18 pointer-events-none absolute top-0 left-0 flex flex-row justify-center items-center">
@@ -66,12 +81,20 @@ export default function App() {
         </span>
       </span>
 
+      {/* Light mode toggle */}
+      <button
+        className="h-full px-3 hover:[&_.€icon]:text-command-500"
+        onClick={() => setLightMode((prev) => !prev)}
+        title="Toggle light/dark mode (Ctrl+L)"
+      >
+        <IconLightModeOutline className="€icon size-8" />
+      </button>
+
+      {/* Credit */}
       <p className="flex flex-col items-end leading-5 text-sm">
         <span>Made by <a href="https://venastrom.se" target="_blank" rel="noreferrer">Vena Ström</a></span>
         <span><a href="mailto:strom.vena+playlistmaker@gmail.com?subject=Playlist%20Maker" target="_blank" rel="noreferrer">strom.vena@gmail.com</a></span>
       </p>
-
-
     </header>
 
     {route === PageRoute.Projects && <Projects />}

@@ -5,7 +5,7 @@
   --color-abyss-200: #808080;
   --color-abyss-500: #1f1f1f;
   --color-abyss-800: #181818;
-  --color-command-500: #ffd700;
+  --color-command-500: #c0962e;
   --color-red-alert-500: #ff5b20;
 }
 @custom-variant light (&:is(.light *));
@@ -14,7 +14,7 @@
   --color-abyss-200: #d4d4d4;
   --color-abyss-500: #f0f0f0;
   --color-abyss-800: #fafafa;
-  --color-command-500: #b8860b;
+  --color-command-500: #bd942d;
   --color-red-alert-500: #d43c14;
 }
 
@@ -51,11 +51,11 @@
   }
 
   a {
-    @apply text-command-500 no-underline hover:underline underline-offset-2 cursor-pointer;
+    @apply text-command-500 no-underline hover:underline underline-offset-2 cursor-pointer transition-all;
   }
 
   button {
-    @apply select-none cursor-pointer;
+    @apply select-none cursor-pointer transition-all;
   }
 
   img {
