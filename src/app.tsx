@@ -2,11 +2,14 @@ import "./global.tw.css";
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import Projects from "./pages/projects";
+import { usePageContext } from "./components/page-context/use-page-context";
 
 export default function App() {
   const [lightMode, setLightMode] = useState(false);
-  const [headerText, setHeaderText] = useState("Projects");
 
+  const { headerText } = usePageContext();
+
+  // Set up keyboard shortcuts
   useEffect(() => {
     // Close program
     const closeListener = (e: KeyboardEvent) => {
@@ -41,6 +44,9 @@ export default function App() {
       document.body.classList.remove("light");
     }
   }, [lightMode]);
+
+  // Routing
+  
 
   return (<>
     <header className="bg-abyss-800 p-2 px-5 flex flex-row items-center gap-x-2">
