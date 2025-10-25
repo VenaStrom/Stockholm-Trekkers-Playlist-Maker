@@ -1,14 +1,19 @@
 import { useState } from "react";
-import { PageContext } from "./page.internal";
+import { PageContext, PageContextDefaultValue } from "./page.internal";
 
 export function PageProvider({ children }: { children: React.ReactNode }) {
-  const [headerText, setHeaderText] = useState("");
+  const [route, setRoute] = useState(PageContextDefaultValue.route);
+  const [headerText, setHeaderText] = useState(PageContextDefaultValue.headerText);
+
+  const value: PageContext = {
+    route,
+    setRoute,
+    headerText,
+    setHeaderText,
+  };
 
   return (
-    <PageContext.Provider value={{
-      headerText,
-      setHeaderText,
-    }}>
+    <PageContext.Provider value={value}>
       {children}
     </PageContext.Provider>
   );

@@ -3,11 +3,12 @@ import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import Projects from "./pages/projects";
 import { usePageContext } from "./components/page-context/use-page-context";
+import { PageRoutes } from "./components/page-context/page.internal";
 
 export default function App() {
   const [lightMode, setLightMode] = useState(false);
 
-  const { headerText } = usePageContext();
+  const { headerText, route } = usePageContext();
 
   // Set up keyboard shortcuts
   useEffect(() => {
@@ -72,6 +73,6 @@ export default function App() {
       </p>
     </header>
 
-    <Projects />
+    {route === PageRoutes.Projects && <Projects />}
   </>);
 }
