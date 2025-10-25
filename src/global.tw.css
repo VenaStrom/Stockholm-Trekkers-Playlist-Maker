@@ -5,8 +5,11 @@
   --color-abyss-200: #808080;
   --color-abyss-500: #1f1f1f;
   --color-abyss-800: #181818;
+  --color-command-300: #e0b93a;
   --color-command-500: #c0962e;
   --color-red-alert-500: #ff5b20;
+  --color-science-500: #2196f3;
+  --color-spore-500: #4caf50;
 }
 @custom-variant light (&:is(.light *));
 .light {
@@ -14,8 +17,11 @@
   --color-abyss-200: #d4d4d4;
   --color-abyss-500: #f0f0f0;
   --color-abyss-800: #fafafa;
+  --color-command-300: #e6b944;
   --color-command-500: #bd942d;
   --color-red-alert-500: #d43c14;
+  --color-science-500: #1976d2;
+  --color-spore-500: #388e3c;
 }
 
 @theme {
@@ -23,8 +29,11 @@
   --color-abyss-200: var(--color-abyss-200);
   --color-abyss-500: var(--color-abyss-500);
   --color-abyss-800: var(--color-abyss-800);
+  --color-command-300: var(--color-command-300);
   --color-command-500: var(--color-command-500);
   --color-red-alert-500: var(--color-red-alert-500);
+  --color-science-500: var(--color-science-500);
+  --color-spore-500: var(--color-spore-500);
 }
 
 @font-face {
@@ -55,7 +64,11 @@
   }
 
   button {
-    @apply select-none cursor-pointer transition-all;
+    @apply select-none cursor-pointer transition-all flex flex-row items-center justify-start;
+
+    &:not(.€clear) {
+      @apply px-2 py-1 active:scale-95 bg-command-500 text-abyss-800 font-semibold light:font-normal rounded-sm hover:bg-command-300;
+    }
   }
 
   img {
