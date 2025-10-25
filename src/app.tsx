@@ -4,9 +4,10 @@ import { invoke } from "@tauri-apps/api/core";
 import Projects from "./pages/projects";
 import { usePageContext } from "./components/page-context/use-page-context";
 import { PageRoute } from "./components/page-context/page.internal";
+import { setTheme } from "@tauri-apps/api/app";
 
 export default function App() {
-  const [lightMode, setLightMode] = useState(false);
+  const [lightMode, setLightMode] = useState(typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches);
 
   const { headerText, route } = usePageContext();
 
@@ -23,7 +24,6 @@ export default function App() {
     // Toggle light/dark mode
     const lightModeListener = (e: KeyboardEvent) => {
       if (e.ctrlKey && e.key === "l") {
-        console.log("Hit light mode");
         e.preventDefault();
         setLightMode((prev) => !prev);
       }
@@ -41,8 +41,10 @@ export default function App() {
   useEffect(() => {
     if (lightMode) {
       document.body.classList.add("light");
+      setTheme("light");
     } else {
       document.body.classList.remove("light");
+      setTheme("dark");
     }
   }, [lightMode]);
 
@@ -68,6 +70,8 @@ export default function App() {
         <span>Made by <a href="https://venastrom.se" target="_blank" rel="noreferrer">Vena Ström</a></span>
         <span><a href="mailto:strom.vena+playlistmaker@gmail.com?subject=Playlist%20Maker" target="_blank" rel="noreferrer">strom.vena@gmail.com</a></span>
       </p>
+
+
     </header>
 
     {route === PageRoute.Projects && <Projects />}
