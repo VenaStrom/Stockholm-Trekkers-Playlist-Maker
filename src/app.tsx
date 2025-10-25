@@ -83,11 +83,11 @@ export default function App() {
 
       {/* Light mode toggle */}
       <button
-        className="h-full px-3 hover:[&_.€icon]:text-command-300 €clear"
+        className="h-full px-3 hover:text-command-300 €clear"
         onClick={() => setLightMode((prev) => !prev)}
         title="Toggle light/dark mode (Ctrl+L)"
       >
-        <IconLightModeOutline className="€icon size-8" />
+        <IconLightModeOutline className="size-8" />
       </button>
 
       {/* Credit */}

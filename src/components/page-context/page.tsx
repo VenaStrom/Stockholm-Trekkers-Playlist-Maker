@@ -4,6 +4,7 @@ import { PageContext, PageContextDefaultValue } from "./page.internal";
 export function PageProvider({ children }: { children: React.ReactNode }) {
   const [route, setRoute] = useState(PageContextDefaultValue.route);
   const [headerText, setHeaderText] = useState(PageContextDefaultValue.headerText);
+  const [projects, setProjects] = useState<PageContext["projects"]>([]);
 
   const value: PageContext = {
     route,
@@ -11,6 +12,8 @@ export function PageProvider({ children }: { children: React.ReactNode }) {
     headerText,
     setHeaderText,
     projectId: null,
+    projects,
+    setProjects,
   };
 
   return (

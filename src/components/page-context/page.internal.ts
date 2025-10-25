@@ -1,4 +1,5 @@
 import { createContext } from "react";
+import { Project } from "../../types";
 
 export const PageRoute = {
   Projects: "projects",
@@ -12,6 +13,8 @@ export type PageContext = {
   headerText: string;
   setHeaderText: (text: string) => void;
   projectId: string | null;
+  projects: Project[];
+  setProjects: (projects: Project[]) => void;
 };
 export const PageContextDefaultValue: PageContext = {
   route: PageRoute.Projects,
@@ -19,6 +22,8 @@ export const PageContextDefaultValue: PageContext = {
   headerText: "",
   setHeaderText: () => { },
   projectId: null,
+  projects: [],
+  setProjects: () => { },
 };
 
 export const PageContext = createContext<PageContext>({ ...PageContextDefaultValue });
