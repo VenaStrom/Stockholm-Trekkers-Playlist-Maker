@@ -9,7 +9,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --project ./tsconfig.node.json && vite build",
+    "build": "yarn download-assets && tsc --project ./tsconfig.node.json && vite build",
     "preview": "vite preview",
     "tauri": "tauri",
     "download-assets": "node scripts/download-video-assets.ts"

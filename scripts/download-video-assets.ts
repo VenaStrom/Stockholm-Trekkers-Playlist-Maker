@@ -4,13 +4,7 @@ import path from "node:path";
 await new Promise((resolve) => setTimeout(resolve, 100));
 console.log("");
 
-const urls = [
-  "https://github.com/VenaStrom/Stockholm-Trekkers-Playlist-Maker/releases/download/v4.0.0-Video-Assets/30_min_pause.mp4",
-  "https://github.com/VenaStrom/Stockholm-Trekkers-Playlist-Maker/releases/download/v4.0.0-Video-Assets/20_sec_sign_in_reminder.mp4",
-  "https://github.com/VenaStrom/Stockholm-Trekkers-Playlist-Maker/releases/download/v4.0.0-Video-Assets/1_min_emergency.mp4",
-  "https://github.com/VenaStrom/Stockholm-Trekkers-Playlist-Maker/releases/download/v4.0.0-Video-Assets/1_min_covid.mp4",
-  "https://github.com/VenaStrom/Stockholm-Trekkers-Playlist-Maker/releases/download/v4.0.0-Video-Assets/1_min_countdown.mp4",
-]
+import urls from "./asset-urls.json" with { type: "json" };
 const destPath = path.join("src-tauri", "video-assets");
 const names = urls.map((url) => path.basename(url));
 
