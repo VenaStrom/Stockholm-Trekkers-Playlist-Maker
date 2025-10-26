@@ -1,0 +1,2 @@
+- Implement project deletion on rust side
+- Give user feedback when exporting a project (currently an a tag with download)
