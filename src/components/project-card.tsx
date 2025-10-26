@@ -3,6 +3,7 @@ import { Project } from "../types";
 import { IconDeleteOutline, IconEditOutline, IconFileExportOutline } from "./icons";
 import Dialog from "./dialog";
 import { usePageContext } from "./page-context/use-page-context";
+import { invoke } from "@tauri-apps/api/core";
 
 export default function ProjectCard({
   project,
@@ -13,6 +14,7 @@ export default function ProjectCard({
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
 
   return (<>
+    {/* Delete dialog */}
     <Dialog
       visible={deleteDialogVisible}
       setVisible={setDeleteDialogVisible}
@@ -37,9 +39,15 @@ export default function ProjectCard({
           key={"delete-button"}
           className="gap-x-1 pe-1 hover:bg-red-alert-500"
           onClick={() => {
-            // Delete
             setProjects((prevProjects) => prevProjects.filter((p) => p.id !== project.id));
             setDeleteDialogVisible(false);
+            invoke("delete_project", { projectId: project.id })
+              .then(() => {
+                console.log("Project deleted successfully");
+              })
+              .catch((error) => {
+                console.error("Error deleting project:", error);
+              });
           }}
         >
           Delete
