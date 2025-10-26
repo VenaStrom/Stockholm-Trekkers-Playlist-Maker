@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { IconCloseSmall } from "./icons";
 
 export type DialogProps = {
@@ -16,6 +17,30 @@ export default function Dialog({
   buttons,
 }: DialogProps) {
   if (!visible) return null;
+
+  // Register Esc to close dialog
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setVisible(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [setVisible]);
+
+  // If a button has the data-focus="true" attribute, focus on it when the dialog is rendered
+  useEffect(() => {
+    const focusedButton = document.querySelector(
+      'button[data-focus="true"]'
+    ) as HTMLButtonElement | null;
+    if (focusedButton) {
+      focusedButton.focus();
+    }
+  }, []);
 
   return (
     // Modal background
@@ -53,7 +78,7 @@ export default function Dialog({
         {/* Option buttons */}
         <div className="flex flex-row justify-end pb-4 px-4">
           {buttons.map((button, index) => (
-            <div key={index} className="ms-2">
+            <div key={index} className="ms-2" tabIndex={0}>
               {button}
             </div>
           ))}

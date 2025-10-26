@@ -90,10 +90,16 @@ export default function ProjectCard({
           <span className="flex-1"></span>
           <IconEditOutline className="inline size-6" />
         </button>
-        <button className="pe-1.5 ps-3 hover:bg-spore-500">
+        <button
+          className="pe-1.5 ps-3 hover:bg-spore-500"
+          onClick={() => {
+            document.getElementById(`export-${project.id}`)!.click();
+          }}
+        >
           Export
           <span className="flex-1"></span>
           <IconFileExportOutline className="inline size-6" />
+          <a href="/old-save-file.json" download={true} target="_blank" rel="noreferrer" id={`export-${project.id}`} className="hidden"></a>
         </button>
         <button
           className="pe-1.5 ps-3 hover:bg-red-alert-500"
