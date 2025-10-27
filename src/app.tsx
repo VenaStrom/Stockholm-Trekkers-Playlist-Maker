@@ -5,7 +5,7 @@ import Projects from "./pages/projects";
 import { usePageContext } from "./components/page-context/use-page-context";
 import { PageRoute } from "./components/page-context/page.internal";
 import { setTheme } from "@tauri-apps/api/app";
-import { IconLightModeOutline } from "./components/icons";
+import { IconLightDarkMode } from "./components/icons";
 import { Toaster } from "./components/toast/toast";
 
 export default function App() {
@@ -88,7 +88,7 @@ export default function App() {
         onClick={() => setLightMode((prev) => !prev)}
         title="Toggle light/dark mode (Ctrl+L)"
       >
-        <IconLightModeOutline className="size-8" />
+        <IconLightDarkMode className="size-8" />
       </button>
 
       {/* Credit */}
