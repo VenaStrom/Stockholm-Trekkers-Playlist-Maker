@@ -9,9 +9,9 @@
   "license": "MIT",
   "scripts": {
     "dev": "yarn tauri dev",
-    "build": "yarn tauri build && yarn rename-bundles",
+    "build": "yarn download-assets && yarn tauri build && yarn rename-bundles",
     "js-dev": "vite",
-    "js-build": "yarn download-assets && tsc --project ./tsconfig.node.json && vite build",
+    "js-build": "tsc --project ./tsconfig.node.json && vite build",
     "preview": "vite preview",
     "tauri": "tauri",
     "download-assets": "node scripts/download-video-assets.ts",
