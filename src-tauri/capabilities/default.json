@@ -7,6 +7,9 @@
   ],
   "permissions": [
     "core:default",
-    "core:app:allow-set-app-theme"
+    "core:app:allow-set-app-theme",
+    "opener:default",
+    "opener:allow-open-path",
+    "opener:allow-reveal-item-in-dir"
   ]
 }

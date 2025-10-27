@@ -4,6 +4,8 @@ import { IconDeleteOutline, IconEditOutline, IconFileExportOutline } from "./ico
 import Dialog from "./dialog";
 import { usePageContext } from "./page-context/use-page-context";
 import { invoke } from "@tauri-apps/api/core";
+import { useToast } from "./toast/useToast";
+import { revealItemInDir } from "@tauri-apps/plugin-opener";
 
 export default function ProjectCard({
   project,
@@ -11,6 +13,7 @@ export default function ProjectCard({
   project: Project;
 }) {
   const { setProjects } = usePageContext();
+  const { toast } = useToast();
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
 
   return (<>
@@ -94,6 +97,15 @@ export default function ProjectCard({
           className="pe-1.5 ps-3 hover:bg-spore-500"
           onClick={() => {
             document.getElementById(`export-${project.id}`)!.click();
+            toast(
+              <span>
+                Downloading {project.date} project file.{" "}
+                <a href="" target="_blank" rel="noreferrer" onClick={(e) => {
+                  e.preventDefault();
+                  revealItemInDir("/home/vena/Downloads/old-save-file.json");
+                }}>Show</a>
+              </span>
+            );
           }}
         >
           Export

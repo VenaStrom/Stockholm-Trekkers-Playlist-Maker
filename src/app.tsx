@@ -6,6 +6,7 @@ import { usePageContext } from "./components/page-context/use-page-context";
 import { PageRoute } from "./components/page-context/page.internal";
 import { setTheme } from "@tauri-apps/api/app";
 import { IconLightModeOutline } from "./components/icons";
+import { Toaster } from "./components/toast/toast";
 
 export default function App() {
   const [lightMode, setLightMode] = useState(() => {
@@ -98,5 +99,7 @@ export default function App() {
     </header>
 
     {route === PageRoute.Projects && <Projects />}
+
+    <Toaster />
   </>);
 }

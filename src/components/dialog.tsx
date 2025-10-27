@@ -45,7 +45,7 @@ export default function Dialog({
   return (
     // Modal background
     <div
-      className="z-50 transition-all absolute top-0 left-0 w-full h-full bg-black/50 flex justify-center items-center"
+      className="z-40 transition-all absolute top-0 left-0 w-full h-full bg-black/50 flex justify-center items-center"
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           setVisible(false);
