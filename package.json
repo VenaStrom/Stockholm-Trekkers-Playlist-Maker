@@ -12,7 +12,8 @@
     "build": "yarn download-assets && tsc --project ./tsconfig.node.json && vite build",
     "preview": "vite preview",
     "tauri": "tauri",
-    "download-assets": "node scripts/download-video-assets.ts"
+    "download-assets": "node scripts/download-video-assets.ts",
+    "rename-bundles": "node scripts/rename-bundles.ts"
   },
   "dependencies": {
     "@tauri-apps/api": "^2",
