@@ -5,7 +5,7 @@ import { IconCloseSmall } from "../icons.tsx";
 export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
-  const defaultTimeout = 4000;
+  const defaultTimeout = 5000;
 
   const toast = useCallback((content: React.ReactNode, timeout: number = defaultTimeout) => {
     const id = Math.random().toString(36).slice(2, 9);
@@ -48,9 +48,7 @@ export function Toaster() {
           className={`
             bg-abyss-800
             text-lg
-            [font-style:normal]
-            font-normal
-            rounded-lg
+            rounded-sm
             p-5
             flex flex-row justify-center items-center gap-x-3
             pointer-events-auto
@@ -58,7 +56,7 @@ export function Toaster() {
         >
           {t.content}
 
-          <button className="" onClick={() => removeToast(t.id)}>
+          <button className="€icon" onClick={() => removeToast(t.id)}>
             <IconCloseSmall className="size-8 scale-110 text" />
           </button>
         </div>

@@ -84,7 +84,7 @@ export default function App() {
 
       {/* Light mode toggle */}
       <button
-        className="h-full px-3 hover:text-command-300 €clear"
+        className="h-full px-3 €icon"
         onClick={() => setLightMode((prev) => !prev)}
         title="Toggle light/dark mode (Ctrl+L)"
       >

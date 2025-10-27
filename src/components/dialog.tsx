@@ -63,7 +63,7 @@ export default function Dialog({
 
           {/* X button */}
           <button
-            className="€clear hover:text-command-500"
+            className="€icon"
             onClick={() => setVisible(false)}
           >
             <IconCloseSmall className="inline size-8 scale-110" />
