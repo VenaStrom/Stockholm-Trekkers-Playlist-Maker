@@ -99,7 +99,7 @@ export default function ProjectCard({
           Export
           <span className="flex-1"></span>
           <IconFileExportOutline className="inline size-6" />
-          <a href="/old-save-file.json" download={true} target="_blank" rel="noreferrer" id={`export-${project.id}`} className="hidden"></a>
+          <a href="/old-save-file.json" download={true} id={`export-${project.id}`} className="hidden"></a>
         </button>
         <button
           className="pe-1.5 ps-3 hover:bg-red-alert-500"

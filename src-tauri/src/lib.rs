@@ -1,5 +1,6 @@
 #[tauri::command]
 fn close() {
+  println!("Closing application");
   std::process::exit(0);
 }
 
