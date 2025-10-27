@@ -8,8 +8,10 @@
   "description": "A playlist maker for the Stockholm Trekkers organization.",
   "license": "MIT",
   "scripts": {
-    "dev": "vite",
-    "build": "yarn download-assets && tsc --project ./tsconfig.node.json && vite build",
+    "dev": "yarn tauri dev",
+    "build": "yarn tauri build && yarn rename-bundles",
+    "js-dev": "vite",
+    "js-build": "yarn download-assets && tsc --project ./tsconfig.node.json && vite build",
     "preview": "vite preview",
     "tauri": "tauri",
     "download-assets": "node scripts/download-video-assets.ts",
