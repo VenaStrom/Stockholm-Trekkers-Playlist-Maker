@@ -29,3 +29,5 @@ vite.config.d.ts
 vite.config.js
 
 src-tauri/video-assets
+
+target
