@@ -6,10 +6,11 @@ import { usePageContext } from "./page-context/use-page-context";
 import { invoke } from "@tauri-apps/api/core";
 import { useToast } from "./toast/useToast";
 import { revealItemInDir } from "@tauri-apps/plugin-opener";
-import { appDataDir, downloadDir } from "@tauri-apps/api/path";
+import { appDataDir, downloadDir, tempDir } from "@tauri-apps/api/path";
 import { path } from "@tauri-apps/api";
 import { open } from "@tauri-apps/plugin-dialog";
-import { exists } from "@tauri-apps/plugin-fs";
+import { copyFile, exists } from "@tauri-apps/plugin-fs";
+import { DirName } from "../global";
 
 export default function ProjectCard({
   project,
@@ -22,7 +23,7 @@ export default function ProjectCard({
 
   const downloadSaveFile = async () => {
     const fileName = `${project.id}.json`;
-    const projectPath = await path.join(await appDataDir(), fileName);
+    const projectPath = await path.join(await appDataDir(), DirName.Projects, fileName);
 
     if (!exists(projectPath)) {
       toast(
@@ -41,13 +42,28 @@ export default function ProjectCard({
     });
     if (!downloadFolder) return;
 
+    // Copy file to tmp folder to rename to project_file_${project.date}.json
+    const tempPath = await path.join(await tempDir(), fileName)
+    await copyFile(projectPath, tempPath)
+      .catch((err: string) => {
+        toast(
+          <span>
+            Error copying file. Please try again.
+            <br />
+            {/* TODO - prettify this error message in some way */}
+            <span className="text-xs opacity-60 max-w-prose overflow-x-auto">{err}</span>
+          </span>
+        );
+        throw err;
+      });
+
     const anchor = document.createElement("a");
-    anchor.href = projectPath;
+    anchor.href = tempPath;
     anchor.download = fileName;
     document.body.appendChild(anchor);
     anchor.click();
     document.body.removeChild(anchor);
-    
+
     const destinationPath = await path.join(downloadFolder as string, fileName);
 
     toast(

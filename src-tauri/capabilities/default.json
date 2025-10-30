@@ -15,7 +15,10 @@
     "fs:allow-app-meta-recursive",
     "fs:allow-app-read-recursive",
     "fs:allow-app-write-recursive",
+    "fs:allow-temp-read",
+    "fs:allow-temp-write",
     "fs:allow-exists",
+    "fs:allow-copy-file",
     "dialog:default",
     "dialog:allow-open"
   ]

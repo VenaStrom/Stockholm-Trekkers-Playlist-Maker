@@ -11,9 +11,28 @@ async fn make_app_dir_folder(folder_name: String, app_dir: String) -> Result<(),
   // Create the application directory folder
   println!("Creating app data dir folder: {}", folder_name);
 
-  let full_path = std::path::Path::new(&app_dir).join(&folder_name).join(".target");
+  let full_path = std::path::Path::new(&app_dir)
+    .join(&folder_name)
+    .join(".target");
 
   create_dir_all(full_path).map_err(|e| format!("Failed to create directory: {}", e))?;
+
+  // Hide the folder on Windows
+  #[cfg(target_os = "windows")]
+  {
+    use std::fs;
+    use std::os::windows::fs::MetadataExt;
+    let metadata = fs::metadata(std::path::Path::new(&app_dir).join(&folder_name))
+      .map_err(|e| format!("Failed to get metadata: {}", e))?;
+    let mut permissions = metadata.permissions();
+    permissions.set_readonly(true);
+    fs::set_permissions(
+      std::path::Path::new(&app_dir).join(&folder_name),
+      permissions,
+    )
+    .map_err(|e| format!("Failed to set permissions: {}", e))
+  }
+  // On linux and macOS, prefixing the folder name with a dot should suffice to hide it
   Ok(())
 }
 

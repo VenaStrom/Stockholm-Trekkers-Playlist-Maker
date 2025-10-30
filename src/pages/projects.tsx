@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { usePageContext } from "../components/page-context/use-page-context";
 import ProjectCard from "../components/project-card";
 import { demoProject, EmptyProject } from "../project-types";
-import { IconAddBoxOutline, IconFolderOutline } from "../components/icons";
+import { IconAddBoxOutline, IconEditOutline, IconFolderOutline } from "../components/icons";
 import { path } from "@tauri-apps/api";
 import { appDataDir } from "@tauri-apps/api/path";
 import * as fs from "@tauri-apps/plugin-fs";
@@ -24,21 +24,25 @@ export default function Projects() {
     await invoke("make_app_dir_folder", { folderName: DirName.Projects, appDir: await appDataDir() });
 
     await revealItemInDir(folderPath);
-  }
+  };
 
   const makeNewProject = async () => {
     // Make folder
     await invoke("make_app_dir_folder", { folderName: DirName.Projects, appDir: await appDataDir() });
 
+    const fileName = `${Date.now()}.json`;
+    const filePath = await path.join(await appDataDir(), DirName.Projects, fileName);
+
     // Make file
-    const filePath = await path.join(await appDataDir(), DirName.Projects, "/new-project.json");
     await fs.create(filePath);
 
     // Write file
     const content = JSON.stringify({ ...EmptyProject }, null, 2);
     await fs.writeFile(filePath, new TextEncoder().encode(content));
 
-    toast(<>Made new project. <a href="" target="_blank" rel="noreferrer" onClick={(e) => { e.preventDefault(); }}>Edit</a></>)
+    toast(<>
+      Made new project. <a href="" target="_blank" rel="noreferrer" onClick={(e) => { e.preventDefault(); }}>Edit</a>
+    </>);
 
     console.log("Wrote, ", filePath);
   };
