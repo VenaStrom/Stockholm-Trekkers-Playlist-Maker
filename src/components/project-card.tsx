@@ -1,11 +1,15 @@
 import { useState } from "react";
-import { Project } from "../types";
+import { Project } from "../project-types";
 import { IconDeleteOutline, IconEditOutline, IconFileExportOutline } from "./icons";
 import Dialog from "./dialog";
 import { usePageContext } from "./page-context/use-page-context";
 import { invoke } from "@tauri-apps/api/core";
 import { useToast } from "./toast/useToast";
 import { revealItemInDir } from "@tauri-apps/plugin-opener";
+import { appDataDir, downloadDir } from "@tauri-apps/api/path";
+import { path } from "@tauri-apps/api";
+import { open } from "@tauri-apps/plugin-dialog";
+import { exists } from "@tauri-apps/plugin-fs";
 
 export default function ProjectCard({
   project,
@@ -15,6 +19,48 @@ export default function ProjectCard({
   const { setProjects } = usePageContext();
   const { toast } = useToast();
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
+
+  const downloadSaveFile = async () => {
+    const fileName = `${project.id}.json`;
+    const projectPath = await path.join(await appDataDir(), fileName);
+
+    if (!exists(projectPath)) {
+      toast(
+        <span>
+          Error: Project file not found.
+        </span>
+      );
+      return;
+    }
+
+    const downloadFolder = await open({
+      defaultPath: await downloadDir(),
+      directory: true,
+      title: "Select download location",
+      canCreateDirectories: true,
+    });
+    if (!downloadFolder) return;
+
+    const anchor = document.createElement("a");
+    anchor.href = projectPath;
+    anchor.download = fileName;
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+    
+    const destinationPath = await path.join(downloadFolder as string, fileName);
+
+    toast(
+      <span>
+        Downloading {project.date} project file.{" "}
+        <a href="" target="_blank" rel="noreferrer" onClick={(e) => {
+          e.preventDefault();
+
+          revealItemInDir(destinationPath);
+        }}>Show</a>
+      </span>
+    );
+  };
 
   return (<>
     {/* Delete dialog */}
@@ -95,23 +141,11 @@ export default function ProjectCard({
         </button>
         <button
           className="pe-1.5 ps-3 hover:bg-spore-500"
-          onClick={() => {
-            document.getElementById(`export-${project.id}`)!.click();
-            toast(
-              <span>
-                Downloading {project.date} project file.{" "}
-                <a href="" target="_blank" rel="noreferrer" onClick={(e) => {
-                  e.preventDefault();
-                  revealItemInDir("/home/vena/Downloads/old-save-file.json");
-                }}>Show</a>
-              </span>
-            );
-          }}
+          onClick={downloadSaveFile}
         >
           Export
           <span className="flex-1"></span>
           <IconFileExportOutline className="inline size-6" />
-          <a href="/old-save-file.json" download={true} id={`export-${project.id}`} className="hidden"></a>
         </button>
         <button
           className="pe-1.5 ps-3 hover:bg-red-alert-500"

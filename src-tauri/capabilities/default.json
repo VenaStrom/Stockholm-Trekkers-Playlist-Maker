@@ -10,6 +10,13 @@
     "core:app:allow-set-app-theme",
     "opener:default",
     "opener:allow-open-path",
-    "opener:allow-reveal-item-in-dir"
+    "opener:allow-reveal-item-in-dir",
+    "fs:default",
+    "fs:allow-app-meta-recursive",
+    "fs:allow-app-read-recursive",
+    "fs:allow-app-write-recursive",
+    "fs:allow-exists",
+    "dialog:default",
+    "dialog:allow-open"
   ]
 }
