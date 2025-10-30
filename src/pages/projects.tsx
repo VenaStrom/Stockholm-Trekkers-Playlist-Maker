@@ -9,6 +9,7 @@ import * as fs from "@tauri-apps/plugin-fs";
 import { useToast } from "../components/toast/useToast";
 import { DirName } from "../global";
 import { invoke } from "@tauri-apps/api/core";
+import { revealItemInDir } from "@tauri-apps/plugin-opener";
 
 export default function Projects() {
   const { toast } = useToast();
@@ -16,6 +17,14 @@ export default function Projects() {
 
   useEffect(() => setHeaderText("Projects"), [setHeaderText]);
   useEffect(() => setProjects([demoProject, demoProject]), [setProjects]);
+
+  const openProjectsFolder = async () => {
+    const folderPath = await path.join(await appDataDir(), DirName.Projects, ".target");
+
+    await invoke("make_app_dir_folder", { folderName: DirName.Projects, appDir: await appDataDir() });
+
+    await revealItemInDir(folderPath);
+  }
 
   const makeNewProject = async () => {
     // Make folder
@@ -29,7 +38,7 @@ export default function Projects() {
     const content = JSON.stringify({ ...EmptyProject }, null, 2);
     await fs.writeFile(filePath, new TextEncoder().encode(content));
 
-    toast(<>Made new project. <a href="" target="_blank" rel="noreferrer">Edit</a></>)
+    toast(<>Made new project. <a href="" target="_blank" rel="noreferrer" onClick={(e) => { e.preventDefault(); }}>Edit</a></>)
 
     console.log("Wrote, ", filePath);
   };
@@ -40,7 +49,7 @@ export default function Projects() {
 
       <ul className="w-11/12 md:w-7/12 flex flex-col gap-y-4 h-full overflow-y-auto pe-4 pt-1.5">
         <li className="w-full flex flex-row justify-end gap-x-3">
-          <button className="hover:bg-spore-500">
+          <button className="hover:bg-spore-500" onClick={openProjectsFolder}>
             <IconFolderOutline className="inline size-6 me-1" />
             Show folder
           </button>
