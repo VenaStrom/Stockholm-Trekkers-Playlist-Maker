@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { usePageContext } from "../components/page-context/use-page-context";
 import ProjectCard from "../components/project-card";
-import { demoProject, EmptyProject, Project } from "../project-types";
-import { IconAddBoxOutline, IconEditOutline, IconFolderOutline } from "../components/icons";
+import { EmptyProject, Project } from "../project-types";
+import { IconAddBoxOutline, IconFolderOutline } from "../components/icons";
 import { path } from "@tauri-apps/api";
 import { appDataDir } from "@tauri-apps/api/path";
 import * as fs from "@tauri-apps/plugin-fs";
