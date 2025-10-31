@@ -10,12 +10,15 @@ import { useToast } from "../components/toast/useToast";
 import { DirName } from "../global";
 import { invoke } from "@tauri-apps/api/core";
 import { revealItemInDir } from "@tauri-apps/plugin-opener";
+import { PageRoute } from "../components/page-context/page.internal";
 
 export default function Projects() {
   const { toast } = useToast();
-  const { setHeaderText, projects, setProjects, setProjectId } = usePageContext();
+  const { setHeaderText, projects, setProjects, setProjectId, setRoute } = usePageContext();
 
   useEffect(() => setHeaderText("Projects"), [setHeaderText]);
+
+  // Load projects on mount
   useEffect(() => {
     const loadProjects = async () => {
       const projectsDir = await path.join(await appDataDir(), DirName.Projects);
@@ -46,7 +49,7 @@ export default function Projects() {
     loadProjects();
   }, [setProjects]);
 
-  const openProjectsFolder = async () => {
+  const showProjectsFolder = async () => {
     const folderPath = await path.join(await appDataDir(), DirName.Projects, ".target");
 
     await invoke("make_app_dir_folder", { folderName: DirName.Projects, appDir: await appDataDir() });
@@ -78,7 +81,7 @@ export default function Projects() {
     await fs.writeFile(filePath, new TextEncoder().encode(content));
 
     toast(<>
-      Made new project. <a href="" target="_blank" rel="noreferrer" onClick={(e) => { e.preventDefault(); setProjectId(newProject.id); }}>Edit</a>
+      Made new project. <a href="" target="_blank" rel="noreferrer" onClick={(e) => { e.preventDefault(); setRoute(PageRoute.Editor); setProjectId(newProject.id); }}>Edit</a>
     </>);
   };
 
@@ -89,7 +92,7 @@ export default function Projects() {
 
         <ul className="w-11/12 md:w-7/12 flex flex-col gap-y-4 h-full overflow-y-auto pe-4 pt-1.5">
           <li className="w-full flex flex-row justify-end gap-x-3">
-            <button className="hover:bg-spore-500" onClick={openProjectsFolder}>
+            <button className="hover:bg-spore-500" onClick={showProjectsFolder}>
               <IconFolderOutline className="inline size-6 me-1" />
               Show folder
             </button>

@@ -11,13 +11,14 @@ import { path } from "@tauri-apps/api";
 import { open } from "@tauri-apps/plugin-dialog";
 import { copyFile, exists } from "@tauri-apps/plugin-fs";
 import { DirName } from "../global";
+import { PageRoute } from "./page-context/page.internal";
 
 export default function ProjectCard({
   project,
 }: {
   project: Project;
 }) {
-  const { setProjects, setProjectId } = usePageContext();
+  const { setProjects, setProjectId, setRoute } = usePageContext();
   const { toast } = useToast();
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
 
@@ -160,7 +161,7 @@ export default function ProjectCard({
 
       {/* Actions */}
       <div className="flex flex-col justify-between w-24">
-        <button className="pe-1.5 ps-3 hover:bg-science-500" onClick={() => setProjectId(project.id)}>
+        <button className="pe-1.5 ps-3 hover:bg-science-500" onClick={() => { setRoute(PageRoute.Editor); setProjectId(project.id); }}>
           Edit
           <span className="flex-1"></span>
           <IconEditOutline className="inline size-6" />
