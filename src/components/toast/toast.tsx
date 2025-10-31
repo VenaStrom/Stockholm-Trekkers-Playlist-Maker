@@ -41,9 +41,9 @@ export function Toaster() {
   const { toasts, removeToast } = ctx;
 
   return (
-    <div className="z-50 flex flex-col gap-y-2 absolute w-full justify-center items-center bottom-2 pointer-events-none transition-all">
+    <ul className="z-50 flex flex-col gap-y-2 absolute w-full justify-center items-center bottom-2 pointer-events-none transition-all">
       {toasts.map((t) => (
-        <div
+        <li
           key={t.id}
           className={`
             bg-abyss-800
@@ -59,8 +59,8 @@ export function Toaster() {
           <button className="€icon" onClick={() => removeToast(t.id)}>
             <IconCloseSmall className="size-8 scale-110 text" />
           </button>
-        </div>
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }

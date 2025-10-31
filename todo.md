@@ -1,2 +1,2 @@
-- Implement project deletion on rust side
-- Give user feedback when exporting a project (currently an a tag with download)
+- Give user feedback when exporting a project save file (currently an a tag with download)
+- Make toasts stay when hovering

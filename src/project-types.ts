@@ -28,8 +28,8 @@ export type Project = {
   id: string;
   date: string;
   description: string | null;
-  dateCreated: number; // timestamp
-  dateModified: number | null; // timestamp
+  dateCreated: number; // unix timestamp
+  dateModified: number | null; // unix timestamp
   optionsRev: number;
   blocks: Block[];
 };
@@ -37,8 +37,8 @@ export const EmptyProject: Project = {
   id: "",
   date: "",
   description: null,
-  dateModified: 0,
   dateCreated: 0,
+  dateModified: null,
   optionsRev: 0,
   blocks: [],
 };

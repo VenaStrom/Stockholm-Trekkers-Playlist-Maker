@@ -39,6 +39,16 @@ async fn make_app_dir_folder(folder_name: String, app_dir: String) -> Result<(),
 #[tauri::command]
 async fn delete_project(project_id: String) -> Result<(), String> {
   println!("Deleting project with ID: {}", project_id);
+  let project_path = std::path::Path::new("projects").join(&project_id);
+  if project_path.exists() {
+    std::fs::remove_dir_all(&project_path)
+      .map_err(|e| format!("Failed to delete project directory: {}", e))?;
+  } else {
+    return Err(format!(
+      "Project directory does not exist: {}",
+      project_path.display()
+    ));
+  }
   Ok(())
 }
 

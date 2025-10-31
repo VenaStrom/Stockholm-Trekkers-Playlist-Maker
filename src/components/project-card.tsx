@@ -22,8 +22,10 @@ export default function ProjectCard({
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
 
   const downloadSaveFile = async () => {
-    const fileName = `${project.id}.json`;
-    const projectPath = await path.join(await appDataDir(), DirName.Projects, fileName);
+    const savedName = `${project.id}.json`;
+    const newName = `project_file_${project.date || project.id}.json`;
+
+    const projectPath = await path.join(await appDataDir(), DirName.Projects, savedName);
 
     if (!exists(projectPath)) {
       toast(
@@ -42,8 +44,16 @@ export default function ProjectCard({
     });
     if (!downloadFolder) return;
 
-    // Copy file to tmp folder to rename to project_file_${project.date}.json
-    const tempPath = await path.join(await tempDir(), fileName)
+    if (!project.date) {
+      toast(
+        <span>
+          The project is missing a date so the exported file will use the project ID instead.
+        </span>
+      );
+    }
+
+    // Copy file to tmp folder before downloading to allow for renaming
+    const tempPath = await path.join(await tempDir(), newName);
     await copyFile(projectPath, tempPath)
       .catch((err: string) => {
         toast(
@@ -59,12 +69,12 @@ export default function ProjectCard({
 
     const anchor = document.createElement("a");
     anchor.href = tempPath;
-    anchor.download = fileName;
+    anchor.download = newName;
     document.body.appendChild(anchor);
     anchor.click();
     document.body.removeChild(anchor);
 
-    const destinationPath = await path.join(downloadFolder as string, fileName);
+    const destinationPath = await path.join(downloadFolder as string, newName);
 
     toast(
       <span>
