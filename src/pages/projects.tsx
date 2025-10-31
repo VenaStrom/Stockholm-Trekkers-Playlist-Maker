@@ -13,7 +13,7 @@ import { revealItemInDir } from "@tauri-apps/plugin-opener";
 
 export default function Projects() {
   const { toast } = useToast();
-  const { setHeaderText, projects, setProjects } = usePageContext();
+  const { setHeaderText, projects, setProjects, setProjectId } = usePageContext();
 
   useEffect(() => setHeaderText("Projects"), [setHeaderText]);
   useEffect(() => {
@@ -78,10 +78,8 @@ export default function Projects() {
     await fs.writeFile(filePath, new TextEncoder().encode(content));
 
     toast(<>
-      Made new project. <a href="" target="_blank" rel="noreferrer" onClick={(e) => { e.preventDefault(); }}>Edit</a>
+      Made new project. <a href="" target="_blank" rel="noreferrer" onClick={(e) => { e.preventDefault(); setProjectId(newProject.id); }}>Edit</a>
     </>);
-
-    console.log("Wrote, ", filePath);
   };
 
   return (
