@@ -133,15 +133,19 @@ export default function ProjectCard({
     />
 
     <li className="w-full min-h-36 bg-abyss-800 rounded-sm p-4 ps-5 flex flex-row gap-x-4 *:h-full">
+      {/* Date and description */}
       <div className="">
-        <p className="text-xl">{project.date || <span className="text-flare-700">[ no date set ]</span>}</p>
-        <p>
-          {project.description || <span className="text-flare-700">No description set</span>}
+        <p className="text-xl">{project.date.trim() ? project.date : <span className="text-flare-700">[ no date set ]</span>}</p>
+        <p>{project.description?.trim() ?
+          project.description
+          :
+          <span className="text-flare-700">No description set</span>}
         </p>
       </div>
 
       <span className="flex-1"></span>
 
+      {/* Stats */}
       <ul className="flex flex-col justify-start items-end">
         <li>
           Created: {new Date(project.dateCreated).toLocaleDateString("en-SE")} {new Date(project.dateCreated).toLocaleTimeString("en-SE")}

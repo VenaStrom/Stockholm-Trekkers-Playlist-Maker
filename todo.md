@@ -4,4 +4,4 @@
   - Is this even desirable?
 - Add date input to date input instead of just text input
 - Toggle auto save in menu bar (move light mode as well?)
-- 
+- Rework project card to be a button to edit project

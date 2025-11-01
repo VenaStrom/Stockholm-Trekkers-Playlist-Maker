@@ -45,3 +45,8 @@ export function Spinner3DotsScaleMiddle(props: SVGProps<SVGSVGElement>) {
     <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" {...props}>{/* Icon from SVG Spinners by Utkarsh Verma - https://github.com/n3r4zzurr0/svg-spinners/blob/main/LICENSE */}<circle cx="4" cy="12" r="1.5" fill="currentColor"><animate attributeName="r" dur="0.75s" repeatCount="indefinite" values="1.5;3;1.5" /></circle><circle cx="12" cy="12" r="3" fill="currentColor"><animate attributeName="r" dur="0.75s" repeatCount="indefinite" values="3;1.5;3" /></circle><circle cx="20" cy="12" r="1.5" fill="currentColor"><animate attributeName="r" dur="0.75s" repeatCount="indefinite" values="1.5;3;1.5" /></circle></svg>
   )
 }
+export function IconArrowBack2Outline(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" {...props}>{/* Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE */}<path fill="currentColor" d="M16 19L5 12l11-7zm-2-3.65v-6.7L8.75 12z" /></svg>
+  )
+}

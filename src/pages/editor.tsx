@@ -6,7 +6,7 @@ import { appDataDir } from "@tauri-apps/api/path";
 import { DirName } from "../global";
 import * as fs from "@tauri-apps/plugin-fs";
 import { Project } from "../project-types";
-import { IconEditOutline, Spinner3DotsScaleMiddle } from "../components/icons";
+import { IconArrowBack2Outline, IconEditOutline, Spinner3DotsScaleMiddle } from "../components/icons";
 import { useDebounce } from "use-debounce";
 
 export default function Editor() {
@@ -72,8 +72,14 @@ export default function Editor() {
   };
 
   return (
-    <main className="flex flex-row gap-x-4 justify-center items-start">
-      <aside className="h-full min-w-1/4 flex flex-col gap-y-4 pt-4 px-8">
+    <main className="flex flex-row gap-x-4 justify-center items-start pt-4">
+      <aside className="h-full min-w-1/4 flex flex-col gap-y-4 px-8">
+        {/* Go back */}
+        <button className="w-fit pe-3 ps-1.5 hover:bg-science-500" onClick={() => setRoute(PageRoute.Projects)}>
+          <IconArrowBack2Outline className="inline size-6 me-1" />
+          Back to Projects
+        </button>
+
         {/* Date */}
         <div className="flex flex-row justify-center items-center">
           <label className="w-fit flex flex-col">
@@ -109,7 +115,7 @@ export default function Editor() {
         </label>
 
         {/* DEBUG TODO - remove */}
-        <pre className="opacity-50 text-xs mt-15">
+        <pre className="opacity-50 text-xs mt-10">
           {JSON.stringify(debouncedProjectData[0]) === JSON.stringify(project) ? "Saved" : "Saving..."}
           <br />
           {JSON.stringify(project, null, 2)}
