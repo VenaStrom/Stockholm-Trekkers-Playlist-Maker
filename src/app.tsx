@@ -21,7 +21,7 @@ export default function App() {
     return window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
   });
 
-  const { headerText, route } = usePageContext();
+  const { headerText, route, setRoute, projectId } = usePageContext();
 
   // Set up keyboard shortcuts
   useEffect(() => {
@@ -41,11 +41,32 @@ export default function App() {
       }
     };
 
+    // Back from editor to projects
+    const backListener = (e: KeyboardEvent) => {
+      // Back to projects
+      if (e.altKey && e.key === "ArrowLeft") {
+        e.preventDefault();
+        if (route === PageRoute.Editor) {
+          setRoute(PageRoute.Projects);
+        }
+      }
+
+      // Forward to editor if project id is set
+      if (e.altKey && e.key === "ArrowRight") {
+        e.preventDefault();
+        if (route === PageRoute.Projects && projectId) {
+          setRoute(PageRoute.Editor);
+        }
+      }
+    };
+
     window.addEventListener("keydown", closeListener);
     window.addEventListener("keydown", lightModeListener);
+    window.addEventListener("keydown", backListener);
     return () => {
       window.removeEventListener("keydown", closeListener);
       window.removeEventListener("keydown", lightModeListener);
+      window.removeEventListener("keydown", backListener);
     };
   });
 

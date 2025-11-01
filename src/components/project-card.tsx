@@ -132,12 +132,12 @@ export default function ProjectCard({
       ]}
     />
 
-    <li className="w-full min-h-36 bg-abyss-800 rounded-sm p-4 flex flex-row gap-x-4 *:h-full">
+    <li className="w-full min-h-36 bg-abyss-800 rounded-sm p-4 ps-5 flex flex-row gap-x-4 *:h-full">
       <div className="">
-        <p className="text-xl">{project.date}</p>
-        {project.description && <p>
-          {project.description}
-        </p>}
+        <p className="text-xl">{project.date || <span className="text-flare-700">[ no date set ]</span>}</p>
+        <p>
+          {project.description || <span className="text-flare-700">No description set</span>}
+        </p>
       </div>
 
       <span className="flex-1"></span>

@@ -2,6 +2,7 @@
 
 :root {
   --color-flare-500: #f2f2f2;
+  --color-flare-700: #b5b5b5;
   --color-abyss-200: #808080;
   --color-abyss-500: #1f1f1f;
   --color-abyss-800: #181818;
@@ -14,6 +15,7 @@
 @custom-variant light (&:is(.light *));
 .light {
   --color-flare-500: #1f1f1f;
+  --color-flare-700: #4a4a4a;
   --color-abyss-200: #d4d4d4;
   --color-abyss-500: #f0f0f0;
   --color-abyss-800: #fafafa;
@@ -26,6 +28,7 @@
 
 @theme {
   --color-flare-500: var(--color-flare-500);
+  --color-flare-700: var(--color-flare-700);
   --color-abyss-200: var(--color-abyss-200);
   --color-abyss-500: var(--color-abyss-500);
   --color-abyss-800: var(--color-abyss-800);
@@ -76,5 +79,17 @@
 
   img {
     @apply select-none pointer-events-none;
+  }
+
+  input[type="text"] {
+    @apply bg-abyss-800 text-flare-500 rounded-sm px-2 py-1;
+  }
+
+  label:has(&>input[type="text"]):not(.€no-style) {
+    @apply bg-abyss-800 text-flare-500 rounded-sm px-2 py-1;
+  }
+
+  textarea {
+    @apply bg-abyss-800 text-flare-500 rounded-sm px-2 py-1;
   }
 }

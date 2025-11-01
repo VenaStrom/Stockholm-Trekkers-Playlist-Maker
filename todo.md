@@ -2,3 +2,4 @@
 - Make toasts stay when hovering
 - When no projects exist, create and open a new project automatically without landing on the project
   - Is this even desirable?
+- Add date input to date input instead of just text input
