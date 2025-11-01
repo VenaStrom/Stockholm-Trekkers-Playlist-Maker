@@ -85,6 +85,10 @@ export default function Projects() {
     </>);
   };
 
+  const sortByDateCreated = (a: Project, b: Project) => {
+    return b.dateCreated - a.dateCreated;
+  };
+
   return (
     <main className="w-full flex flex-col items-center overflow-y-auto">
       {projects.length ? <>
@@ -102,7 +106,7 @@ export default function Projects() {
             </button>
           </li>
 
-          {projects.length ? projects.map((project, index) => (
+          {projects.length ? projects.sort(sortByDateCreated).map((project, index) => (
             <ProjectCard key={index} project={project} />
           ))
             :

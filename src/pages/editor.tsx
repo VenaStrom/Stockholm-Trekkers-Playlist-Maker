@@ -73,9 +73,8 @@ export default function Editor() {
 
   return (
     <main className="flex flex-row gap-x-4 justify-center items-start">
-      <pre className="absolute pointer-events-none top-[25%] left-50% opacity-50 text-xs">{JSON.stringify(project, null, 2)}</pre>
-
       <aside className="h-full min-w-1/4 flex flex-col gap-y-4 pt-4 px-8">
+        {/* Date */}
         <div className="flex flex-row justify-center items-center">
           <label className="w-fit flex flex-col">
             Date
@@ -87,7 +86,7 @@ export default function Editor() {
                   onChange={onDateChange}
                   value={project.date}
                   name="date"
-                  className="text-center text-xl px-0"
+                  className="text-center text-xl"
                   type="text"
                   placeholder="e.g. 2025-11-01"
                 />
@@ -97,6 +96,7 @@ export default function Editor() {
           </label>
         </div>
 
+        {/* Description */}
         <label className="€no-style w-full flex flex-col">
           Description
           {!project ?
@@ -107,10 +107,20 @@ export default function Editor() {
             <textarea onChange={onDescriptionChange} value={project.description || ""} placeholder="Optional description of project."></textarea>
           }
         </label>
+
+        {/* DEBUG TODO - remove */}
+        <pre className="opacity-50 text-xs mt-15">
+          {JSON.stringify(debouncedProjectData[0]) === JSON.stringify(project) ? "Saved" : "Saving..."}
+          <br />
+          {JSON.stringify(project, null, 2)}
+        </pre>
       </aside>
 
       <section className="h-full flex-1">
-        Main
+        Blocks
+        <ul>
+
+        </ul>
       </section>
     </main>
   );

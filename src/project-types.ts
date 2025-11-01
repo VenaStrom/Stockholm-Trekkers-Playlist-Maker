@@ -21,7 +21,10 @@ export type Block = {
 export const EmptyBlock: Block = {
   id: "",
   options: {},
-  episodes: [],
+  episodes: [
+    { ...EmptyEpisode },
+    { ...EmptyEpisode },
+  ],
 };
 
 export type Project = {
@@ -40,7 +43,9 @@ export const EmptyProject: Project = {
   dateCreated: 0,
   dateModified: null,
   optionsRev: 0,
-  blocks: [],
+  blocks: [
+    { ...EmptyBlock },
+  ],
 };
 
 

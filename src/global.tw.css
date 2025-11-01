@@ -85,8 +85,15 @@
     @apply bg-abyss-800 text-flare-500 rounded-sm px-2 py-1;
   }
 
-  label:has(&>input[type="text"]):not(.€no-style) {
+  label {
+    @apply cursor-pointer;
+  }
+
+  label:has(& > input[type="text"]):not(.€no-style) {
     @apply bg-abyss-800 text-flare-500 rounded-sm px-2 py-1;
+    & > input[type="text"] {
+      @apply px-0;
+    }
   }
 
   textarea {
