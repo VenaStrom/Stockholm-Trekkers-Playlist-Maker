@@ -52,29 +52,39 @@ export default function Projects() {
   const showProjectsFolder = async () => {
     const folderPath = await path.join(await appDataDir(), DirName.Projects, ".target");
 
-    await invoke("make_app_dir_folder", { folderName: DirName.Projects, appDir: await appDataDir() });
+    if (!await fs.exists(folderPath)) {
+      await fs.mkdir(folderPath, { recursive: true });
+      console.info("Created projects folder because it did not exist. Path:", folderPath);
+      return;
+    }
 
     await revealItemInDir(folderPath);
   };
 
   const makeNewProject = async () => {
-    // Make folder
-    await invoke("make_app_dir_folder", { folderName: DirName.Projects, appDir: await appDataDir() });
-
-    const createdTimestamp = Date.now();
-    const fileName = `${createdTimestamp}.json`;
-    const filePath = await path.join(await appDataDir(), DirName.Projects, fileName);
-
-    // Make file
-    await fs.create(filePath);
-
-    // Make project object
     const newProject = getEmptyProject();
-    const content = JSON.stringify(newProject, null, 2);
+    const projectFolderPath = await path.join(await appDataDir(), DirName.Projects, newProject.id);
+    const saveFilePath = await path.join(projectFolderPath, "project.json");
+
+    // Add to state TODO move this after successful save
     setProjects((prev) => [...prev, newProject]);
 
+    // If projects folder doesn't exist, make it
+    if (!await fs.exists(projectFolderPath)) {
+      await fs.mkdir(projectFolderPath, { recursive: true });
+    }
+
+    // Make file
+    await fs.create(saveFilePath);
+
     // Write file
-    await fs.writeFile(filePath, new TextEncoder().encode(content));
+    const content = JSON.stringify(newProject, null, 2);
+    await fs.writeFile(saveFilePath, new TextEncoder().encode(content))
+      .catch((e) => {
+        console.error("Failed to write new project file:", e);
+        toast("Failed to create new project file. Please try again.");
+        return;
+      });
 
     toast(<>
       Made new project. <a href="" target="_blank" rel="noreferrer" onClick={(e) => { e.preventDefault(); setRoute(PageRoute.Editor); setProjectId(newProject.id); }}>Edit</a>

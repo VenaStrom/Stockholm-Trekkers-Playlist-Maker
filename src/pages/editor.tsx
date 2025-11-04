@@ -46,18 +46,18 @@ export default function Editor() {
 
   // Save project data to file when changed
   const debouncedProjectData = useDebounce(volatileProject, 500);
-  const writeProjectToFile = async () => {
-    if (!debouncedProjectData[0]) return;
+  const writeProjectToFile = async (project: Project) => {
     const projectsDir = await path.join(await appDataDir(), DirName.Projects);
     const filePath = await path.join(projectsDir, `${projectId}.json`);
 
     const encoder = new TextEncoder();
-    const fileContent = encoder.encode(JSON.stringify(debouncedProjectData[0], null, 2));
+    const fileContent = encoder.encode(JSON.stringify(project, null, 2));
 
     await fs.writeFile(filePath, fileContent);
   };
   useEffect(() => {
-    writeProjectToFile();
+    if (!debouncedProjectData[0]) return;
+    writeProjectToFile(debouncedProjectData[0]);
   }, [debouncedProjectData]);
 
   const onDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,7 +76,7 @@ export default function Editor() {
         {/* Go back */}
         <button className="w-fit pe-3 ps-1.5 hover:bg-science-500 sticky top-5 shadow-sm"
           onClick={async () => {
-            await writeProjectToFile(); // Save before going back
+            if (volatileProject) await writeProjectToFile(volatileProject); // Save before going back
             setRoute(PageRoute.Projects);
           }}
         >

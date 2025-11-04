@@ -108,10 +108,11 @@ export default function ProjectCard({
         </span>
       </p>}
       buttons={[
-        <button key={"cancel-button"} data-focus="true" onClick={() => setDeleteDialogVisible(false)} >
+        <button key={"cancel-button"} onClick={() => setDeleteDialogVisible(false)} >
           Cancel
         </button>,
         <button
+          data-focus="true"
           key={"delete-button"}
           className="gap-x-1 pe-1 hover:bg-red-alert-500"
           onClick={() => {
