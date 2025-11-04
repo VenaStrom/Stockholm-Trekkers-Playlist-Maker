@@ -8,14 +8,32 @@ import * as fs from "@tauri-apps/plugin-fs";
 import { Project } from "../project-types";
 import { IconArrowBack2Outline, IconEditOutline, Spinner3DotsScaleMiddle } from "../components/icons";
 import { useDebounce } from "use-debounce";
+import BlockLi from "../components/editor/block";
 
 export default function Editor() {
   const { setHeaderText, projectId, setRoute } = usePageContext();
-  const [project, setProject] = useState<Project | null>(null);
+  const [volatileProject, setVolatileProject] = useState<Project | null>(null);
 
   useEffect(() => setHeaderText("Editor"), [setHeaderText]);
 
-  // Read project data from file
+  const readProjectData = async () => {
+    const projectsDir = await path.join(await appDataDir(), DirName.Projects);
+    const filePath = await path.join(projectsDir, `${projectId}.json`);
+
+    if (!await fs.exists(filePath)) {
+      console.error("Project file does not exist:", filePath);
+      setRoute(PageRoute.Projects);
+      return;
+    }
+
+    const fileContent = await fs.readFile(filePath);
+    const decoder = new TextDecoder("utf-8");
+    const decodedContent = decoder.decode(fileContent);
+    const project = JSON.parse(decodedContent);
+
+    setVolatileProject(project);
+  };
+  // Read project data from file on mount
   useEffect(() => {
     // Redirect if no project id is defined
     if (!projectId) {
@@ -23,59 +41,45 @@ export default function Editor() {
       setRoute(PageRoute.Projects);
     }
 
-    const fetchProjectData = async () => {
-      const projectsDir = await path.join(await appDataDir(), DirName.Projects);
-      const filePath = await path.join(projectsDir, `${projectId}.json`);
-
-      if (!await fs.exists(filePath)) {
-        console.error("Project file does not exist:", filePath);
-        setRoute(PageRoute.Projects);
-        return;
-      }
-
-      const fileContent = await fs.readFile(filePath);
-      const decoder = new TextDecoder("utf-8");
-      const decodedContent = decoder.decode(fileContent);
-      const project = JSON.parse(decodedContent);
-
-      setProject(project);
-    };
-
-    fetchProjectData();
+    readProjectData();
   }, []);
 
   // Save project data to file when changed
-  const debouncedProjectData = useDebounce(project, 500);
+  const debouncedProjectData = useDebounce(volatileProject, 500);
+  const writeProjectToFile = async () => {
+    if (!debouncedProjectData[0]) return;
+    const projectsDir = await path.join(await appDataDir(), DirName.Projects);
+    const filePath = await path.join(projectsDir, `${projectId}.json`);
+
+    const encoder = new TextEncoder();
+    const fileContent = encoder.encode(JSON.stringify(debouncedProjectData[0], null, 2));
+
+    await fs.writeFile(filePath, fileContent);
+  };
   useEffect(() => {
-    const saveProjectData = async () => {
-      if (!debouncedProjectData[0]) return;
-      const projectsDir = await path.join(await appDataDir(), DirName.Projects);
-      const filePath = await path.join(projectsDir, `${projectId}.json`);
-
-      const encoder = new TextEncoder();
-      const fileContent = encoder.encode(JSON.stringify(debouncedProjectData[0], null, 2));
-
-      await fs.writeFile(filePath, fileContent);
-    };
-
-    saveProjectData();
+    writeProjectToFile();
   }, [debouncedProjectData]);
 
   const onDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDate = e.target.value;
-    setProject(prev => prev ? { ...prev, date: newDate } : prev);
+    setVolatileProject(prev => prev ? { ...prev, date: newDate } : prev);
   };
 
   const onDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newDescription = e.target.value;
-    setProject(prev => prev ? { ...prev, description: newDescription } : prev);
+    setVolatileProject(prev => prev ? { ...prev, description: newDescription } : prev);
   };
 
   return (
-    <main className="flex flex-row gap-x-4 justify-center items-start pt-4">
-      <aside className="h-full min-w-1/4 flex flex-col gap-y-4 px-8">
+    <main className="flex flex-col lg:flex-row gap-x-8 gap-y-12 justify-center items-start pt-4 px-12">
+      <aside className="min-w-1/4 not-lg:w-full flex flex-col gap-y-4">
         {/* Go back */}
-        <button className="w-fit pe-3 ps-1.5 hover:bg-science-500" onClick={() => setRoute(PageRoute.Projects)}>
+        <button className="w-fit pe-3 ps-1.5 hover:bg-science-500 sticky top-5 shadow-sm"
+          onClick={async () => {
+            await writeProjectToFile(); // Save before going back
+            setRoute(PageRoute.Projects);
+          }}
+        >
           <IconArrowBack2Outline className="inline size-6 me-1" />
           Back to Projects
         </button>
@@ -85,12 +89,12 @@ export default function Editor() {
           <label className="w-fit flex flex-col">
             Date
             <span className="bg-abyss-800 rounded-sm pe-2">
-              {!project ?
+              {!volatileProject ?
                 <Spinner3DotsScaleMiddle className="w-fit h-9 inline-block align-middle mb-1" />
                 :
                 <input
                   onChange={onDateChange}
-                  value={project.date}
+                  value={volatileProject.date}
                   name="date"
                   className="text-center text-xl"
                   type="text"
@@ -105,27 +109,33 @@ export default function Editor() {
         {/* Description */}
         <label className="€no-style w-full flex flex-col">
           Description
-          {!project ?
+          {!volatileProject ?
             <span className="bg-abyss-800 rounded-sm h-16 flex flex-col justify-center">
               <Spinner3DotsScaleMiddle className="w-fit h-9 inline-block align-middle mb-1" />
             </span>
             :
-            <textarea onChange={onDescriptionChange} value={project.description || ""} placeholder="Optional description of project."></textarea>
+            <textarea onChange={onDescriptionChange} value={volatileProject.description || ""} placeholder="Optional description of project."></textarea>
           }
         </label>
 
         {/* DEBUG TODO - remove */}
         <pre className="opacity-50 text-xs mt-10">
-          {JSON.stringify(debouncedProjectData[0]) === JSON.stringify(project) ? "Saved" : "Saving..."}
+          {JSON.stringify(debouncedProjectData[0]) === JSON.stringify(volatileProject) ? "Saved" : "Saving..."}
           <br />
-          {JSON.stringify(project, null, 2)}
+          {JSON.stringify(volatileProject, null, 2)}
         </pre>
       </aside>
 
-      <section className="h-full flex-1">
+      <section className="lg:flex-1 not-lg:w-full">
         Blocks
-        <ul>
-
+        <ul className="flex flex-col gap-y-4 not-lg:pb-52">
+          {volatileProject?.blocks.map((block, index) => (
+            <BlockLi
+              key={`block-${block.id}`}
+              block={block}
+              blockIndex={index}
+            />
+          ))}
         </ul>
       </section>
     </main>

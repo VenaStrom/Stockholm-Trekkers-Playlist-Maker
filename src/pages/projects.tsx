@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { usePageContext } from "../components/page-context/use-page-context";
 import ProjectCard from "../components/project-card";
-import { EmptyProject, Project } from "../project-types";
+import { getEmptyProject, Project } from "../project-types";
 import { IconAddBoxOutline, IconFolderOutline } from "../components/icons";
 import { path } from "@tauri-apps/api";
 import { appDataDir } from "@tauri-apps/api/path";
@@ -69,11 +69,7 @@ export default function Projects() {
     await fs.create(filePath);
 
     // Make project object
-    const newProject: Project = {
-      ...EmptyProject,
-      id: createdTimestamp.toString(),
-      dateCreated: createdTimestamp,
-    };
+    const newProject = getEmptyProject();
     const content = JSON.stringify(newProject, null, 2);
     setProjects((prev) => [...prev, newProject]);
 

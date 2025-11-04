@@ -51,11 +51,11 @@
   }
 
   html {
-    @apply min-h-screen h-full;
+    @apply min-h-screen max-h-screen h-screen;
   }
 
   body {
-    @apply bg-abyss-500 text-flare-500 h-full *:w-full flex flex-col items-center justify-start;
+    @apply bg-abyss-500 text-flare-500 max-h-screen h-screen *:w-full flex flex-col items-center justify-start;
 
     & > main {
       @apply flex-1;
