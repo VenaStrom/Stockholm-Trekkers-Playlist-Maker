@@ -129,13 +129,14 @@ export default function Editor() {
       </aside>
 
       <section className="lg:flex-1 not-lg:w-full">
-        Blocks
         <ul className="flex flex-col gap-y-4 not-lg:pb-52">
           {volatileProject?.blocks.map((block, index) => (
             <BlockLi
               key={`block-${block.id}`}
               block={block}
               blockIndex={index}
+              project={volatileProject}
+              projectSetter={setVolatileProject}
             />
           ))}
         </ul>

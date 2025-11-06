@@ -95,41 +95,30 @@ export default function Projects() {
 
   return (
     <main className="w-full flex flex-col items-center overflow-y-auto">
-      {projects.length ? <>
-        <p className="p-4 pt-5">Load, export or import previous projects or create entirely new ones.</p>
+      <p className="p-4 pt-5">Load, export or import previous projects or create entirely new ones.</p>
 
-        <ul className="w-11/12 md:w-7/12 flex flex-col gap-y-4 h-full overflow-y-auto pe-4 pt-1.5">
-          <li className="w-full flex flex-row justify-end gap-x-3">
-            <button className="hover:bg-spore-500" onClick={showProjectsFolder}>
-              <IconFolderOutline className="inline size-6 me-1" />
-              Show folder
-            </button>
-            <button className="hover:bg-science-500" onClick={makeNewProject}>
-              <IconAddBoxOutline className="inline size-6 me-1" />
-              New Project
-            </button>
-          </li>
-
-          {projects.length ? projects.sort(sortByDateCreated).map((project, index) => (
-            <ProjectCard key={index} project={project} />
-          ))
-            :
-            <li className="p-4 py-8">
-              <p className="text-center text-sm italic opacity-70">No projects found. Create a new project or open the projects folder to add existing ones.</p>
-            </li>
-          }
-        </ul>
-      </>
-        :
-        <>
-          <p className="p-4 pt-5">You currently don{"'"}t have any projects, make your first one and it will appear here in a list.</p>
-
-          <button className="hover:bg-science-500 text-xl" onClick={makeNewProject}>
-            <IconAddBoxOutline className="inline size-8 me-1" />
-            Create First Project
+      <ul className="w-11/12 md:w-7/12 flex flex-col gap-y-4 h-full overflow-y-auto pe-4 pt-1.5">
+        <li className="w-full flex flex-row justify-end gap-x-3">
+          <button className="bg-abyss-200 hover:bg-spore-500" onClick={showProjectsFolder}>
+            <IconFolderOutline className="inline size-6 me-1" />
+            Show folder
           </button>
-        </>
-      }
+
+          <button className="bg-abyss-200 hover:bg-science-500" onClick={makeNewProject}>
+            <IconAddBoxOutline className="inline size-6 me-1" />
+            New Project
+          </button>
+        </li>
+
+        {projects.length ? projects.sort(sortByDateCreated).map((project, index) => (
+          <ProjectCard key={index} project={project} />
+        ))
+          :
+          <li className="p-4 py-8">
+            <p className="text-center text-sm italic opacity-70">No projects found. Create a new project or open the projects folder to add existing ones.</p>
+          </li>
+        }
+      </ul>
     </main>
   );
 }

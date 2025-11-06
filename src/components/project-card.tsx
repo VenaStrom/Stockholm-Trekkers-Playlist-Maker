@@ -165,6 +165,7 @@ export default function ProjectCard({
           <span className="flex-1"></span>
           <IconEditOutline className="inline size-6" />
         </button>
+
         <button
           className="pe-1.5 ps-3 hover:bg-spore-500"
           onClick={downloadSaveFile}
@@ -173,6 +174,7 @@ export default function ProjectCard({
           <span className="flex-1"></span>
           <IconFileExportOutline className="inline size-6" />
         </button>
+
         <button
           className="pe-1.5 ps-3 hover:bg-red-alert-500"
           onClick={() => setDeleteDialogVisible(true)}
