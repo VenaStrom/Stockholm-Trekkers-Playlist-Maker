@@ -3,11 +3,11 @@ import { Project } from "../project-types";
 import { IconDeleteOutline, IconEditOutline, IconFileExportOutline } from "./icons";
 import Dialog from "./dialog";
 import { usePageContext } from "./page-context/use-page-context";
-import { invoke } from "@tauri-apps/api/core";
+import { path } from "@tauri-apps/api";
+import * as fs from "@tauri-apps/plugin-fs";
 import { useToast } from "./toast/useToast";
 import { revealItemInDir } from "@tauri-apps/plugin-opener";
 import { appDataDir, downloadDir, tempDir } from "@tauri-apps/api/path";
-import { path } from "@tauri-apps/api";
 import { open } from "@tauri-apps/plugin-dialog";
 import { copyFile, exists } from "@tauri-apps/plugin-fs";
 import { DirName } from "../global";
@@ -115,16 +115,10 @@ export default function ProjectCard({
           data-focus="true"
           key={"delete-button"}
           className="gap-x-1 pe-1 hover:bg-red-alert-500"
-          onClick={() => {
+          onClick={async () => {
             setProjects((prevProjects) => prevProjects.filter((p) => p.id !== project.id));
             setDeleteDialogVisible(false);
-            invoke("delete_project", { projectId: project.id })
-              .then(() => {
-                console.log("Project deleted successfully");
-              })
-              .catch((error) => {
-                console.error("Error deleting project:", error);
-              });
+            await fs.remove(await path.join(await appDataDir(), DirName.Projects, project.id), { recursive: true });
           }}
         >
           Delete

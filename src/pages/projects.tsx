@@ -7,14 +7,13 @@ import { path } from "@tauri-apps/api";
 import { appDataDir } from "@tauri-apps/api/path";
 import * as fs from "@tauri-apps/plugin-fs";
 import { useToast } from "../components/toast/useToast";
-import { DirName } from "../global";
-import { invoke } from "@tauri-apps/api/core";
+import { DirName, FileName } from "../global";
 import { revealItemInDir } from "@tauri-apps/plugin-opener";
-import { PageRoute } from "../components/page-context/page.internal";
+import { invoke } from "@tauri-apps/api/core";
 
 export default function Projects() {
   const { toast } = useToast();
-  const { setHeaderText, projects, setProjects, setProjectId, setRoute } = usePageContext();
+  const { setHeaderText, projects, setProjects } = usePageContext();
 
   useEffect(() => setHeaderText("Projects"), [setHeaderText]);
 
@@ -30,17 +29,25 @@ export default function Projects() {
       const loadedProjects: Project[] = [];
 
       // Read folder
-      const projectFileNames = (await fs.readDir(projectsDir)).filter(i => i.isFile).map(i => i.name);
-      for (const fileName of projectFileNames) {
+      const projectFolderNames = (await fs.readDir(projectsDir)).filter(i => i.isDirectory && !i.name.startsWith(".")).map(d => d.name);
+      for (const folderName of projectFolderNames) {
         try {
-          const filePath = await path.join(projectsDir, fileName);
-          const fileContent = await fs.readFile(filePath);
+          const folderPath = await path.join(projectsDir, folderName);
+          const saveFilePath = await path.join(folderPath, FileName.ProjectSave);
+
+          const fileExists = await fs.exists(saveFilePath);
+          if (!fileExists) {
+            console.warn("Project save file does not exist, skipping:", saveFilePath);
+            continue;
+          }
+
+          const fileContent = await fs.readFile(saveFilePath);
           const decoder = new TextDecoder("utf-8");
           const decodedContent = decoder.decode(fileContent);
           const project: Project = JSON.parse(decodedContent);
           loadedProjects.push(project);
         } catch (e) {
-          console.error("Failed to load project file:", fileName, e);
+          console.error("Failed to load project file:", folderName, e);
         }
       }
 
@@ -50,35 +57,24 @@ export default function Projects() {
   }, [setProjects]);
 
   const showProjectsFolder = async () => {
-    const folderPath = await path.join(await appDataDir(), DirName.Projects, ".target");
-
-    if (!await fs.exists(folderPath)) {
-      await fs.mkdir(folderPath, { recursive: true });
-      console.info("Created projects folder because it did not exist. Path:", folderPath);
-      return;
-    }
-
-    await revealItemInDir(folderPath);
+    const hiddenSubFolderPath = await path.join(await appDataDir(), DirName.Projects, ".target");
+    await invoke("mkdir", { dirPath: hiddenSubFolderPath });
+    await revealItemInDir(hiddenSubFolderPath);
   };
 
   const makeNewProject = async () => {
     const newProject = getEmptyProject();
     const projectFolderPath = await path.join(await appDataDir(), DirName.Projects, newProject.id);
-    const saveFilePath = await path.join(projectFolderPath, "project.json");
+    const saveFilePath = await path.join(projectFolderPath, FileName.ProjectSave);
 
     // Add to state TODO move this after successful save
     setProjects((prev) => [...prev, newProject]);
 
-    // If projects folder doesn't exist, make it
-    if (!await fs.exists(projectFolderPath)) {
-      await fs.mkdir(projectFolderPath, { recursive: true });
-    }
+    await invoke("mkdir", { dirPath: projectFolderPath });
 
-    // Make file
-    await fs.create(saveFilePath);
-
-    // Write file
+    // Make project save file
     const content = JSON.stringify(newProject, null, 2);
+    await fs.create(saveFilePath);
     await fs.writeFile(saveFilePath, new TextEncoder().encode(content))
       .catch((e) => {
         console.error("Failed to write new project file:", e);
@@ -87,7 +83,9 @@ export default function Projects() {
       });
 
     toast(<>
-      Made new project. <a href="" target="_blank" rel="noreferrer" onClick={(e) => { e.preventDefault(); setRoute(PageRoute.Editor); setProjectId(newProject.id); }}>Edit</a>
+      Made new project.
+      {/* Maybe remove this line VVV */}
+      {/* Made new project. <a href="" target="_blank" rel="noreferrer" onClick={(e) => { e.preventDefault(); setRoute(PageRoute.Editor); setProjectId(newProject.id); }}>Edit</a> */}
     </>);
   };
 
