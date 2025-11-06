@@ -38,13 +38,15 @@ export default function BlockLi({
 
       <hr className="h-0.5 opacity-50" />
 
-      {block.episodes.map((episode, index) => (
-        <EpisodeLi
-          key={`episode-${episode.id}`}
-          episode={episode}
-          episodeIndex={index}
-        />
-      ))}
+      <ul>
+        {block.episodes.map((episode, index) => (
+          <EpisodeLi
+            key={`episode-${episode.id}`}
+            episode={episode}
+            episodeIndex={index}
+          />
+        ))}
+      </ul>
     </li>
   );
 }

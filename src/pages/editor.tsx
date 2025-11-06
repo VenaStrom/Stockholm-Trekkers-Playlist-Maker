@@ -3,7 +3,7 @@ import { usePageContext } from "../components/page-context/use-page-context";
 import { PageRoute } from "../components/page-context/page.internal";
 import { path } from "@tauri-apps/api";
 import { appDataDir } from "@tauri-apps/api/path";
-import { DirName } from "../global";
+import { DirName, FileName } from "../global";
 import * as fs from "@tauri-apps/plugin-fs";
 import { Project } from "../project-types";
 import { IconArrowBack2Outline, IconEditOutline, Spinner3DotsScaleMiddle } from "../components/icons";
@@ -17,16 +17,18 @@ export default function Editor() {
   useEffect(() => setHeaderText("Editor"), [setHeaderText]);
 
   const readProjectData = async () => {
-    const projectsDir = await path.join(await appDataDir(), DirName.Projects);
-    const filePath = await path.join(projectsDir, `${projectId}.json`);
+    if (!projectId) return;
+    const projectFolderPath = await path.join(await appDataDir(), DirName.Projects, projectId);
 
-    if (!await fs.exists(filePath)) {
-      console.error("Project file does not exist:", filePath);
+    if (!await fs.exists(projectFolderPath)) {
+      console.error("Project does not exist:", projectFolderPath);
       setRoute(PageRoute.Projects);
       return;
     }
 
-    const fileContent = await fs.readFile(filePath);
+    const projectSaveFile = await path.join(projectFolderPath, FileName.ProjectSave);
+
+    const fileContent = await fs.readFile(projectSaveFile);
     const decoder = new TextDecoder("utf-8");
     const decodedContent = decoder.decode(fileContent);
     const project = JSON.parse(decodedContent);
