@@ -49,13 +49,19 @@ export default function Editor() {
   // Save project data to file when changed
   const debouncedProjectData = useDebounce(volatileProject, 500);
   const writeProjectToFile = async (project: Project) => {
-    const projectsDir = await path.join(await appDataDir(), DirName.Projects);
-    const filePath = await path.join(projectsDir, `${projectId}.json`);
+    const projectFolderPath = await path.join(await appDataDir(), DirName.Projects, project.id);
+
+    if (!await fs.exists(projectFolderPath)) {
+      console.error("Project folder does not exist:", projectFolderPath);
+      return;
+    }
+
+    const projectSaveFile = await path.join(projectFolderPath, FileName.ProjectSave);
 
     const encoder = new TextEncoder();
     const fileContent = encoder.encode(JSON.stringify(project, null, 2));
 
-    await fs.writeFile(filePath, fileContent);
+    await fs.writeFile(projectSaveFile, fileContent);
   };
   useEffect(() => {
     if (!debouncedProjectData[0]) return;

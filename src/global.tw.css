@@ -3,7 +3,7 @@
 :root {
   --color-flare-500: #f2f2f2;
   --color-flare-700: #b5b5b5;
-  --color-abyss-200: #808080;
+  --color-abyss-200: #a2a2a2;
   --color-abyss-500: #1f1f1f;
   --color-abyss-800: #181818;
   --color-command-300: #e0b93a;
@@ -16,7 +16,7 @@
 .light {
   --color-flare-500: #1f1f1f;
   --color-flare-700: #4a4a4a;
-  --color-abyss-200: #d4d4d4;
+  --color-abyss-200: #b4b4b4;
   --color-abyss-500: #f0f0f0;
   --color-abyss-800: #fafafa;
   --color-command-300: #e6b944;
