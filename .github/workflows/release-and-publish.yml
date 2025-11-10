@@ -104,10 +104,6 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: Prepare release template
-        run: |
-          cp ./release-template.html ./release-template.html
-
       - name: Create or update release and upload assets
         uses: ncipollo/release-action@v1
         with:
