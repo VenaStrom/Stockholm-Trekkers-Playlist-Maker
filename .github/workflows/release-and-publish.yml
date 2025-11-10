@@ -1,0 +1,54 @@
+name: Build and Publish Release
+
+on:
+  workflow_dispatch:
+    inputs: {}
+
+jobs:
+  build-and-publish:
+    name: Build and publish release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn --frozen-lockfile || yarn
+
+      - name: Build app
+        run: yarn build --publish=never
+
+      - name: List built artifacts (debug)
+        run: |
+          echo "Contents of dist/ (if any):"
+          ls -la dist || true
+
+      - name: Get package version
+        id: get_version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Read release template
+        id: read_template
+        run: |
+          # Expose a multi-line output containing the release body from release-template.html
+          echo "body<<EOF" >> $GITHUB_OUTPUT
+          cat release-template.html >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create or update release and upload dist artifacts
+        uses: ncipollo/release-action@v1
+        with:
+          tag: v${{ env.VERSION }}
+          name: v${{ env.VERSION }} Release
+          body: ${{ steps.read_template.outputs.body }}
+          files: dist/*
