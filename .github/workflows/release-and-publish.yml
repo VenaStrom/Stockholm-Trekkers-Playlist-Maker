@@ -106,8 +106,11 @@ jobs:
 
       - name: Read release template
         id: read_template
-        run: | 
-          DELIM="DELIM_ ( d a t e $" printf 'body<<%s\n' "$DELIM" >> $GITHUB_OUTPUT cat release-template.html >> $GITHUB_OUTPUT printf '%s\n' "$DELIM" >> $GITHUB_OUTPUT
+        run: |
+          DELIM="DELIM_$(date +%s)"
+          printf 'body<<%s\n' "$DELIM" >> "$GITHUB_OUTPUT"
+          cat release-template.html >> "$GITHUB_OUTPUT"
+          printf '%s\n' "$DELIM" >> "$GITHUB_OUTPUT"
 
       - name: Create or update release and upload assets
         uses: ncipollo/release-action@v1
