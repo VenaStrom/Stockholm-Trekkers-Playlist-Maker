@@ -92,8 +92,8 @@ jobs:
         run: |
           mkdir -p release-assets
           # copy artifacts if present
-          if [ -d artifacts/linux ]; then cp -a artifacts/linux/* release-assets/ || true; fi
-          if [ -d artifacts/windows ]; then cp -a artifacts/windows/* release-assets/ || true; fi
+          if [ -d artifacts/linux ]; then cp -a artifacts/linux/*.deb release-assets/ || true; fi
+          if [ -d artifacts/windows ]; then cp -a artifacts/windows/*.exe release-assets/ || true; fi
           echo "Contents of release-assets:"
           ls -la release-assets || true
 
@@ -112,3 +112,5 @@ jobs:
           artifacts: release-assets/*
           bodyFile: ./release-template.html
           draft: true
+          skipIfReleaseExists: true
+          updateOnlyUnreleased: true
