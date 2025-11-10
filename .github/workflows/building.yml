@@ -10,19 +10,20 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
           cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn
+        run: yarn install --frozen-lockfile
 
       - name: Build app
         run: yarn build --publish=never
+
       - name: Find generated package
         id: find_package
         run: |
@@ -37,7 +38,7 @@ jobs:
           echo "name=$name" >> $GITHUB_OUTPUT
 
       - name: Upload artifact (use generated filename)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ steps.find_package.outputs.name }}
           path: ${{ steps.find_package.outputs.file }}
@@ -48,19 +49,20 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
           cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn
+        run: yarn install --frozen-lockfile
 
       - name: Build app
         run: yarn build --publish=never
+
       - name: Find generated package
         id: find_package
         shell: pwsh
@@ -71,7 +73,7 @@ jobs:
           Write-Output "name=$($f.Name)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
 
       - name: Upload artifact (use generated filename)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ steps.find_package.outputs.name }}
           path: ${{ steps.find_package.outputs.file }}

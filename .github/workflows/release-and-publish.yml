@@ -5,30 +5,97 @@ on:
     inputs: {}
 
 jobs:
-  build-and-publish:
-    name: Build and publish release
+  build-linux:
+    name: Build (Linux)
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
           cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn --frozen-lockfile || yarn
+        run: yarn install --frozen-lockfile
 
-      - name: Build app
-        run: yarn build --publish=never
+      - name: Build app (Linux)
+        run: yarn build
 
       - name: List built artifacts (debug)
         run: |
           echo "Contents of dist/ (if any):"
           ls -la dist || true
+
+      - name: Upload linux artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-dist
+          path: dist/*.deb
+
+  build-windows:
+    name: Build (Windows)
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build app (Windows)
+        run: yarn build
+
+      - name: List built artifacts (debug)
+        run: |
+          echo "Contents of dist/ (if any):"
+          dir dist || true
+
+      - name: Upload windows artifacts
+        uses: actions/upload-artifact@v5
+        with:
+          name: windows-dist
+          path: dist/**
+
+  publish:
+    name: Publish release
+    needs: [build-linux, build-windows]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout (for package.json & template)
+        uses: actions/checkout@v5
+
+      - name: Download linux artifacts
+        uses: actions/download-artifact@v5
+        with:
+          name: linux-dist
+          path: artifacts/linux
+
+      - name: Download windows artifacts
+        uses: actions/download-artifact@v6
+        with:
+          name: windows-dist
+          path: artifacts/windows
+
+      - name: Prepare release assets
+        run: |
+          mkdir -p release-assets
+          # copy artifacts if present
+          if [ -d artifacts/linux ]; then cp -a artifacts/linux/* release-assets/ || true; fi
+          if [ -d artifacts/windows ]; then cp -a artifacts/windows/* release-assets/ || true; fi
+          echo "Contents of release-assets:"
+          ls -la release-assets || true
 
       - name: Get package version
         id: get_version
@@ -40,15 +107,14 @@ jobs:
       - name: Read release template
         id: read_template
         run: |
-          # Expose a multi-line output containing the release body from release-template.html
           echo "body<<EOF" >> $GITHUB_OUTPUT
           cat release-template.html >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
-      - name: Create or update release and upload dist artifacts
+      - name: Create or update release and upload assets
         uses: ncipollo/release-action@v1
         with:
           tag: v${{ env.VERSION }}
           name: v${{ env.VERSION }} Release
           body: ${{ steps.read_template.outputs.body }}
-          files: dist/*
+          files: release-assets/*
