@@ -109,6 +109,6 @@ jobs:
         with:
           tag: v${{ env.VERSION }}
           name: v${{ env.VERSION }} Release
-          files: release-assets/*
+          artifacts: release-assets/*
           bodyFile: ./release-template.html
           draft: true
