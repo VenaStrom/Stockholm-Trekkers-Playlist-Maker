@@ -115,3 +115,4 @@ jobs:
           name: v${{ env.VERSION }} Release
           files: release-assets/*
           bodyFile: ./release-template.html
+          draft: true
