@@ -23,7 +23,7 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Build app (Linux)
-        run: yarn build
+        run: yarn build --publish=never
 
       - name: List built artifacts (debug)
         run: |
@@ -54,7 +54,7 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Build app (Windows)
-        run: yarn build
+        run: yarn build --publish=never
 
       - name: List built artifacts (debug)
         run: |
