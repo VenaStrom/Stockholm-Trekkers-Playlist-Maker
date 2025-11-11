@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Episode, Project } from "../../project-types";
 import { IconFolderOutline } from "../icons";
 import { open } from "@tauri-apps/plugin-dialog";
-import { updateEpisodeInProject } from "../../functions/project-walker";
 
 export default function EpisodeLi({
   episode,
@@ -40,23 +39,47 @@ export default function EpisodeLi({
 
     setSelectedFile(filePath);
 
-    // Update the episode's filePath in the project state
-    updateEpisodeInProject(
-      { ...episode, filePath },
-      volatileProject,
-      setVolatileProject,
-    );
+    const newEpisode: Episode = {
+      ...episode,
+      filePath: filePath,
+    };
+
+    setVolatileProject((prevProject) => {
+      if (!prevProject) return prevProject;
+
+      const updatedBlocks = prevProject.blocks.map((block) => {
+        const updatedEpisodes = block.episodes.map((ep) => {
+          if (ep.id === newEpisode.id) {
+            return { ...newEpisode };
+          }
+          return ep;
+        });
+        return { ...block, episodes: updatedEpisodes };
+      });
+
+      return { ...prevProject, blocks: updatedBlocks };
+    });
+  };
+
+  const secondsToTimeString = (totalSeconds: number): string => {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = Math.floor(totalSeconds % 60);
+
+    const hoursStr = hours > 0 ? String(hours).padStart(2, '0') + ':' : '';
+    const minutesStr = String(minutes).padStart(2, '0') + ':';
+    const secondsStr = String(seconds).padStart(2, '0');
+
+    return hoursStr + minutesStr + secondsStr;
   };
 
   return (
     <li className="w-full flex flex-row items-center gap-x-4 ps-1">
-      <span className="w-[1ch] text-sm">
-        {episodeIndex + 1}
-      </span>
-
-      <span>
-        00:00
-      </span>
+      <div className="flex flex-row gap-x-6 items-center">
+        <span className="w-[1ch] text-sm">{episodeIndex + 1}</span>
+        <span className={`w-[5ch] ${!episode.cachedStartTime ? "text-flare-700" : ""}`}>{episode.cachedStartTime || "--:--"}</span>
+        <span className={`w-[5ch] ${!episode.duration ? "text-flare-700" : ""}`}>{episode.duration ? secondsToTimeString(episode.duration) : "-"}</span>
+      </div>
 
       <span className="flex-1"></span>
 

@@ -1,4 +1,5 @@
-import { Block, Project } from "../../project-types";
+import { useEffect } from "react";
+import { Block, getEmptyEpisode, Project } from "../../project-types";
 import { IconDeleteOutline, IconSettingsOutline } from "../icons";
 import EpisodeLi from "./episode";
 
@@ -14,6 +15,33 @@ export default function BlockLi({
   project: Project;
   projectSetter: React.Dispatch<React.SetStateAction<Project | null>>;
 }) {
+
+  // Handle episode count changes
+  useEffect(() => {
+    if (block.episodes.length <= 2) return;
+
+    const lastEpisode = block.episodes[block.episodes.length - 1];
+    if (lastEpisode.filePath) {
+      // Add an empty episode if the last one has a filePath
+      setVolatileProject((prevProject) => {
+        if (!prevProject) return prevProject;
+
+        const updatedBlocks = prevProject.blocks.map((b, idx) => {
+          if (idx === blockIndex) {
+            return {
+              ...b,
+              episodes: [...b.episodes, getEmptyEpisode()],
+            };
+          }
+          return b;
+        });
+
+        return { ...prevProject, blocks: updatedBlocks };
+      });
+    }
+
+  }, [block.episodes]);
+
   return (
     <li className="bg-abyss-800 px-4 py-2 rounded-sm">
       {/* Header */}
@@ -45,9 +73,11 @@ export default function BlockLi({
       <hr className="h-0.5 opacity-50" />
 
       <div className="pt-3">
-        <span className="text-sm">
-          Episodes
-        </span>
+        <div className="flex flex-row gap-x-6 *:text-sm items-center">
+          <span className="w-[1ch]"></span>
+          <span className="w-[6ch]">Start</span>
+          <span className="w-[5ch]">Duration</span>
+        </div>
         <ul className="flex flex-col gap-y-2 pb-3 pt-1">
           {block.episodes.map((episode, index) => (
             <EpisodeLi
