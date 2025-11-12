@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Episode, Project } from "../../project-types";
 import { IconFolderOutline } from "../icons";
 import { open } from "@tauri-apps/plugin-dialog";
@@ -34,10 +34,10 @@ export default function EpisodeLi({
       console.warn("Canceled file selection");
       // Unset selected file if selection was canceled
       setSelectedFile(null);
-      return;
     }
-
-    setSelectedFile(filePath);
+    else {
+      setSelectedFile(filePath);
+    }
 
     const newEpisode: Episode = {
       ...episode,
@@ -73,38 +73,55 @@ export default function EpisodeLi({
     return hoursStr + minutesStr + secondsStr;
   };
 
+  const fileName = useMemo(() => {
+    if (!selectedFile) return "No file selected";
+    const parts = selectedFile.split(/[/\\]/);
+    return parts[parts.length - 1];
+  }, [selectedFile]);
+
+  const fileRoute = useMemo(() => {
+    if (!selectedFile) return "No file selected";
+
+    // remove file name from path
+    const delim = selectedFile.includes("/") ? "/" : "\\";
+    const parts = selectedFile.split(/[/\\]/);
+    parts.pop();
+    return parts.join(delim);
+
+  }, [selectedFile]);
+
+  const delim = useMemo(() => {
+    if (!selectedFile) return "/";
+    return selectedFile.includes("/") ? "/" : "\\";
+  }, [selectedFile]);
+
   return (
-    <li className="w-full flex flex-row items-center gap-x-4 ps-1">
+    <li className="w-full flex flex-row items-center gap-x-10 ps-1">
       <div className="flex flex-row gap-x-6 items-center">
         <span className="w-[1ch] text-sm">{episodeIndex + 1}</span>
         <span className={`w-[5ch] ${!episode.cachedStartTime ? "text-flare-700" : ""}`}>{episode.cachedStartTime || "--:--"}</span>
         <span className={`w-[5ch] ${!episode.duration ? "text-flare-700" : ""}`}>{episode.duration ? secondsToTimeString(episode.duration) : "-"}</span>
       </div>
 
-      <span className="flex-1"></span>
-
-      <label className="bg-abyss-500 rounded-sm flex flow-row items-center justify-between gap-x-4 ps-3 min-w-1/2">
-        <span className={`${selectedFile || "text-flare-700"}`}>
-          {selectedFile || "No file selected"}
-        </span>
+      <label className="bg-abyss-500 rounded-sm flex flow-row items-center justify-between gap-x-4 ps-3 flex-1">
+        <div className="flex-1 min-w-0">
+          <span style={{ direction: "rtl" }} className="block overflow-hidden text-start">
+            <span style={{ direction: "ltr" }} className={`truncate inline-block align-middle ${selectedFile ? "" : "text-flare-700"}`}>
+              {/* {selectedFile ? path.basename(selectedFile).then((b) => `${b}`) : "No file selected"} */}
+              {selectedFile ?
+                <><span className="text-flare-700">{fileRoute}{delim}</span>{fileName}</>
+                : "No file selected"}
+            </span>
+          </span>
+        </div>
 
         <button
           className="bg-abyss-200 hover:bg-spore-500 ps-3"
-          // onClick={() => document.getElementById(`${episode.id}-add-file`)?.click()}
           onClick={onFileChange}
         >
           Select file
           <IconFolderOutline className="inline size-6 ms-0.5" />
         </button>
-
-        {/* Hidden file input */}
-        {/* <input
-          id={`${episode.id}-add-file`}
-          type="file"
-          className="hidden"
-          accept="audio/*,video/*,image/*" // TODO - reconsider having an accept at all. This would be based on what VLC would accept.
-          onChange={onFileChange}
-        /> */}
       </label>
     </li>
   );
