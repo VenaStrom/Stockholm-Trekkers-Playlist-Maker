@@ -15,7 +15,8 @@
     "preview": "vite preview",
     "tauri": "tauri",
     "download-assets": "node scripts/download-video-assets.ts",
-    "rename-bundles": "node scripts/rename-bundles.ts"
+    "rename-bundles": "node scripts/rename-bundles.ts",
+    "lint": "eslint -c eslint.config.ts --ignore-pattern **/*.js"
   },
   "dependencies": {
     "@tauri-apps/api": "^2",
