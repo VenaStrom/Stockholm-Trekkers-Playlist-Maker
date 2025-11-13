@@ -1434,6 +1434,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7f24254aa9a54b5c858eaee2f5bccdb46aaf0e486a595ed5fd8f86ba55232a70"
 
 [[package]]
+name = "hf"
+version = "0.5.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "16bc0123981cec51f490822e02e3f0e2f917bfcfe955258a183a57399a8540a6"
+dependencies = [
+ "windows",
+]
+
+[[package]]
 name = "html5ever"
 version = "0.29.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3502,6 +3511,7 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 name = "stockholm-trekkers-playlist-maker"
 version = "4.0.0"
 dependencies = [
+ "hf",
  "serde",
  "serde_json",
  "tauri",

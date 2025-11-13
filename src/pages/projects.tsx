@@ -58,7 +58,7 @@ export default function Projects() {
 
   const showProjectsFolder = async () => {
     const hiddenSubFolderPath = await path.join(await appDataDir(), DirName.Projects, ".target");
-    await invoke("mkdir", { dirPath: hiddenSubFolderPath });
+    await invoke("mkdir", { dirPath: hiddenSubFolderPath, hidden: true, });
     await revealItemInDir(hiddenSubFolderPath);
   };
 

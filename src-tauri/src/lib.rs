@@ -1,3 +1,4 @@
+use hf;
 use std::fs::create_dir_all;
 
 #[tauri::command]
@@ -7,27 +8,18 @@ fn close() {
 }
 
 #[tauri::command]
-async fn mkdir(dir_path: String) -> Result<(), String> {
+async fn mkdir(dir_path: String, hidden: bool) -> Result<(), String> {
   // Create the application directory folder
   println!("Creating app data dir folder: {}", dir_path);
 
-  let full_path = std::path::Path::new(&dir_path).join(".target");
+  let full_path = std::path::Path::new(&dir_path);
 
-  create_dir_all(full_path).map_err(|e| format!("Failed to create directory: {}", e))?;
+  create_dir_all(&full_path).map_err(|e| format!("Failed to create directory: {}", e))?;
 
-  // Hide the folder on Windows
-  #[cfg(target_os = "windows")]
-  {
-    use std::fs;
-    use std::os::windows::fs::MetadataExt;
-    let metadata = fs::metadata(std::path::Path::new(&app_dir).join(&dir_path))
-      .map_err(|e| format!("Failed to get metadata: {}", e))?;
-    let mut permissions = metadata.permissions();
-    permissions.set_readonly(true);
-    fs::set_permissions(std::path::Path::new(&app_dir).join(&dir_path), permissions)
-      .map_err(|e| format!("Failed to set permissions: {}", e))
+  if !hidden {
+    return Ok(());
   }
-  // On linux and macOS, prefixing the folder name with a dot should suffice to hide it
+  hf::hide(&full_path).unwrap();
   Ok(())
 }
 
