@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Block, getEmptyEpisode, Project } from "../../project-types";
+import { Block, Episode, getEmptyEpisode, Project } from "../../project-types";
 import { IconDeleteOutline, IconSettingsOutline } from "../icons";
 import EpisodeLi from "./episode";
 
@@ -18,8 +18,35 @@ export default function BlockLi({
 
   // Handle episode count changes
   useEffect(() => {
-    if (block.episodes.length <= 2) return;
+    // Less than 2 episodes: add empty episodes
+    if (block.episodes.length <= 2) {
+      const neededEpisodes = 2 - block.episodes.length;
+      if (neededEpisodes > 0) {
+        // Add empty episodes to reach minimum count
+        setVolatileProject((prevProject) => {
+          if (!prevProject) return prevProject;
 
+          const updatedBlocks = prevProject.blocks.map((b, idx) => {
+            if (idx === blockIndex) {
+              return {
+                ...b,
+                episodes: [
+                  ...b.episodes,
+                  ...Array.from({ length: neededEpisodes }, () => getEmptyEpisode()),
+                ],
+              };
+            }
+            return b;
+          });
+
+          return { ...prevProject, blocks: updatedBlocks };
+        });
+      }
+
+      return;
+    };
+
+    // Ensure trailing empty episode
     const lastEpisode = block.episodes[block.episodes.length - 1];
     if (lastEpisode.filePath) {
       // Add an empty episode if the last one has a filePath
@@ -40,6 +67,37 @@ export default function BlockLi({
       });
     }
 
+    // Ensure only one trailing empty episode
+    const trailingEmptyEpisodes: Episode["id"][] = [];
+    for (let i = block.episodes.length - 1; i >= 0; i--) {
+      const episode = block.episodes[i];
+      if (!episode.filePath) {
+        trailingEmptyEpisodes.push(episode.id);
+      }
+      else {
+        break;
+      }
+    }
+    // Remove last one to keep a single empty episode (to keep id as well)
+    trailingEmptyEpisodes.shift();
+    if (trailingEmptyEpisodes.length > 0) {
+      setVolatileProject((prevProject) => {
+        if (!prevProject) return prevProject;
+
+        const updatedBlocks = prevProject.blocks.map(b => {
+          if (b.id === block.id) {
+            const updatedEpisodes = b.episodes.filter(ep => !trailingEmptyEpisodes.includes(ep.id));
+            return {
+              ...b,
+              episodes: updatedEpisodes,
+            };
+          }
+          return b;
+        });
+
+        return { ...prevProject, blocks: updatedBlocks };
+      });
+    }
   }, [block.episodes]);
 
   return (
