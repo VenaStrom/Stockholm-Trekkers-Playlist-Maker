@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Episode, Project } from "../../project-types";
-import { IconFolderOutline } from "../icons";
+import { IconDragHandle, IconFolderOutline } from "../icons";
 import { open } from "@tauri-apps/plugin-dialog";
 
 export default function EpisodeLi({
@@ -98,9 +98,9 @@ export default function EpisodeLi({
   return (
     <li className="w-full flex flex-row items-center gap-x-10 ps-1">
       <div className="flex flex-row gap-x-6 items-center">
-        <span className="w-[1ch] text-sm">{episodeIndex + 1}</span>
+        <IconDragHandle className="size-6 text-flare-700 cursor-grab" />
         <span className={`w-[5ch] ${!episode.cachedStartTime ? "text-flare-700" : ""}`}>{episode.cachedStartTime || "--:--"}</span>
-        <span className={`w-[5ch] ${!episode.duration ? "text-flare-700" : ""}`}>{episode.duration ? secondsToTimeString(episode.duration) : "-"}</span>
+        <span className={`w-[7ch] ps-0.5 ${!episode.duration ? "text-flare-700" : ""}`}>{episode.duration ? secondsToTimeString(episode.duration) : "-"}</span>
       </div>
 
       <label className="bg-abyss-500 rounded-sm flex flow-row items-center justify-between gap-x-4 ps-3 flex-1">

@@ -131,10 +131,10 @@ export default function BlockLi({
       <hr className="h-0.5 opacity-50" />
 
       <div className="pt-3">
-        <div className="flex flex-row gap-x-6 *:text-sm items-center">
-          <span className="w-[1ch]"></span>
+        <div className="flex flex-row gap-x-6 *:text-sm items-center ps-1">
+          <span className="w-6"></span>
           <span className="w-[6ch]">Start</span>
-          <span className="w-[5ch]">Duration</span>
+          <span className="w-[7ch]">Duration</span>
         </div>
         <ul className="flex flex-col gap-y-2 pb-3 pt-1">
           {block.episodes.map((episode, index) => (
