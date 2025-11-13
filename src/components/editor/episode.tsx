@@ -5,13 +5,11 @@ import { open } from "@tauri-apps/plugin-dialog";
 
 export default function EpisodeLi({
   episode,
-  episodeIndex,
   project: volatileProject,
   projectSetter: setVolatileProject,
 
 }: {
   episode: Episode;
-  episodeIndex: number;
   project: Project;
   projectSetter: React.Dispatch<React.SetStateAction<Project | null>>;
 }) {

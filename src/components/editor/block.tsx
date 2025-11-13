@@ -137,11 +137,10 @@ export default function BlockLi({
           <span className="w-[7ch]">Duration</span>
         </div>
         <ul className="flex flex-col gap-y-2 pb-3 pt-1">
-          {block.episodes.map((episode, index) => (
+          {block.episodes.map(episode => (
             <EpisodeLi
               key={`episode-${episode.id}`}
               episode={episode}
-              episodeIndex={index}
               project={volatileProject}
               projectSetter={setVolatileProject}
             />
