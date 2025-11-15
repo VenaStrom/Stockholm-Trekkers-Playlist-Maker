@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Episode, Project } from "../../project-types";
 import { IconDragHandle, IconFolderOutline } from "../icons";
 import { open } from "@tauri-apps/plugin-dialog";
+import { secondsToTimeString } from "../../functions/time-format";
 
 export default function EpisodeLi({
   episode,
@@ -59,24 +60,12 @@ export default function EpisodeLi({
     });
   };
 
-  const secondsToTimeString = (totalSeconds: number): string => {
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = Math.floor(totalSeconds % 60);
-
-    const hoursStr = hours > 0 ? String(hours).padStart(2, '0') + ':' : '';
-    const minutesStr = String(minutes).padStart(2, '0') + ':';
-    const secondsStr = String(seconds).padStart(2, '0');
-
-    return hoursStr + minutesStr + secondsStr;
-  };
-
+  // Memoized file name and route for prettier display
   const fileName = useMemo(() => {
     if (!selectedFile) return "No file selected";
     const parts = selectedFile.split(/[/\\]/);
     return parts[parts.length - 1];
   }, [selectedFile]);
-
   const fileRoute = useMemo(() => {
     if (!selectedFile) return "No file selected";
 
@@ -87,14 +76,13 @@ export default function EpisodeLi({
     return parts.join(delim);
 
   }, [selectedFile]);
-
   const delim = useMemo(() => {
     if (!selectedFile) return "/";
     return selectedFile.includes("/") ? "/" : "\\";
   }, [selectedFile]);
 
   return (
-    <li className="w-full flex flex-row items-center gap-x-10 ps-1">
+    <li className="w-full flex flex-row items-center gap-x-10 ps-1" id={`episode-${episode.id}`}>
       <div className="flex flex-row gap-x-6 items-center">
         <IconDragHandle className="size-6 text-flare-700 cursor-grab" />
         <span className={`w-[5ch] ${!episode.cachedStartTime ? "text-flare-700" : ""}`}>{episode.cachedStartTime || "--:--"}</span>
