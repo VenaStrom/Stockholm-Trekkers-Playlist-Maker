@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Episode, Project } from "../../project-types";
-import { IconDragHandle, IconFolderOutline } from "../icons";
+import { IconDragIndicator, IconFolderOutline, IconRightPanelOpenOutline } from "../icons";
 import { open } from "@tauri-apps/plugin-dialog";
 import { secondsToTimeString } from "../../functions/time-format";
 
@@ -16,6 +16,8 @@ export default function EpisodeLi({
 }) {
   const [selectedFile, setSelectedFile] = useState<string | null>(volatileProject.blocks.find(block =>
     block.episodes.some(ep => ep.id === episode.id))?.episodes.find(ep => ep.id === episode.id)?.filePath || null);
+
+  const [isDragOver, setDragOver] = useState(false);
 
   const onFileChange = async () => {
     const filePath = await open({
@@ -60,6 +62,74 @@ export default function EpisodeLi({
     });
   };
 
+  // Drag handlers
+  const onDragStart = (e: React.DragEvent) => {
+    e.dataTransfer.setData("text/plain", episode.id);
+    e.dataTransfer.effectAllowed = "move";
+  };
+  const onDragOver = (e: React.DragEvent) => {
+    e.preventDefault(); // allow drop
+    e.dataTransfer.dropEffect = "move";
+    setDragOver(true);
+  };
+  const onDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(true);
+  };
+  const onDragLeave = () => {
+    setDragOver(false);
+  };
+  const onDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const draggedId = e.dataTransfer.getData("text/plain");
+    setDragOver(false);
+    if (!draggedId || draggedId === episode.id) return;
+
+    setVolatileProject((prev) => {
+      if (!prev) return prev;
+
+      const sourceBlockIndex = prev.blocks.findIndex(b => b.episodes.some(ep => ep.id === draggedId));
+      const targetBlockIndex = prev.blocks.findIndex(b => b.episodes.some(ep => ep.id === episode.id));
+      if (sourceBlockIndex === -1 || targetBlockIndex === -1) return prev;
+
+      const sourceBlock = prev.blocks[sourceBlockIndex];
+      const targetBlock = prev.blocks[targetBlockIndex];
+
+      const draggedEpisodeIndex = sourceBlock.episodes.findIndex(ep => ep.id === draggedId);
+      const targetEpisodeIndex = targetBlock.episodes.findIndex(ep => ep.id === episode.id);
+      if (draggedEpisodeIndex === -1 || targetEpisodeIndex === -1) return prev;
+
+      const draggedEpisode = sourceBlock.episodes[draggedEpisodeIndex];
+
+      // Move within same block
+      if (sourceBlockIndex === targetBlockIndex) {
+        const arr = [...sourceBlock.episodes];
+        arr.splice(draggedEpisodeIndex, 1);        // remove original
+        const insertIndex = draggedEpisodeIndex < targetEpisodeIndex ? targetEpisodeIndex : targetEpisodeIndex;
+        arr.splice(insertIndex, 0, draggedEpisode);
+        const newBlocks = prev.blocks.map((b, idx) => idx === sourceBlockIndex ? { ...b, episodes: arr } : b);
+        return { ...prev, blocks: newBlocks };
+      }
+
+      // Move across blocks
+      const newBlocks = prev.blocks.map((b, idx) => {
+        if (idx === sourceBlockIndex) {
+          const arr = [...b.episodes];
+          arr.splice(draggedEpisodeIndex, 1);
+          return { ...b, episodes: arr };
+        }
+        if (idx === targetBlockIndex) {
+          const arr = [...b.episodes];
+          arr.splice(targetEpisodeIndex, 0, draggedEpisode);
+          return { ...b, episodes: arr };
+        }
+        return b;
+      });
+
+      return { ...prev, blocks: newBlocks };
+    });
+  };
+
   // Memoized file name and route for prettier display
   const fileName = useMemo(() => {
     if (!selectedFile) return "No file selected";
@@ -82,9 +152,25 @@ export default function EpisodeLi({
   }, [selectedFile]);
 
   return (
-    <li className="w-full flex flex-row items-center gap-x-10 ps-1" id={`episode-${episode.id}`}>
-      <div className="flex flex-row gap-x-6 items-center">
-        <IconDragHandle className="size-6 text-flare-700 cursor-grab" />
+    <li
+      className={`w-full flex flex-row items-center ps-1 select-none ${isDragOver ? "ring-2 ring-science-500/60 rounded-sm" : ""}`}
+      id={`episode-${episode.id}`}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+      onDragEnter={onDragEnter}
+      onDragLeave={onDragLeave}
+    >
+      <div className="flex flex-row gap-x-6 items-center pe-10">
+        <span
+          draggable
+          onDragStart={onDragStart}
+          className="cursor-grab"
+          aria-label="Drag to reorder"
+          title="Drag to reorder"
+        >
+          <IconDragIndicator className="size-6 text-flare-700/95" />
+        </span>
+
         <span className={`w-[5ch] ${!episode.cachedStartTime ? "text-flare-700" : ""}`}>{episode.cachedStartTime || "--:--"}</span>
         <span className={`w-[7ch] ps-0.5 ${!episode.duration ? "text-flare-700" : ""}`}>{episode.duration ? secondsToTimeString(episode.duration) : "-"}</span>
       </div>
@@ -93,7 +179,6 @@ export default function EpisodeLi({
         <div className="flex-1 min-w-0">
           <span style={{ direction: "rtl" }} className="block overflow-hidden text-start">
             <span style={{ direction: "ltr" }} className={`truncate inline-block align-middle ${selectedFile ? "" : "text-flare-700"}`}>
-              {/* {selectedFile ? path.basename(selectedFile).then((b) => `${b}`) : "No file selected"} */}
               {selectedFile ?
                 <><span className="text-flare-700">{fileRoute}{delim}</span>{fileName}</>
                 : "No file selected"}
