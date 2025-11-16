@@ -283,8 +283,8 @@ export default function EpisodeLi({
     >
       <div className="flex flex-row gap-x-6 items-center pe-10">
         {/* Delete button */}
-        <button className="€icon">
-          <IconDeleteOutline className="size-6 text-flare-700/95" />
+        <button className="€icon text-flare-700 hover:text-red-alert-500">
+          <IconDeleteOutline className="size-6" />
         </button>
         {/* Start time */}
         <span className={`w-[5ch] ${!episode.cachedStartTime ? "text-flare-700" : ""}`}>{episode.cachedStartTime || "--:--"}</span>
@@ -317,7 +317,7 @@ export default function EpisodeLi({
       <span
         draggable
         onDragStart={onDragStart}
-        className={`cursor-grab ms-3 text-flare-700/95 hover:opacity-80 transition-all`}
+        className={`cursor-grab ms-3 text-flare-700 hover:opacity-80 transition-all`}
         aria-label="Drag to reorder"
         title="Drag to reorder"
         tabIndex={0}
