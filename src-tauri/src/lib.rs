@@ -8,7 +8,7 @@ fn close() {
 }
 
 #[tauri::command]
-async fn mkdir(dir_path: String, hidden: bool) -> Result<(), String> {
+async fn mkdir(dir_path: String, hidden: Option<bool>) -> Result<(), String> {
   // Create the application directory folder
   println!("Creating app data dir folder: {}", dir_path);
 
@@ -20,6 +20,9 @@ async fn mkdir(dir_path: String, hidden: bool) -> Result<(), String> {
   }
 
   create_dir_all(&full_path).map_err(|e| format!("Failed to create directory: {}", e))?;
+
+  // Treat missing `hidden` argument as false by default
+  let hidden = hidden.unwrap_or(false);
 
   if hidden {
     // Don't attempt to hide if it's already hidden; surface errors instead of unwrap/panic
