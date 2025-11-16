@@ -23,7 +23,7 @@
     "tauri": "tauri",
     "download-assets": "node scripts/download-video-assets.ts",
     "rename-bundles": "node scripts/rename-bundles.ts",
-    "lint": "eslint -c eslint.config.ts --ignore-pattern **/*.js"
+    "lint": "eslint -c eslint.config.ts"
   },
   "dependencies": {
     "@tauri-apps/api": "^2",
