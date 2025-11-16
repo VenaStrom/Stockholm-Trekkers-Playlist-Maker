@@ -3,11 +3,12 @@ import tseslint from "typescript-eslint";
 import reactPlugin from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
+import { defineConfig } from "eslint/config";
 
-export default tseslint.defineConfig(
+export default defineConfig([
   js.configs.recommended,
-  ...tseslint.configs.strict,
-  ...tseslint.configs.stylistic,
+  tseslint.configs.strict,
+  tseslint.configs.stylistic,
   {
     files: ["**/*.{ts,tsx}"],
     languageOptions: {
@@ -22,7 +23,7 @@ export default tseslint.defineConfig(
     },
     plugins: {
       react: reactPlugin,
-      "react-hooks": reactHooks,
+      "react-hooks": reactHooks as any,
       "react-refresh": reactRefresh,
     },
     rules: {
@@ -41,14 +42,9 @@ export default tseslint.defineConfig(
           varsIgnorePattern: "^_",
         },
       ],
-      "@typescript-eslint/consistent-type-imports": [
-        "error",
-        {
-          prefer: "type-imports",
-          fixStyle: "inline-type-imports",
-        },
-      ],
+      "@typescript-eslint/consistent-type-imports": "off",
       "@typescript-eslint/no-import-type-side-effects": "error",
+      "@typescript-eslint/consistent-type-definitions": "off"
     },
     settings: {
       react: {
@@ -78,7 +74,13 @@ export default tseslint.defineConfig(
     },
     rules: {
       "no-console": "off",
-      "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+        },
+      ],
     },
   },
   {
@@ -91,6 +93,7 @@ export default tseslint.defineConfig(
       "*.config.ts",
       "vite.config.ts",
       "tailwind.config.js",
+      "**/*.d.ts",
     ],
   }
-);
+]);

@@ -19,13 +19,13 @@ export type PageContext = {
 };
 export const PageContextDefaultValue: PageContext = {
   route: PageRoute.Projects,
-  setRoute: () => { },
+  setRoute: () => { /* will be defined */ },
   headerText: "",
-  setHeaderText: () => { },
+  setHeaderText: () => { /* will be defined */ },
   projectId: null,
-  setProjectId: () => { },
+  setProjectId: () => { /* will be defined */ },
   projects: [],
-  setProjects: () => { },
+  setProjects: () => { /* will be defined */ },
 };
 
 export const PageContext = createContext<PageContext>({ ...PageContextDefaultValue });

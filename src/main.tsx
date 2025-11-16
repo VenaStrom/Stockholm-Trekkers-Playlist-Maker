@@ -4,7 +4,9 @@ import App from "./app";
 import { PageProvider } from "./components/page-context/page";
 import { ToastProvider } from "./components/toast/toast";
 
-createRoot(document.getElementById("root")!).render(
+const root = document.getElementById("root");
+if (!root) throw new Error("Failed to find root element");
+createRoot(root).render(
   <StrictMode>
     <PageProvider>
       <ToastProvider>

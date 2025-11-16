@@ -30,25 +30,6 @@ export default function Editor() {
 
   useEffect(() => setHeaderText("Editor"), [setHeaderText]);
 
-  const readProjectData = async () => {
-    if (!projectId) return;
-    const projectFolderPath = await path.join(await appDataDir(), DirName.Projects, projectId);
-
-    if (!await fs.exists(projectFolderPath)) {
-      console.error("Project does not exist:", projectFolderPath);
-      setRoute(PageRoute.Projects);
-      return;
-    }
-
-    const projectSaveFile = await path.join(projectFolderPath, FileName.ProjectSave);
-
-    const fileContent = await fs.readFile(projectSaveFile);
-    const decoder = new TextDecoder("utf-8");
-    const decodedContent = decoder.decode(fileContent);
-    const project = JSON.parse(decodedContent);
-
-    setVolatileProject(project);
-  };
   // Read project data from file on mount
   useEffect(() => {
     // Redirect if no project id is defined
@@ -57,8 +38,28 @@ export default function Editor() {
       setRoute(PageRoute.Projects);
     }
 
+    const readProjectData = async () => {
+      if (!projectId) return;
+      const projectFolderPath = await path.join(await appDataDir(), DirName.Projects, projectId);
+
+      if (!await fs.exists(projectFolderPath)) {
+        console.error("Project does not exist:", projectFolderPath);
+        setRoute(PageRoute.Projects);
+        return;
+      }
+
+      const projectSaveFile = await path.join(projectFolderPath, FileName.ProjectSave);
+
+      const fileContent = await fs.readFile(projectSaveFile);
+      const decoder = new TextDecoder("utf-8");
+      const decodedContent = decoder.decode(fileContent);
+      const project = JSON.parse(decodedContent);
+
+      setVolatileProject(project);
+    };
+
     readProjectData();
-  }, []);
+  }, [projectId, setRoute]);
 
   // Save project data to file when changed
   const debouncedProjectData = useDebounce(volatileProject, 500);
