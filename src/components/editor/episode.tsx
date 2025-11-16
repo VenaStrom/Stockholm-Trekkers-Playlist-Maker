@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Episode, Project } from "../../project-types";
-import { IconDragIndicator, IconFolderOutline, IconRightPanelOpenOutline } from "../icons";
+import { IconDeleteOutline, IconDragIndicator, IconFolderOutline, IconRightPanelOpenOutline } from "../icons";
 import { open } from "@tauri-apps/plugin-dialog";
 import { secondsToTimeString } from "../../functions/time-format";
 
@@ -130,6 +130,128 @@ export default function EpisodeLi({
     });
   };
 
+  const moveEpisodeUpOne = () => {
+    const blockIndex = volatileProject.blocks.findIndex(b => b.episodes.some(ep => ep.id === episode.id));
+    if (blockIndex === -1) return;
+
+    const block = volatileProject.blocks[blockIndex];
+    const episodeIndex = block.episodes.findIndex(ep => ep.id === episode.id);
+    if (episodeIndex === -1) return;
+
+    // Move up within the same block
+    if (episodeIndex > 0) {
+      setVolatileProject((prevProject) => {
+        if (!prevProject) return prevProject;
+
+        const updatedBlocks = prevProject.blocks.map((b, idx) => {
+          if (idx === blockIndex) {
+            const arr = [...b.episodes];
+            const [movedEpisode] = arr.splice(episodeIndex, 1);
+            arr.splice(episodeIndex - 1, 0, movedEpisode);
+            return {
+              ...b,
+              episodes: arr,
+            };
+          }
+          return b;
+        });
+
+        return { ...prevProject, blocks: updatedBlocks };
+      });
+    }
+    // Move to end of previous block
+    else if (blockIndex > 0) {
+      setVolatileProject((prevProject) => {
+        if (!prevProject) return prevProject;
+
+        const updatedBlocks = prevProject.blocks.map((b, idx) => {
+          // Remove from current block
+          if (idx === blockIndex) {
+            const arr = [...b.episodes];
+            arr.splice(episodeIndex, 1);
+            return {
+              ...b,
+              episodes: arr,
+            };
+          }
+          // Add to end of previous block
+          else if (idx === blockIndex - 1) {
+            return {
+              ...b,
+              episodes: [...b.episodes, episode],
+            };
+          }
+          return b;
+        });
+
+        return { ...prevProject, blocks: updatedBlocks };
+      });
+    }
+
+    return;
+  };
+
+  const moveEpisodeDownOne = () => {
+    const blockIndex = volatileProject.blocks.findIndex(b => b.episodes.some(ep => ep.id === episode.id));
+    if (blockIndex === -1) return;
+
+    const block = volatileProject.blocks[blockIndex];
+    const episodeIndex = block.episodes.findIndex(ep => ep.id === episode.id);
+    if (episodeIndex === -1) return;
+
+    // Move down within the same block
+    if (episodeIndex < block.episodes.length - 1) {
+      setVolatileProject((prevProject) => {
+        if (!prevProject) return prevProject;
+
+        const updatedBlocks = prevProject.blocks.map((b, idx) => {
+          if (idx === blockIndex) {
+            const arr = [...b.episodes];
+            const [movedEpisode] = arr.splice(episodeIndex, 1);
+            arr.splice(episodeIndex + 1, 0, movedEpisode);
+            return {
+              ...b,
+              episodes: arr,
+            };
+          }
+          return b;
+        });
+
+        return { ...prevProject, blocks: updatedBlocks };
+      });
+    }
+    // Move to start of next block
+    else if (blockIndex < volatileProject.blocks.length - 1) {
+      setVolatileProject((prevProject) => {
+        if (!prevProject) return prevProject;
+
+        const updatedBlocks = prevProject.blocks.map((b, idx) => {
+          // Remove from current block
+          if (idx === blockIndex) {
+            const arr = [...b.episodes];
+            arr.splice(episodeIndex, 1);
+            return {
+              ...b,
+              episodes: arr,
+            };
+          }
+          // Add to start of next block
+          else if (idx === blockIndex + 1) {
+            return {
+              ...b,
+              episodes: [episode, ...b.episodes],
+            };
+          }
+          return b;
+        });
+
+        return { ...prevProject, blocks: updatedBlocks };
+      });
+    }
+
+    return;
+  };
+
   // Memoized file name and route for prettier display
   const fileName = useMemo(() => {
     if (!selectedFile) return "No file selected";
@@ -161,15 +283,9 @@ export default function EpisodeLi({
       onDragLeave={onDragLeave}
     >
       <div className="flex flex-row gap-x-6 items-center pe-10">
-        <span
-          draggable
-          onDragStart={onDragStart}
-          className="cursor-grab"
-          aria-label="Drag to reorder"
-          title="Drag to reorder"
-        >
-          <IconDragIndicator className="size-6 text-flare-700/95" />
-        </span>
+        <button className="€icon">
+          <IconDeleteOutline className="size-6 text-flare-700/95" />
+        </button>
 
         <span className={`w-[5ch] ${!episode.cachedStartTime ? "text-flare-700" : ""}`}>{episode.cachedStartTime || "--:--"}</span>
         <span className={`w-[7ch] ps-0.5 ${!episode.duration ? "text-flare-700" : ""}`}>{episode.duration ? secondsToTimeString(episode.duration) : "-"}</span>
@@ -194,6 +310,27 @@ export default function EpisodeLi({
           <IconFolderOutline className="inline size-6 ms-0.5" />
         </button>
       </label>
+
+      <span
+        draggable
+        onDragStart={onDragStart}
+        className={`cursor-grab ms-3 text-flare-700/95 hover:opacity-80 transition-all`}
+        aria-label="Drag to reorder"
+        title="Drag to reorder"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === "ArrowUp") {
+            e.preventDefault();
+            moveEpisodeUpOne();
+          }
+          else if (e.key === "ArrowDown") {
+            e.preventDefault();
+            moveEpisodeDownOne();
+          }
+        }}
+      >
+        <IconDragIndicator className="size-6" />
+      </span>
     </li>
   );
 }
