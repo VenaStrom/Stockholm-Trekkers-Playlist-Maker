@@ -13,6 +13,20 @@ import BlockLi from "../components/editor/block";
 export default function Editor() {
   const { setHeaderText, projectId, setRoute } = usePageContext();
   const [volatileProject, setVolatileProject] = useState<Project | null>(null);
+  const [SHOW_DEBUG, setSHOW_DEBUG] = useState(false);
+
+  // DEBUG register ctrl+D to toggle debug info
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key === "d") {
+        setSHOW_DEBUG(prev => !prev);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   useEffect(() => setHeaderText("Editor"), [setHeaderText]);
 
@@ -127,11 +141,13 @@ export default function Editor() {
         </label>
 
         {/* DEBUG TODO - remove */}
-        <pre className="opacity-50 text-xs mt-10">
-          {JSON.stringify(debouncedProjectData[0]) === JSON.stringify(volatileProject) ? "Saved" : "Saving..."}
-          <br />
-          {JSON.stringify(volatileProject, null, 2)}
-        </pre>
+        {SHOW_DEBUG &&
+          <pre className="opacity-50 text-xs mt-10 w-0">
+            {JSON.stringify(debouncedProjectData[0]) === JSON.stringify(volatileProject) ? "Saved" : "Saving..."}
+            <br />
+            {JSON.stringify(volatileProject, null, 2)}
+          </pre>
+        }
       </aside>
 
       <section className="lg:flex-1 not-lg:w-full">
