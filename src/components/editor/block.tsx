@@ -17,39 +17,24 @@ export default function BlockLi({
 }) {
   const episodes = useMemo(() => volatileProject.episodes.filter(e => e.blockId === block.id), [volatileProject.episodes, block.id]);
 
-  // Have at least 2 episodes
-  useEffect(() => {
-    if (episodes.length < 2) {
-      const neededEpisodes = 2 - episodes.length;
-      if (neededEpisodes > 0) {
-        // Add empty episodes to reach minimum count
-        setVolatileProject((prevProject) => {
-          if (!prevProject) return prevProject;
-          const updatedEpisodes = [
-            ...prevProject.episodes,
-            ...new Array(neededEpisodes).fill(null).map(() => getEmptyEpisode(block.id)),
-          ];
-          return { ...prevProject, episodes: updatedEpisodes };
-        });
-      }
-    }
-  }, [block.id, episodes, setVolatileProject]);
-
   // Ensure trailing empty episode
   useEffect(() => {
     if (episodes.length === 0) return;
 
+    const newEpisodes: Episode[] = [];
+
+    // Ensure minimum of 2 episodes
+    if (episodes.length < 2) {
+      const neededEpisodes = 2 - episodes.length;
+      if (neededEpisodes > 0) {
+        newEpisodes.push(...new Array(neededEpisodes).fill(null).map(() => getEmptyEpisode(block.id)));
+      }
+    }
+
+    // Add trailing episode if the current last one has a filePath so one empty episode is always present
     const lastEpisode = episodes.at(-1);
     if (lastEpisode && lastEpisode.filePath) {
-      // Add an empty episode if the last one has a filePath
-      setVolatileProject((prevProject) => {
-        if (!prevProject) return prevProject;
-        const updatedEpisodes = [
-          ...prevProject.episodes,
-          getEmptyEpisode(block.id),
-        ];
-        return { ...prevProject, episodes: updatedEpisodes };
-      });
+      newEpisodes.push(getEmptyEpisode(block.id));
     }
 
     // Ensure only one trailing empty episode
@@ -62,13 +47,22 @@ export default function BlockLi({
     }
     trailingEmptyEpisodes.shift(); // Remove last one to keep a single empty episode (to preserve id)
     if (trailingEmptyEpisodes.length > 0) {
+      newEpisodes.push(...volatileProject.episodes.filter(ep => !trailingEmptyEpisodes.includes(ep.id)));
+    }
+
+    // Update state after collected changes
+    if (newEpisodes.length > 0) {
       setVolatileProject((prevProject) => {
         if (!prevProject) return prevProject;
-        const updatedEpisodes = prevProject.episodes.filter(ep => !trailingEmptyEpisodes.includes(ep.id));
+        const updatedEpisodes = [
+          ...prevProject.episodes,
+          ...newEpisodes,
+        ];
         return { ...prevProject, episodes: updatedEpisodes };
       });
     }
-  }, [block.id, episodes, setVolatileProject]);
+
+  }, [block.id, episodes, setVolatileProject, volatileProject.episodes]);
 
   return (
     <li className="bg-abyss-800 px-4 py-2 rounded-sm">
