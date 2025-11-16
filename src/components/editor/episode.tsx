@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Episode, Project } from "../../project-types";
-import { IconDeleteOutline, IconDragIndicator, IconFolderOutline, IconRightPanelOpenOutline } from "../icons";
+import { IconDeleteOutline, IconDragIndicator, IconFolderOutline } from "../icons";
 import { open } from "@tauri-apps/plugin-dialog";
 import { secondsToTimeString } from "../../functions/time-format";
 
@@ -16,8 +16,6 @@ export default function EpisodeLi({
 }) {
   const [selectedFile, setSelectedFile] = useState<string | null>(volatileProject.blocks.find(block =>
     block.episodes.some(ep => ep.id === episode.id))?.episodes.find(ep => ep.id === episode.id)?.filePath || null);
-
-  const [isDragOver, setDragOver] = useState(false);
 
   const onFileChange = async () => {
     const filePath = await open({
@@ -63,6 +61,7 @@ export default function EpisodeLi({
   };
 
   // Drag handlers
+  const [isDragOver, setDragOver] = useState(false);
   const onDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData("text/plain", episode.id);
     e.dataTransfer.effectAllowed = "move";
@@ -283,14 +282,17 @@ export default function EpisodeLi({
       onDragLeave={onDragLeave}
     >
       <div className="flex flex-row gap-x-6 items-center pe-10">
+        {/* Delete button */}
         <button className="€icon">
           <IconDeleteOutline className="size-6 text-flare-700/95" />
         </button>
-
+        {/* Start time */}
         <span className={`w-[5ch] ${!episode.cachedStartTime ? "text-flare-700" : ""}`}>{episode.cachedStartTime || "--:--"}</span>
+        {/* Duration */}
         <span className={`w-[7ch] ps-0.5 ${!episode.duration ? "text-flare-700" : ""}`}>{episode.duration ? secondsToTimeString(episode.duration) : "-"}</span>
       </div>
 
+      {/* Custom file input */}
       <label className="bg-abyss-500 rounded-sm flex flow-row items-center justify-between gap-x-4 ps-3 flex-1">
         <div className="flex-1 min-w-0">
           <span style={{ direction: "rtl" }} className="block overflow-hidden text-start">
@@ -311,6 +313,7 @@ export default function EpisodeLi({
         </button>
       </label>
 
+      {/* Drag thumb */}
       <span
         draggable
         onDragStart={onDragStart}

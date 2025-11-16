@@ -70,7 +70,12 @@ export default function Projects() {
     // Add to state TODO move this after successful save
     setProjects((prev) => [...prev, newProject]);
 
-    await invoke("mkdir", { dirPath: projectFolderPath });
+    const success = await invoke("mkdir", { dirPath: projectFolderPath });
+
+    if (!success) {
+      toast("Failed to create new project folder. Please try again.");
+      return;
+    }
 
     // Make project save file
     const content = JSON.stringify(newProject, null, 2);

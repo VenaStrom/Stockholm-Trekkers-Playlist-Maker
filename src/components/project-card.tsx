@@ -6,10 +6,7 @@ import { usePageContext } from "./page-context/use-page-context";
 import { path } from "@tauri-apps/api";
 import * as fs from "@tauri-apps/plugin-fs";
 import { useToast } from "./toast/useToast";
-import { revealItemInDir } from "@tauri-apps/plugin-opener";
-import { appDataDir, downloadDir, tempDir } from "@tauri-apps/api/path";
-import { open } from "@tauri-apps/plugin-dialog";
-import { copyFile, exists } from "@tauri-apps/plugin-fs";
+import { appDataDir } from "@tauri-apps/api/path";
 import { DirName } from "../global";
 import { PageRoute } from "./page-context/page.internal";
 
@@ -22,69 +19,10 @@ export default function ProjectCard({
   const { toast } = useToast();
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
 
-  const downloadSaveFile = async () => {
-    const savedName = `${project.id}.json`;
-    const newName = `project_file_${project.date || project.id}.json`;
-
-    const projectPath = await path.join(await appDataDir(), DirName.Projects, savedName);
-
-    if (!exists(projectPath)) {
-      toast(
-        <span>
-          Error: Project file not found.
-        </span>
-      );
-      return;
-    }
-
-    const downloadFolder = await open({
-      defaultPath: await downloadDir(),
-      directory: true,
-      title: "Select download location",
-      canCreateDirectories: true,
-    });
-    if (!downloadFolder) return;
-
-    if (!project.date) {
-      toast(
-        <span>
-          The project is missing a date so the exported file will use the project ID instead.
-        </span>
-      );
-    }
-
-    // Copy file to tmp folder before downloading to allow for renaming
-    const tempPath = await path.join(await tempDir(), newName);
-    await copyFile(projectPath, tempPath)
-      .catch((err: string) => {
-        toast(
-          <span>
-            Error copying file. Please try again.
-            <br />
-            {/* TODO - prettify this error message in some way */}
-            <span className="text-xs opacity-60 max-w-prose overflow-x-auto">{err}</span>
-          </span>
-        );
-        throw err;
-      });
-
-    const anchor = document.createElement("a");
-    anchor.href = tempPath;
-    anchor.download = newName;
-    document.body.appendChild(anchor);
-    anchor.click();
-    document.body.removeChild(anchor);
-
-    const destinationPath = await path.join(downloadFolder as string, newName);
-
+  const downloadSaveFolder = async () => {
     toast(
       <span>
-        Downloading {project.date} project file.{" "}
-        <a href="" target="_blank" rel="noreferrer" onClick={(e) => {
-          e.preventDefault();
-
-          revealItemInDir(destinationPath);
-        }}>Show</a>
+        Exporting project save folder is not yet implemented.
       </span>
     );
   };
@@ -168,7 +106,7 @@ export default function ProjectCard({
 
         <button
           className="pe-1.5 ps-3 hover:bg-spore-500"
-          onClick={downloadSaveFile}
+          onClick={downloadSaveFolder}
         >
           Export
           <span className="flex-1"></span>

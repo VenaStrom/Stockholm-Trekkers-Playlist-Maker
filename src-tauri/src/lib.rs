@@ -14,12 +14,33 @@ async fn mkdir(dir_path: String, hidden: bool) -> Result<(), String> {
 
   let full_path = std::path::Path::new(&dir_path);
 
-  create_dir_all(&full_path).map_err(|e| format!("Failed to create directory: {}", e))?;
-
-  if !hidden {
+  // If it already exists, nothing to do
+  if full_path.exists() {
     return Ok(());
   }
-  hf::hide(&full_path).unwrap();
+
+  create_dir_all(&full_path).map_err(|e| format!("Failed to create directory: {}", e))?;
+
+  if hidden {
+    // Don't attempt to hide if it's already hidden; surface errors instead of unwrap/panic
+    match hf::is_hidden(&full_path) {
+      Ok(true) => {
+        // If already hidden, nothing to do
+        return Ok(());
+      }
+      Ok(false) => {
+        hf::hide(&full_path)
+          .map_err(|e| format!("Failed to hide directory '{}': {}", dir_path, e))?;
+      }
+      Err(e) => {
+        return Err(format!(
+          "Failed to determine hidden state for '{}': {}",
+          dir_path, e
+        ));
+      }
+    }
+  }
+
   Ok(())
 }
 
