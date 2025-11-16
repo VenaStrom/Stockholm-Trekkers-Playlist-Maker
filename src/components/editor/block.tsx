@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { Block, Episode, getEmptyEpisode, Project } from "../../project-types";
 import { IconDeleteOutline, IconSettingsOutline } from "../icons";
 import EpisodeLi from "./episode";
@@ -15,90 +15,60 @@ export default function BlockLi({
   project: Project;
   projectSetter: React.Dispatch<React.SetStateAction<Project | null>>;
 }) {
+  const episodes = useMemo(() => volatileProject.episodes.filter(e => e.blockId === block.id), [volatileProject.episodes, block.id]);
 
-  // Handle episode count changes
+  // Have at least 2 episodes
   useEffect(() => {
-    // Less than 2 episodes: add empty episodes
-    if (block.episodes.length <= 2) {
-      const neededEpisodes = 2 - block.episodes.length;
+    if (episodes.length < 2) {
+      const neededEpisodes = 2 - episodes.length;
       if (neededEpisodes > 0) {
         // Add empty episodes to reach minimum count
         setVolatileProject((prevProject) => {
           if (!prevProject) return prevProject;
-
-          const updatedBlocks = prevProject.blocks.map((b, idx) => {
-            if (idx === blockIndex) {
-              return {
-                ...b,
-                episodes: [
-                  ...b.episodes,
-                  ...Array.from({ length: neededEpisodes }, () => getEmptyEpisode()),
-                ],
-              };
-            }
-            return b;
-          });
-
-          return { ...prevProject, blocks: updatedBlocks };
+          const updatedEpisodes = [
+            ...prevProject.episodes,
+            ...new Array(neededEpisodes).fill(null).map(() => getEmptyEpisode(block.id)),
+          ];
+          return { ...prevProject, episodes: updatedEpisodes };
         });
       }
+    }
+  }, [block.id, episodes, setVolatileProject]);
 
-      return;
-    };
+  // Ensure trailing empty episode
+  useEffect(() => {
+    if (episodes.length === 0) return;
 
-    // Ensure trailing empty episode
-    const lastEpisode = block.episodes[block.episodes.length - 1];
-    if (lastEpisode.filePath) {
+    const lastEpisode = episodes.at(-1);
+    if (lastEpisode && lastEpisode.filePath) {
       // Add an empty episode if the last one has a filePath
       setVolatileProject((prevProject) => {
         if (!prevProject) return prevProject;
-
-        const updatedBlocks = prevProject.blocks.map((b, idx) => {
-          if (idx === blockIndex) {
-            return {
-              ...b,
-              episodes: [...b.episodes, getEmptyEpisode()],
-            };
-          }
-          return b;
-        });
-
-        return { ...prevProject, blocks: updatedBlocks };
+        const updatedEpisodes = [
+          ...prevProject.episodes,
+          getEmptyEpisode(block.id),
+        ];
+        return { ...prevProject, episodes: updatedEpisodes };
       });
     }
 
     // Ensure only one trailing empty episode
     const trailingEmptyEpisodes: Episode["id"][] = [];
-    for (let i = block.episodes.length - 1; i >= 0; i--) {
-      const episode = block.episodes[i];
-      if (!episode.filePath) {
+    for (const episode of [...episodes].reverse()) {
+      if (episode && !episode.filePath) {
         trailingEmptyEpisodes.push(episode.id);
       }
-      else {
-        break;
-      }
+      else break;
     }
-    // Remove last one to keep a single empty episode (to keep id as well)
-    trailingEmptyEpisodes.shift();
+    trailingEmptyEpisodes.shift(); // Remove last one to keep a single empty episode (to preserve id)
     if (trailingEmptyEpisodes.length > 0) {
       setVolatileProject((prevProject) => {
         if (!prevProject) return prevProject;
-
-        const updatedBlocks = prevProject.blocks.map(b => {
-          if (b.id === block.id) {
-            const updatedEpisodes = b.episodes.filter(ep => !trailingEmptyEpisodes.includes(ep.id));
-            return {
-              ...b,
-              episodes: updatedEpisodes,
-            };
-          }
-          return b;
-        });
-
-        return { ...prevProject, blocks: updatedBlocks };
+        const updatedEpisodes = prevProject.episodes.filter(ep => !trailingEmptyEpisodes.includes(ep.id));
+        return { ...prevProject, episodes: updatedEpisodes };
       });
     }
-  }, [block.episodes]);
+  }, [block.id, episodes, setVolatileProject]);
 
   return (
     <li className="bg-abyss-800 px-4 py-2 rounded-sm">
@@ -137,7 +107,7 @@ export default function BlockLi({
           <span className="w-[7ch]">Duration</span>
         </div>
         <ul className="flex flex-col gap-y-2 pb-3 pt-1">
-          {block.episodes.map(episode => (
+          {episodes.map(episode => (
             <EpisodeLi
               key={`episode-${episode.id}`}
               episode={episode}

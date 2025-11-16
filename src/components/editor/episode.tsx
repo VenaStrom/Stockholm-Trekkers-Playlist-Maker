@@ -14,8 +14,7 @@ export default function EpisodeLi({
   project: Project;
   projectSetter: React.Dispatch<React.SetStateAction<Project | null>>;
 }) {
-  const [selectedFile, setSelectedFile] = useState<string | null>(volatileProject.blocks.find(block =>
-    block.episodes.some(ep => ep.id === episode.id))?.episodes.find(ep => ep.id === episode.id)?.filePath || null);
+  const [selectedFile, setSelectedFile] = useState<string | null>(episode.filePath || null);
 
   const onFileChange = async () => {
     const filePath = await open({
@@ -45,18 +44,7 @@ export default function EpisodeLi({
 
     setVolatileProject((prevProject) => {
       if (!prevProject) return prevProject;
-
-      const updatedBlocks = prevProject.blocks.map((block) => {
-        const updatedEpisodes = block.episodes.map((ep) => {
-          if (ep.id === newEpisode.id) {
-            return { ...newEpisode };
-          }
-          return ep;
-        });
-        return { ...block, episodes: updatedEpisodes };
-      });
-
-      return { ...prevProject, blocks: updatedBlocks };
+      return { ...prevProject, episodes: [...prevProject.episodes, newEpisode] };
     });
   };
 
@@ -84,171 +72,53 @@ export default function EpisodeLi({
     setDragOver(false);
     if (!draggedId || draggedId === episode.id) return;
 
-    setVolatileProject((prev) => {
-      if (!prev) return prev;
+    // Update project state
+    setVolatileProject((prevProject) => {
+      if (!prevProject) return prevProject;
 
-      const sourceBlockIndex = prev.blocks.findIndex(b => b.episodes.some(ep => ep.id === draggedId));
-      const targetBlockIndex = prev.blocks.findIndex(b => b.episodes.some(ep => ep.id === episode.id));
-      if (sourceBlockIndex === -1 || targetBlockIndex === -1) return prev;
+      const draggedIndex = prevProject.episodes.findIndex((ep) => ep.id === draggedId);
+      const targetIndex = prevProject.episodes.findIndex((ep) => ep.id === episode.id);
+      if (draggedIndex === -1 || targetIndex === -1) return prevProject;
 
-      const sourceBlock = prev.blocks[sourceBlockIndex];
-      const targetBlock = prev.blocks[targetBlockIndex];
+      const newEpisodes = [...prevProject.episodes];
+      const [draggedEpisode] = newEpisodes.splice(draggedIndex, 1);
+      if (!draggedEpisode) return prevProject; // For the type engine
+      newEpisodes.splice(targetIndex, 0, draggedEpisode);
 
-      const draggedEpisodeIndex = sourceBlock.episodes.findIndex(ep => ep.id === draggedId);
-      const targetEpisodeIndex = targetBlock.episodes.findIndex(ep => ep.id === episode.id);
-      if (draggedEpisodeIndex === -1 || targetEpisodeIndex === -1) return prev;
-
-      const draggedEpisode = sourceBlock.episodes[draggedEpisodeIndex];
-
-      // Move within same block
-      if (sourceBlockIndex === targetBlockIndex) {
-        const arr = [...sourceBlock.episodes];
-        arr.splice(draggedEpisodeIndex, 1);        // remove original
-        const insertIndex = draggedEpisodeIndex < targetEpisodeIndex ? targetEpisodeIndex : targetEpisodeIndex;
-        arr.splice(insertIndex, 0, draggedEpisode);
-        const newBlocks = prev.blocks.map((b, idx) => idx === sourceBlockIndex ? { ...b, episodes: arr } : b);
-        return { ...prev, blocks: newBlocks };
-      }
-
-      // Move across blocks
-      const newBlocks = prev.blocks.map((b, idx) => {
-        if (idx === sourceBlockIndex) {
-          const arr = [...b.episodes];
-          arr.splice(draggedEpisodeIndex, 1);
-          return { ...b, episodes: arr };
-        }
-        if (idx === targetBlockIndex) {
-          const arr = [...b.episodes];
-          arr.splice(targetEpisodeIndex, 0, draggedEpisode);
-          return { ...b, episodes: arr };
-        }
-        return b;
-      });
-
-      return { ...prev, blocks: newBlocks };
+      return { ...prevProject, episodes: newEpisodes };
     });
   };
 
   const moveEpisodeUpOne = () => {
-    const blockIndex = volatileProject.blocks.findIndex(b => b.episodes.some(ep => ep.id === episode.id));
-    if (blockIndex === -1) return;
+    const currentIndex = volatileProject.episodes.findIndex((ep) => ep.id === episode.id);
+    if (currentIndex <= 0) return; // Already at the top
 
-    const block = volatileProject.blocks[blockIndex];
-    const episodeIndex = block.episodes.findIndex(ep => ep.id === episode.id);
-    if (episodeIndex === -1) return;
+    setVolatileProject((prevProject) => {
+      if (!prevProject) return prevProject;
 
-    // Move up within the same block
-    if (episodeIndex > 0) {
-      setVolatileProject((prevProject) => {
-        if (!prevProject) return prevProject;
+      const newEpisodes = [...prevProject.episodes];
+      const [movedEpisode] = newEpisodes.splice(currentIndex, 1);
+      if (!movedEpisode) return prevProject; // For the type engine
+      newEpisodes.splice(currentIndex - 1, 0, movedEpisode);
 
-        const updatedBlocks = prevProject.blocks.map((b, idx) => {
-          if (idx === blockIndex) {
-            const arr = [...b.episodes];
-            const [movedEpisode] = arr.splice(episodeIndex, 1);
-            arr.splice(episodeIndex - 1, 0, movedEpisode);
-            return {
-              ...b,
-              episodes: arr,
-            };
-          }
-          return b;
-        });
-
-        return { ...prevProject, blocks: updatedBlocks };
-      });
-    }
-    // Move to end of previous block
-    else if (blockIndex > 0) {
-      setVolatileProject((prevProject) => {
-        if (!prevProject) return prevProject;
-
-        const updatedBlocks = prevProject.blocks.map((b, idx) => {
-          // Remove from current block
-          if (idx === blockIndex) {
-            const arr = [...b.episodes];
-            arr.splice(episodeIndex, 1);
-            return {
-              ...b,
-              episodes: arr,
-            };
-          }
-          // Add to end of previous block
-          else if (idx === blockIndex - 1) {
-            return {
-              ...b,
-              episodes: [...b.episodes, episode],
-            };
-          }
-          return b;
-        });
-
-        return { ...prevProject, blocks: updatedBlocks };
-      });
-    }
-
-    return;
+      return { ...prevProject, episodes: newEpisodes };
+    });
   };
 
   const moveEpisodeDownOne = () => {
-    const blockIndex = volatileProject.blocks.findIndex(b => b.episodes.some(ep => ep.id === episode.id));
-    if (blockIndex === -1) return;
+    const currentIndex = volatileProject.episodes.findIndex((ep) => ep.id === episode.id);
+    if (currentIndex === -1 || currentIndex >= volatileProject.episodes.length - 1) return; // Already at the bottom
 
-    const block = volatileProject.blocks[blockIndex];
-    const episodeIndex = block.episodes.findIndex(ep => ep.id === episode.id);
-    if (episodeIndex === -1) return;
+    setVolatileProject((prevProject) => {
+      if (!prevProject) return prevProject;
 
-    // Move down within the same block
-    if (episodeIndex < block.episodes.length - 1) {
-      setVolatileProject((prevProject) => {
-        if (!prevProject) return prevProject;
+      const newEpisodes = [...prevProject.episodes];
+      const [movedEpisode] = newEpisodes.splice(currentIndex, 1);
+      if (!movedEpisode) return prevProject; // For the type engine
+      newEpisodes.splice(currentIndex + 1, 0, movedEpisode);
 
-        const updatedBlocks = prevProject.blocks.map((b, idx) => {
-          if (idx === blockIndex) {
-            const arr = [...b.episodes];
-            const [movedEpisode] = arr.splice(episodeIndex, 1);
-            arr.splice(episodeIndex + 1, 0, movedEpisode);
-            return {
-              ...b,
-              episodes: arr,
-            };
-          }
-          return b;
-        });
-
-        return { ...prevProject, blocks: updatedBlocks };
-      });
-    }
-    // Move to start of next block
-    else if (blockIndex < volatileProject.blocks.length - 1) {
-      setVolatileProject((prevProject) => {
-        if (!prevProject) return prevProject;
-
-        const updatedBlocks = prevProject.blocks.map((b, idx) => {
-          // Remove from current block
-          if (idx === blockIndex) {
-            const arr = [...b.episodes];
-            arr.splice(episodeIndex, 1);
-            return {
-              ...b,
-              episodes: arr,
-            };
-          }
-          // Add to start of next block
-          else if (idx === blockIndex + 1) {
-            return {
-              ...b,
-              episodes: [episode, ...b.episodes],
-            };
-          }
-          return b;
-        });
-
-        return { ...prevProject, blocks: updatedBlocks };
-      });
-    }
-
-    return;
+      return { ...prevProject, episodes: newEpisodes };
+    });
   };
 
   // Memoized file name and route for prettier display

@@ -37,7 +37,7 @@ export default function ProjectCard({
         Are you sure you want to delete the project <span className="italic">{project.date}?</span>
         <span className="text-sm text-flare-500/60">
           <br />
-          This will project contains {project.blocks.filter(b => b.episodes.filter(e => e.filePath).length).length} blocks and {project.blocks.reduce((sum, block) => sum + block.episodes.filter(e => e.filePath).length, 0)} episodes.
+          This will project contains {project.blocks.length} blocks and {project.episodes.filter(e => e.filePath).length} episodes.
           <br />
           Created: {new Date(project.dateCreated).toLocaleDateString("en-SE")} {new Date(project.dateCreated).toLocaleTimeString("en-SE")}
           {
@@ -93,10 +93,10 @@ export default function ProjectCard({
           </li>
         )}
         <li>
-          {project.blocks.filter(b => b.episodes.filter(e => e.filePath).length).length} blocks
+          {project.blocks.length} blocks
         </li>
         <li>
-          {project.blocks.reduce((sum, block) => sum + block.episodes.filter(e => e.filePath).length, 0)} episodes
+          {project.episodes.filter(e => e.filePath).length} episodes
         </li>
       </ul>
 
