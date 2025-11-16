@@ -10,7 +10,7 @@ export default defineConfig([
   tseslint.configs.strict,
   tseslint.configs.stylistic,
   {
-    files: ["**/*.{ts,tsx}"],
+    files: ["src/**/*.{ts,tsx}"],
     languageOptions: {
       ecmaVersion: 2022,
       parser: tseslint.parser,
