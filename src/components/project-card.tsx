@@ -37,12 +37,16 @@ export default function ProjectCard({
         Are you sure you want to delete the project <span className="italic">{project.date}?</span>
         <span className="text-sm text-flare-500/60">
           <br />
-          This will project contains {project.blocks.length} blocks and {project.blocks.reduce((sum, block) => sum + block.episodes.length, 0)} episodes.
+          This will project contains {project.blocks.filter(b => b.episodes.filter(e => e.filePath).length).length} blocks and {project.blocks.reduce((sum, block) => sum + block.episodes.filter(e => e.filePath).length, 0)} episodes.
           <br />
           Created: {new Date(project.dateCreated).toLocaleDateString("en-SE")} {new Date(project.dateCreated).toLocaleTimeString("en-SE")}
-          {project.dateModified && project.dateModified !== project.dateCreated && (
-            <><br />Modified: {new Date(project.dateModified).toLocaleDateString("en-SE")} {new Date(project.dateModified).toLocaleTimeString("en-SE")}</>
-          )}
+          {
+            project.dateModified
+            && project.dateModified !== project.dateCreated
+            && (
+              <><br />Modified: {new Date(project.dateModified).toLocaleDateString("en-SE")} {new Date(project.dateModified).toLocaleTimeString("en-SE")}</>
+            )
+          }
         </span>
       </p>}
       buttons={[
@@ -89,10 +93,10 @@ export default function ProjectCard({
           </li>
         )}
         <li>
-          {project.blocks.length} blocks
+          {project.blocks.filter(b => b.episodes.filter(e => e.filePath).length).length} blocks
         </li>
         <li>
-          {project.blocks.reduce((sum, block) => sum + block.episodes.length, 0)} episodes
+          {project.blocks.reduce((sum, block) => sum + block.episodes.filter(e => e.filePath).length, 0)} episodes
         </li>
       </ul>
 

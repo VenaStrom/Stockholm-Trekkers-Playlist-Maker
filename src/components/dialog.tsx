@@ -78,7 +78,7 @@ export default function Dialog({
         {/* Option buttons */}
         <div className="flex flex-row justify-end pb-4 px-4">
           {buttons.map((button, index) => (
-            <div key={index} className="ms-2" tabIndex={0}>
+            <div key={index} className="ms-2">
               {button}
             </div>
           ))}
