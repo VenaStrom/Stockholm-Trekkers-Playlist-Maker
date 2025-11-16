@@ -16,10 +16,10 @@ export default function Dialog({
   dialogContent,
   buttons,
 }: DialogProps) {
-  if (!visible) return null;
-
   // Register Esc to close dialog
   useEffect(() => {
+    if (!visible) return;
+
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setVisible(false);
@@ -30,17 +30,21 @@ export default function Dialog({
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [setVisible]);
+  }, [visible, setVisible]);
 
   // If a button has the data-focus="true" attribute, focus on it when the dialog is rendered
   useEffect(() => {
+    if (!visible) return;
+
     const focusedButton = document.querySelector(
       'button[data-focus="true"]'
     ) as HTMLButtonElement | null;
     if (focusedButton) {
       focusedButton.focus();
     }
-  }, []);
+  }, [visible]);
+
+  if (!visible) return null;
 
   return (
     // Modal background
