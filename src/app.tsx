@@ -120,8 +120,10 @@ export default function App() {
 
       {/* Credit */}
       <p className="flex flex-col items-end leading-5 text-sm">
-        <span>Made by <a href={packageJson.contributors[0].url} target="_blank" rel="noreferrer">{packageJson.contributors[0].name}</a></span>
-        <span><a href={`mailto:${packageJson.contributors[0].email}?subject=Playlist%20Maker`} target="_blank" rel="noreferrer">{packageJson.contributors[0].email.replace(/\+\w*?(?=@)/, "")}</a></span>
+        {packageJson.contributors && packageJson.contributors[0] && <>
+          <span>Made by <a href={packageJson.contributors[0].url} target="_blank" rel="noreferrer">{packageJson.contributors[0].name}</a></span>
+          <span><a href={`mailto:${packageJson.contributors[0].email}?subject=Playlist%20Maker`} target="_blank" rel="noreferrer">{packageJson.contributors[0].email.replace(/\+\w*?(?=@)/, "")}</a></span>
+        </>}
       </p>
     </header>
 

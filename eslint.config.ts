@@ -53,40 +53,10 @@ export default defineConfig([
     },
   },
   {
-    files: ["scripts/**/*.ts"],
-    languageOptions: {
-      ecmaVersion: 2022,
-      sourceType: "module",
-      globals: {
-        console: "readonly",
-        process: "readonly",
-        Buffer: "readonly",
-        __dirname: "readonly",
-        __filename: "readonly",
-        global: "readonly",
-        setImmediate: "readonly",
-        clearImmediate: "readonly",
-        setTimeout: "readonly",
-        clearTimeout: "readonly",
-        setInterval: "readonly",
-        clearInterval: "readonly",
-      },
-    },
-    rules: {
-      "no-console": "off",
-      "@typescript-eslint/no-unused-vars": [
-        "warn",
-        {
-          argsIgnorePattern: "^_",
-          varsIgnorePattern: "^_",
-        },
-      ],
-    },
-  },
-  {
     ignores: [
       "dist/**",
       "node_modules/**",
+      "scripts/**",
       "src-tauri/target/**",
       "src-tauri/gen/**",
       "*.config.js",
