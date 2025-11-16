@@ -8,6 +8,7 @@ import { setTheme } from "@tauri-apps/api/app";
 import { IconLightDarkMode, IconLightModeOutline } from "./components/icons";
 import { Toaster } from "./components/toast/toast";
 import Editor from "./pages/editor";
+import packageJson from "../package.json" with { type: "json" };
 
 export default function App() {
   const [lightMode, setLightMode] = useState(() => {
@@ -119,8 +120,8 @@ export default function App() {
 
       {/* Credit */}
       <p className="flex flex-col items-end leading-5 text-sm">
-        <span>Made by <a href="https://venastrom.se" target="_blank" rel="noreferrer">Vena Ström</a></span>
-        <span><a href="mailto:strom.vena+playlistmaker@gmail.com?subject=Playlist%20Maker" target="_blank" rel="noreferrer">strom.vena@gmail.com</a></span>
+        <span>Made by <a href={packageJson.contributors[0].url} target="_blank" rel="noreferrer">{packageJson.contributors[0].name}</a></span>
+        <span><a href={`mailto:${packageJson.contributors[0].email}?subject=Playlist%20Maker`} target="_blank" rel="noreferrer">{packageJson.contributors[0].email.replace(/\+\w*?(?=@)/, "")}</a></span>
       </p>
     </header>
 
