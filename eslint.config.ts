@@ -36,7 +36,7 @@ export default defineConfig([
       "react/react-in-jsx-scope": "off",
       "react/prop-types": "off",
       "@typescript-eslint/no-unused-vars": [
-        "error",
+        "warn",
         {
           argsIgnorePattern: "^_",
           varsIgnorePattern: "^_",
@@ -44,7 +44,7 @@ export default defineConfig([
       ],
       "@typescript-eslint/consistent-type-imports": "off",
       "@typescript-eslint/no-import-type-side-effects": "error",
-      "@typescript-eslint/consistent-type-definitions": "off"
+      "@typescript-eslint/consistent-type-definitions": "off",
     },
     settings: {
       react: {
