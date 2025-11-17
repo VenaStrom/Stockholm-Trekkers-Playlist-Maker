@@ -21,47 +21,47 @@ export default function BlockLi({
   useEffect(() => {
     if (episodes.length === 0) return;
 
-    const newEpisodes: Episode[] = [];
+    setVolatileProject((prevProject) => {
+      const newEpisodes: Episode[] = [];
 
-    // Ensure minimum of 2 episodes
-    if (episodes.length < 2) {
-      const neededEpisodes = 2 - episodes.length;
-      if (neededEpisodes > 0) {
-        newEpisodes.push(...new Array(neededEpisodes).fill(null).map(() => getEmptyEpisode(block.id)));
+      // Ensure minimum of 2 episodes
+      if (episodes.length < 2) {
+        const neededEpisodes = 2 - episodes.length;
+        if (neededEpisodes > 0) {
+          newEpisodes.push(...new Array(neededEpisodes).fill(null).map(() => getEmptyEpisode(block.id)));
+        }
       }
-    }
 
-    // Add trailing episode if the current last one has a filePath so one empty episode is always present
-    const lastEpisode = episodes.at(-1);
-    if (lastEpisode && lastEpisode.filePath) {
-      newEpisodes.push(getEmptyEpisode(block.id));
-    }
-
-    // Ensure only one trailing empty episode
-    const trailingEmptyEpisodes: Episode["id"][] = [];
-    for (const episode of [...episodes].reverse()) {
-      if (episode && !episode.filePath) {
-        trailingEmptyEpisodes.push(episode.id);
+      // Add trailing episode if the current last one has a filePath so one empty episode is always present
+      const lastEpisode = episodes.at(-1);
+      if (lastEpisode && lastEpisode.filePath) {
+        newEpisodes.push(getEmptyEpisode(block.id));
       }
-      else break;
-    }
-    trailingEmptyEpisodes.shift(); // Remove last one to keep a single empty episode (to preserve id)
-    if (trailingEmptyEpisodes.length > 0) {
-      newEpisodes.push(...volatileProject.episodes.filter(ep => !trailingEmptyEpisodes.includes(ep.id)));
-    }
 
-    // Update state after collected changes
-    if (newEpisodes.length > 0) {
-      setVolatileProject((prevProject) => {
+      // Ensure only one trailing empty episode
+      const removableEpisodes: Episode["id"][] = [];
+      for (const episode of [...episodes].reverse()) {
+        if (episode && !episode.filePath) {
+          removableEpisodes.push(episode.id);
+        }
+        else break;
+      }
+      removableEpisodes.shift(); // Remove last one to keep a single empty episode (to preserve id)
+      if (removableEpisodes.length > 0 && episodes.length > 2) {
+        newEpisodes.push(...volatileProject.episodes.filter(ep => !removableEpisodes.includes(ep.id)));
+      }
+
+      // Update state after collected changes
+      if (newEpisodes.length > 0 && [...newEpisodes, ...episodes].length !== volatileProject.episodes.length) {
         if (!prevProject) return prevProject;
         const updatedEpisodes = [
           ...prevProject.episodes,
           ...newEpisodes,
         ];
         return { ...prevProject, episodes: updatedEpisodes };
-      });
-    }
-
+      }
+      return prevProject;
+    });
   }, [block.id, episodes, setVolatileProject, volatileProject.episodes]);
 
   return (
