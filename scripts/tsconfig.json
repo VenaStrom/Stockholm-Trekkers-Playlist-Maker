@@ -1,8 +1,13 @@
 {
   "compilerOptions": {
-    "target": "esnext",
+    "target": "ESNext",
     "module": "nodenext",
+    "moduleResolution": "nodenext",
     "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "checkJs": true
   },
   "include": [
     "**/*.ts",

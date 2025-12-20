@@ -12,19 +12,38 @@ model Episode {
   filePath String
   title    String
   duration Int
+
+  // Gets calculated by the playlist creator to allow for others to load the project and still see the times
+  cachedStartTime Int?
+  cachedEndTime   Int?
+
+  // Linked list pointers for ordering
+  nextId Int?
+  prevId Int?
+
+  block   Block?  @relation(fields: [blockId], references: [id])
+  blockId String?
 }
 
 model Block {
   id           String         @id @default(uuid())
   blockOptions Block_Option[]
+  episodes     Episode[]
+
+  // Liked list pointers for ordering
+  nextId String?
+  prevId String?
+
+  project   Project? @relation(fields: [projectId], references: [id])
+  projectId String?
 }
 
 model Block_Option {
-  blockId String
   block   Block  @relation(fields: [blockId], references: [id])
+  blockId String
 
-  optionKey String
   option    Option @relation(fields: [optionKey], references: [key])
+  optionKey String
 
   state Boolean
 
@@ -36,4 +55,16 @@ model Option {
   name String
 
   blockOptions Block_Option[]
+}
+
+model Project {
+  id          String  @id @default(uuid())
+  date        String
+  description String?
+
+  dateCreated  Int
+  dateModified Int?
+  optionsRev   Int
+
+  blocks Block[]
 }
