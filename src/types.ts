@@ -1,5 +1,7 @@
 import { generateId } from "./functions/sha256";
 
+export const OPTION_REVISION = 0;
+
 export type Episode = {
   id: string;
   order: number;
@@ -52,7 +54,7 @@ const emptyProject: Project = {
   description: null,
   dateCreated: 0,
   dateModified: null,
-  optionsRev: 0,
+  optionsRev: OPTION_REVISION,
   blocks: [],
   episodes: [],
 };

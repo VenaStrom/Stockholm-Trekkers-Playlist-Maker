@@ -18,8 +18,7 @@ model Episode {
   cachedEndTime   Int?
 
   // Linked list pointers for ordering
-  nextId Int?
-  prevId Int?
+  nextId String?
 
   block   Block?  @relation(fields: [blockId], references: [id])
   blockId String?
@@ -32,7 +31,6 @@ model Block {
 
   // Liked list pointers for ordering
   nextId String?
-  prevId String?
 
   project   Project? @relation(fields: [projectId], references: [id])
   projectId String?

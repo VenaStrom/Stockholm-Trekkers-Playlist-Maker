@@ -23,7 +23,8 @@
     "download-assets": "node scripts/download-video-assets.ts",
     "rename-bundles": "node scripts/rename-bundles.ts",
     "lint": "tsc --noEmit && eslint",
-    "prisma:generate": "prisma generate --no-hints"
+    "prisma:generate": "prisma generate --no-hints",
+    "seed": "prisma migrate reset --force && prisma db push && yarn prisma db seed"
   },
   "dependencies": {
     "@prisma/adapter-better-sqlite3": "^7.2.0",
