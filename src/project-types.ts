@@ -2,6 +2,7 @@ import { generateId } from "./functions/sha256";
 
 export type Episode = {
   id: string;
+  order: number;
   blockId: string;
   filePath: string | null;
   duration: number | null; // in seconds
@@ -11,25 +12,28 @@ export type Episode = {
 const emptyEpisode: Episode = {
   id: "",
   blockId: "",
+  order: Infinity,
   filePath: null,
   duration: null,
   cachedStartTime: null,
   cachedEndTime: null,
 };
-export function getEmptyEpisode(blockId: string): Episode {
-  return { ...emptyEpisode, id: generateId(), blockId: blockId };
+export function getEmptyEpisode(blockId: string, order?: number): Episode {
+  return { ...emptyEpisode, id: generateId(), blockId: blockId, ...order ? { order } : {}, };
 }
 
 export type Block = {
   id: string;
   options: Record<string, boolean>;
+  order: number;
 };
 const emptyBlock: Block = {
   id: "",
   options: {},
+  order: Infinity,
 };
-export function getEmptyBlock(): Block {
-  return { ...emptyBlock, id: generateId(), };
+export function getEmptyBlock(order?: number): Block {
+  return { ...emptyBlock, id: generateId(), ...order ? { order } : {} };
 }
 
 export type Project = {
@@ -53,12 +57,12 @@ const emptyProject: Project = {
   episodes: [],
 };
 export function getEmptyProject(): Project {
-  const block1 = getEmptyBlock();
-  const block2 = getEmptyBlock();
-  const episode1 = getEmptyEpisode(block1.id);
-  const episode2 = getEmptyEpisode(block1.id);
-  const episode3 = getEmptyEpisode(block2.id);
-  const episode4 = getEmptyEpisode(block2.id);
+  const block1 = getEmptyBlock(0);
+  const block2 = getEmptyBlock(1);
+  const episode1 = getEmptyEpisode(block1.id, 0);
+  const episode2 = getEmptyEpisode(block1.id, 1);
+  const episode3 = getEmptyEpisode(block2.id, 0);
+  const episode4 = getEmptyEpisode(block2.id, 1);
   return {
     ...emptyProject,
     id: generateId(),
