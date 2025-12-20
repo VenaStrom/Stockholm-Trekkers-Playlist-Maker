@@ -31,3 +31,13 @@ vite.config.js
 src-tauri/video-assets
 
 target
+
+# Prisma
+src/prisma/generated/
+
+.env
+.env.test
+.env.production
+.env.local
+
+dev.db
