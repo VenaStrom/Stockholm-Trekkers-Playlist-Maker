@@ -9,6 +9,7 @@ import { Project } from "../types";
 import { IconArrowBack2Outline, IconEditOutline, Spinner3DotsScaleMiddle } from "../components/icons";
 import { useDebounce } from "use-debounce";
 import BlockLi from "../components/editor/block";
+import { isProject } from "@/functions/type-guards";
 
 export default function Editor() {
   const { setHeaderText, projectId, setRoute } = usePageContext();
@@ -53,12 +54,22 @@ export default function Editor() {
       const fileContent = await fs.readFile(projectSaveFile);
       const decoder = new TextDecoder("utf-8");
       const decodedContent = decoder.decode(fileContent);
-      const project = JSON.parse(decodedContent);
+      const project: unknown = JSON.parse(decodedContent);
+
+      if (!isProject(project)) {
+        console.error("Project data is invalid:", project);
+        setRoute(PageRoute.Projects);
+        return;
+      }
 
       setVolatileProject(project);
     };
 
-    readProjectData();
+    readProjectData()
+      .catch(err => {
+        console.error("Error reading project data:", err);
+        setRoute(PageRoute.Projects);
+      });
   }, [projectId, setRoute]);
 
   // Save project data to file when changed
@@ -80,7 +91,10 @@ export default function Editor() {
   };
   useEffect(() => {
     if (!debouncedProjectData[0]) return;
-    writeProjectToFile(debouncedProjectData[0]);
+    writeProjectToFile(debouncedProjectData[0])
+      .catch(err => {
+        console.error("Error writing project data:", err);
+      });
   }, [debouncedProjectData]);
 
   const onDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,15 +107,23 @@ export default function Editor() {
     setVolatileProject(prev => prev ? { ...prev, description: newDescription } : prev);
   };
 
+  const navigateBack = () => {
+    const goBack = async () => {
+      if (volatileProject) await writeProjectToFile(volatileProject); // Save before going back
+      setRoute(PageRoute.Projects);
+    };
+    goBack()
+      .catch(err => {
+        console.error("Error navigating back:", err);
+      });
+  };
+
   return (
     <main className="flex flex-col lg:flex-row gap-x-8 gap-y-12 justify-center items-start pt-4 px-12">
       <aside className="min-w-1/4 not-lg:w-full flex flex-col gap-y-4">
         {/* Go back */}
         <button className="w-fit pe-3 ps-1.5 hover:bg-science-500 sticky top-5 shadow-sm"
-          onClick={async () => {
-            if (volatileProject) await writeProjectToFile(volatileProject); // Save before going back
-            setRoute(PageRoute.Projects);
-          }}
+          onClick={navigateBack}
         >
           <IconArrowBack2Outline className="inline size-6 me-1" />
           Back to Projects
