@@ -159,7 +159,7 @@ export default function Editor() {
               <Spinner3DotsScaleMiddle className="w-fit h-9 inline-block align-middle mb-1" />
             </span>
             :
-            <textarea onChange={onDescriptionChange} value={volatileProject.description || ""} placeholder="Optional description of project."></textarea>
+            <textarea onChange={onDescriptionChange} value={volatileProject.description ?? ""} placeholder="Optional description of project."></textarea>
           }
         </label>
 

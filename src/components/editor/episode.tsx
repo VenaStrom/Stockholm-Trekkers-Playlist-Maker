@@ -14,6 +14,7 @@ export default function EpisodeLi({
   project: Project;
   projectSetter: React.Dispatch<React.SetStateAction<Project | null>>;
 }) {
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const [selectedFile, setSelectedFile] = useState<string | null>(episode.filePath || null);
 
   const onFileChange = () => {
@@ -164,7 +165,7 @@ export default function EpisodeLi({
           <IconDeleteOutline className="size-6" />
         </button>
         {/* Start time */}
-        <span className={`w-[5ch] ${!episode.cachedStartTime ? "text-flare-700" : ""}`}>{episode.cachedStartTime || "--:--"}</span>
+        <span className={`w-[5ch] ${!episode.cachedStartTime ? "text-flare-700" : ""}`}>{episode.cachedStartTime ?? "--:--"}</span>
         {/* Duration */}
         <span className={`w-[7ch] ps-0.5 ${!episode.duration ? "text-flare-700" : ""}`}>{episode.duration ? secondsToTimeString(episode.duration) : "-"}</span>
       </div>
