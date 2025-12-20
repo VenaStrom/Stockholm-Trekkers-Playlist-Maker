@@ -21,48 +21,49 @@ export default function BlockLi({
   useEffect(() => {
     if (episodes.length === 0) return;
 
-    setVolatileProject((prevProject) => {
-      const newEpisodes: Episode[] = [];
+    // Too few episodes
+    if (episodes.length <= 2) {
+      const neededEpisodes = 2 - episodes.length;
+      const newEpisodes: Episode[] = new Array(neededEpisodes).fill(null).map(() => getEmptyEpisode(block.id));
 
-      // Ensure minimum of 2 episodes
-      if (episodes.length < 2) {
-        const neededEpisodes = 2 - episodes.length;
-        if (neededEpisodes > 0) {
-          newEpisodes.push(...new Array(neededEpisodes).fill(null).map(() => getEmptyEpisode(block.id)));
-        }
-      }
-
-      // Add trailing episode if the current last one has a filePath so one empty episode is always present
-      const lastEpisode = episodes.at(-1);
-      if (lastEpisode && lastEpisode.filePath) {
-        newEpisodes.push(getEmptyEpisode(block.id));
-      }
-
-      // Ensure only one trailing empty episode
-      const removableEpisodes: Episode["id"][] = [];
-      for (const episode of [...episodes].reverse()) {
-        if (episode && !episode.filePath) {
-          removableEpisodes.push(episode.id);
-        }
-        else break;
-      }
-      removableEpisodes.shift(); // Remove last one to keep a single empty episode (to preserve id)
-      if (removableEpisodes.length > 0 && episodes.length > 2) {
-        newEpisodes.push(...volatileProject.episodes.filter(ep => !removableEpisodes.includes(ep.id)));
-      }
-
-      // Update state after collected changes
-      if (newEpisodes.length > 0 && [...newEpisodes, ...episodes].length !== volatileProject.episodes.length) {
+      setVolatileProject((prevProject) => {
         if (!prevProject) return prevProject;
-        const updatedEpisodes = [
-          ...prevProject.episodes,
-          ...newEpisodes,
-        ];
-        return { ...prevProject, episodes: updatedEpisodes };
+        return { ...prevProject, episodes: [...prevProject.episodes, ...newEpisodes] };
+      });
+      return;
+    }
+
+    // Ensure last episode is empty
+    const lastEpisode = episodes.at(-1);
+    if (lastEpisode && lastEpisode.filePath) {
+      const newEpisode = getEmptyEpisode(block.id);
+      setVolatileProject((prevProject) => {
+        if (!prevProject) return prevProject;
+        return { ...prevProject, episodes: [...prevProject.episodes, newEpisode] };
+      });
+      return;
+    }
+
+    // Sort by order and block order
+    const sortedEpisodes = [...episodes].sort((a, b) => {
+      if (a.order !== b.order) {
+        return a.order - b.order;
       }
-      return prevProject;
+      const aBlock = volatileProject.blocks.find(b => b.id === a.id);
+      const bBlock = volatileProject.blocks.find(b => b.id === b.id);
+      if (typeof aBlock === "undefined" || typeof bBlock === "undefined") return 0;
+
+      return aBlock.order - bBlock.order;
     });
-  }, [block.id, episodes, setVolatileProject, volatileProject.episodes]);
+    if (JSON.stringify(sortedEpisodes) !== JSON.stringify(episodes)) {
+      setVolatileProject((prevProject) => {
+        if (!prevProject) return prevProject;
+        const otherEpisodes = prevProject.episodes.filter(e => e.blockId !== block.id);
+        return { ...prevProject, episodes: [...otherEpisodes, ...sortedEpisodes] };
+      });
+    }
+
+  }, [block.id, episodes, setVolatileProject, volatileProject.blocks, volatileProject.episodes]);
 
   return (
     <li className="bg-abyss-800 px-4 py-2 rounded-sm">

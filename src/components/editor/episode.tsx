@@ -16,36 +16,43 @@ export default function EpisodeLi({
 }) {
   const [selectedFile, setSelectedFile] = useState<string | null>(episode.filePath || null);
 
-  const onFileChange = async () => {
-    const filePath = await open({
-      multiple: false,
-      filters: [
-        { name: "Video Files", extensions: ["wav", "mp4", "mov", "avi", "mkv", "gif"], },
-        { name: "Audio Files", extensions: ["mp3", "aac", "flac", "wav", "ogg", "m4a"], },
-        { name: "Image Files", extensions: ["png", "jpg", "jpeg", "gif", "bmp", "tiff"], },
-        { name: "All Files", extensions: ["*"] },
-      ],
-      title: "Select Episode Media File",
-    });
+  const onFileChange = () => {
+    const handleFileSelection = async () => {
+      const filePath = await open({
+        multiple: false,
+        filters: [
+          { name: "Video Files", extensions: ["wav", "mp4", "mov", "avi", "mkv", "gif"], },
+          { name: "Audio Files", extensions: ["mp3", "aac", "flac", "wav", "ogg", "m4a"], },
+          { name: "Image Files", extensions: ["png", "jpg", "jpeg", "gif", "bmp", "tiff"], },
+          { name: "All Files", extensions: ["*"] },
+        ],
+        title: "Select Episode Media File",
+      });
 
-    if (!filePath || typeof filePath !== "string") {
-      console.warn("Canceled file selection");
-      // Unset selected file if selection was canceled
-      setSelectedFile(null);
-    }
-    else {
-      setSelectedFile(filePath);
-    }
+      if (!filePath || typeof filePath !== "string") {
+        console.warn("Canceled file selection");
+        // Unset selected file if selection was canceled
+        setSelectedFile(null);
+      }
+      else {
+        setSelectedFile(filePath);
+      }
 
-    const newEpisode: Episode = {
-      ...episode,
-      filePath: filePath,
+      const newEpisode: Episode = {
+        ...episode,
+        filePath: filePath,
+      };
+
+      setVolatileProject((prevProject) => {
+        if (!prevProject) return prevProject;
+        return { ...prevProject, episodes: [...prevProject.episodes, newEpisode] };
+      });
     };
 
-    setVolatileProject((prevProject) => {
-      if (!prevProject) return prevProject;
-      return { ...prevProject, episodes: [...prevProject.episodes, newEpisode] };
-    });
+    handleFileSelection()
+      .catch((err) => {
+        console.error("Error during file selection:", err);
+      });
   };
 
   // Drag handlers

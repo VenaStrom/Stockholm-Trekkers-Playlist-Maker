@@ -44,7 +44,19 @@ export default function Projects() {
           const fileContent = await fs.readFile(saveFilePath);
           const decoder = new TextDecoder("utf-8");
           const decodedContent = decoder.decode(fileContent);
-          const project: Project = JSON.parse(decodedContent);
+          const project: unknown = JSON.parse(decodedContent);
+
+          if (
+            !project
+            || typeof project !== "object"
+            || Array.isArray(project)
+            || !("id" in project)
+            || typeof project.id !== "string"
+          ) {
+            console.warn("Project file is not a valid project, skipping:", saveFilePath);
+            continue;
+          }
+
           loadedProjects.push(project);
         } catch (e) {
           console.error("Failed to load project file:", folderName, e);
@@ -53,45 +65,61 @@ export default function Projects() {
 
       setProjects(loadedProjects);
     };
-    loadProjects();
+    loadProjects()
+      .catch((e) => {
+        console.error("Failed to load projects:", e);
+        toast("Failed to load projects. Please try again.");
+      });
   }, [setProjects]);
 
-  const showProjectsFolder = async () => {
-    const hiddenSubFolderPath = await path.join(await appDataDir(), DirName.Projects, ".target");
-    await invoke("mkdir", { dirPath: hiddenSubFolderPath, hidden: true, });
-    await revealItemInDir(hiddenSubFolderPath);
-  };
-
-  const makeNewProject = async () => {
-    const newProject = getEmptyProject();
-    const projectFolderPath = await path.join(await appDataDir(), DirName.Projects, newProject.id);
-    const saveFilePath = await path.join(projectFolderPath, FileName.ProjectSave);
-
-    // Add to state TODO move this after successful save
-    setProjects((prev) => [...prev, newProject]);
-
-    await invoke("mkdir", { dirPath: projectFolderPath });
-
-    // Make project save file
-    const content = JSON.stringify(newProject, null, 2);
-    await fs.create(saveFilePath);
-    await fs.writeFile(saveFilePath, new TextEncoder().encode(content))
+  const showProjectsFolder = () => {
+    const openFolder = async () => {
+      const hiddenSubFolderPath = await path.join(await appDataDir(), DirName.Projects, ".target");
+      await invoke("mkdir", { dirPath: hiddenSubFolderPath, hidden: true, });
+      await revealItemInDir(hiddenSubFolderPath);
+    };
+    openFolder()
       .catch((e) => {
-        console.error("Failed to write new project file:", e);
-        toast("Failed to create new project file. Please try again.");
-        return;
+        console.error("Failed to open projects folder:", e);
+        toast("Failed to open projects folder. Please try again.");
       });
-
-    toast(<>
-      Made new project.
-      {/* Maybe remove this line VVV */}
-      {/* Made new project. <a href="" target="_blank" rel="noreferrer" onClick={(e) => { e.preventDefault(); setRoute(PageRoute.Editor); setProjectId(newProject.id); }}>Edit</a> */}
-    </>);
   };
 
-  const sortByDateCreated = (a: Project, b: Project) => {
-    return b.dateCreated - a.dateCreated;
+  const makeNewProject = () => {
+    const createProject = async () => {
+      const newProject = getEmptyProject();
+      const projectFolderPath = await path.join(await appDataDir(), DirName.Projects, newProject.id);
+      const saveFilePath = await path.join(projectFolderPath, FileName.ProjectSave);
+
+      // Add to state TODO move this after successful save
+      setProjects((prev) => [...prev, newProject]);
+
+      await invoke("mkdir", { dirPath: projectFolderPath });
+
+      // Make project save file
+      const content = JSON.stringify(newProject, null, 2);
+      await fs.create(saveFilePath);
+      await fs.writeFile(saveFilePath, new TextEncoder().encode(content))
+        .catch((e) => {
+          console.error("Failed to write new project file:", e);
+          toast("Failed to create new project file. Please try again.");
+          return;
+        });
+
+      toast(<>
+        Made new project.
+        {/* Maybe remove this line VVV */}
+        {/* Made new project. <a href="" target="_blank" rel="noreferrer" onClick={(e) => { e.preventDefault(); setRoute(PageRoute.Editor); setProjectId(newProject.id); }}>Edit</a> */}
+      </>);
+    };
+    createProject()
+      .catch((e) => {
+        console.error("Failed to create new project:", e);
+        toast("Failed to create new project. Please try again.");
+      });
   };
+
+  const sortByDateCreated = (a: Project, b: Project) => b.dateCreated - a.dateCreated;;
 
   return (
     <main className="w-full flex flex-col items-center overflow-y-auto">
