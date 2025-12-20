@@ -30,7 +30,10 @@ export default function App() {
     const closeListener = (e: KeyboardEvent) => {
       if (e.ctrlKey && (e.key === "w" || e.key === "q")) {
         e.preventDefault();
-        invoke("close");
+        invoke("close")
+          .catch((err) => {
+            console.error("Failed to close app:", err);
+          });
       }
     };
 
@@ -75,11 +78,17 @@ export default function App() {
   useEffect(() => {
     if (lightMode) {
       document.body.classList.add("light");
-      setTheme("light");
+      setTheme("light")
+        .catch((err) => {
+          console.error("Failed to set light theme:", err);
+        });
       localStorage.setItem("lightMode", "true");
     } else {
       document.body.classList.remove("light");
-      setTheme("dark");
+      setTheme("dark")
+        .catch((err) => {
+          console.error("Failed to set dark theme:", err);
+        });
       localStorage.setItem("lightMode", "false");
     }
   }, [lightMode]);
@@ -122,7 +131,11 @@ export default function App() {
       <p className="flex flex-col items-end leading-5 text-sm">
         {packageJson.contributors && packageJson.contributors[0] && <>
           <span>Made by <a href={packageJson.contributors[0].url} target="_blank" rel="noreferrer">{packageJson.contributors[0].name}</a></span>
-          <span><a href={`mailto:${packageJson.contributors[0].email}?subject=Playlist%20Maker`} target="_blank" rel="noreferrer">{packageJson.contributors[0].email.replace(/\+\w*?(?=@)/, "")}</a></span>
+          <span>
+            <a href={`mailto:${packageJson.contributors[0].email}?subject=Playlist%20Maker`} target="_blank" rel="noreferrer">
+              {packageJson.contributors[0].email.replace(/\+\w*?(?=@)/, "")}
+            </a>
+          </span>
         </>}
       </p>
     </header>

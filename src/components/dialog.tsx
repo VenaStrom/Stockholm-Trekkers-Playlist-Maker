@@ -36,11 +36,19 @@ export default function Dialog({
   useEffect(() => {
     if (!visible) return;
 
-    const focusedButton = document.querySelector(
-      'button[data-focus="true"]'
-    ) as HTMLButtonElement | null;
-    if (focusedButton) {
+    const focusedButton = document.querySelector('button[data-focus="true"]');
+    if (focusedButton instanceof HTMLButtonElement) {
       focusedButton.focus();
+    }
+    else {
+      console.warn("No button with data-focus=\"true\" found in Dialog, focusing on the first button instead.");
+      const firstButton = document.querySelector('button');
+      if (firstButton instanceof HTMLButtonElement) {
+        firstButton.focus();
+      }
+      else {
+        throw new Error("No button found in Dialog to focus on.");
+      }
     }
   }, [visible]);
 

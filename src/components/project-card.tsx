@@ -19,12 +19,35 @@ export default function ProjectCard({
   const { toast } = useToast();
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
 
-  const downloadSaveFolder = async () => {
+  const downloadSaveFolder = () => {
     toast(
       <span>
         Exporting project save folder is not yet implemented.
       </span>
     );
+  };
+
+  const handleDeleteProject = () => {
+    const deleteProject = async () => {
+      setProjects((prevProjects) => prevProjects.filter((p) => p.id !== project.id));
+      setDeleteDialogVisible(false);
+      await fs.remove(await path.join(await appDataDir(), DirName.Projects, project.id), { recursive: true });
+    };
+    deleteProject()
+      .then(() => {
+        toast(
+          <span>
+            Successfully deleted project <span className="italic">{project.date}</span>.
+          </span>,
+        );
+      })
+      .catch((error) => {
+        toast(
+          <span>
+            Failed to delete project <span className="italic">{project.date}</span>: {error instanceof Error ? error.message : String(error)}
+          </span>,
+        );
+      });
   };
 
   return (<>
@@ -57,11 +80,7 @@ export default function ProjectCard({
           data-focus="true"
           key={"delete-button"}
           className="gap-x-1 pe-1 hover:bg-red-alert-500"
-          onClick={async () => {
-            setProjects((prevProjects) => prevProjects.filter((p) => p.id !== project.id));
-            setDeleteDialogVisible(false);
-            await fs.remove(await path.join(await appDataDir(), DirName.Projects, project.id), { recursive: true });
-          }}
+          onClick={handleDeleteProject}
         >
           Delete
           <IconDeleteOutline className="inline size-6" />
