@@ -5,8 +5,8 @@
   "identifier": "com.stockholm-trekkers.playlist-maker",
   "build": {
     "devUrl": "http://localhost:1420",
-    "beforeDevCommand": "yarn js-dev",
-    "beforeBuildCommand": "yarn js-build",
+    "beforeDevCommand": "yarn vite:dev",
+    "beforeBuildCommand": "yarn vite:build",
     "frontendDist": "../dist"
   },
   "app": {

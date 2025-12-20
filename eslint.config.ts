@@ -1,34 +1,23 @@
-import js from "@eslint/js";
+// @ts-check
+
+import { defineConfig, globalIgnores } from "eslint/config";
+import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
 import reactPlugin from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
-import { defineConfig } from "eslint/config";
 
-export default defineConfig([
-  js.configs.recommended,
-  tseslint.configs.strict,
-  tseslint.configs.stylistic,
+export default defineConfig(
+  eslint.configs.recommended,
+  tseslint.configs.recommendedTypeChecked,
+  reactHooks.configs.flat.recommended,
+  reactRefresh.configs.vite,
   {
     files: ["src/**/*.{ts,tsx}"],
-    languageOptions: {
-      ecmaVersion: 2022,
-      parser: tseslint.parser,
-      parserOptions: {
-        project: "./tsconfig.json",
-        ecmaFeatures: {
-          jsx: true,
-        },
-      },
-    },
     plugins: {
-      react: reactPlugin,
-      "react-hooks": reactHooks as any,
-      "react-refresh": reactRefresh,
+      "react": reactPlugin,
     },
     rules: {
-      ...reactPlugin.configs.recommended.rules,
-      ...reactHooks.configs.recommended.rules,
       "react-refresh/only-export-components": [
         "warn",
         { allowConstantExport: true },
@@ -46,24 +35,31 @@ export default defineConfig([
       "@typescript-eslint/no-import-type-side-effects": "error",
       "@typescript-eslint/consistent-type-definitions": "off",
     },
+    // For ts-eslint
+    languageOptions: {
+      ecmaVersion: 2022,
+      parser: tseslint.parser,
+      parserOptions: {
+        project: "./tsconfig.json",
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+    },
+    // For react plugin
     settings: {
       react: {
         version: "detect",
       },
     },
   },
-  {
-    ignores: [
-      "dist/**",
-      "node_modules/**",
-      "scripts/**",
-      "src-tauri/target/**",
-      "src-tauri/gen/**",
-      "*.config.js",
-      "*.config.ts",
-      "vite.config.ts",
-      "tailwind.config.js",
-      "**/*.d.ts",
-    ],
-  }
-]);
+  globalIgnores([
+    "dist/**",
+    "node_modules/**",
+    "scripts/**",
+    "src-tauri/**",
+    "*.config.js",
+    "*.config.ts",
+    "**/*.d.ts",
+  ]),
+);

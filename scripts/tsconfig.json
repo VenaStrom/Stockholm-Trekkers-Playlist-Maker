@@ -2,8 +2,9 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "nodenext",
+    "noEmit": true,
   },
   "include": [
-    "scripts/**/*.ts",
+    "**/*.ts",
   ],
 }

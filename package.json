@@ -17,13 +17,12 @@
   "scripts": {
     "dev": "yarn tauri dev",
     "build": "yarn download-assets && yarn tauri build && yarn rename-bundles",
-    "js-dev": "vite",
-    "js-build": "tsc --project ./tsconfig.node.json && vite build",
-    "preview": "vite preview",
+    "vite:dev": "vite",
+    "vite:build": "tsc --project ./tsconfig.node.json && vite build",
     "tauri": "tauri",
     "download-assets": "node scripts/download-video-assets.ts",
     "rename-bundles": "node scripts/rename-bundles.ts",
-    "lint": "tsc --noEmit && eslint -c eslint.config.ts"
+    "lint": "tsc --noEmit && eslint ./src/"
   },
   "dependencies": {
     "@tauri-apps/api": "^2",
