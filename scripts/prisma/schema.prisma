@@ -4,5 +4,36 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
-  output = "../../src/prisma/generated"
+  output   = "../../src/prisma/generated"
+}
+
+model Episode {
+  id       String @id @default(uuid())
+  filePath String
+  title    String
+  duration Int
+}
+
+model Block {
+  id           String         @id @default(uuid())
+  blockOptions Block_Option[]
+}
+
+model Block_Option {
+  blockId String
+  block   Block  @relation(fields: [blockId], references: [id])
+
+  optionKey String
+  option    Option @relation(fields: [optionKey], references: [key])
+
+  state Boolean
+
+  @@id([blockId, optionKey])
+}
+
+model Option {
+  key  String @id
+  name String
+
+  blockOptions Block_Option[]
 }
