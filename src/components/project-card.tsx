@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Project } from "../project-types";
+import { Project } from "../types";
 import { IconDeleteOutline, IconEditOutline, IconFileExportOutline } from "./icons";
 import Dialog from "./dialog";
 import { usePageContext } from "./page-context/use-page-context";

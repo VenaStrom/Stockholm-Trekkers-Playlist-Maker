@@ -5,7 +5,7 @@ import { path } from "@tauri-apps/api";
 import { appDataDir } from "@tauri-apps/api/path";
 import { DirName, FileName } from "../global";
 import * as fs from "@tauri-apps/plugin-fs";
-import { Project } from "../project-types";
+import { Project } from "../types";
 import { IconArrowBack2Outline, IconEditOutline, Spinner3DotsScaleMiddle } from "../components/icons";
 import { useDebounce } from "use-debounce";
 import BlockLi from "../components/editor/block";

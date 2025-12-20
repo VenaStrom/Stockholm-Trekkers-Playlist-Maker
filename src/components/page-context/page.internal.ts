@@ -1,5 +1,5 @@
 import React, { createContext } from "react";
-import { Project } from "../../project-types";
+import { Project } from "../../types";
 
 export const PageRoute = {
   Projects: "projects",
