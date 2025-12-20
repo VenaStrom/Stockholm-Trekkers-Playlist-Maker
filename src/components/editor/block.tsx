@@ -35,7 +35,7 @@ export default function BlockLi({
 
     // Ensure last episode is empty
     const lastEpisode = episodes.at(-1);
-    if (lastEpisode && lastEpisode.filePath) {
+    if (lastEpisode?.filePath) {
       const newEpisode = getEmptyEpisode(block.id);
       setVolatileProject((prevProject) => {
         if (!prevProject) return prevProject;

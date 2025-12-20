@@ -22,7 +22,7 @@
     "tauri": "tauri",
     "download-assets": "node scripts/download-video-assets.ts",
     "rename-bundles": "node scripts/rename-bundles.ts",
-    "lint": "tsc --noEmit && eslint ./src/",
+    "lint": "tsc --noEmit && eslint",
     "prisma:generate": "prisma generate --no-hints"
   },
   "dependencies": {
