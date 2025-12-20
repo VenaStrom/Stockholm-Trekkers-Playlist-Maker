@@ -10,6 +10,7 @@ import { useToast } from "../components/toast/useToast";
 import { DirName, FileName } from "../global";
 import { revealItemInDir } from "@tauri-apps/plugin-opener";
 import { invoke } from "@tauri-apps/api/core";
+import { isProject } from "@/functions/type-guards";
 
 export default function Projects() {
   const { toast } = useToast();
@@ -46,19 +47,14 @@ export default function Projects() {
           const decodedContent = decoder.decode(fileContent);
           const project: unknown = JSON.parse(decodedContent);
 
-          if (
-            !project
-            || typeof project !== "object"
-            || Array.isArray(project)
-            || !("id" in project)
-            || typeof project.id !== "string"
-          ) {
-            console.warn("Project file is not a valid project, skipping:", saveFilePath);
+          if (!isProject(project)) {
+            console.warn("Invalid project file format, skipping:", saveFilePath);
             continue;
           }
 
           loadedProjects.push(project);
-        } catch (e) {
+        }
+        catch (e) {
           console.error("Failed to load project file:", folderName, e);
         }
       }
@@ -70,7 +66,7 @@ export default function Projects() {
         console.error("Failed to load projects:", e);
         toast("Failed to load projects. Please try again.");
       });
-  }, [setProjects]);
+  }, [setProjects, toast]);
 
   const showProjectsFolder = () => {
     const openFolder = async () => {
@@ -119,7 +115,7 @@ export default function Projects() {
       });
   };
 
-  const sortByDateCreated = (a: Project, b: Project) => b.dateCreated - a.dateCreated;;
+  const sortByDateCreated = (a: Project, b: Project) => b.dateCreated - a.dateCreated;
 
   return (
     <main className="w-full flex flex-col items-center overflow-y-auto">
