@@ -1,7 +1,7 @@
 
 export type Episode = {
   id: string;
-  order: number;
+  nextEpisodeId?: string;
   blockId: string;
   filePath: string | null;
   duration: number | null; // in seconds

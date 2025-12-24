@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from "react";
-import { Block, Episode, getEmptyEpisode, Project } from "../../types";
+import { Block, Episode, Project } from "../../types";
 import { IconDeleteOutline, IconSettingsOutline } from "../icons";
 import EpisodeLi from "./episode";
 
@@ -19,49 +19,49 @@ export default function BlockLi({
 
   // Ensure trailing empty episode
   useEffect(() => {
-    if (episodes.length === 0) return;
+    // if (episodes.length === 0) return;
 
-    // Too few episodes
-    if (episodes.length <= 2) {
-      const neededEpisodes = 2 - episodes.length;
-      const newEpisodes: Episode[] = new Array(neededEpisodes).fill(null).map(() => getEmptyEpisode(block.id));
+    // // Too few episodes
+    // if (episodes.length <= 2) {
+    //   const neededEpisodes = 2 - episodes.length;
+    //   const newEpisodes: Episode[] = new Array(neededEpisodes).fill(null).map(() => getEmptyEpisode(block.id));
 
-      setVolatileProject((prevProject) => {
-        if (!prevProject) return prevProject;
-        return { ...prevProject, episodes: [...prevProject.episodes, ...newEpisodes] };
-      });
-      return;
-    }
+    //   setVolatileProject((prevProject) => {
+    //     if (!prevProject) return prevProject;
+    //     return { ...prevProject, episodes: [...prevProject.episodes, ...newEpisodes] };
+    //   });
+    //   return;
+    // }
 
-    // Ensure last episode is empty
-    const lastEpisode = episodes.at(-1);
-    if (lastEpisode?.filePath) {
-      const newEpisode = getEmptyEpisode(block.id);
-      setVolatileProject((prevProject) => {
-        if (!prevProject) return prevProject;
-        return { ...prevProject, episodes: [...prevProject.episodes, newEpisode] };
-      });
-      return;
-    }
+    // // Ensure last episode is empty
+    // const lastEpisode = episodes.at(-1);
+    // if (lastEpisode?.filePath) {
+    //   const newEpisode = getEmptyEpisode(block.id);
+    //   setVolatileProject((prevProject) => {
+    //     if (!prevProject) return prevProject;
+    //     return { ...prevProject, episodes: [...prevProject.episodes, newEpisode] };
+    //   });
+    //   return;
+    // }
 
-    // Sort by order and block order
-    const sortedEpisodes = [...episodes].sort((a, b) => {
-      if (a.order !== b.order) {
-        return a.order - b.order;
-      }
-      const aBlock = volatileProject.blocks.find(b => b.id === a.id);
-      const bBlock = volatileProject.blocks.find(b => b.id === b.id);
-      if (typeof aBlock === "undefined" || typeof bBlock === "undefined") return 0;
+    // // Sort by order and block order
+    // const sortedEpisodes = [...episodes].sort((a, b) => {
+    //   if (a.order !== b.order) {
+    //     return a.order - b.order;
+    //   }
+    //   const aBlock = volatileProject.blocks.find(b => b.id === a.id);
+    //   const bBlock = volatileProject.blocks.find(b => b.id === b.id);
+    //   if (typeof aBlock === "undefined" || typeof bBlock === "undefined") return 0;
 
-      return aBlock.order - bBlock.order;
-    });
-    if (JSON.stringify(sortedEpisodes) !== JSON.stringify(episodes)) {
-      setVolatileProject((prevProject) => {
-        if (!prevProject) return prevProject;
-        const otherEpisodes = prevProject.episodes.filter(e => e.blockId !== block.id);
-        return { ...prevProject, episodes: [...otherEpisodes, ...sortedEpisodes] };
-      });
-    }
+    //   return aBlock.order - bBlock.order;
+    // });
+    // if (JSON.stringify(sortedEpisodes) !== JSON.stringify(episodes)) {
+    //   setVolatileProject((prevProject) => {
+    //     if (!prevProject) return prevProject;
+    //     const otherEpisodes = prevProject.episodes.filter(e => e.blockId !== block.id);
+    //     return { ...prevProject, episodes: [...otherEpisodes, ...sortedEpisodes] };
+    //   });
+    // }
 
   }, [block.id, episodes, setVolatileProject, volatileProject.blocks, volatileProject.episodes]);
 

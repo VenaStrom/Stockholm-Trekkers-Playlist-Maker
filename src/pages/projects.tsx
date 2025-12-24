@@ -1,13 +1,12 @@
 import { useEffect } from "react";
 import { usePageContext } from "../components/page-context/use-page-context";
 import ProjectCard from "../components/project-card";
-import { getEmptyProject, Project } from "../types";
+import { Project } from "../types";
 import { IconAddBoxOutline, IconFolderOutline } from "../components/icons";
 import { path } from "@tauri-apps/api";
 import { appDataDir } from "@tauri-apps/api/path";
 import * as fs from "@tauri-apps/plugin-fs";
 import { useToast } from "../components/toast/useToast";
-import { DirName, FileName } from "../global";
 import { revealItemInDir } from "@tauri-apps/plugin-opener";
 import { invoke } from "@tauri-apps/api/core";
 import { isProject } from "@/functions/type-guards";
@@ -30,45 +29,45 @@ export default function Projects() {
   // Load projects on mount
   useEffect(() => {
     const loadProjects = async () => {
-      const projectsDir = await path.join(await appDataDir(), DirName.Projects);
+      // const projectsDir = await path.join(await appDataDir(), DirName.Projects);
 
-      // If it doesn't exist, cancel
-      const dirExists = await fs.exists(projectsDir);
-      if (!dirExists) return;
+      // // If it doesn't exist, cancel
+      // const dirExists = await fs.exists(projectsDir);
+      // if (!dirExists) return;
 
-      const loadedProjects: Project[] = [];
+      // const loadedProjects: Project[] = [];
 
-      // Read folder
-      const projectFolderNames = (await fs.readDir(projectsDir)).filter(i => i.isDirectory && !i.name.startsWith(".")).map(d => d.name);
-      for (const folderName of projectFolderNames) {
-        try {
-          const folderPath = await path.join(projectsDir, folderName);
-          const saveFilePath = await path.join(folderPath, FileName.ProjectSave);
+      // // Read folder
+      // const projectFolderNames = (await fs.readDir(projectsDir)).filter(i => i.isDirectory && !i.name.startsWith(".")).map(d => d.name);
+      // for (const folderName of projectFolderNames) {
+      //   try {
+      //     const folderPath = await path.join(projectsDir, folderName);
+      //     const saveFilePath = await path.join(folderPath, FileName.ProjectSave);
 
-          const fileExists = await fs.exists(saveFilePath);
-          if (!fileExists) {
-            console.warn("Project save file does not exist, skipping:", saveFilePath);
-            continue;
-          }
+      //     const fileExists = await fs.exists(saveFilePath);
+      //     if (!fileExists) {
+      //       console.warn("Project save file does not exist, skipping:", saveFilePath);
+      //       continue;
+      //     }
 
-          const fileContent = await fs.readFile(saveFilePath);
-          const decoder = new TextDecoder("utf-8");
-          const decodedContent = decoder.decode(fileContent);
-          const project: unknown = JSON.parse(decodedContent);
+      //     const fileContent = await fs.readFile(saveFilePath);
+      //     const decoder = new TextDecoder("utf-8");
+      //     const decodedContent = decoder.decode(fileContent);
+      //     const project: unknown = JSON.parse(decodedContent);
 
-          if (!isProject(project)) {
-            console.warn("Invalid project file format, skipping:", saveFilePath);
-            continue;
-          }
+      //     if (!isProject(project)) {
+      //       console.warn("Invalid project file format, skipping:", saveFilePath);
+      //       continue;
+      //     }
 
-          loadedProjects.push(project);
-        }
-        catch (e) {
-          console.error("Failed to load project file:", folderName, e);
-        }
-      }
+      //     loadedProjects.push(project);
+      //   }
+      //   catch (e) {
+      //     console.error("Failed to load project file:", folderName, e);
+      //   }
+      // }
 
-      setProjects(loadedProjects);
+      // setProjects(loadedProjects);
     };
     loadProjects()
       .catch((e) => {
@@ -79,9 +78,9 @@ export default function Projects() {
 
   const showProjectsFolder = () => {
     const openFolder = async () => {
-      const hiddenSubFolderPath = await path.join(await appDataDir(), DirName.Projects, ".target");
-      await invoke("mkdir", { dirPath: hiddenSubFolderPath, hidden: true, });
-      await revealItemInDir(hiddenSubFolderPath);
+      // const hiddenSubFolderPath = await path.join(await appDataDir(), DirName.Projects, ".target");
+      // await invoke("mkdir", { dirPath: hiddenSubFolderPath, hidden: true, });
+      // await revealItemInDir(hiddenSubFolderPath);
     };
     openFolder()
       .catch((e) => {
@@ -92,30 +91,30 @@ export default function Projects() {
 
   const makeNewProject = () => {
     const createProject = async () => {
-      const newProject = getEmptyProject();
-      const projectFolderPath = await path.join(await appDataDir(), DirName.Projects, newProject.id);
-      const saveFilePath = await path.join(projectFolderPath, FileName.ProjectSave);
+      // const newProject = getEmptyProject();
+      // const projectFolderPath = await path.join(await appDataDir(), DirName.Projects, newProject.id);
+      // const saveFilePath = await path.join(projectFolderPath, FileName.ProjectSave);
 
-      // Add to state TODO move this after successful save
-      setProjects((prev) => [...prev, newProject]);
+      // // Add to state TODO move this after successful save
+      // setProjects((prev) => [...prev, newProject]);
 
-      await invoke("mkdir", { dirPath: projectFolderPath });
+      // await invoke("mkdir", { dirPath: projectFolderPath });
 
-      // Make project save file
-      const content = JSON.stringify(newProject, null, 2);
-      await fs.create(saveFilePath);
-      await fs.writeFile(saveFilePath, new TextEncoder().encode(content))
-        .catch((e) => {
-          console.error("Failed to write new project file:", e);
-          toast("Failed to create new project file. Please try again.");
-          return;
-        });
+      // // Make project save file
+      // const content = JSON.stringify(newProject, null, 2);
+      // await fs.create(saveFilePath);
+      // await fs.writeFile(saveFilePath, new TextEncoder().encode(content))
+      //   .catch((e) => {
+      //     console.error("Failed to write new project file:", e);
+      //     toast("Failed to create new project file. Please try again.");
+      //     return;
+      //   });
 
-      toast(<>
-        Made new project.
-        {/* Maybe remove this line VVV */}
-        {/* Made new project. <a href="" target="_blank" rel="noreferrer" onClick={(e) => { e.preventDefault(); setRoute(PageRoute.Editor); setProjectId(newProject.id); }}>Edit</a> */}
-      </>);
+      // toast(<>
+      //   Made new project.
+      //   {/* Maybe remove this line VVV */}
+      //   {/* Made new project. <a href="" target="_blank" rel="noreferrer" onClick={(e) => { e.preventDefault(); setRoute(PageRoute.Editor); setProjectId(newProject.id); }}>Edit</a> */}
+      // </>);
     };
     createProject()
       .catch((e) => {

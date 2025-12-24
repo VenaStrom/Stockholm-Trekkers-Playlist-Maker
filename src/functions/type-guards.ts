@@ -1,12 +1,4 @@
-import {
-  Block, getEmptyBlock,
-  Episode, getEmptyEpisode,
-  Project, getEmptyProject,
-} from "../types";
-
-const episodeKeys = Object.keys(getEmptyEpisode(""));
-const blockKeys = Object.keys(getEmptyBlock());
-const projectKeys = Object.keys(getEmptyProject());
+import { Block, Episode, Project } from "../types";
 
 export function isEpisode(obj: unknown): obj is Episode {
   if (
@@ -18,14 +10,15 @@ export function isEpisode(obj: unknown): obj is Episode {
     return false;
   }
 
+  const episodeKeys: (keyof Episode)[] = ["id", "nextEpisodeId", "blockId", "filePath", "duration", "cachedStartTime", "cachedEndTime"];
   if (
-    ("id" in obj && typeof obj.id === "string")
-    && ("order" in obj && typeof obj.order === "number")
-    && ("blockId" in obj && typeof obj.blockId === "string")
-    && ("filePath" in obj && (typeof obj.filePath === "string" || obj.filePath === null))
-    && ("duration" in obj && (typeof obj.duration === "number" || obj.duration === null))
-    && ("cachedStartTime" in obj && (typeof obj.cachedStartTime === "number" || obj.cachedStartTime === null))
-    && ("cachedEndTime" in obj && (typeof obj.cachedEndTime === "number" || obj.cachedEndTime === null))
+    (("id" satisfies keyof Episode) in obj && typeof obj.id === "string")
+    && (("nextEpisodeId" satisfies keyof Episode) in obj && typeof obj.nextEpisodeId === "number")
+    && (("blockId" satisfies keyof Episode) in obj && typeof obj.blockId === "string")
+    && (("filePath" satisfies keyof Episode) in obj && (typeof obj.filePath === "string" || obj.filePath === null))
+    && (("duration" satisfies keyof Episode) in obj && (typeof obj.duration === "number" || obj.duration === null))
+    && (("cachedStartTime" satisfies keyof Episode) in obj && (typeof obj.cachedStartTime === "number" || obj.cachedStartTime === null))
+    && (("cachedEndTime" satisfies keyof Episode) in obj && (typeof obj.cachedEndTime === "number" || obj.cachedEndTime === null))
   ) {
     return true;
   }
@@ -45,10 +38,11 @@ export function isBlock(obj: unknown): obj is Block {
     return false;
   }
 
+  const blockKeys: (keyof Block)[] = ["id", "options", "nextBlockId"] as const;
   if (
-    ("id" in obj && typeof obj.id === "string")
-    && ("options" in obj && typeof obj.options === "object" && !Array.isArray(obj.options))
-    && ("order" in obj && typeof obj.order === "number")
+    (("id" satisfies keyof Block) in obj && typeof obj.id === "string")
+    && (("options" satisfies keyof Block) in obj && typeof obj.options === "object" && !Array.isArray(obj.options))
+    && (("nextBlockId" satisfies keyof Block) in obj && typeof obj.nextBlockId === "number")
   ) {
     return true;
   }
@@ -68,15 +62,16 @@ export function isProject(obj: unknown): obj is Project {
     return false;
   }
 
+  const projectKeys: (keyof Project)[] = ["id", "date", "description", "dateCreated", "dateModified", "optionsRev", "blocks", "episodes"];
   if (
-    ("id" in obj && typeof obj.id === "string")
-    && ("date" in obj && typeof obj.date === "string")
-    && ("description" in obj && (typeof obj.description === "string" || obj.description === null))
-    && ("dateCreated" in obj && typeof obj.dateCreated === "number")
-    && ("dateModified" in obj && (typeof obj.dateModified === "number" || obj.dateModified === null))
-    && ("optionsRev" in obj && typeof obj.optionsRev === "number")
-    && ("blocks" in obj && Array.isArray(obj.blocks) && obj.blocks.every(isBlock))
-    && ("episodes" in obj && Array.isArray(obj.episodes) && obj.episodes.every(isEpisode))
+    (("id" satisfies keyof Project) in obj && typeof obj.id === "string")
+    && (("date" satisfies keyof Project) in obj && typeof obj.date === "string")
+    && (("description" satisfies keyof Project) in obj && (typeof obj.description === "string" || obj.description === null))
+    && (("dateCreated" satisfies keyof Project) in obj && typeof obj.dateCreated === "number")
+    && (("dateModified" satisfies keyof Project) in obj && (typeof obj.dateModified === "number" || obj.dateModified === null))
+    && (("optionsRev" satisfies keyof Project) in obj && typeof obj.optionsRev === "number")
+    && (("blocks" satisfies keyof Project) in obj && Array.isArray(obj.blocks) && obj.blocks.every(isBlock))
+    && (("episodes" satisfies keyof Project) in obj && Array.isArray(obj.episodes) && obj.episodes.every(isEpisode))
   ) {
     return true;
   }

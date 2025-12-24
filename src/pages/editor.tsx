@@ -3,7 +3,6 @@ import { usePageContext } from "../components/page-context/use-page-context";
 import { PageRoute } from "../components/page-context/page.internal";
 import { path } from "@tauri-apps/api";
 import { appDataDir } from "@tauri-apps/api/path";
-import { DirName, FileName } from "../global";
 import * as fs from "@tauri-apps/plugin-fs";
 import { Project } from "../types";
 import { IconArrowBack2Outline, IconEditOutline, Spinner3DotsScaleMiddle } from "../components/icons";
@@ -40,29 +39,29 @@ export default function Editor() {
     }
 
     const readProjectData = async () => {
-      if (!projectId) return;
-      const projectFolderPath = await path.join(await appDataDir(), DirName.Projects, projectId);
+      // if (!projectId) return;
+      // const projectFolderPath = await path.join(await appDataDir(), DirName.Projects, projectId);
 
-      if (!await fs.exists(projectFolderPath)) {
-        console.error("Project does not exist:", projectFolderPath);
-        setRoute(PageRoute.Projects);
-        return;
-      }
+      // if (!await fs.exists(projectFolderPath)) {
+      //   console.error("Project does not exist:", projectFolderPath);
+      //   setRoute(PageRoute.Projects);
+      //   return;
+      // }
 
-      const projectSaveFile = await path.join(projectFolderPath, FileName.ProjectSave);
+      // const projectSaveFile = await path.join(projectFolderPath, FileName.ProjectSave);
 
-      const fileContent = await fs.readFile(projectSaveFile);
-      const decoder = new TextDecoder("utf-8");
-      const decodedContent = decoder.decode(fileContent);
-      const project: unknown = JSON.parse(decodedContent);
+      // const fileContent = await fs.readFile(projectSaveFile);
+      // const decoder = new TextDecoder("utf-8");
+      // const decodedContent = decoder.decode(fileContent);
+      // const project: unknown = JSON.parse(decodedContent);
 
-      if (!isProject(project)) {
-        console.error("Project data is invalid:", project);
-        setRoute(PageRoute.Projects);
-        return;
-      }
+      // if (!isProject(project)) {
+      //   console.error("Project data is invalid:", project);
+      //   setRoute(PageRoute.Projects);
+      //   return;
+      // }
 
-      setVolatileProject(project);
+      // setVolatileProject(project);
     };
 
     readProjectData()
@@ -75,19 +74,19 @@ export default function Editor() {
   // Save project data to file when changed
   const debouncedProjectData = useDebounce(volatileProject, 500);
   const writeProjectToFile = async (project: Project) => {
-    const projectFolderPath = await path.join(await appDataDir(), DirName.Projects, project.id);
+    // const projectFolderPath = await path.join(await appDataDir(), DirName.Projects, project.id);
 
-    if (!await fs.exists(projectFolderPath)) {
-      console.error("Project folder does not exist:", projectFolderPath);
-      return;
-    }
+    // if (!await fs.exists(projectFolderPath)) {
+    //   console.error("Project folder does not exist:", projectFolderPath);
+    //   return;
+    // }
 
-    const projectSaveFile = await path.join(projectFolderPath, FileName.ProjectSave);
+    // const projectSaveFile = await path.join(projectFolderPath, FileName.ProjectSave);
 
-    const encoder = new TextEncoder();
-    const fileContent = encoder.encode(JSON.stringify(project, null, 2));
+    // const encoder = new TextEncoder();
+    // const fileContent = encoder.encode(JSON.stringify(project, null, 2));
 
-    await fs.writeFile(projectSaveFile, fileContent);
+    // await fs.writeFile(projectSaveFile, fileContent);
   };
   useEffect(() => {
     if (!debouncedProjectData[0]) return;

@@ -9,6 +9,6 @@ export const PathName = {
 export type PathName = (typeof PathName)[keyof typeof PathName];
 
 export const FileName = {
-  ProjectSave: "project.db",
+  ProjectDB: "project.db",
 } as const;
 export type FileName = (typeof FileName)[keyof typeof FileName];

@@ -7,7 +7,6 @@ import { path } from "@tauri-apps/api";
 import * as fs from "@tauri-apps/plugin-fs";
 import { useToast } from "./toast/useToast";
 import { appDataDir } from "@tauri-apps/api/path";
-import { DirName } from "../global";
 import { PageRoute } from "./page-context/page.internal";
 
 export default function ProjectCard({
@@ -29,9 +28,9 @@ export default function ProjectCard({
 
   const handleDeleteProject = () => {
     const deleteProject = async () => {
-      setProjects((prevProjects) => prevProjects.filter((p) => p.id !== project.id));
-      setDeleteDialogVisible(false);
-      await fs.remove(await path.join(await appDataDir(), DirName.Projects, project.id), { recursive: true });
+      //   setProjects((prevProjects) => prevProjects.filter((p) => p.id !== project.id));
+      //   setDeleteDialogVisible(false);
+      //   await fs.remove(await path.join(await appDataDir(), DirName.Projects, project.id), { recursive: true });
     };
     deleteProject()
       .then(() => {
