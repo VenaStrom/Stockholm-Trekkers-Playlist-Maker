@@ -2,10 +2,10 @@ import { FileName, PathName } from "@/global";
 import { path } from "@tauri-apps/api";
 import * as fs from "@tauri-apps/plugin-fs";
 
-export async function getAllProjects(): Promise<string[]> {
+export async function getAllProjects(): Promise<Set<string>> {
   if (!await fs.exists(PathName.UserProjectsDir)) {
     await fs.mkdir(PathName.UserProjectsDir, { recursive: true });
-    return [];
+    return new Set();
   }
 
   const entries = await fs.readDir(PathName.UserProjectsDir);
@@ -27,5 +27,10 @@ export async function getAllProjects(): Promise<string[]> {
     }
   }
 
-  return validProjects;
+  // Dupe check
+  if (validProjects.length !== new Set(validProjects).size) {
+    throw new Error("Duplicate project IDs found in project directory. Please resolve manually.");
+  }
+
+  return new Set(validProjects);
 }
