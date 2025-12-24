@@ -29,7 +29,7 @@ model Block {
   blockOptions Block_Option[]
   episodes     Episode[]
 
-  // Liked list pointers for ordering
+  // Linked list pointers for ordering
   nextId String?
 
   project   Project? @relation(fields: [projectId], references: [id])
