@@ -1,8 +1,12 @@
 import "dotenv/config";
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import { PrismaClient } from "@/prisma/generated";
+import { FileName, PathName } from "@/global";
+import { path } from "@tauri-apps/api";
 
-const adapter = new PrismaBetterSqlite3({
-  url: process.env.DATABASE_URL,
-});
-export const prisma = new PrismaClient({ adapter });
+export async function createPrismaClient(projectId: string): Promise<PrismaClient> {
+  const adapter = new PrismaBetterSqlite3({
+    url: await path.join(PathName.UserProjectsDir, projectId, FileName.ProjectSave),
+  });
+  return new PrismaClient({ adapter });
+}

@@ -11,10 +11,19 @@ import { DirName, FileName } from "../global";
 import { revealItemInDir } from "@tauri-apps/plugin-opener";
 import { invoke } from "@tauri-apps/api/core";
 import { isProject } from "@/functions/type-guards";
+import { getAllProjects } from "@/functions/project/get-all-projects";
 
 export default function Projects() {
   const { toast } = useToast();
   const { setHeaderText, projects, setProjects } = usePageContext();
+
+  getAllProjects()
+    .then(l => {
+      console.log(l);
+    })
+    .catch(e => {
+      console.error("Failed to get all projects:", e);
+    });
 
   useEffect(() => setHeaderText("Projects"), [setHeaderText]);
 
