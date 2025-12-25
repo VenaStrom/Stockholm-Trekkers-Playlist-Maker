@@ -6,12 +6,10 @@ import { secondsToTimeString } from "../../functions/time-format";
 
 export default function EpisodeLi({
   episode,
-  project: volatileProject,
   projectSetter: setVolatileProject,
 
 }: {
   episode: Episode;
-  project: Project;
   projectSetter: React.Dispatch<React.SetStateAction<Project | null>>;
 }) {
   const [selectedFile, setSelectedFile] = useState<string | null>(episode.filePath ?? null);
@@ -45,7 +43,8 @@ export default function EpisodeLi({
 
       setVolatileProject((prevProject) => {
         if (!prevProject) return prevProject;
-        return { ...prevProject, episodes: [...prevProject.episodes, newEpisode] };
+        const newEpisodes = prevProject.episodes.map((ep) => ep.id === newEpisode.id ? newEpisode : ep);
+        return { ...prevProject, episodes: newEpisodes };
       });
     };
 
@@ -79,51 +78,116 @@ export default function EpisodeLi({
     setDragOver(false);
     if (!draggedId || draggedId === episode.id) return;
 
-    // Update project state
+    // Linked-list aware move: remove dragged from its current chain and insert before target
     setVolatileProject((prevProject) => {
       if (!prevProject) return prevProject;
 
-      const draggedIndex = prevProject.episodes.findIndex((ep) => ep.id === draggedId);
-      const targetIndex = prevProject.episodes.findIndex((ep) => ep.id === episode.id);
-      if (draggedIndex === -1 || targetIndex === -1) return prevProject;
+      const episodesById = new Map(prevProject.episodes.map(ep => [ep.id, { ...ep }]));
+      const dragged = episodesById.get(draggedId);
+      const target = episodesById.get(episode.id);
+      if (!dragged || !target) return prevProject;
 
-      const newEpisodes = [...prevProject.episodes];
-      const [draggedEpisode] = newEpisodes.splice(draggedIndex, 1);
-      if (!draggedEpisode) return prevProject; // For the type engine
-      newEpisodes.splice(targetIndex, 0, draggedEpisode);
+      // Find prev of dragged (if any)
+      const prevOfDragged = prevProject.episodes.find(ep => ep.nextEpisodeId === draggedId);
 
+      // Remove dragged from its current chain
+      if (prevOfDragged) {
+        const prevCopy = episodesById.get(prevOfDragged.id)!;
+        prevCopy.nextEpisodeId = dragged.nextEpisodeId;
+        episodesById.set(prevCopy.id, prevCopy);
+      }
+
+      // Inserting dragged before target: find prev of target within target block
+      const prevOfTarget = prevProject.episodes.find(ep => ep.nextEpisodeId === target.id && ep.blockId === target.blockId);
+
+      // Update dragged to point to target
+      dragged.nextEpisodeId = target.id;
+      // Update its blockId to target's block
+      dragged.blockId = target.blockId;
+      episodesById.set(dragged.id, dragged);
+
+      if (prevOfTarget) {
+        const prevCopy = episodesById.get(prevOfTarget.id)!;
+        prevCopy.nextEpisodeId = dragged.id;
+        episodesById.set(prevCopy.id, prevCopy);
+      } else {
+        // If there was no prevOfTarget then dragged becomes new head for that block.
+        // Nothing else to update here because head is implicit.
+      }
+
+      // Produce new episodes array preserving original array entries order (but updated objects)
+      const newEpisodes = prevProject.episodes.map(ep => episodesById.get(ep.id) ?? ep);
       return { ...prevProject, episodes: newEpisodes };
     });
   };
 
   const moveEpisodeUpOne = () => {
-    const currentIndex = volatileProject.episodes.findIndex((ep) => ep.id === episode.id);
-    if (currentIndex <= 0) return; // Already at the top
-
+    // Move earlier in the linked list within the same block
     setVolatileProject((prevProject) => {
       if (!prevProject) return prevProject;
+      const episodesById = new Map(prevProject.episodes.map(ep => [ep.id, { ...ep }]));
+      const cur = episodesById.get(episode.id);
+      if (!cur) return prevProject;
 
-      const newEpisodes = [...prevProject.episodes];
-      const [movedEpisode] = newEpisodes.splice(currentIndex, 1);
-      if (!movedEpisode) return prevProject; // For the type engine
-      newEpisodes.splice(currentIndex - 1, 0, movedEpisode);
+      // find previous and previous-of-previous within same block
+      const prev = prevProject.episodes.find(ep => ep.nextEpisodeId === episode.id && ep.blockId === episode.blockId);
+      if (!prev) return prevProject; // already head
+      const prevPrev = prevProject.episodes.find(ep => ep.nextEpisodeId === prev.id && ep.blockId === episode.blockId);
 
+      const curCopy = episodesById.get(cur.id)!;
+      const prevCopy = episodesById.get(prev.id)!;
+
+      // detach cur
+      prevCopy.nextEpisodeId = curCopy.nextEpisodeId;
+
+      // insert cur before prev
+      curCopy.nextEpisodeId = prevCopy.id;
+      if (prevPrev) {
+        const prevPrevCopy = episodesById.get(prevPrev.id)!;
+        prevPrevCopy.nextEpisodeId = curCopy.id;
+        episodesById.set(prevPrevCopy.id, prevPrevCopy);
+      }
+
+      episodesById.set(prevCopy.id, prevCopy);
+      episodesById.set(curCopy.id, curCopy);
+
+      const newEpisodes = prevProject.episodes.map(ep => episodesById.get(ep.id) ?? ep);
       return { ...prevProject, episodes: newEpisodes };
     });
   };
 
   const moveEpisodeDownOne = () => {
-    const currentIndex = volatileProject.episodes.findIndex((ep) => ep.id === episode.id);
-    if (currentIndex === -1 || currentIndex >= volatileProject.episodes.length - 1) return; // Already at the bottom
-
+    // Move later in linked list within same block
     setVolatileProject((prevProject) => {
       if (!prevProject) return prevProject;
+      const episodesById = new Map(prevProject.episodes.map(ep => [ep.id, { ...ep }]));
+      const cur = episodesById.get(episode.id);
+      if (!cur) return prevProject;
 
-      const newEpisodes = [...prevProject.episodes];
-      const [movedEpisode] = newEpisodes.splice(currentIndex, 1);
-      if (!movedEpisode) return prevProject; // For the type engine
-      newEpisodes.splice(currentIndex + 1, 0, movedEpisode);
+      const next = prevProject.episodes.find(ep => ep.id === cur.nextEpisodeId && ep.blockId === cur.blockId);
+      if (!next) return prevProject; // already last in block
 
+      const prev = prevProject.episodes.find(ep => ep.nextEpisodeId === episode.id && ep.blockId === episode.blockId);
+      const nextCopy = episodesById.get(next.id)!;
+      const curCopy = episodesById.get(cur.id)!;
+
+      // re-link: prev -> next
+      if (prev) {
+        const prevCopy = episodesById.get(prev.id)!;
+        prevCopy.nextEpisodeId = nextCopy.id;
+        episodesById.set(prevCopy.id, prevCopy);
+      }
+
+      // cur -> next.next
+      curCopy.nextEpisodeId = nextCopy.nextEpisodeId;
+
+      // next -> cur
+      nextCopy.nextEpisodeId = curCopy.id;
+
+      episodesById.set(curCopy.id, curCopy);
+      episodesById.set(nextCopy.id, nextCopy);
+
+      const newEpisodes = prevProject.episodes.map(ep => episodesById.get(ep.id) ?? ep);
       return { ...prevProject, episodes: newEpisodes };
     });
   };

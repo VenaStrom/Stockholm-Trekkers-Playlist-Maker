@@ -15,7 +15,31 @@ export default function BlockLi({
   project: Project;
   projectSetter: React.Dispatch<React.SetStateAction<Project | null>>;
 }) {
-  const episodes = useMemo(() => volatileProject.episodes.filter(e => e.blockId === block.id), [volatileProject.episodes, block.id]);
+  const episodes = useMemo(() => {
+    // Build map of episodes belonging to this block
+    const blockEpisodes = volatileProject.episodes.filter(e => e.blockId === block.id);
+    const byId = new Map(blockEpisodes.map(e => [e.id, e]));
+
+    // Find head: episode not referenced by any nextEpisodeId within the block
+    const pointed = new Set(blockEpisodes.map(e => e.nextEpisodeId).filter(Boolean) as string[]);
+    const heads = blockEpisodes.filter(e => !pointed.has(e.id));
+
+    const ordered: Episode[] = [];
+    for (const head of heads) {
+      let cur: Episode | undefined = head;
+      const seen = new Set<string>();
+      while (cur && !seen.has(cur.id)) {
+        ordered.push(cur);
+        seen.add(cur.id);
+        const nextId: string | undefined = cur.nextEpisodeId;
+        cur = nextId ? byId.get(nextId) : undefined;
+      }
+    }
+
+    // Append any orphaned episodes not reachable from heads
+    for (const e of blockEpisodes) if (!ordered.find(x => x.id === e.id)) ordered.push(e);
+    return ordered;
+  }, [volatileProject.episodes, block.id]);
 
   // Ensure trailing empty episode
   useEffect(() => {
@@ -106,7 +130,6 @@ export default function BlockLi({
             <EpisodeLi
               key={`episode-${episode.id}`}
               episode={episode}
-              project={volatileProject}
               projectSetter={setVolatileProject}
             />
           ))}

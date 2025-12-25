@@ -28,23 +28,23 @@ export function isEpisode(obj: unknown): obj is Episode {
     return false;
   }
 
-  if ("nextEpisodeId" in o && typeof o.nextEpisodeId !== "string") {
+  if (o.nextEpisodeId != null && typeof o.nextEpisodeId !== "string") {
     console.warn("Episode optional 'nextEpisodeId' is invalid", { obj });
     return false;
   }
-  if ("filePath" in o && typeof o.filePath !== "string") {
+  if (o.filePath != null && typeof o.filePath !== "string") {
     console.warn("Episode optional 'filePath' is invalid", { obj });
     return false;
   }
-  if ("duration" in o && typeof o.duration !== "number") {
+  if (o.duration != null && typeof o.duration !== "number") {
     console.warn("Episode optional 'duration' is invalid", { obj });
     return false;
   }
-  if ("cachedStartTime" in o && typeof o.cachedStartTime !== "number") {
+  if (o.cachedStartTime != null && typeof o.cachedStartTime !== "number") {
     console.warn("Episode optional 'cachedStartTime' is invalid", { obj });
     return false;
   }
-  if ("cachedEndTime" in o && typeof o.cachedEndTime !== "number") {
+  if (o.cachedEndTime != null && typeof o.cachedEndTime !== "number") {
     console.warn("Episode optional 'cachedEndTime' is invalid", { obj });
     return false;
   }
