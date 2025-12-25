@@ -18,6 +18,7 @@ export default function EpisodeLi({
     const handleFileSelection = async () => {
       const filePath = await open({
         multiple: false,
+        directory: false,
         filters: [
           { name: "Video Files", extensions: ["wav", "mp4", "mov", "avi", "mkv", "gif"], },
           { name: "Audio Files", extensions: ["mp3", "aac", "flac", "wav", "ogg", "m4a"], },
