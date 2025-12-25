@@ -1,4 +1,4 @@
-import { Block, Episode, Project } from "../types";
+import { Block, Episode, Project, ProjectData, ProjectMeta } from "@/types";
 
 export function isEpisode(obj: unknown): obj is Episode {
   if (
@@ -78,5 +78,54 @@ export function isProject(obj: unknown): obj is Project {
 
   const missingProps = projectKeys.filter((key) => !(key in obj));
   console.warn("Project type check: missing properties:", missingProps, "What was received:", { ...obj });
+  return false;
+}
+export function isProjectMetaOnly(obj: unknown): obj is ProjectMeta {
+  if (
+    !obj
+    || typeof obj !== "object"
+    || Array.isArray(obj)
+  ) {
+    console.warn("Project type check: does not conform to basic object structure");
+    return false;
+  }
+
+  const projectKeys: (keyof ProjectMeta)[] = ["id", "date", "description", "dateCreated", "dateModified", "optionsRev"];
+  if (
+    (("id" satisfies keyof ProjectMeta) in obj && typeof obj.id === "string")
+    && (("date" satisfies keyof ProjectMeta) in obj && typeof obj.date === "string")
+    && (("description" satisfies keyof ProjectMeta) in obj && (typeof obj.description === "string" || obj.description === null))
+    && (("dateCreated" satisfies keyof ProjectMeta) in obj && typeof obj.dateCreated === "number")
+    && (("dateModified" satisfies keyof ProjectMeta) in obj && (typeof obj.dateModified === "number" || obj.dateModified === null))
+    && (("optionsRev" satisfies keyof ProjectMeta) in obj && typeof obj.optionsRev === "number")
+  ) {
+    return true;
+  }
+
+  const missingProps = projectKeys.filter((key) => !(key in obj));
+  console.warn("Project type check: missing properties:", missingProps, "What was received:", { ...obj });
+  return false;
+}
+export function isProjectDataOnly(obj: unknown): obj is ProjectData {
+  if (
+    !obj
+    || typeof obj !== "object"
+    || Array.isArray(obj)
+  ) {
+    console.warn("ProjectData type check: does not conform to basic object structure");
+    return false;
+  }
+
+  const projectKeys: (keyof ProjectData)[] = ["id", "blocks", "episodes"];
+  if (
+    (("id" satisfies keyof ProjectData) in obj && typeof obj.id === "string")
+    && (("blocks" satisfies keyof ProjectData) in obj && Array.isArray(obj.blocks) && obj.blocks.every(isBlock))
+    && (("episodes" satisfies keyof ProjectData) in obj && Array.isArray(obj.episodes) && obj.episodes.every(isEpisode))
+  ) {
+    return true;
+  }
+
+  const missingProps = projectKeys.filter((key) => !(key in obj));
+  console.warn("ProjectData type check: missing properties:", missingProps, "What was received:", { ...obj });
   return false;
 }

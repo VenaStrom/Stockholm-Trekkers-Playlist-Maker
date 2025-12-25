@@ -16,6 +16,8 @@ export type PageContext = {
   setProjectId: React.Dispatch<React.SetStateAction<string | null>>;
   projects: Project[];
   setProjects: React.Dispatch<React.SetStateAction<Project[]>>;
+
+  reload: () => void;
 };
 export const PageContextDefaultValue: PageContext = {
   route: PageRoute.Projects,
@@ -26,6 +28,8 @@ export const PageContextDefaultValue: PageContext = {
   setProjectId: () => { /* will be defined */ },
   projects: [],
   setProjects: () => { /* will be defined */ },
+
+  reload: () => { /* will be defined */ },
 };
 
 export const PageContext = createContext<PageContext>({ ...PageContextDefaultValue });

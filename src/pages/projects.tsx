@@ -1,82 +1,26 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { usePageContext } from "../components/page-context/use-page-context";
 import ProjectCard from "../components/project-card";
 import { Project } from "../types";
 import { IconAddBoxOutline, IconFolderOutline } from "../components/icons";
 import { path } from "@tauri-apps/api";
-import { appDataDir } from "@tauri-apps/api/path";
-import * as fs from "@tauri-apps/plugin-fs";
 import { useToast } from "../components/toast/useToast";
 import { revealItemInDir } from "@tauri-apps/plugin-opener";
 import { invoke } from "@tauri-apps/api/core";
-import { isProject } from "@/functions/type-guards";
-import { getAllProjects } from "@/functions/project/get-all-projects";
+import { FileName, PathName } from "@/global";
+import { createProject } from "@/functions/project/create-project";
 
 export default function Projects() {
   const { toast } = useToast();
-  const { setHeaderText, projects, setProjects } = usePageContext();
-
+  const { setHeaderText, projects, reload } = usePageContext();
   useEffect(() => setHeaderText("Projects"), [setHeaderText]);
-  
-  const [allProjects] = useState(async () => await getAllProjects());
 
-  // Load projects on mount
-  useEffect(() => {
-    const loadProjects = async () => {
-      // const projectsDir = await path.join(await appDataDir(), DirName.Projects);
-
-      // // If it doesn't exist, cancel
-      // const dirExists = await fs.exists(projectsDir);
-      // if (!dirExists) return;
-
-      // const loadedProjects: Project[] = [];
-
-      // // Read folder
-      // const projectFolderNames = (await fs.readDir(projectsDir)).filter(i => i.isDirectory && !i.name.startsWith(".")).map(d => d.name);
-      // for (const folderName of projectFolderNames) {
-      //   try {
-      //     const folderPath = await path.join(projectsDir, folderName);
-      //     const saveFilePath = await path.join(folderPath, FileName.ProjectSave);
-
-      //     const fileExists = await fs.exists(saveFilePath);
-      //     if (!fileExists) {
-      //       console.warn("Project save file does not exist, skipping:", saveFilePath);
-      //       continue;
-      //     }
-
-      //     const fileContent = await fs.readFile(saveFilePath);
-      //     const decoder = new TextDecoder("utf-8");
-      //     const decodedContent = decoder.decode(fileContent);
-      //     const project: unknown = JSON.parse(decodedContent);
-
-      //     if (!isProject(project)) {
-      //       console.warn("Invalid project file format, skipping:", saveFilePath);
-      //       continue;
-      //     }
-
-      //     loadedProjects.push(project);
-      //   }
-      //   catch (e) {
-      //     console.error("Failed to load project file:", folderName, e);
-      //   }
-      // }
-
-      // setProjects(loadedProjects);
-    };
-    loadProjects()
-      .catch((e) => {
-        console.error("Failed to load projects:", e);
-        toast("Failed to load projects. Please try again.");
-      });
-  }, [setProjects, toast]);
-
-  const showProjectsFolder = () => {
-    const openFolder = async () => {
-      // const hiddenSubFolderPath = await path.join(await appDataDir(), DirName.Projects, ".target");
-      // await invoke("mkdir", { dirPath: hiddenSubFolderPath, hidden: true, });
-      // await revealItemInDir(hiddenSubFolderPath);
-    };
-    openFolder()
+  const revealProjectsFolder = () => {
+    path.join(PathName.UserProjectsDir, FileName.RevealTarget)
+      .then(async (hiddenSubFolderPath) => {
+        await invoke("mkdir", { dirPath: hiddenSubFolderPath, hidden: true, });
+        await revealItemInDir(hiddenSubFolderPath);
+      })
       .catch((e) => {
         console.error("Failed to open projects folder:", e);
         toast("Failed to open projects folder. Please try again.");
@@ -84,33 +28,15 @@ export default function Projects() {
   };
 
   const makeNewProject = () => {
-    const createProject = async () => {
-      // const newProject = getEmptyProject();
-      // const projectFolderPath = await path.join(await appDataDir(), DirName.Projects, newProject.id);
-      // const saveFilePath = await path.join(projectFolderPath, FileName.ProjectSave);
-
-      // // Add to state TODO move this after successful save
-      // setProjects((prev) => [...prev, newProject]);
-
-      // await invoke("mkdir", { dirPath: projectFolderPath });
-
-      // // Make project save file
-      // const content = JSON.stringify(newProject, null, 2);
-      // await fs.create(saveFilePath);
-      // await fs.writeFile(saveFilePath, new TextEncoder().encode(content))
-      //   .catch((e) => {
-      //     console.error("Failed to write new project file:", e);
-      //     toast("Failed to create new project file. Please try again.");
-      //     return;
-      //   });
-
-      // toast(<>
-      //   Made new project.
-      //   {/* Maybe remove this line VVV */}
-      //   {/* Made new project. <a href="" target="_blank" rel="noreferrer" onClick={(e) => { e.preventDefault(); setRoute(PageRoute.Editor); setProjectId(newProject.id); }}>Edit</a> */}
-      // </>);
-    };
     createProject()
+      .then(() => {
+        reload(); // To have this one appear in the list
+        toast(<>
+          Made new project.
+          {/* Maybe remove this line VVV */}
+          {/* Made new project. <a href="" target="_blank" rel="noreferrer" onClick={(e) => { e.preventDefault(); setRoute(PageRoute.Editor); setProjectId(newProject.id); }}>Edit</a> */}
+        </>);
+      })
       .catch((e) => {
         console.error("Failed to create new project:", e);
         toast("Failed to create new project. Please try again.");
@@ -125,7 +51,7 @@ export default function Projects() {
 
       <ul className="w-11/12 md:w-7/12 flex flex-col gap-y-4 h-full overflow-y-auto pe-4 pt-1.5">
         <li className="w-full flex flex-row justify-end gap-x-3">
-          <button className="bg-abyss-200 hover:bg-spore-500" onClick={showProjectsFolder}>
+          <button className="bg-abyss-200 hover:bg-spore-500" onClick={revealProjectsFolder}>
             <IconFolderOutline className="inline size-6 me-1" />
             Show folder
           </button>

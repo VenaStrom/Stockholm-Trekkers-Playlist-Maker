@@ -14,8 +14,7 @@ export default function EpisodeLi({
   project: Project;
   projectSetter: React.Dispatch<React.SetStateAction<Project | null>>;
 }) {
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-  const [selectedFile, setSelectedFile] = useState<string | null>(episode.filePath || null);
+  const [selectedFile, setSelectedFile] = useState<string | null>(episode.filePath ?? null);
 
   const onFileChange = () => {
     const handleFileSelection = async () => {
@@ -41,7 +40,7 @@ export default function EpisodeLi({
 
       const newEpisode: Episode = {
         ...episode,
-        filePath: filePath,
+        filePath: filePath ?? undefined,
       };
 
       setVolatileProject((prevProject) => {

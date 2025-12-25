@@ -1,8 +1,8 @@
 import { FileName, PathName } from "@/global";
-import { Project } from "@/types";
+import { Project, ProjectMeta } from "@/types";
 import { path } from "@tauri-apps/api";
 import * as fs from "@tauri-apps/plugin-fs";
-import { openProject } from "./open-project";
+import { openProject, openProjectMetaOnly } from "./open-project";
 
 export async function getAllProjectIds(): Promise<Set<string>> {
   if (!await fs.exists(PathName.UserProjectsDir)) {
@@ -35,6 +35,23 @@ export async function getAllProjectIds(): Promise<Set<string>> {
   }
 
   return new Set(validProjects);
+}
+
+export async function getAllProjectMetas(): Promise<ProjectMeta[]> {
+  const projectMetas: ProjectMeta[] = [];
+
+  const allProjectIds = await getAllProjectIds();
+  for (const projectId of allProjectIds) {
+    try {
+      const project = await openProjectMetaOnly(projectId);
+      projectMetas.push(project);
+    }
+    catch (e) {
+      console.error(`Failed to open project with ID ${projectId}:`, e);
+    }
+  }
+
+  return projectMetas;
 }
 
 export async function getAllProjects(): Promise<Project[]> {
