@@ -1,8 +1,11 @@
 import { FileName, PathName } from "@/global";
+import { Project } from "@/types";
 import { path } from "@tauri-apps/api";
 import * as fs from "@tauri-apps/plugin-fs";
+import { openProject } from "./open-project";
+import { isProject } from "@/functions/type-guards";
 
-export async function getAllProjects(): Promise<Set<string>> {
+export async function getAllProjectIds(): Promise<Set<string>> {
   if (!await fs.exists(PathName.UserProjectsDir)) {
     await fs.mkdir(PathName.UserProjectsDir, { recursive: true });
     return new Set();
@@ -33,4 +36,22 @@ export async function getAllProjects(): Promise<Set<string>> {
   }
 
   return new Set(validProjects);
+}
+
+export async function getAllProjects(): Promise<Project[]> {
+  const projectIds = await getAllProjectIds();
+  const projects: Project[] = [];
+  const prismaHandles = await Promise.all([...projectIds].map(async id => await openProject(id)));
+
+  for (const handle of prismaHandles) {
+    const dbProject = await handle.project.findFirst();
+    if (isProject(dbProject)) {
+      projects.push(dbProject);
+    }
+    else {
+      throw new Error(`Invalid project data for project ID: ${dbProject?.id}`);
+    }
+  }
+
+  return projects;
 }

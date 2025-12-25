@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { usePageContext } from "../components/page-context/use-page-context";
 import ProjectCard from "../components/project-card";
 import { Project } from "../types";
@@ -16,15 +16,9 @@ export default function Projects() {
   const { toast } = useToast();
   const { setHeaderText, projects, setProjects } = usePageContext();
 
-  getAllProjects()
-    .then(l => {
-      console.log(l);
-    })
-    .catch(e => {
-      console.error("Failed to get all projects:", e);
-    });
-
   useEffect(() => setHeaderText("Projects"), [setHeaderText]);
+  
+  const [allProjects] = useState(async () => await getAllProjects());
 
   // Load projects on mount
   useEffect(() => {
