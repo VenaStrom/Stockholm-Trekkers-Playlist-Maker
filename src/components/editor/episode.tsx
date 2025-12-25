@@ -193,8 +193,28 @@ export default function EpisodeLi({
 
       const prevBlock = orderedBlocks[blockIndex - 1];
       if (!prevBlock) return prevProject;
-      // find tail of prevBlock (episode with undefined nextEpisodeId in that block)
-      const tail = prevProject.episodes.find(ep => ep.blockId === prevBlock.id && (ep.nextEpisodeId == null));
+      // find tail of prevBlock by following linked-list pointers (project-wide)
+      const prevBlockEpisodes = prevProject.episodes.filter(ep => ep.blockId === prevBlock.id);
+      const byIdPrevBlock = new Map(prevBlockEpisodes.map(e => [e.id, e]));
+      const pointedAll = new Set(prevProject.episodes.map(e => e.nextEpisodeId).filter(Boolean) as string[]);
+      const prevHeads = prevBlockEpisodes.filter(e => !pointedAll.has(e.id));
+      let tail: typeof prevBlockEpisodes[0] | undefined = undefined;
+      for (const head of prevHeads) {
+        let currentEpisode: typeof head | undefined = head;
+        const seenE = new Set<string>();
+        while (currentEpisode && !seenE.has(currentEpisode.id)) {
+          seenE.add(currentEpisode.id);
+          const nextId: string | undefined = currentEpisode.nextEpisodeId;
+          const nextEpisode: typeof head | undefined = nextId ? byIdPrevBlock.get(nextId) : undefined;
+          if (!nextId || !nextEpisode) {
+            tail = currentEpisode;
+            break;
+          }
+          currentEpisode = nextEpisode;
+        }
+        if (tail) break;
+      }
+      if (!tail && prevBlockEpisodes.length > 0) tail = prevBlockEpisodes[prevBlockEpisodes.length - 1];
 
       // remove cur from current chain: find prevOfCur (if any)
       const prevOfCur = prevProject.episodes.find(ep => ep.nextEpisodeId === cur.id);
@@ -293,10 +313,31 @@ export default function EpisodeLi({
       const nextBlock = orderedBlocks[blockIndex + 1];
       if (!nextBlock) return prevProject;
 
-      // find head of next block (episode in nextBlock that is not pointed to by other episodes)
+      // find head of next block by reconstructing linked-list head(s) using project-wide pointers
       const nextBlockEpisodes = prevProject.episodes.filter(ep => ep.blockId === nextBlock.id);
-      const pointed = new Set(nextBlockEpisodes.map(ep => ep.nextEpisodeId).filter(Boolean) as string[]);
-      const nextHead = nextBlockEpisodes.find(ep => !pointed.has(ep.id));
+      const byIdNextBlock = new Map(nextBlockEpisodes.map(e => [e.id, e]));
+      const pointedAllNext = new Set(prevProject.episodes.map(e => e.nextEpisodeId).filter(Boolean) as string[]);
+      const nextHeads = nextBlockEpisodes.filter(e => !pointedAllNext.has(e.id));
+      let nextHead: typeof nextBlockEpisodes[0] | undefined = undefined;
+      if (nextHeads.length > 0) {
+        // follow first head until end to determine ordering; head is nextHeads[0]
+        nextHead = nextHeads[0];
+      }
+      else if (nextBlockEpisodes.length > 0) {
+        // fallback: try to build an ordered list by following any candidate
+        const anyHead = nextBlockEpisodes[0];
+        let curE: typeof anyHead | undefined = anyHead;
+        const seenE = new Set<string>();
+        while (curE && !seenE.has(curE.id)) {
+          seenE.add(curE.id);
+          const nextId = curE.nextEpisodeId;
+          const nextE: typeof anyHead | undefined = nextId ? byIdNextBlock.get(nextId) : undefined;
+          if (!nextId || !nextE) break;
+          curE = nextE;
+        }
+        // pick the original candidate as head if nothing better
+        nextHead = anyHead;
+      }
 
       // remove cur from its current chain (find prevOfCur)
       const prevOfCur = prevProject.episodes.find(ep => ep.nextEpisodeId === cur.id);
