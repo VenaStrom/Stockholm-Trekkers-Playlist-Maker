@@ -1,19 +1,32 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { usePageContext } from "../components/page-context/use-page-context";
 import { PageRoute } from "../components/page-context/page.internal";
-import { path } from "@tauri-apps/api";
-import { appDataDir } from "@tauri-apps/api/path";
-import * as fs from "@tauri-apps/plugin-fs";
 import { Project } from "@/types";
 import { IconArrowBack2Outline, IconEditOutline, Spinner3DotsScaleMiddle } from "../components/icons";
 import { useDebounce } from "use-debounce";
 import BlockLi from "../components/editor/block";
-import { isProject } from "@/functions/type-guards";
+import { openProject } from "@/functions/project/open-project";
+import { saveProject } from "@/functions/project/save-project";
 
 export default function Editor() {
   const { setHeaderText, projectId, setRoute } = usePageContext();
+  useEffect(() => setHeaderText("Editor"), [setHeaderText]);
+
   const [volatileProject, setVolatileProject] = useState<Project | null>(null);
   const [SHOW_DEBUG, setSHOW_DEBUG] = useState(false);
+
+  // Load project data on mount and projectId changes
+  useEffect(() => {
+    if (!projectId) return;
+
+    openProject(projectId)
+      .then((project) => {
+        setVolatileProject(project);
+      })
+      .catch((err) => {
+        console.error("Failed to open project:", err);
+      });
+  }, [projectId]);
 
   // DEBUG register ctrl+D to toggle debug info
   useEffect(() => {
@@ -28,73 +41,24 @@ export default function Editor() {
     };
   }, []);
 
-  useEffect(() => setHeaderText("Editor"), [setHeaderText]);
-
-  // Read project data from file on mount
-  useEffect(() => {
-    // Redirect if no project id is defined
-    if (!projectId) {
-      console.warn("No project id set when trying to open editor.");
-      setRoute(PageRoute.Projects);
-    }
-
-    const readProjectData = async () => {
-      // if (!projectId) return;
-      // const projectFolderPath = await path.join(await appDataDir(), DirName.Projects, projectId);
-
-      // if (!await fs.exists(projectFolderPath)) {
-      //   console.error("Project does not exist:", projectFolderPath);
-      //   setRoute(PageRoute.Projects);
-      //   return;
-      // }
-
-      // const projectSaveFile = await path.join(projectFolderPath, FileName.ProjectSave);
-
-      // const fileContent = await fs.readFile(projectSaveFile);
-      // const decoder = new TextDecoder("utf-8");
-      // const decodedContent = decoder.decode(fileContent);
-      // const project: unknown = JSON.parse(decodedContent);
-
-      // if (!isProject(project)) {
-      //   console.error("Project data is invalid:", project);
-      //   setRoute(PageRoute.Projects);
-      //   return;
-      // }
-
-      // setVolatileProject(project);
-    };
-
-    readProjectData()
-      .catch(err => {
-        console.error("Error reading project data:", err);
-        setRoute(PageRoute.Projects);
-      });
-  }, [projectId, setRoute]);
-
   // Save project data to file when changed
+  const save = useCallback(async () => {
+    if (!volatileProject) return;
+    await saveProject(volatileProject)
+      .catch(err => {
+        console.error("Error saving project:", err);
+      });
+  }, [volatileProject]);
+
+  // Debouncing
   const debouncedProjectData = useDebounce(volatileProject, 500);
-  const writeProjectToFile = async (project: Project) => {
-    // const projectFolderPath = await path.join(await appDataDir(), DirName.Projects, project.id);
-
-    // if (!await fs.exists(projectFolderPath)) {
-    //   console.error("Project folder does not exist:", projectFolderPath);
-    //   return;
-    // }
-
-    // const projectSaveFile = await path.join(projectFolderPath, FileName.ProjectSave);
-
-    // const encoder = new TextEncoder();
-    // const fileContent = encoder.encode(JSON.stringify(project, null, 2));
-
-    // await fs.writeFile(projectSaveFile, fileContent);
-  };
   useEffect(() => {
     if (!debouncedProjectData[0]) return;
-    writeProjectToFile(debouncedProjectData[0])
+    save()
       .catch(err => {
-        console.error("Error writing project data:", err);
+        console.error("Error in debounced save:", err);
       });
-  }, [debouncedProjectData]);
+  }, [debouncedProjectData, save]);
 
   const onDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDate = e.target.value;
@@ -107,11 +71,10 @@ export default function Editor() {
   };
 
   const navigateBack = () => {
-    const goBack = async () => {
-      if (volatileProject) await writeProjectToFile(volatileProject); // Save before going back
-      setRoute(PageRoute.Projects);
-    };
-    goBack()
+    save()
+      .then(() => {
+        setRoute(PageRoute.Projects);
+      })
       .catch(err => {
         console.error("Error navigating back:", err);
       });
@@ -121,7 +84,8 @@ export default function Editor() {
     <main className="flex flex-col lg:flex-row gap-x-8 gap-y-12 justify-center items-start pt-4 px-12">
       <aside className="min-w-1/4 not-lg:w-full flex flex-col gap-y-4">
         {/* Go back */}
-        <button className="w-fit pe-3 ps-1.5 hover:bg-science-500 sticky top-5 shadow-sm"
+        <button
+          className="w-fit pe-3 ps-1.5 hover:bg-science-500 sticky top-5 shadow-sm"
           onClick={navigateBack}
         >
           <IconArrowBack2Outline className="inline size-6 me-1" />
