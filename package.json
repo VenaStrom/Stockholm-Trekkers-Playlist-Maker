@@ -22,18 +22,13 @@
     "tauri": "tauri",
     "download-assets": "node scripts/download-video-assets.ts",
     "rename-bundles": "node scripts/rename-bundles.ts",
-    "lint": "tsc --noEmit && eslint",
-    "prisma:generate": "prisma generate --no-hints",
-    "seed": "prisma migrate reset --force && prisma db push && yarn prisma db seed"
+    "lint": "tsc --noEmit && eslint"
   },
   "dependencies": {
-    "@prisma/adapter-better-sqlite3": "^7.2.0",
-    "@prisma/client": "^7.2.0",
     "@tauri-apps/api": "^2.9.1",
     "@tauri-apps/plugin-dialog": "~2",
     "@tauri-apps/plugin-fs": "~2",
     "@tauri-apps/plugin-opener": "~2",
-    "dotenv": "^17.2.3",
     "js-sha256": "^0.11.1",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
@@ -52,7 +47,6 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.26",
     "globals": "^16.4.0",
-    "prisma": "^7.2.0",
     "sharp": "^0.34.4",
     "tailwindcss": "^4.1.18",
     "typescript": "~5.9.3",
