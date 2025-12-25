@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { Episode, Project } from "@/types";
 import { IconDeleteOutline, IconDragIndicator, IconFolderOutline } from "../icons";
@@ -7,10 +7,12 @@ import { secondsToTimeString } from "../../functions/time-format";
 
 export default function EpisodeLi({
   episode,
+  project,
   projectSetter: setVolatileProject,
 
 }: {
   episode: Episode;
+  project: Project | null;
   projectSetter: React.Dispatch<React.SetStateAction<Project | null>>;
 }) {
   const [selectedFile, setSelectedFile] = useState<string | null>(episode.filePath ?? null);
@@ -220,25 +222,38 @@ export default function EpisodeLi({
     return () => { mounted = false; };
   }, [episode.blockId]);
 
+  // Ensure DOM order inside the container matches the project's episode order for this block
+  useEffect(() => {
+    if (!container) return;
+    if (!liRef.current) return;
+    if (!project) return;
+
+    // run on next tick to ensure portal node is attached
+    const t = setTimeout(() => {
+      try {
+        const blockEpisodes = project.episodes.filter(ep => ep.blockId === episode.blockId);
+        const desiredIndex = blockEpisodes.findIndex(ep => ep.id === episode.id);
+        if (desiredIndex === -1) return;
+
+        const children = Array.from(container.children).filter((c) => c.id?.startsWith?.("episode-"));
+        const referenceNode = children[desiredIndex] ?? null;
+        container.insertBefore(liRef.current as Node, referenceNode);
+      }
+      catch (err) {
+        console.debug('episode reorder error', err);
+      }
+    }, 0);
+
+    return () => clearTimeout(t);
+  }, [container, project, episode.blockId, episode.id]);
+
+  const liRef = useRef<HTMLLIElement | null>(null);
+
   const li = (
     <li
+      ref={liRef}
       className={`w-full flex flex-row items-center ps-1 select-none ${isDragOver ? "ring-2 ring-science-500/60 rounded-sm" : ""}`}
       id={`episode-${episode.id}`}
-      draggable
-      onDragStart={onDragStart}
-      onKeyDown={(e) => {
-        if (e.key === "ArrowUp") {
-          e.preventDefault();
-          moveEpisodeUpOne();
-        } else if (e.key === "ArrowDown") {
-          e.preventDefault();
-          moveEpisodeDownOne();
-        }
-      }}
-      onDragOver={onDragOver}
-      onDrop={onDrop}
-      onDragEnter={onDragEnter}
-      onDragLeave={onDragLeave}
     >
       <div className="flex flex-row gap-x-6 items-center pe-10">
         {/* Delete button */}
@@ -280,6 +295,19 @@ export default function EpisodeLi({
         aria-label="Drag to reorder"
         title="Drag to reorder"
         tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === "ArrowUp") {
+            e.preventDefault();
+            moveEpisodeUpOne();
+          } else if (e.key === "ArrowDown") {
+            e.preventDefault();
+            moveEpisodeDownOne();
+          }
+        }}
+        onDragOver={onDragOver}
+        onDrop={onDrop}
+        onDragEnter={onDragEnter}
+        onDragLeave={onDragLeave}
       >
         <IconDragIndicator className="size-6" />
       </span>
@@ -287,9 +315,7 @@ export default function EpisodeLi({
   );
 
   // If we have a container, portal the LI into it. Otherwise return a hidden placeholder
-  if (container) {
-    return createPortal(li, container);
-  }
+  if (container) return createPortal(li, container);
 
   return (
     <div style={{ display: "none" }} aria-hidden>

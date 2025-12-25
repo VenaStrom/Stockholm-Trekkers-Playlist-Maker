@@ -147,13 +147,21 @@ export default function Editor() {
             />
           })}
         </ul>
-        {/* Mount all episodes once here. Each EpisodeLi will portal its <li> into the
-            block-specific container `#block-episodes-{block.id}`. This keeps episode
-            component instances stable so they are not reconstructed when moved. */}
+
+        {/*
+          Mount all episodes once here. Each EpisodeLi will portal its <li> into the
+          block-specific container `#block-episodes-{block.id}`. This keeps episode
+          component instances stable so they are not reconstructed when moved.
+         */}
         <div aria-hidden style={{ position: "relative" }}>
           <ul style={{ display: "none" }}>
             {volatileProject?.episodes.map(ep => (
-              <EpisodeLi key={`episode-${ep.id}`} episode={ep} projectSetter={setVolatileProject} />
+              <EpisodeLi
+                key={`episode-${ep.id}`}
+                episode={ep}
+                project={volatileProject}
+                projectSetter={setVolatileProject}
+              />
             ))}
           </ul>
         </div>
