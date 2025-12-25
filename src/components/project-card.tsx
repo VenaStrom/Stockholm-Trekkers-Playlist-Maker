@@ -3,10 +3,7 @@ import { Project } from "../types";
 import { IconDeleteOutline, IconEditOutline, IconFileExportOutline } from "./icons";
 import Dialog from "./dialog";
 import { usePageContext } from "./page-context/use-page-context";
-import { path } from "@tauri-apps/api";
-import * as fs from "@tauri-apps/plugin-fs";
 import { useToast } from "./toast/useToast";
-import { appDataDir } from "@tauri-apps/api/path";
 import { PageRoute } from "./page-context/page.internal";
 
 export default function ProjectCard({
@@ -14,7 +11,7 @@ export default function ProjectCard({
 }: {
   project: Project;
 }) {
-  const { setProjects, setProjectId, setRoute } = usePageContext();
+  const { setProjectId, setRoute } = usePageContext();
   const { toast } = useToast();
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
 
