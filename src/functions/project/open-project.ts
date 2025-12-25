@@ -3,7 +3,7 @@ import * as fs from "@tauri-apps/plugin-fs";
 import { path } from "@tauri-apps/api";
 import { PathName, FileName } from "@/global";
 import { isProject, isProjectMetaOnly } from "@/functions/type-guards";
-import { Project, ProjectMeta } from "@/types";
+import type { Project, ProjectMeta } from "@/types";
 
 export async function openProject(projectId: string): Promise<Project> {
   const project = await internalOpenProject(projectId, true);

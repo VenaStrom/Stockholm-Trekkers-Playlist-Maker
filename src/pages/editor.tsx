@@ -4,7 +4,7 @@ import { PageRoute } from "../components/page-context/page.internal";
 import { path } from "@tauri-apps/api";
 import { appDataDir } from "@tauri-apps/api/path";
 import * as fs from "@tauri-apps/plugin-fs";
-import { Project } from "../types";
+import { Project } from "@/types";
 import { IconArrowBack2Outline, IconEditOutline, Spinner3DotsScaleMiddle } from "../components/icons";
 import { useDebounce } from "use-debounce";
 import BlockLi from "../components/editor/block";

@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from "react";
-import { Block, Episode, Project } from "../../types";
+import { Block, Episode, Project } from "@/types";
 import { IconDeleteOutline, IconSettingsOutline } from "../icons";
 import EpisodeLi from "./episode";
 

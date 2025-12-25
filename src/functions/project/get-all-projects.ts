@@ -1,5 +1,5 @@
 import { FileName, PathName } from "@/global";
-import { Project, ProjectMeta } from "@/types";
+import type { Project, ProjectMeta } from "@/types";
 import { path } from "@tauri-apps/api";
 import * as fs from "@tauri-apps/plugin-fs";
 import { openProject, openProjectMetaOnly } from "./open-project";

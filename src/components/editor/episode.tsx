@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Episode, Project } from "../../types";
+import { Episode, Project } from "@/types";
 import { IconDeleteOutline, IconDragIndicator, IconFolderOutline } from "../icons";
 import { open } from "@tauri-apps/plugin-dialog";
 import { secondsToTimeString } from "../../functions/time-format";

@@ -1,4 +1,3 @@
-import { blockClips } from "./global";
 
 export type Episode = {
   id: string;
@@ -10,7 +9,6 @@ export type Episode = {
   cachedEndTime?: number; // in seconds
 };
 
-export const leading = true, trailing = true, wrapped = true;
 export type BlockClip = {
   name: string; // Display name
   default: boolean | number; // Mostly gonna be checkboxes but some configs would like numbers
@@ -19,16 +17,6 @@ export type BlockClip = {
   description: string;
   allowedPlacement: { leading?: boolean; trailing?: boolean; wrapped?: boolean; }
 };
-
-export const DefaultBlockOptions: Record<string, BlockClip["default"]> = {} as const;
-for (const clipKey in blockClips) {
-  if (!blockClips[clipKey]) continue;
-  for (const placement in blockClips[clipKey].allowedPlacement) {
-    const optionKey = `${placement}_${clipKey}`;
-    DefaultBlockOptions[optionKey] = blockClips[clipKey].default;
-  }
-}
-export type DefaultBlockOptions = typeof DefaultBlockOptions;
 
 export type Block = {
   id: string;

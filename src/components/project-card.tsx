@@ -1,18 +1,19 @@
 import { useState } from "react";
-import { Project } from "../types";
+import { Project } from "@/types";
 import { IconDeleteOutline, IconEditOutline, IconFileExportOutline } from "./icons";
 import Dialog from "./dialog";
 import { usePageContext } from "./page-context/use-page-context";
 import { useToast } from "./toast/useToast";
 import { PageRoute } from "./page-context/page.internal";
+import { deleteProject } from "@/functions/project/delete-project";
 
 export default function ProjectCard({
   project,
 }: {
   project: Project;
 }) {
-  const { setProjectId, setRoute } = usePageContext();
   const { toast } = useToast();
+  const { setProjectId, setRoute, reload } = usePageContext();
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
 
   const downloadSaveFolder = () => {
@@ -24,12 +25,7 @@ export default function ProjectCard({
   };
 
   const handleDeleteProject = () => {
-    const deleteProject = async () => {
-      //   setProjects((prevProjects) => prevProjects.filter((p) => p.id !== project.id));
-      //   setDeleteDialogVisible(false);
-      //   await fs.remove(await path.join(await appDataDir(), DirName.Projects, project.id), { recursive: true });
-    };
-    deleteProject()
+    deleteProject(project.id)
       .then(() => {
         toast(
           <span>
@@ -43,6 +39,10 @@ export default function ProjectCard({
             Failed to delete project <span className="italic">{project.date}</span>: {error instanceof Error ? error.message : String(error)}
           </span>,
         );
+      })
+      .finally(() => {
+        reload();
+        setDeleteDialogVisible(false);
       });
   };
 

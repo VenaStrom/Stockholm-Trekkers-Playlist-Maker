@@ -1,4 +1,5 @@
-import { DefaultBlockOptions, ProjectData, Project, ProjectMeta } from "@/types";
+import { DefaultBlockOptions } from "@/consts";
+import type { ProjectData, Project, ProjectMeta } from "@/types";
 import { generateId } from "@/functions/sha256";
 import { OPTION_REVISION } from "@/global";
 import * as fs from "@tauri-apps/plugin-fs";

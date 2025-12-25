@@ -1,4 +1,4 @@
-import { Block, Episode, Project, ProjectData, ProjectMeta } from "@/types";
+import type { Block, Episode, Project, ProjectData, ProjectMeta } from "@/types";
 
 export function isEpisode(obj: unknown): obj is Episode {
   if (

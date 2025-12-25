@@ -1,8 +1,8 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import App from "./app";
-import { PageProvider } from "./components/page-context/page-provider";
-import { ToastProvider } from "./components/toast/toast";
+import { PageProvider } from "@/components/page-context/page-provider";
+import { ToastProvider } from "@/components/toast/toast";
+import App from "@/app";
 
 const root = document.getElementById("root");
 if (!root) throw new Error("Failed to find root element");
