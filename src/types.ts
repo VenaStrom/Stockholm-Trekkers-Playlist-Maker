@@ -2,7 +2,6 @@
 export type Episode = {
   id: string;
   blockId: string;
-  nextEpisodeId?: string;
   filePath?: string;
   duration?: number; // in seconds
   cachedStartTime?: number; // in seconds
@@ -21,7 +20,6 @@ export type BlockClip = {
 export type Block = {
   id: string;
   options: Record<string, BlockClip["default"]>;
-  nextBlockId?: string;
 };
 
 export type ProjectMeta = {

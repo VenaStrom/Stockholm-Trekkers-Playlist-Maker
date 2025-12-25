@@ -78,50 +78,5 @@ async function internalOpenProject(projectId: string, includeData = true): Promi
     throw new Error(`Invalid full project format for project ID: ${projectId}`);
   }
 
-  // Normalize block and episode orders so their array order matches their linked order
-  const reorderedBlocks: Project["blocks"] = [];
-  const blockById = new Map(fullProject.blocks.map(b => [b.id, b]));
-  const pointedBlocks = new Set(fullProject.blocks.map(b => b.nextBlockId).filter(Boolean) as string[]);
-  const headBlocks = fullProject.blocks.filter(b => !pointedBlocks.has(b.id));
-  for (const head of headBlocks) {
-    let current: typeof fullProject.blocks[number] | undefined = head;
-    const seen = new Set<string>();
-    while (current && !seen.has(current.id)) {
-      reorderedBlocks.push(current);
-      seen.add(current.id);
-      const nextId: string | undefined = current.nextBlockId;
-      current = nextId ? blockById.get(nextId) : undefined;
-    }
-  }
-  // Append any orphaned blocks not reachable from heads
-  for (const block of fullProject.blocks) {
-    if (!reorderedBlocks.find(x => x.id === block.id)) {
-      reorderedBlocks.push(block);
-    }
-  }
-  fullProject.blocks = reorderedBlocks;
-
-  const reorderedEpisodes: Project["episodes"] = [];
-  const episodeById = new Map(fullProject.episodes.map(e => [e.id, e]));
-  const pointedEpisodes = new Set(fullProject.episodes.map(e => e.nextEpisodeId).filter(Boolean) as string[]);
-  const headEpisodes = fullProject.episodes.filter(e => !pointedEpisodes.has(e.id));
-  for (const head of headEpisodes) {
-    let current: typeof fullProject.episodes[number] | undefined = head;
-    const seen = new Set<string>();
-    while (current && !seen.has(current.id)) {
-      reorderedEpisodes.push(current);
-      seen.add(current.id);
-      const nextId: string | undefined = current.nextEpisodeId;
-      current = nextId ? episodeById.get(nextId) : undefined;
-    }
-  }
-  // Append any orphaned episodes not reachable from heads
-  for (const episode of fullProject.episodes) {
-    if (!reorderedEpisodes.find(x => x.id === episode.id)) {
-      reorderedEpisodes.push(episode);
-    }
-  }
-  fullProject.episodes = reorderedEpisodes;
-
   return fullProject;
 }

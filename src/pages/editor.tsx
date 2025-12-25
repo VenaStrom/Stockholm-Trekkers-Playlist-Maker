@@ -138,43 +138,15 @@ export default function Editor() {
 
       <section className="lg:flex-1 not-lg:w-full">
         <ul className="flex flex-col gap-y-4 not-lg:pb-52">
-          {(() => {
-            if (!volatileProject) return null;
-
-            // Order blocks by linked list using nextBlockId
-            const blocksById = new Map(volatileProject.blocks.map(b => [b.id, b]));
-            const pointed = new Set(volatileProject.blocks.map(b => b.nextBlockId).filter(Boolean) as string[]);
-
-            // find head blocks (not pointed to by any nextBlockId)
-            const heads = volatileProject.blocks.filter(b => !pointed.has(b.id));
-
-            const ordered: typeof volatileProject.blocks = [];
-            for (const head of heads) {
-              let cur: typeof head | undefined = head;
-              const seen = new Set<string>();
-              while (cur && !seen.has(cur.id)) {
-                ordered.push(cur);
-                seen.add(cur.id);
-                const nextId: string | undefined = cur.nextBlockId;
-                cur = nextId ? blocksById.get(nextId) : undefined;
-              }
-            }
-
-            // If any blocks weren't included (cycle or orphan), append them
-            for (const b of volatileProject.blocks) {
-              if (!ordered.find(x => x.id === b.id)) ordered.push(b);
-            }
-
-            return ordered.map((block, index) => (
-              <BlockLi
-                key={`block-${block.id}`}
-                block={block}
-                blockIndex={index}
-                project={volatileProject}
-                projectSetter={setVolatileProject}
-              />
-            ));
-          })()}
+          {volatileProject?.blocks.map((block, index) => {
+            return <BlockLi
+              key={`block-${block.id}`}
+              block={block}
+              blockIndex={index}
+              project={volatileProject}
+              projectSetter={setVolatileProject}
+            />
+          })}
         </ul>
       </section>
     </main>
