@@ -3,21 +3,21 @@
 import { defineConfig, globalIgnores } from "eslint/config";
 import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
-import reactPlugin from "eslint-plugin-react";
-import reactHooks from "eslint-plugin-react-hooks";
-import reactRefresh from "eslint-plugin-react-refresh";
 
 export default defineConfig([
   eslint.configs.recommended,
   tseslint.configs.recommendedTypeChecked,
   tseslint.configs.stylisticTypeChecked,
-  reactRefresh.configs.vite,
-  reactHooks.configs.flat.recommended,
   {
+    languageOptions: {
+      ecmaVersion: 2024,
+      parser: tseslint.parser,
+      parserOptions: {
+        tsconfigRootDir: __dirname,
+        project: "./tsconfig.json",
+      },
+    },
     rules: {
-      "react-refresh/only-export-components": "warn",
-      "react/react-in-jsx-scope": "off",
-      "react/prop-types": "off",
       "@typescript-eslint/no-unused-vars": [
         "warn",
         {
@@ -32,35 +32,15 @@ export default defineConfig([
       "@typescript-eslint/require-await": "warn",
       "@typescript-eslint/prefer-nullish-coalescing": "warn",
     },
-    languageOptions: {
-      ecmaVersion: 2022,
-      parser: tseslint.parser,
-      parserOptions: {
-        tsconfigRootDir: __dirname,
-        project: "./tsconfig.json",
-        ecmaFeatures: {
-          jsx: true,
-        },
-      },
-    },
-    plugins: {
-      "react": reactPlugin,
-    },
-    settings: {
-      react: {
-        version: "detect",
-      },
-    },
   },
   globalIgnores([
-    "scripts/**", // Has it's own config
     "dist/**",
     "node_modules/**",
+    "src/**",
     "src-tauri/**",
     "src/prisma/generated/**",
+    "*.config.js",
+    "*.config.ts",
     "**/*.d.ts",
-    "**/*.js",
-    "**/*.cjs",
-    "**/*.mjs",
   ]),
 ]);

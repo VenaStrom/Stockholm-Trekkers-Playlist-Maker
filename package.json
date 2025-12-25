@@ -18,11 +18,11 @@
     "dev": "yarn tauri dev",
     "build": "yarn download-assets && yarn tauri build && yarn rename-bundles",
     "vite:dev": "vite",
-    "vite:build": "tsc --project ./tsconfig.node.json && vite build",
+    "vite:build": "vite build",
     "tauri": "tauri",
     "download-assets": "node scripts/download-video-assets.ts",
     "rename-bundles": "node scripts/rename-bundles.ts",
-    "lint": "tsc --noEmit && eslint"
+    "lint": "tsc --noEmit && eslint && eslint -c scripts/eslint.config.ts"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.9.1",
