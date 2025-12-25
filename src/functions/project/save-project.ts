@@ -14,21 +14,16 @@ export async function saveProject(project: Project): Promise<void> {
   const metaFilePath = await path.join(projectDir, FileName.ProjectMeta);
   const dataFilePath = await path.join(projectDir, FileName.ProjectData);
 
-  // Normalize IDs on links to be safe: sometimes UI logic can temporarily set
-  // linked-id fields to objects or null — ensure they are strings or undefined
-  const normalizeRef = (v: unknown): string | undefined => {
-    if (typeof v === "string") return v;
-    if (v && typeof v === "object") {
-      const obj = v as Record<string, unknown>;
-      if (typeof obj.id === "string") return obj.id;
-    }
-    return undefined;
-  };
-
   const normalizedProject: Project = {
     ...project,
-    blocks: project.blocks.map((b) => ({ ...b, nextBlockId: normalizeRef(b.nextBlockId) })),
-    episodes: project.episodes.map((ep) => ({ ...ep, nextEpisodeId: normalizeRef(ep.nextEpisodeId), blockId: normalizeRef(ep.blockId) ?? ep.blockId })),
+    blocks: project.blocks.map((b) => ({
+      ...b,
+      nextBlockId: typeof b.nextBlockId === "string" ? b.nextBlockId : undefined,
+    })),
+    episodes: project.episodes.map((ep) => ({
+      ...ep,
+      nextEpisodeId: typeof ep.nextEpisodeId === "string" ? ep.nextEpisodeId : undefined,
+    })),
   };
 
   if (!isProject(normalizedProject)) {
