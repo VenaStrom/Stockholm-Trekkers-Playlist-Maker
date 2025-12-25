@@ -119,6 +119,17 @@ export default function EpisodeLi({
       const newEpisodes = prevProject.episodes.map(ep => episodesById.get(ep.id) ?? ep);
       return { ...prevProject, episodes: newEpisodes };
     });
+    // After state update, ensure the moved episode is visible and focused
+    setTimeout(() => {
+      const li = document.getElementById(`episode-${episode.id}`);
+      if (!(li instanceof HTMLElement)) return;
+      const thumb = li.querySelector('[draggable="true"]');
+      const focusEl = thumb instanceof HTMLElement ? thumb : li;
+      // ensure focusable
+      focusEl.tabIndex = 0;
+      focusEl.focus();
+      focusEl.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 0);
   };
 
   const moveEpisodeUpOne = () => {
@@ -207,6 +218,16 @@ export default function EpisodeLi({
       const newEpisodes = prevProject.episodes.map(ep => episodesById.get(ep.id) ?? ep);
       return { ...prevProject, episodes: newEpisodes };
     });
+    // keep moved episode in view / focused
+    setTimeout(() => {
+      const li = document.getElementById(`episode-${episode.id}`);
+      if (!(li instanceof HTMLElement)) return;
+      const thumb = li.querySelector('[draggable="true"]');
+      const focusEl = thumb instanceof HTMLElement ? thumb : li;
+      focusEl.tabIndex = 0;
+      focusEl.focus();
+      focusEl.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 0);
   };
 
   const moveEpisodeDownOne = () => {
@@ -299,6 +320,16 @@ export default function EpisodeLi({
       const newEpisodes = prevProject.episodes.map(ep => episodesById.get(ep.id) ?? ep);
       return { ...prevProject, episodes: newEpisodes };
     });
+    // keep moved episode in view / focused
+    setTimeout(() => {
+      const li = document.getElementById(`episode-${episode.id}`);
+      if (!(li instanceof HTMLElement)) return;
+      const thumb = li.querySelector('[draggable="true"]');
+      const focusEl = thumb instanceof HTMLElement ? thumb : li;
+      focusEl.tabIndex = 0;
+      focusEl.focus();
+      focusEl.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 0);
   };
 
   // Memoized file name and route for prettier display
