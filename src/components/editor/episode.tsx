@@ -122,34 +122,87 @@ export default function EpisodeLi({
   };
 
   const moveEpisodeUpOne = () => {
-    // Move earlier in the linked list within the same block
+    // Move earlier in the linked list, jumping to previous block if at head
     setVolatileProject((prevProject) => {
       if (!prevProject) return prevProject;
+
+      // helper: build block order by linked nextBlockId
+      const blocksById = new Map(prevProject.blocks.map(b => [b.id, b]));
+      const pointedBlocks = new Set(prevProject.blocks.map(b => b.nextBlockId).filter(Boolean) as string[]);
+      const heads = prevProject.blocks.filter(b => !pointedBlocks.has(b.id));
+      const orderedBlocks: typeof prevProject.blocks = [];
+      for (const head of heads) {
+        let curB: typeof head | undefined = head;
+        const seenB = new Set<string>();
+        while (curB && !seenB.has(curB.id)) {
+          orderedBlocks.push(curB);
+          seenB.add(curB.id);
+          const nextId: string | undefined = curB.nextBlockId;
+          curB = nextId ? blocksById.get(nextId) : undefined;
+        }
+      }
+      for (const b of prevProject.blocks) if (!orderedBlocks.find(x => x.id === b.id)) orderedBlocks.push(b);
+
       const episodesById = new Map(prevProject.episodes.map(ep => [ep.id, { ...ep }]));
       const cur = episodesById.get(episode.id);
       if (!cur) return prevProject;
 
-      // find previous and previous-of-previous within same block
-      const prev = prevProject.episodes.find(ep => ep.nextEpisodeId === episode.id && ep.blockId === episode.blockId);
-      if (!prev) return prevProject; // already head
-      const prevPrev = prevProject.episodes.find(ep => ep.nextEpisodeId === prev.id && ep.blockId === episode.blockId);
+      // find previous (may be in any block)
+      const prev = prevProject.episodes.find(ep => ep.nextEpisodeId === episode.id);
+      if (prev) {
+        // usual within-block move (swap cur and prev positions)
+        const prevPrev = prevProject.episodes.find(ep => ep.nextEpisodeId === prev.id);
+        const curCopy = episodesById.get(cur.id)!;
+        const prevCopy = episodesById.get(prev.id)!;
 
-      const curCopy = episodesById.get(cur.id)!;
-      const prevCopy = episodesById.get(prev.id)!;
+        // detach cur
+        prevCopy.nextEpisodeId = curCopy.nextEpisodeId;
 
-      // detach cur
-      prevCopy.nextEpisodeId = curCopy.nextEpisodeId;
+        // insert cur before prev
+        curCopy.nextEpisodeId = prevCopy.id;
+        // if prev is in a different block, cur moves into prev's block
+        if (prevCopy.blockId && prevCopy.blockId !== curCopy.blockId) curCopy.blockId = prevCopy.blockId;
+        if (prevPrev) {
+          const prevPrevCopy = episodesById.get(prevPrev.id)!;
+          prevPrevCopy.nextEpisodeId = curCopy.id;
+          episodesById.set(prevPrevCopy.id, prevPrevCopy);
+        }
 
-      // insert cur before prev
-      curCopy.nextEpisodeId = prevCopy.id;
-      if (prevPrev) {
-        const prevPrevCopy = episodesById.get(prevPrev.id)!;
-        prevPrevCopy.nextEpisodeId = curCopy.id;
-        episodesById.set(prevPrevCopy.id, prevPrevCopy);
+        episodesById.set(prevCopy.id, prevCopy);
+        episodesById.set(curCopy.id, curCopy);
+
+        const newEpisodes = prevProject.episodes.map(ep => episodesById.get(ep.id) ?? ep);
+        return { ...prevProject, episodes: newEpisodes };
       }
 
-      episodesById.set(prevCopy.id, prevCopy);
+      // no prev -> cur is head of its block. Jump to previous block's tail if exists
+      const blockIndex = orderedBlocks.findIndex(b => b.id === cur.blockId);
+      if (blockIndex <= 0) return prevProject; // no previous block
+
+      const prevBlock = orderedBlocks[blockIndex - 1];
+      if (!prevBlock) return prevProject;
+      // find tail of prevBlock (episode with undefined nextEpisodeId in that block)
+      const tail = prevProject.episodes.find(ep => ep.blockId === prevBlock.id && (ep.nextEpisodeId == null));
+
+      // remove cur from current chain: find prevOfCur (if any)
+      const prevOfCur = prevProject.episodes.find(ep => ep.nextEpisodeId === cur.id);
+      if (prevOfCur) {
+        const prevOfCurCopy = episodesById.get(prevOfCur.id)!;
+        prevOfCurCopy.nextEpisodeId = cur.nextEpisodeId;
+        episodesById.set(prevOfCurCopy.id, prevOfCurCopy);
+      }
+
+      // update cur to append to tail of prevBlock
+      const curCopy = episodesById.get(cur.id)!;
+      curCopy.blockId = prevBlock.id;
+      curCopy.nextEpisodeId = undefined;
       episodesById.set(curCopy.id, curCopy);
+
+      if (tail) {
+        const tailCopy = episodesById.get(tail.id)!;
+        tailCopy.nextEpisodeId = curCopy.id;
+        episodesById.set(tailCopy.id, tailCopy);
+      }
 
       const newEpisodes = prevProject.episodes.map(ep => episodesById.get(ep.id) ?? ep);
       return { ...prevProject, episodes: newEpisodes };
@@ -157,35 +210,91 @@ export default function EpisodeLi({
   };
 
   const moveEpisodeDownOne = () => {
-    // Move later in linked list within same block
+    // Move later in linked list; if at tail, jump to head of next block
     setVolatileProject((prevProject) => {
       if (!prevProject) return prevProject;
+
+      // build ordered blocks
+      const blocksById = new Map(prevProject.blocks.map(b => [b.id, b]));
+      const pointedBlocks = new Set(prevProject.blocks.map(b => b.nextBlockId).filter(Boolean) as string[]);
+      const heads = prevProject.blocks.filter(b => !pointedBlocks.has(b.id));
+      const orderedBlocks: typeof prevProject.blocks = [];
+      for (const head of heads) {
+        let curB: typeof head | undefined = head;
+        const seenB = new Set<string>();
+        while (curB && !seenB.has(curB.id)) {
+          orderedBlocks.push(curB);
+          seenB.add(curB.id);
+          const nextId: string | undefined = curB.nextBlockId;
+          curB = nextId ? blocksById.get(nextId) : undefined;
+        }
+      }
+      for (const b of prevProject.blocks) if (!orderedBlocks.find(x => x.id === b.id)) orderedBlocks.push(b);
+
       const episodesById = new Map(prevProject.episodes.map(ep => [ep.id, { ...ep }]));
       const cur = episodesById.get(episode.id);
       if (!cur) return prevProject;
 
-      const next = prevProject.episodes.find(ep => ep.id === cur.nextEpisodeId && ep.blockId === cur.blockId);
-      if (!next) return prevProject; // already last in block
+      const next = prevProject.episodes.find(ep => ep.id === cur.nextEpisodeId);
+      if (next) {
+        // normal swap with next within same block
+        const prev = prevProject.episodes.find(ep => ep.nextEpisodeId === episode.id);
+        const nextCopy = episodesById.get(next.id)!;
+        const curCopy = episodesById.get(cur.id)!;
 
-      const prev = prevProject.episodes.find(ep => ep.nextEpisodeId === episode.id && ep.blockId === episode.blockId);
-      const nextCopy = episodesById.get(next.id)!;
-      const curCopy = episodesById.get(cur.id)!;
+        // re-link: prev -> next
+        if (prev) {
+          const prevCopy = episodesById.get(prev.id)!;
+          prevCopy.nextEpisodeId = nextCopy.id;
+          episodesById.set(prevCopy.id, prevCopy);
+        }
 
-      // re-link: prev -> next
-      if (prev) {
-        const prevCopy = episodesById.get(prev.id)!;
-        prevCopy.nextEpisodeId = nextCopy.id;
-        episodesById.set(prevCopy.id, prevCopy);
+        // cur -> next.next
+        curCopy.nextEpisodeId = nextCopy.nextEpisodeId;
+
+        // next -> cur
+        nextCopy.nextEpisodeId = curCopy.id;
+
+        // if next is in a different block, move cur into next's block
+        if (nextCopy.blockId && nextCopy.blockId !== curCopy.blockId) curCopy.blockId = nextCopy.blockId;
+
+        episodesById.set(curCopy.id, curCopy);
+        episodesById.set(nextCopy.id, nextCopy);
+
+        const newEpisodes = prevProject.episodes.map(ep => episodesById.get(ep.id) ?? ep);
+        return { ...prevProject, episodes: newEpisodes };
       }
 
-      // cur -> next.next
-      curCopy.nextEpisodeId = nextCopy.nextEpisodeId;
+      // no next -> cur is tail. Jump to next block's head
+      const blockIndex = orderedBlocks.findIndex(b => b.id === cur.blockId);
+      if (blockIndex === -1 || blockIndex >= orderedBlocks.length - 1) return prevProject; // no next block
+      const nextBlock = orderedBlocks[blockIndex + 1];
+      if (!nextBlock) return prevProject;
 
-      // next -> cur
-      nextCopy.nextEpisodeId = curCopy.id;
+      // find head of next block (episode in nextBlock that is not pointed to by other episodes)
+      const nextBlockEpisodes = prevProject.episodes.filter(ep => ep.blockId === nextBlock.id);
+      const pointed = new Set(nextBlockEpisodes.map(ep => ep.nextEpisodeId).filter(Boolean) as string[]);
+      const nextHead = nextBlockEpisodes.find(ep => !pointed.has(ep.id));
 
+      // remove cur from its current chain (find prevOfCur)
+      const prevOfCur = prevProject.episodes.find(ep => ep.nextEpisodeId === cur.id);
+      if (prevOfCur) {
+        const prevOfCurCopy = episodesById.get(prevOfCur.id)!;
+        prevOfCurCopy.nextEpisodeId = cur.nextEpisodeId;
+        episodesById.set(prevOfCurCopy.id, prevOfCurCopy);
+      }
+
+      // insert before nextHead (become head) or if no nextHead, simply become sole episode in next block
+      const curCopy = episodesById.get(cur.id)!;
+      curCopy.blockId = nextBlock.id;
+      if (nextHead) {
+        // become head: point to old head
+        curCopy.nextEpisodeId = nextHead.id;
+        // no prev to update since head
+      } else {
+        curCopy.nextEpisodeId = undefined;
+      }
       episodesById.set(curCopy.id, curCopy);
-      episodesById.set(nextCopy.id, nextCopy);
 
       const newEpisodes = prevProject.episodes.map(ep => episodesById.get(ep.id) ?? ep);
       return { ...prevProject, episodes: newEpisodes };

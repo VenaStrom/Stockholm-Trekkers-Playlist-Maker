@@ -20,8 +20,8 @@ export default function BlockLi({
     const blockEpisodes = volatileProject.episodes.filter(e => e.blockId === block.id);
     const byId = new Map(blockEpisodes.map(e => [e.id, e]));
 
-    // Find head: episode not referenced by any nextEpisodeId within the block
-    const pointed = new Set(blockEpisodes.map(e => e.nextEpisodeId).filter(Boolean) as string[]);
+    // Find head: episode not referenced by any nextEpisodeId anywhere in the project
+    const pointed = new Set(volatileProject.episodes.map(e => e.nextEpisodeId).filter(Boolean) as string[]);
     const heads = blockEpisodes.filter(e => !pointed.has(e.id));
 
     const ordered: Episode[] = [];
