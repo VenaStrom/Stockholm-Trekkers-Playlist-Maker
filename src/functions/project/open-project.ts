@@ -1,5 +1,3 @@
-import { PrismaClient } from "@/prisma/generated";
-import { createPrismaClient } from "../prisma";
 import { getAllProjectIds } from "./get-all-projects";
 
 export async function openProject(projectId: string): Promise<PrismaClient> {

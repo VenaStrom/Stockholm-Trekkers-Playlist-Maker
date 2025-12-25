@@ -48,6 +48,6 @@ export const PathName = {
 export type PathName = (typeof PathName)[keyof typeof PathName];
 
 export const FileName = {
-  ProjectDB: "project.db",
+  ProjectDB: "project.json",
 } as const;
 export type FileName = (typeof FileName)[keyof typeof FileName];
