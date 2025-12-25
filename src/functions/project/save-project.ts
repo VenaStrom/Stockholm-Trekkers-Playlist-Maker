@@ -1,0 +1,37 @@
+import * as fs from "@tauri-apps/plugin-fs";
+import { path } from "@tauri-apps/api";
+import { PathName, FileName } from "@/global";
+import { isProject } from "../type-guards";
+import { Project, ProjectData, ProjectMeta } from "@/types";
+import { createProject } from "./create-project";
+
+export async function saveProject(project: Project): Promise<void> {
+  const projectDir = await path.join(PathName.UserProjectsDir, project.id);
+  if (!await fs.exists(projectDir)) {
+    console.warn(`Project directory does not exist: ${projectDir}. Creating the directory.`);
+    await createProject();
+  }
+  const metaFilePath = await path.join(projectDir, FileName.ProjectMeta);
+  const dataFilePath = await path.join(projectDir, FileName.ProjectData);
+
+  if (!isProject(project)) {
+    throw new Error("Project data is invalid and cannot be saved.");
+  }
+
+  const projectMeta: ProjectMeta = {
+    id: project.id,
+    date: project.date,
+    description: project.description,
+    dateCreated: project.dateCreated,
+    optionsRev: project.optionsRev,
+  };
+
+  const projectData: ProjectData = {
+    id: project.id,
+    blocks: project.blocks,
+    episodes: project.episodes,
+  };
+
+  await fs.writeTextFile(metaFilePath, JSON.stringify(projectMeta, null, 2));
+  await fs.writeTextFile(dataFilePath, JSON.stringify(projectData, null, 2));
+}
