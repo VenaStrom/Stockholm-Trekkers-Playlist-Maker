@@ -3,7 +3,6 @@ import { Project } from "@/types";
 import { path } from "@tauri-apps/api";
 import * as fs from "@tauri-apps/plugin-fs";
 import { openProject } from "./open-project";
-import { isProject } from "@/functions/type-guards";
 
 export async function getAllProjectIds(): Promise<Set<string>> {
   if (!await fs.exists(PathName.UserProjectsDir)) {
@@ -23,7 +22,7 @@ export async function getAllProjectIds(): Promise<Set<string>> {
     const projectFilePath = await path.join(
       PathName.UserProjectsDir,
       foundDirName,
-      FileName.ProjectDB
+      FileName.ProjectMeta
     );
     if (await fs.exists(projectFilePath)) {
       validProjects.push(foundDirName);
@@ -40,6 +39,17 @@ export async function getAllProjectIds(): Promise<Set<string>> {
 
 export async function getAllProjects(): Promise<Project[]> {
   const projects: Project[] = [];
+
+  const allProjectIds = await getAllProjectIds();
+  for (const projectId of allProjectIds) {
+    try {
+      const project = await openProject(projectId);
+      projects.push(project);
+    }
+    catch (e) {
+      console.error(`Failed to open project with ID ${projectId}:`, e);
+    }
+  }
 
   return projects;
 }

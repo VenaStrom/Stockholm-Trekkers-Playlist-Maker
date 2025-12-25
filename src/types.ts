@@ -2,12 +2,12 @@ import { blockClips } from "./global";
 
 export type Episode = {
   id: string;
-  nextEpisodeId?: string;
   blockId: string;
-  filePath: string | null;
-  duration: number | null; // in seconds
-  cachedStartTime: number | null; // in seconds
-  cachedEndTime: number | null; // in seconds
+  nextEpisodeId?: string;
+  filePath?: string;
+  duration?: number; // in seconds
+  cachedStartTime?: number; // in seconds
+  cachedEndTime?: number; // in seconds
 };
 
 export const leading = true, trailing = true, wrapped = true;
@@ -36,13 +36,17 @@ export type Block = {
   nextBlockId?: string;
 };
 
-export type Project = {
+export type ProjectMeta = {
   id: string;
   date: string;
   description: string;
   dateCreated: number; // unix timestamp
   dateModified?: number; // unix timestamp
   optionsRev: number;
+};
+export type ProjectData = {
+  id: string;
   blocks: Block[];
   episodes: Episode[];
 };
+export type Project = ProjectMeta & Omit<ProjectData, "id">;
