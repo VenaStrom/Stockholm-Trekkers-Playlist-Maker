@@ -1,72 +1,13 @@
-import { useMemo } from "react";
-import { Block, Project } from "@/types";
+import { Block } from "@/types";
 import { IconDeleteOutline, IconSettingsOutline } from "../icons";
-import EpisodeLi from "./episode";
 
 export default function BlockLi({
   block,
   blockIndex,
-  project: volatileProject,
-  projectSetter: setVolatileProject,
-
 }: {
   block: Block;
   blockIndex: number;
-  project: Project;
-  projectSetter: React.Dispatch<React.SetStateAction<Project | null>>;
 }) {
-  const episodes = useMemo(() =>
-    volatileProject.episodes.filter(e => e.blockId === block.id)
-    , [block.id, volatileProject.episodes]);
-
-  // Ensure trailing empty episode
-  // useEffect(() => {
-  //   // if (episodes.length === 0) return;
-
-  //   // // Too few episodes
-  //   // if (episodes.length <= 2) {
-  //   //   const neededEpisodes = 2 - episodes.length;
-  //   //   const newEpisodes: Episode[] = new Array(neededEpisodes).fill(null).map(() => getEmptyEpisode(block.id));
-
-  //   //   setVolatileProject((prevProject) => {
-  //   //     if (!prevProject) return prevProject;
-  //   //     return { ...prevProject, episodes: [...prevProject.episodes, ...newEpisodes] };
-  //   //   });
-  //   //   return;
-  //   // }
-
-  //   // // Ensure last episode is empty
-  //   // const lastEpisode = episodes.at(-1);
-  //   // if (lastEpisode?.filePath) {
-  //   //   const newEpisode = getEmptyEpisode(block.id);
-  //   //   setVolatileProject((prevProject) => {
-  //   //     if (!prevProject) return prevProject;
-  //   //     return { ...prevProject, episodes: [...prevProject.episodes, newEpisode] };
-  //   //   });
-  //   //   return;
-  //   // }
-
-  //   // // Sort by order and block order
-  //   // const sortedEpisodes = [...episodes].sort((a, b) => {
-  //   //   if (a.order !== b.order) {
-  //   //     return a.order - b.order;
-  //   //   }
-  //   //   const aBlock = volatileProject.blocks.find(b => b.id === a.id);
-  //   //   const bBlock = volatileProject.blocks.find(b => b.id === b.id);
-  //   //   if (typeof aBlock === "undefined" || typeof bBlock === "undefined") return 0;
-
-  //   //   return aBlock.order - bBlock.order;
-  //   // });
-  //   // if (JSON.stringify(sortedEpisodes) !== JSON.stringify(episodes)) {
-  //   //   setVolatileProject((prevProject) => {
-  //   //     if (!prevProject) return prevProject;
-  //   //     const otherEpisodes = prevProject.episodes.filter(e => e.blockId !== block.id);
-  //   //     return { ...prevProject, episodes: [...otherEpisodes, ...sortedEpisodes] };
-  //   //   });
-  //   // }
-
-  // }, [block.id, episodes, setVolatileProject, volatileProject.blocks, volatileProject.episodes]);
-
   return (
     <li className="bg-abyss-800 px-4 py-2 rounded-sm">
       {/* Header */}
@@ -103,15 +44,13 @@ export default function BlockLi({
           <span className="w-[6ch]">Start</span>
           <span className="w-[7ch]">Duration</span>
         </div>
-        <ul className="flex flex-col gap-y-2 pb-3 pt-1">
-          {episodes.map(episode => (
-            <EpisodeLi
-              key={`episode-${episode.id}`}
-              episode={episode}
-              projectSetter={setVolatileProject}
-            />
-          ))}
-        </ul>
+        {/*
+         * Episodes are portaled into the block's episode container by `EpisodeLi`.
+         * We render an empty list element with a stable id that episodes can target.
+         * Episodes themselves are mounted once at the Editor level and moved via portals
+         * so they are not reconstructed when moving between blocks.
+         */}
+        <ul id={`block-episodes-${block.id}`} className="flex flex-col gap-y-2 pb-3 pt-1"></ul>
       </div>
     </li>
   );

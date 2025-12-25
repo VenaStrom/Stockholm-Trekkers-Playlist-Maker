@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Episode, Project } from "@/types";
 import { IconDeleteOutline, IconDragIndicator, IconFolderOutline } from "../icons";
 import { open } from "@tauri-apps/plugin-dialog";
@@ -58,6 +59,7 @@ export default function EpisodeLi({
   // Drag handlers
   const [isDragOver, setDragOver] = useState(false);
   const onDragStart = (e: React.DragEvent) => {
+    console.debug("episode onDragStart", episode.id);
     e.dataTransfer.setData("text/plain", episode.id);
     e.dataTransfer.effectAllowed = "move";
   };
@@ -74,6 +76,7 @@ export default function EpisodeLi({
     setDragOver(false);
   };
   const onDrop = (e: React.DragEvent) => {
+    console.debug("episode onDrop", episode.id, "data:", e.dataTransfer.getData("text/plain"));
     e.preventDefault();
     const draggedId = e.dataTransfer.getData("text/plain");
     setDragOver(false);
@@ -186,10 +189,52 @@ export default function EpisodeLi({
     return selectedFile.includes("/") ? "/" : "\\";
   }, [selectedFile]);
 
-  return (
+  // Portal target management, find the block's episode container element
+  const [container, setContainer] = useState<HTMLElement | null>(null);
+  useEffect(() => {
+    let mounted = true;
+    const id = `block-episodes-${episode.blockId}`;
+
+    const findAndSet = () => {
+      const el = document.getElementById(id);
+      if (el instanceof HTMLElement) {
+        if (mounted) setContainer(el);
+        return true;
+      }
+      return false;
+    };
+
+    if (!findAndSet()) {
+      // Poll briefly until the container is rendered (blocks render earlier in most cases)
+      const interval = setInterval(() => {
+        if (findAndSet()) {
+          clearInterval(interval);
+        }
+      }, 100);
+      return () => {
+        mounted = false;
+        clearInterval(interval);
+      };
+    }
+
+    return () => { mounted = false; };
+  }, [episode.blockId]);
+
+  const li = (
     <li
       className={`w-full flex flex-row items-center ps-1 select-none ${isDragOver ? "ring-2 ring-science-500/60 rounded-sm" : ""}`}
       id={`episode-${episode.id}`}
+      draggable
+      onDragStart={onDragStart}
+      onKeyDown={(e) => {
+        if (e.key === "ArrowUp") {
+          e.preventDefault();
+          moveEpisodeUpOne();
+        } else if (e.key === "ArrowDown") {
+          e.preventDefault();
+          moveEpisodeDownOne();
+        }
+      }}
       onDragOver={onDragOver}
       onDrop={onDrop}
       onDragEnter={onDragEnter}
@@ -235,19 +280,20 @@ export default function EpisodeLi({
         aria-label="Drag to reorder"
         title="Drag to reorder"
         tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === "ArrowUp") {
-            e.preventDefault();
-            moveEpisodeUpOne();
-          }
-          else if (e.key === "ArrowDown") {
-            e.preventDefault();
-            moveEpisodeDownOne();
-          }
-        }}
       >
         <IconDragIndicator className="size-6" />
       </span>
     </li>
+  );
+
+  // If we have a container, portal the LI into it. Otherwise return a hidden placeholder
+  if (container) {
+    return createPortal(li, container);
+  }
+
+  return (
+    <div style={{ display: "none" }} aria-hidden>
+      {li}
+    </div>
   );
 }
