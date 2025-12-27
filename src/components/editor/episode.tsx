@@ -67,7 +67,6 @@ export default function EpisodeLi({
   // Drag handlers
   const [isDragOver, setDragOver] = useState(false);
   const onDragStart = (e: React.DragEvent) => {
-    console.debug("episode onDragStart", episode.id);
     e.dataTransfer.setData("text/plain", episode.id);
     e.dataTransfer.effectAllowed = "move";
   };
@@ -84,26 +83,36 @@ export default function EpisodeLi({
     setDragOver(false);
   };
   const onDrop = (e: React.DragEvent) => {
-    console.debug("episode onDrop", episode.id, "data:", e.dataTransfer.getData("text/plain"));
     e.preventDefault();
     const draggedId = e.dataTransfer.getData("text/plain");
     setDragOver(false);
     if (!draggedId || draggedId === episode.id) return;
 
-    // Reorder episodes in project state
-    setVolatileProject((prevProject) => {
-      if (!prevProject) return prevProject;
+    if (!volatileProject) return;
 
-      const draggedEpisodeIndex = prevProject.episodes.findIndex(e => e.id === draggedId);
-      const dropEpisodeIndex = prevProject.episodes.findIndex(e => e.id === episode.id);
-      if (draggedEpisodeIndex === -1 || dropEpisodeIndex === -1) return prevProject;
+    const episodesCopy = [...volatileProject.episodes]
+    const draggedEpisodeIndex = episodesCopy.findIndex(e => e.id === draggedId);
+    const dropEpisodeIndex = episodesCopy.findIndex(e => e.id === episode.id);
+    if (draggedEpisodeIndex === -1 || dropEpisodeIndex === -1) {
+      console.info(`Could not find episodes with ids ${draggedId} or ${episode.id}`);
+      return;
+    }
 
-      const newEpisodes = [...prevProject.episodes];
-      const [draggedEpisode] = newEpisodes.splice(draggedEpisodeIndex, 1);
-      if (!draggedEpisode) return prevProject;
-      newEpisodes.splice(dropEpisodeIndex, 0, draggedEpisode);
+    const draggedEpisode = episodesCopy[draggedEpisodeIndex];
+    const dropEpisode = episodesCopy[dropEpisodeIndex];
+    if (!draggedEpisode || !dropEpisode) {
+      console.info(`Could not find episodes at indices ${draggedEpisodeIndex} or ${dropEpisodeIndex}`);
+      return;
+    }
 
-      return { ...prevProject, episodes: newEpisodes };
+    // Insert before and copy blockId of drop target onto dragged episode
+    episodesCopy.splice(draggedEpisodeIndex, 1);
+    draggedEpisode.blockId = dropEpisode.blockId;
+    episodesCopy.splice(dropEpisodeIndex, 0, draggedEpisode);
+
+    setVolatileProject({
+      ...volatileProject,
+      episodes: episodesCopy,
     });
 
     // Keep moved episode in view / focused
@@ -265,7 +274,6 @@ export default function EpisodeLi({
       {/* Drag thumb */}
       <span
         draggable
-        onDragStart={onDragStart}
         className={`cursor-grab ms-3 text-flare-700 hover:opacity-80 transition-all`}
         aria-label="Drag to reorder"
         title="Drag to reorder"
@@ -280,6 +288,7 @@ export default function EpisodeLi({
             moveEpisodeDownOne();
           }
         }}
+        onDragStart={onDragStart}
         onDragOver={onDragOver}
         onDrop={onDrop}
         onDragEnter={onDragEnter}
