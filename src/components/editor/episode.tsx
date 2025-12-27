@@ -143,11 +143,9 @@ export default function EpisodeLi({
 
     // If moved block passed a blockId boundary, update blockIds which will replace the move
     if (thisEpisode.blockId !== previousEpisode.blockId) {
-      // console.log(thisEpisode.blockId, previousEpisode.blockId, "Boundary");
       episodesCopy[thisIndex]!.blockId = previousEpisode.blockId;
     }
     else {
-      // console.log(thisEpisode.blockId, previousEpisode.blockId, "Swap");
       // Swap positions when in same block
       episodesCopy[thisIndex - 1] = { ...thisEpisode };
       episodesCopy[thisIndex] = { ...previousEpisode };
@@ -216,24 +214,24 @@ export default function EpisodeLi({
     const parts = selectedFile.split(/[/\\]/);
     return parts[parts.length - 1];
   }, [selectedFile]);
-  const fileRoute = useMemo(() => {
-    if (!selectedFile) return "No file selected";
+  // const fileRoute = useMemo(() => {
+  //   if (!selectedFile) return "No file selected";
 
-    // remove file name from path
-    const delim = selectedFile.includes("/") ? "/" : "\\";
-    const parts = selectedFile.split(/[/\\]/);
-    parts.pop();
-    return parts.join(delim);
+  //   // remove file name from path
+  //   const delim = selectedFile.includes("/") ? "/" : "\\";
+  //   const parts = selectedFile.split(/[/\\]/);
+  //   parts.pop();
+  //   return parts.join(delim);
 
-  }, [selectedFile]);
-  const delim = useMemo(() => {
-    if (!selectedFile) return "/";
-    return selectedFile.includes("/") ? "/" : "\\";
-  }, [selectedFile]);
+  // }, [selectedFile]);
+  // const delim = useMemo(() => {
+  //   if (!selectedFile) return "/";
+  //   return selectedFile.includes("/") ? "/" : "\\";
+  // }, [selectedFile]);
 
   return (
     <li
-      className={`w-full flex flex-row items-center ps-1 select-none ${isDragOver ? "ring-2 ring-science-500/60 rounded-sm" : ""}`}
+      className={`w-full flex flex-row items-center ps-1 select-none min-w-0 ${isDragOver ? "ring-2 ring-science-500/60 rounded-sm" : ""}`}
       id={`episode-${episode.id}`}
     >
       <div className="flex flex-row gap-x-6 items-center pe-10">
@@ -251,12 +249,14 @@ export default function EpisodeLi({
       </div>
 
       {/* Custom file input */}
-      <label className="bg-abyss-500 rounded-sm flex flow-row items-center justify-between gap-x-4 ps-3 flex-1">
+      <label className="bg-abyss-500 rounded-sm flex flow-row items-center justify-between gap-x-4 ps-3 flex-1 min-w-0">
         <div className="flex-1 min-w-0">
-          <span style={{ direction: "rtl" }} className="block overflow-hidden text-start">
+          <span style={{ direction: "rtl" }} className="block overflow-hidden text-start min-w-0">
             <span style={{ direction: "ltr" }} className={`truncate inline-block align-middle ${selectedFile ? "" : "text-flare-700"}`}>
               {selectedFile ?
-                <><span className="text-flare-700">{fileRoute}{delim}</span>{fileName}</>
+                // TODO fix truncation instead of this
+                // <><span className="text-flare-700">{fileRoute}{delim}</span>{fileName}</>
+                <><span className="text-flare-700"></span>{fileName}</>
                 : "No file selected"}
             </span>
           </span>
