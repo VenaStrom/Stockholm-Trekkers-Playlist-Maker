@@ -206,19 +206,33 @@ export default function EpisodeLi({
     const thisIndex = episodesCopy.findIndex(e => e.id === episode.id);
     if (thisIndex === -1 || thisIndex >= episodesCopy.length - 1) return; // Already at bottom
 
-    const nextEpisode = episodesCopy[thisIndex + 1];
     const thisEpisode = episodesCopy[thisIndex];
-    if (!nextEpisode || !thisEpisode) {
+    const nextEpisode = episodesCopy[thisIndex + 1];
+    if (!thisEpisode || !nextEpisode) {
       console.info(`Could not find episodes at indices ${thisIndex} or ${thisIndex + 1}`);
       return;
     }
+    const nextNextEpisode = episodesCopy[thisIndex + 2];
 
-    // If moved block passed a blockId boundary, update blockIds which will replace the move
-    if (thisEpisode.blockId !== nextEpisode.blockId) {
+    // Special case: moving down from end of block to start of next block
+    if (
+      nextNextEpisode
+      && thisEpisode.blockId === nextEpisode.blockId // On the same block as the edge piece
+      && (typeof nextEpisode.filePath === "undefined" || nextEpisode.filePath.trim().length === 0) // Edge piece is empty
+      && thisEpisode.blockId !== nextNextEpisode.blockId // Third piece is in next block, don't care if it's empty or not
+    ) {
+      // Get next block id
+      episodesCopy[thisIndex]!.blockId = nextNextEpisode.blockId;
+      // Swap with next episode to maintain order
+      episodesCopy[thisIndex + 1] = { ...thisEpisode };
+      episodesCopy[thisIndex] = { ...nextEpisode };
+    }
+    // Only change block when passing a blockId boundary
+    else if (thisEpisode.blockId !== nextEpisode.blockId) {
       episodesCopy[thisIndex]!.blockId = nextEpisode.blockId;
     }
+    // Swap positions when in same block
     else {
-      // Swap positions when in same block
       episodesCopy[thisIndex + 1] = { ...thisEpisode };
       episodesCopy[thisIndex] = { ...nextEpisode };
     }
