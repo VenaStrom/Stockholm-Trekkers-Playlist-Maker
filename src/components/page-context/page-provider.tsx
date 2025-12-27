@@ -3,13 +3,18 @@ import { PageContext, PageContextDefaultValue } from "./page.internal";
 import { getAllProjectMetas } from "@/functions/project/get-all-projects";
 
 export function PageProvider({ children }: { children: React.ReactNode }) {
-  const [route, setRoute] = useState(PageContextDefaultValue.route);
+  const [route, setInternalRoute] = useState(PageContextDefaultValue.route);
   const [headerText, setHeaderText] = useState(PageContextDefaultValue.headerText);
   const [projectId, setProjectId] = useState(PageContextDefaultValue.projectId);
   const [projectMetas, setProjectMetas] = useState<PageContext["projectMetas"]>([]);
 
   const [forceReload, setForceReload] = useState(0);
   const reload = useCallback(() => setForceReload((prev) => prev + 1), []);
+
+  const setRoute = useCallback((arg: Parameters<typeof setInternalRoute>[0]) => {
+    setInternalRoute(arg);
+    reload();
+  }, [reload]);
 
   useEffect(() => {
     void forceReload; // To satisfy the linter about using the dependency
