@@ -16,44 +16,52 @@ export default function EpisodeLi({
 }) {
   const [selectedFile, setSelectedFile] = useState<string | null>(episode.filePath ?? null);
 
+  // Helper. Produces a new Project where the given episode has its filePath set, and ensure each block has a trailing empty episode
+  const setFilePathOfEpisode = (project: Project, episodeId: string, filePath?: string): Project => {
+    const newEpisodes = project.episodes.map(ep => ep.id === episodeId ? { ...ep, filePath } : ep);
+
+    project.blocks.forEach(block => {
+      const episodesInBlock = newEpisodes.filter(e => e.blockId === block.id);
+      const lastEpisode = episodesInBlock[episodesInBlock.length - 1];
+      const lastPath = lastEpisode?.filePath;
+      const hasTrailingEmpty = lastPath === undefined || lastPath.trim().length === 0;
+      if (!hasTrailingEmpty) {
+        newEpisodes.push({ id: generateId(), blockId: block.id });
+      }
+    });
+
+    return { ...project, episodes: newEpisodes };
+  };
+
   const chooseFile = () => {
-    const handleFileSelection = async () => {
-      const filePath = await open({
-        multiple: false,
-        directory: false,
-        filters: [
-          { name: "Video Files", extensions: ["wav", "mp4", "mov", "avi", "mkv", "gif"], },
-          { name: "Audio Files", extensions: ["mp3", "aac", "flac", "wav", "ogg", "m4a"], },
-          { name: "Image Files", extensions: ["png", "jpg", "jpeg", "gif", "bmp", "tiff"], },
-          { name: "All Files", extensions: ["*"] },
-        ],
-        title: "Select Episode Media File",
-      });
+    (async () => {
+      try {
+        const filePath = await open({
+          multiple: false,
+          directory: false,
+          filters: [
+            { name: "Video Files", extensions: ["wav", "mp4", "mov", "avi", "mkv", "gif"] },
+            { name: "Audio Files", extensions: ["mp3", "aac", "flac", "wav", "ogg", "m4a"] },
+            { name: "Image Files", extensions: ["png", "jpg", "jpeg", "gif", "bmp", "tiff"] },
+            { name: "All Files", extensions: ["*"] },
+          ],
+          title: "Select Episode Media File",
+        });
 
-      if (!filePath || typeof filePath !== "string") {
-        console.warn("Canceled file selection");
-        // Unset selected file if selection was canceled
-        setSelectedFile(null);
+        const fileString = typeof filePath === "string" ? filePath : null;
+        setSelectedFile(fileString);
+
+        setVolatileProject((prevProject) => {
+          if (!prevProject) return prevProject;
+          return setFilePathOfEpisode(prevProject, episode.id, fileString ?? undefined);
+        });
       }
-      else {
-        setSelectedFile(filePath);
-      }
-
-      const newEpisode: Episode = {
-        ...episode,
-        filePath: filePath ?? undefined,
-      };
-
-      setVolatileProject((prevProject) => {
-        if (!prevProject) return prevProject;
-        const newEpisodes = prevProject.episodes.map((ep) => ep.id === newEpisode.id ? newEpisode : ep);
-        return { ...prevProject, episodes: newEpisodes };
-      });
-    };
-
-    handleFileSelection()
-      .catch((err) => {
+      catch (err) {
         console.error("Error during file selection:", err);
+      }
+    })()
+      .catch((err) => {
+        console.error("Error in chooseFile async function:", err);
       });
   };
 
@@ -65,35 +73,11 @@ export default function EpisodeLi({
     });
   };
 
-  // Update project on selectedFile change
+  // Update project state on selectedFile change
   useEffect(() => {
     setVolatileProject((prevProject) => {
       if (!prevProject) return prevProject;
-
-      const thisEpisode = prevProject.episodes.find((ep) => ep.id === episode.id);
-      if (!thisEpisode) return prevProject;
-
-      const newEpisode: Episode = {
-        ...thisEpisode,
-        filePath: selectedFile ?? undefined,
-      };
-
-      const newEpisodes = prevProject.episodes.map((ep) => ep.id === newEpisode.id ? newEpisode : ep);
-
-      // Ensure trailing empty episode per block
-      prevProject.blocks.forEach(block => {
-        const episodesInBlock = prevProject.episodes.filter(e => e.blockId === block.id);
-        const hasTrailingEmpty = episodesInBlock.at(-1)?.filePath === undefined;
-        if (hasTrailingEmpty) return;
-
-        const newEpisode: Episode = {
-          id: generateId(),
-          blockId: block.id,
-        };
-        newEpisodes.push(newEpisode);
-      });
-
-      return { ...prevProject, episodes: newEpisodes };
+      return setFilePathOfEpisode(prevProject, episode.id, selectedFile ?? undefined);
     });
   }, [episode.id, selectedFile, setVolatileProject]);
 
