@@ -6,9 +6,11 @@ import { secondsToTimeString } from "../../functions/time-format";
 
 export default function EpisodeLi({
   episode,
+  project: volatileProject,
   projectSetter: setVolatileProject,
 }: {
   episode: Episode;
+  project: Project | null;
   projectSetter: React.Dispatch<React.SetStateAction<Project | null>>;
 }) {
   const [selectedFile, setSelectedFile] = useState<string | null>(episode.filePath ?? null);
@@ -117,28 +119,34 @@ export default function EpisodeLi({
   };
 
   const moveEpisodeUpOne = () => {
-    setVolatileProject((prevProject) => {
-      if (!prevProject) return prevProject;
+    if (!volatileProject) return;
 
-      const thisIndex = prevProject.episodes.findIndex(e => e.id === episode.id);
-      if (thisIndex <= 0) return prevProject; // Already at top
+    const episodesCopy = [...volatileProject.episodes]
+    const thisIndex = episodesCopy.findIndex(e => e.id === episode.id);
+    if (thisIndex <= 0) return; // Already at top
 
-      const newEpisodes = [...prevProject.episodes];
-      const previousEpisode = newEpisodes[thisIndex - 1];
-      const thisEpisode = newEpisodes[thisIndex];
-      if (!previousEpisode || !thisEpisode) return prevProject;
+    const previousEpisode = episodesCopy[thisIndex - 1];
+    const thisEpisode = episodesCopy[thisIndex];
+    if (!previousEpisode || !thisEpisode) {
+      console.info(`Could not find episodes at indices ${thisIndex} or ${thisIndex - 1}`);
+      return;
+    }
 
-      // If moved block passed a blockId boundary, update blockIds
-      if (thisEpisode.blockId !== previousEpisode.blockId) {
-        newEpisodes[thisIndex]!.blockId = previousEpisode.blockId;
-      }
-      else {
-        // Swap positions
-        newEpisodes[thisIndex - 1] = { ...thisEpisode };
-        newEpisodes[thisIndex] = { ...previousEpisode };
-      }
+    // If moved block passed a blockId boundary, update blockIds which will replace the move
+    if (thisEpisode.blockId !== previousEpisode.blockId) {
+      // console.log(thisEpisode.blockId, previousEpisode.blockId, "Boundary");
+      episodesCopy[thisIndex]!.blockId = previousEpisode.blockId;
+    }
+    else {
+      // console.log(thisEpisode.blockId, previousEpisode.blockId, "Swap");
+      // Swap positions when in same block
+      episodesCopy[thisIndex - 1] = { ...thisEpisode };
+      episodesCopy[thisIndex] = { ...previousEpisode };
+    }
 
-      return { ...prevProject, episodes: newEpisodes };
+    setVolatileProject({
+      ...volatileProject,
+      episodes: episodesCopy,
     });
 
     // Keep moved episode in view / focused
@@ -153,32 +161,32 @@ export default function EpisodeLi({
     }, 0);
   };
   const moveEpisodeDownOne = () => {
-    setVolatileProject((prevProject) => {
-      if (!prevProject) return prevProject;
+    if (!volatileProject) return;
 
-      const thisIndex = prevProject.episodes.findIndex(e => e.id === episode.id);
-      if (thisIndex === -1 || thisIndex >= prevProject.episodes.length - 1) return prevProject; // Already at bottom
+    const episodesCopy = [...volatileProject.episodes]
+    const thisIndex = episodesCopy.findIndex(e => e.id === episode.id);
+    if (thisIndex === -1 || thisIndex >= episodesCopy.length - 1) return; // Already at bottom
 
-      const episodesCopy = [...prevProject.episodes];
-      const nextEpisode = episodesCopy[thisIndex + 1];
-      const thisEpisode = episodesCopy[thisIndex];
+    const nextEpisode = episodesCopy[thisIndex + 1];
+    const thisEpisode = episodesCopy[thisIndex];
+    if (!nextEpisode || !thisEpisode) {
+      console.info(`Could not find episodes at indices ${thisIndex} or ${thisIndex + 1}`);
+      return;
+    }
 
-      if (!nextEpisode || !thisEpisode) {
-        console.info(`Could not find episodes at indices ${thisIndex} or ${thisIndex + 1}`);
-        return prevProject;
-      };
+    // If moved block passed a blockId boundary, update blockIds which will replace the move
+    if (thisEpisode.blockId !== nextEpisode.blockId) {
+      episodesCopy[thisIndex]!.blockId = nextEpisode.blockId;
+    }
+    else {
+      // Swap positions when in same block
+      episodesCopy[thisIndex + 1] = { ...thisEpisode };
+      episodesCopy[thisIndex] = { ...nextEpisode };
+    }
 
-      // If moved block passed a blockId boundary, update blockIds which will replace the move
-      if (thisEpisode.blockId !== nextEpisode.blockId) {
-        episodesCopy[thisIndex]!.blockId = nextEpisode.blockId;
-      }
-      else {
-        // Swap positions when in same block
-        episodesCopy[thisIndex + 1] = { ...thisEpisode };
-        episodesCopy[thisIndex] = { ...nextEpisode };
-      }
-
-      return { ...prevProject, episodes: episodesCopy };
+    setVolatileProject({
+      ...volatileProject,
+      episodes: episodesCopy,
     });
 
     // Keep moved episode in view / focused

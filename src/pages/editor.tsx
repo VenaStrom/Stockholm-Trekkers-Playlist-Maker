@@ -231,6 +231,7 @@ export default function Editor() {
                 <EpisodeLi
                   key={`episode-${ep.id}`}
                   episode={ep}
+                  project={volatileProject}
                   projectSetter={setVolatileProject}
                 />
               ))}
