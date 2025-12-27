@@ -56,6 +56,14 @@ export default function EpisodeLi({
       });
   };
 
+  const deleteEpisode = () => {
+    setVolatileProject((prevProject) => {
+      if (!prevProject) return prevProject;
+      const newEpisodes = prevProject.episodes.filter((ep) => ep.id !== episode.id);
+      return { ...prevProject, episodes: newEpisodes };
+    });
+  };
+
   // Drag handlers
   const [isDragOver, setDragOver] = useState(false);
   const onDragStart = (e: React.DragEvent) => {
@@ -196,7 +204,10 @@ export default function EpisodeLi({
     >
       <div className="flex flex-row gap-x-6 items-center pe-10">
         {/* Delete button */}
-        <button className="€icon text-flare-700 hover:text-red-alert-500">
+        <button
+          onClick={deleteEpisode}
+          className="€icon text-flare-700 hover:text-red-alert-500"
+        >
           <IconDeleteOutline className="size-6" />
         </button>
         {/* Start time */}
