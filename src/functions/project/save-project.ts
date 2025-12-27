@@ -66,6 +66,14 @@ export async function saveProject(project: Project): Promise<boolean> {
     }
   }
 
+  // Sort episodes so they are clumped by block id
+  const episodesSorted: Episode[] = [];
+  projectCopy.blocks.forEach(block => {
+    const episodesInBlock = projectCopy.episodes.filter(e => e.blockId === block.id);
+    episodesSorted.push(...episodesInBlock);
+  });
+  projectCopy.episodes = episodesSorted;
+
   // Ensure trailing empty episode per block
   projectCopy.blocks.forEach(block => {
     const episodesInBlock = projectCopy.episodes.filter(e => e.blockId === block.id);
