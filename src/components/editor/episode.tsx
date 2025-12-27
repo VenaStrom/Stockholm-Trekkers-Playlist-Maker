@@ -130,12 +130,12 @@ export default function EpisodeLi({
 
       // If moved block passed a blockId boundary, update blockIds
       if (thisEpisode.blockId !== previousEpisode.blockId) {
-        thisEpisode.blockId = previousEpisode.blockId;
+        newEpisodes[thisIndex]!.blockId = previousEpisode.blockId;
       }
       else {
         // Swap positions
-        newEpisodes[thisIndex - 1] = thisEpisode;
-        newEpisodes[thisIndex] = previousEpisode;
+        newEpisodes[thisIndex - 1] = { ...thisEpisode };
+        newEpisodes[thisIndex] = { ...previousEpisode };
       }
 
       return { ...prevProject, episodes: newEpisodes };
@@ -152,7 +152,6 @@ export default function EpisodeLi({
       focusEl.scrollIntoView({ behavior: "smooth", block: "center" });
     }, 0);
   };
-
   const moveEpisodeDownOne = () => {
     setVolatileProject((prevProject) => {
       if (!prevProject) return prevProject;
@@ -171,12 +170,12 @@ export default function EpisodeLi({
 
       // If moved block passed a blockId boundary, update blockIds which will replace the move
       if (thisEpisode.blockId !== nextEpisode.blockId) {
-        thisEpisode.blockId = nextEpisode.blockId;
+        episodesCopy[thisIndex]!.blockId = nextEpisode.blockId;
       }
       else {
         // Swap positions when in same block
-        episodesCopy[thisIndex + 1] = thisEpisode;
-        episodesCopy[thisIndex] = nextEpisode;
+        episodesCopy[thisIndex + 1] = { ...thisEpisode };
+        episodesCopy[thisIndex] = { ...nextEpisode };
       }
 
       return { ...prevProject, episodes: episodesCopy };
