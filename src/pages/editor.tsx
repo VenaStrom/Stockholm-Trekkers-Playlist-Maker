@@ -60,16 +60,15 @@ export default function Editor() {
       });
   }, [debouncedProjectData, save]);
 
+  // Handlers
   const onDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDate = e.target.value;
     setVolatileProject(prev => prev ? { ...prev, date: newDate } : prev);
   };
-
   const onDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newDescription = e.target.value;
     setVolatileProject(prev => prev ? { ...prev, description: newDescription } : prev);
   };
-
   const navigateBack = () => {
     save()
       .then(() => {
@@ -136,7 +135,7 @@ export default function Editor() {
                 el.style.height = "0px";
                 el.style.height = `${el.scrollHeight}px`;
               }}
-              value={volatileProject.description ?? ""}
+              defaultValue={volatileProject.description ?? ""}
               placeholder="Optional description of project."
               className="min-h-8 w-full pb-2"
             />
