@@ -263,9 +263,6 @@ export default function EpisodeLi({
         title="Drag to reorder"
         tabIndex={0}
         onKeyDown={(e) => {
-          if (e.repeat) return;
-          e.stopPropagation();
-
           if (e.key === "ArrowUp") {
             e.preventDefault();
             moveEpisodeUpOne();
