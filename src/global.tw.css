@@ -70,7 +70,7 @@
     @apply select-none cursor-pointer transition-all flex flex-row items-center justify-start;
 
     &:not(.€icon) {
-      @apply px-2 py-1 active:scale-95 bg-command-500 text-abyss-800 font-semibold light:font-normal rounded-sm hover:bg-command-300;
+      @apply px-2 py-1 active:scale-95 bg-command-500 text-abyss-800 font-semibold light:font-normal rounded-xs hover:bg-command-300;
     }
     &.€icon {
       @apply hover:text-command-300;

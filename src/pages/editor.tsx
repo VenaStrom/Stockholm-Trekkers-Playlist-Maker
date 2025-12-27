@@ -224,7 +224,7 @@ export default function Editor() {
       </aside>
 
       <section className="lg:flex-1 not-lg:w-full">
-        <ul>
+        <ul className="flex flex-col gap-y-3">
           {Object.entries(episodesByBlockId).map(([blockId, episodes]) => (
             <BlockLi
               block={volatileProject?.blocks.find(b => b.id === blockId) ?? (() => { throw new Error("Missing block with id: " + blockId) })()}
@@ -242,23 +242,6 @@ export default function Editor() {
             </BlockLi>
           ))}
         </ul>
-
-        <button
-          className="mt-4 px-4 py-2 bg-science-500 hover:bg-science-600 rounded-sm"
-          onClick={() => {
-            if (!volatileProject) return;
-            const newEpisode: Episode = {
-              id: generateId(),
-              blockId: volatileProject.blocks.at(-1)?.id ?? "",
-            };
-            setVolatileProject({
-              ...volatileProject,
-              episodes: [...volatileProject.episodes, newEpisode],
-            });
-          }}
-        >
-          Add Episode
-        </button>
       </section>
     </main>
   );
