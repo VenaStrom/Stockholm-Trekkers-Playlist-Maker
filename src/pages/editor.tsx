@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { usePageContext } from "../components/page-context/use-page-context";
 import { PageRoute } from "../components/page-context/page.internal";
 import { Episode, Project } from "@/types";
@@ -28,24 +28,26 @@ export default function Editor() {
       });
   }, [projectId]);
 
-  // Save project data to file when changed
-  const save = useCallback(async () => {
-    if (!volatileProject) return;
-    await saveProject(volatileProject)
-      .catch(err => {
-        console.error("Error saving project:", err);
-      });
-  }, [volatileProject]);
-
   // Debouncing
-  const debouncedProjectData = useDebounce(volatileProject, 500);
+  const [debouncedProject] = useDebounce(volatileProject, 500);
   useEffect(() => {
-    if (!debouncedProjectData[0]) return;
-    save()
+    if (!debouncedProject) return;
+    const start = performance.now();
+    console.info("[Editor] Saving project...");
+
+    saveProject(debouncedProject)
+      .then((status) => {
+        if (!status) {
+          console.info(`[Editor] No changes to save. (${(performance.now() - start).toFixed(2)} ms)`);
+        }
+        else {
+          console.info(`[Editor] Project saved. (${(performance.now() - start).toFixed(2)} ms)`);
+        }
+      })
       .catch(err => {
         console.error("Error in debounced save:", err);
       });
-  }, [debouncedProjectData, save]);
+  }, [debouncedProject]);
 
   // Handlers
   const onDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,12 +59,16 @@ export default function Editor() {
     setVolatileProject(prev => prev ? { ...prev, description: newDescription } : prev);
   };
   const navigateBack = () => {
-    save()
+    if (!volatileProject) {
+      setRoute(PageRoute.Projects);
+      return;
+    };
+    saveProject(volatileProject)
       .then(() => {
         setRoute(PageRoute.Projects);
       })
       .catch(err => {
-        console.error("Error navigating back:", err);
+        console.error("Error saving on navigation back:", err);
       });
   };
 

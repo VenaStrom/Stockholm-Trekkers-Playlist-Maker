@@ -5,42 +5,55 @@ import { isProject } from "../type-guards";
 import type { Episode, Project, ProjectData, ProjectMeta } from "@/types";
 import { createProject } from "./create-project";
 import { generateId } from "../sha256";
+import { openProject } from "./open-project";
 
-export async function saveProject(project: Project): Promise<void> {
-  if (!isProject(project)) {
-    throw new Error("Project data is invalid and cannot be saved.");
+export async function saveProject(project: Project): Promise<boolean> {
+  const start = performance.now();
+  console.info(`[SaveProject] Starting save for project ${project.id}...`);
+
+  const projectCopy = JSON.parse(JSON.stringify(project)) as Project;
+
+  // Skip if unchanged
+  const oldProject = await openProject(project.id);
+  if (JSON.stringify(oldProject) === JSON.stringify(projectCopy)) {
+    console.info(`[SaveProject] No changes detected in project. Skipping save. (${(performance.now() - start).toFixed(2)} ms)`);
+    return false;
+  }
+
+  if (!isProject(projectCopy)) {
+    throw new Error("[SaveProject] Project data is invalid and cannot be saved. Aborting save.");
   }
 
   // If dupe episodes or blocks exist, warn and remove the dupe with the least data
   const episodesById: Record<string, Episode[]> = {};
-  project.episodes.forEach(e => {
+  projectCopy.episodes.forEach(e => {
     const id = e.id;
     episodesById[id] ??= [];
     episodesById[id].push(e);
   });
   for (const [id, episodes] of Object.entries(episodesById)) {
     if (episodes.length > 1) {
-      console.warn(`Duplicate episodes found with id ${id}. Keeping the episode with the most data.`);
+      console.warn(`[SaveProject] Duplicate episodes found with id ${id}. Keeping the episode with the most data.`);
       episodes.sort((a, b) => {
         const aDataCount = Object.values(a).filter(v => v).length;
         const bDataCount = Object.values(b).filter(v => v).length;
         return bDataCount - aDataCount;
       });
       const [_keep, ...dupes] = episodes;
-      project.episodes = project.episodes.filter(e => e !== dupes[0]);
+      projectCopy.episodes = projectCopy.episodes.filter(e => e !== dupes[0]);
     }
   }
   const blocksById: Record<string, number> = {};
-  project.blocks.forEach(b => {
+  projectCopy.blocks.forEach(b => {
     const id = b.id;
     blocksById[id] ??= 0;
     blocksById[id]++;
   });
   for (const [id, count] of Object.entries(blocksById)) {
     if (count > 1) {
-      console.warn(`Duplicate blocks found with id ${id}. Removing duplicates.`);
+      console.warn(`[SaveProject] Duplicate blocks found with id ${id}. Removing duplicates.`);
       let firstFound = false;
-      project.blocks = project.blocks.filter(b => {
+      projectCopy.blocks = projectCopy.blocks.filter(b => {
         if (b.id === id) {
           if (!firstFound) {
             firstFound = true;
@@ -54,51 +67,49 @@ export async function saveProject(project: Project): Promise<void> {
   }
 
   // Ensure trailing empty episode per block
-  project.blocks.forEach(block => {
-    const episodesInBlock = project.episodes.filter(e => e.blockId === block.id);
+  projectCopy.blocks.forEach(block => {
+    const episodesInBlock = projectCopy.episodes.filter(e => e.blockId === block.id);
     const hasTrailingEmpty = episodesInBlock.some(e => !e.filePath);
     if (!hasTrailingEmpty) {
       const newEpisode: Episode = {
         id: generateId(),
         blockId: block.id,
       };
-      project.episodes.push(newEpisode);
+      projectCopy.episodes.push(newEpisode);
     }
   });
 
-  // Used for meta stats, not to override the actual data
-  const truthyEpisodes = project.episodes.filter(e => e.filePath);
-  // const blocksWithEpisodes = project.blocks.filter(b => truthyEpisodes.some(e => e.blockId === b.id));
-  const blocksWithEpisodes = project.blocks; // This will include empty blocks since they are structurally more important than episodes
-
+  // Construct meta and data
   const projectMeta: ProjectMeta = {
-    id: project.id,
-    date: project.date,
-    description: project.description,
-    dateCreated: project.dateCreated,
-    optionsRev: project.optionsRev,
-    blockCount: blocksWithEpisodes.length,
-    episodeCount: truthyEpisodes.length,
+    id: projectCopy.id,
+    date: projectCopy.date,
+    description: projectCopy.description,
+    dateCreated: projectCopy.dateCreated,
+    optionsRev: projectCopy.optionsRev,
+    blockCount: projectCopy.blocks.length,
+    episodeCount: projectCopy.episodes.filter(e => e.filePath).length,
   };
   const projectData: ProjectData = {
-    id: project.id,
-    blocks: project.blocks,
-    episodes: project.episodes,
+    id: projectCopy.id,
+    blocks: projectCopy.blocks,
+    episodes: projectCopy.episodes,
   };
 
   if (!isProject({ ...projectMeta, ...projectData })) {
-    throw new Error("Reordered project data is invalid and cannot be saved.");
+    throw new Error("[SaveProject] Combined project data is invalid. Aborting save.");
   }
 
-  const projectDir = await path.join(PathName.UserProjectsDir, project.id);
+  const projectDir = await path.join(PathName.UserProjectsDir, projectCopy.id);
   if (!await fs.exists(projectDir)) {
-    console.warn(`Project directory does not exist: ${projectDir}. Creating the directory.`);
+    console.warn(`[SaveProject] Project directory does not exist: ${projectDir}. Creating the directory. How are you saving a project that doesn't exist?`);
     await createProject();
   }
   const metaFilePath = await path.join(projectDir, FileName.ProjectMeta);
   const dataFilePath = await path.join(projectDir, FileName.ProjectData);
 
-
   await fs.writeTextFile(metaFilePath, JSON.stringify(projectMeta, null, 2));
   await fs.writeTextFile(dataFilePath, JSON.stringify(projectData, null, 2));
+
+  console.info(`[SaveProject] Project ${projectCopy.id} saved successfully. (${(performance.now() - start).toFixed(2)} ms)`);
+  return true;
 }

@@ -3,6 +3,7 @@ import { Episode, Project } from "@/types";
 import { IconDeleteOutline, IconDragIndicator, IconFolderOutline } from "../icons";
 import { open } from "@tauri-apps/plugin-dialog";
 import { secondsToTimeString } from "../../functions/time-format";
+import { generateId } from "@/functions/sha256";
 
 export default function EpisodeLi({
   episode,
@@ -66,17 +67,35 @@ export default function EpisodeLi({
 
   // Update project on selectedFile change
   useEffect(() => {
-    const newEpisode: Episode = {
-      ...episode,
-      filePath: selectedFile ?? undefined,
-    };
-
     setVolatileProject((prevProject) => {
       if (!prevProject) return prevProject;
+
+      const thisEpisode = prevProject.episodes.find((ep) => ep.id === episode.id);
+      if (!thisEpisode) return prevProject;
+
+      const newEpisode: Episode = {
+        ...thisEpisode,
+        filePath: selectedFile ?? undefined,
+      };
+
       const newEpisodes = prevProject.episodes.map((ep) => ep.id === newEpisode.id ? newEpisode : ep);
+
+      // Ensure trailing empty episode per block
+      prevProject.blocks.forEach(block => {
+        const episodesInBlock = prevProject.episodes.filter(e => e.blockId === block.id);
+        const hasTrailingEmpty = episodesInBlock.at(-1)?.filePath === undefined;
+        if (hasTrailingEmpty) return;
+
+        const newEpisode: Episode = {
+          id: generateId(),
+          blockId: block.id,
+        };
+        newEpisodes.push(newEpisode);
+      });
+
       return { ...prevProject, episodes: newEpisodes };
     });
-  }, [episode, selectedFile, setVolatileProject]);
+  }, [episode.id, selectedFile, setVolatileProject]);
 
   // Drag handlers
   const [isDragOver, setDragOver] = useState(false);
@@ -124,10 +143,7 @@ export default function EpisodeLi({
     draggedEpisode.blockId = dropEpisode.blockId;
     episodesCopy.splice(dropEpisodeIndex, 0, draggedEpisode);
 
-    setVolatileProject({
-      ...volatileProject,
-      episodes: episodesCopy,
-    });
+    setVolatileProject(p => p ? { ...p, episodes: episodesCopy } : p);
 
     // Keep moved episode in view / focused
     setTimeout(() => {
@@ -140,7 +156,7 @@ export default function EpisodeLi({
       focusEl.scrollIntoView({ behavior: "smooth", block: "center" });
     }, 0);
   };
-
+  // Move up/down handlers
   const moveEpisodeUpOne = () => {
     if (!volatileProject) return;
 
@@ -165,10 +181,7 @@ export default function EpisodeLi({
       episodesCopy[thisIndex] = { ...previousEpisode };
     }
 
-    setVolatileProject({
-      ...volatileProject,
-      episodes: episodesCopy,
-    });
+    setVolatileProject(p => p ? { ...p, episodes: episodesCopy } : p);
 
     // Keep moved episode in view / focused
     setTimeout(() => {
@@ -205,10 +218,7 @@ export default function EpisodeLi({
       episodesCopy[thisIndex] = { ...nextEpisode };
     }
 
-    setVolatileProject({
-      ...volatileProject,
-      episodes: episodesCopy,
-    });
+    setVolatileProject(p => p ? { ...p, episodes: episodesCopy } : p);
 
     // Keep moved episode in view / focused
     setTimeout(() => {
@@ -222,7 +232,7 @@ export default function EpisodeLi({
     }, 0);
   };
 
-  // Memoized file name and route for prettier display
+  // Memoized file name and route for prettier display :3
   const fileName = useMemo(() => {
     if (!selectedFile) return "No file selected";
     const parts = selectedFile.split(/[/\\]/);
@@ -243,7 +253,7 @@ export default function EpisodeLi({
   //   return selectedFile.includes("/") ? "/" : "\\";
   // }, [selectedFile]);
 
-  const isLastInBlockAndEmpty = useMemo(() => {
+  const isLastAndEmptyInBlock = useMemo(() => {
     if (!volatileProject) return false;
     const episodesInBlock = volatileProject.episodes
       .filter(e => e.blockId === episode.blockId)
@@ -260,9 +270,9 @@ export default function EpisodeLi({
       <div className="flex flex-row gap-x-6 items-center pe-10">
         {/* Delete button */}
         <button
-          className={`€icon text-flare-700 hover:text-red-alert-500 ${isLastInBlockAndEmpty ? "opacity-0 cursor-[inherit]" : ""}`}
-          onClick={isLastInBlockAndEmpty ? undefined : deleteEpisode}
-          aria-hidden={isLastInBlockAndEmpty}
+          className={`€icon text-flare-700 hover:text-red-alert-500 ${isLastAndEmptyInBlock ? "opacity-0 cursor-[inherit]" : ""}`}
+          onClick={isLastAndEmptyInBlock ? undefined : deleteEpisode}
+          aria-hidden={isLastAndEmptyInBlock}
         >
           <IconDeleteOutline className="size-6" />
         </button>

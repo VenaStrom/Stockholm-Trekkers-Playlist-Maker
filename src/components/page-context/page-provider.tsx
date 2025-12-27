@@ -9,12 +9,12 @@ export function PageProvider({ children }: { children: React.ReactNode }) {
   const [projectMetas, setProjectMetas] = useState<PageContext["projectMetas"]>([]);
 
   const [forceReload, setForceReload] = useState(0);
-  const reload = useCallback(() => setForceReload((prev) => prev + 1), []);
+  const reloadProjectMetaData = useCallback(() => setForceReload((prev) => prev + 1 % 9999), []);
 
   const setRoute = useCallback((arg: Parameters<typeof setInternalRoute>[0]) => {
     setInternalRoute(arg);
-    reload();
-  }, [reload]);
+    reloadProjectMetaData();
+  }, [reloadProjectMetaData]);
 
   useEffect(() => {
     void forceReload; // To satisfy the linter about using the dependency
@@ -38,7 +38,7 @@ export function PageProvider({ children }: { children: React.ReactNode }) {
     projectMetas,
     setProjectMetas,
 
-    reload,
+    reloadProjectMetaData,
   };
 
   return (

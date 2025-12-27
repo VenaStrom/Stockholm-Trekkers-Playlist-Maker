@@ -17,7 +17,7 @@ export type PageContext = {
   projectMetas: ProjectMeta[];
   setProjectMetas: React.Dispatch<React.SetStateAction<ProjectMeta[]>>;
 
-  reload: () => void;
+  reloadProjectMetaData: () => void;
 };
 export const PageContextDefaultValue: PageContext = {
   route: PageRoute.Projects,
@@ -29,7 +29,7 @@ export const PageContextDefaultValue: PageContext = {
   projectMetas: [],
   setProjectMetas: () => { /* will be defined */ },
 
-  reload: () => { /* will be defined */ },
+  reloadProjectMetaData: () => { /* will be defined */ },
 };
 
 export const PageContext = createContext<PageContext>({ ...PageContextDefaultValue });

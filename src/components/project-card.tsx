@@ -13,7 +13,7 @@ export default function ProjectCard({
   projectMeta: ProjectMeta;
 }) {
   const { toast } = useToast();
-  const { setProjectId, setRoute, reload } = usePageContext();
+  const { setProjectId, setRoute, reloadProjectMetaData } = usePageContext();
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
 
   const downloadSaveFolder = () => {
@@ -41,7 +41,7 @@ export default function ProjectCard({
         );
       })
       .finally(() => {
-        reload();
+        reloadProjectMetaData();
         setDeleteDialogVisible(false);
       });
   };

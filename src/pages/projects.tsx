@@ -12,7 +12,7 @@ import { createProject } from "@/functions/project/create-project";
 
 export default function Projects() {
   const { toast } = useToast();
-  const { setHeaderText, projectMetas, reload } = usePageContext();
+  const { setHeaderText, projectMetas, reloadProjectMetaData } = usePageContext();
   useEffect(() => setHeaderText("Projects"), [setHeaderText]);
 
   const revealProjectsFolder = () => {
@@ -30,7 +30,7 @@ export default function Projects() {
   const makeNewProject = () => {
     createProject()
       .then(() => {
-        reload(); // To have this one appear in the list
+        reloadProjectMetaData(); // To have this one appear in the list
         toast(<>
           Made new project.
           {/* Maybe remove this line VVV */}
