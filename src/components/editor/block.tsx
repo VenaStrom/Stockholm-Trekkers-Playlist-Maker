@@ -4,9 +4,11 @@ import { IconDeleteOutline, IconSettingsOutline } from "../icons";
 export default function BlockLi({
   block,
   blockIndex,
+  children,
 }: {
   block: Block;
   blockIndex: number;
+  children: React.ReactNode;
 }) {
   return (
     <li className="bg-abyss-800 px-4 py-2 rounded-sm">
@@ -44,13 +46,9 @@ export default function BlockLi({
           <span className="w-[6ch]">Start</span>
           <span className="w-[7ch]">Duration</span>
         </div>
-        {/*
-         * Episodes are portaled into the block's episode container by `EpisodeLi`.
-         * We render an empty list element with a stable id that episodes can target.
-         * Episodes themselves are mounted once at the Editor level and moved via portals
-         * so they are not reconstructed when moving between blocks.
-         */}
-        <ul id={`block-episodes-${block.id}`} className="flex flex-col gap-y-2 pb-3 pt-1"></ul>
+        <ul className="flex flex-col gap-y-2 pb-3 pt-1">
+          {children}
+        </ul>
       </div>
     </li>
   );

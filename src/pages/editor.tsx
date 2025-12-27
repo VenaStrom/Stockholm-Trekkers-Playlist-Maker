@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { usePageContext } from "../components/page-context/use-page-context";
 import { PageRoute } from "../components/page-context/page.internal";
 import { Episode, Project } from "@/types";
@@ -8,6 +8,7 @@ import EpisodeLi from "../components/editor/episode";
 import { openProject } from "@/functions/project/open-project";
 import { saveProject } from "@/functions/project/save-project";
 import { generateId } from "@/functions/sha256";
+import BlockLi from "@/components/editor/block";
 
 export default function Editor() {
   const { setHeaderText, projectId, setRoute } = usePageContext();
@@ -80,15 +81,15 @@ export default function Editor() {
       });
   };
 
-  const episodesByBlockId = useMemo<Episode[][]>(() => {
-    if (!volatileProject) return [];
+  const episodesByBlockId = useMemo<Record<string, Episode[]>>(() => {
+    if (!volatileProject) return {};
     const grouped: Record<string, Episode[]> = {};
     for (const ep of volatileProject.episodes) {
       const id = ep.blockId;
       grouped[id] ??= [];
       grouped[id].push(ep);
     }
-    return Object.values(grouped);
+    return grouped;
   }, [volatileProject]);
 
   // DEBUG
@@ -224,10 +225,13 @@ export default function Editor() {
 
       <section className="lg:flex-1 not-lg:w-full">
         <ul>
-          {episodesByBlockId.map(epsInBlock => (
-            <Fragment key={`fragment-${epsInBlock?.[0]?.blockId ?? generateId()}`}>
-              BlockId: {epsInBlock?.[0]?.blockId}
-              {epsInBlock.map(ep => (
+          {Object.entries(episodesByBlockId).map(([blockId, episodes]) => (
+            <BlockLi
+              block={volatileProject?.blocks.find(b => b.id === blockId) ?? (() => { throw new Error("Missing block with id: " + blockId) })()}
+              blockIndex={volatileProject.blocks.findIndex(b => b.id === blockId)}
+              key={`block-${blockId}`}
+            >
+              {episodes.map(ep => (
                 <EpisodeLi
                   key={`episode-${ep.id}`}
                   episode={ep}
@@ -235,7 +239,7 @@ export default function Editor() {
                   projectSetter={setVolatileProject}
                 />
               ))}
-            </Fragment>
+            </BlockLi>
           ))}
         </ul>
 
