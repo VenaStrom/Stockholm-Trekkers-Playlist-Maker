@@ -110,7 +110,7 @@ export default function Editor() {
   }, [volatileProject, debugFilters]);
 
   return (
-    <main className="flex flex-col lg:flex-row gap-x-8 gap-y-12 justify-center items-start pt-4 px-12">
+    <main className="flex flex-col lg:flex-row gap-x-8 gap-y-12 justify-center items-start pt-4 px-12 pb-10">
       {/* Side bar */}
       <aside className="min-w-1/4 not-lg:w-full flex flex-col gap-y-4">
         {/* DEBUG TODO - remove */}
@@ -217,7 +217,7 @@ export default function Editor() {
               }}
               defaultValue={volatileProject.description ?? ""}
               placeholder="Optional description of project."
-              className="min-h-8 w-full pb-2"
+              className="min-h-8 w-full pb-2 px-3 pt-3 text-sm font-thin"
             />
           }
         </label>
