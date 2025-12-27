@@ -12,7 +12,6 @@ export function isEpisode(obj: unknown): obj is Episode {
   const o = obj as {
     id?: unknown;
     blockId?: unknown;
-    nextEpisodeId?: unknown;
     filePath?: unknown;
     duration?: unknown;
     cachedStartTime?: unknown;
@@ -28,10 +27,6 @@ export function isEpisode(obj: unknown): obj is Episode {
     return false;
   }
 
-  if (o.nextEpisodeId != null && typeof o.nextEpisodeId !== "string") {
-    console.warn("Episode optional 'nextEpisodeId' is invalid", { obj });
-    return false;
-  }
   if (o.filePath != null && typeof o.filePath !== "string") {
     console.warn("Episode optional 'filePath' is invalid", { obj });
     return false;
@@ -57,7 +52,7 @@ export function isBlock(obj: unknown): obj is Block {
     console.warn("Block type check: not an object");
     return false;
   }
-  const o = obj as { id?: unknown; options?: unknown; nextBlockId?: unknown };
+  const o = obj as { id?: unknown; options?: unknown; };
 
   if (typeof o.id !== "string") {
     console.warn("Block missing or invalid 'id'", { obj });
@@ -73,11 +68,6 @@ export function isBlock(obj: unknown): obj is Block {
   const okOptions = optionValues.every((v) => typeof v === "boolean" || typeof v === "number");
   if (!okOptions) {
     console.warn("Block 'options' contains invalid values (expected boolean|number)", { obj });
-    return false;
-  }
-
-  if ("nextBlockId" in o && typeof o.nextBlockId !== "string") {
-    console.warn("Block optional 'nextBlockId' is invalid", { obj });
     return false;
   }
 

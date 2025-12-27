@@ -23,15 +23,13 @@ export async function createProject(): Promise<Project> {
   };
   const projectData: ProjectData = {
     id: projectId,
-    blocks: blockIds.map((blockId, index) => ({
+    blocks: blockIds.map(blockId => ({
       id: blockId,
-      nextBlockId: blockIds[index + 1],
       options: { ...DefaultBlockOptions },
     })),
     episodes: episodeIds.map((episodeId, index) => ({
       id: episodeId,
       blockId: blockIds[index < 2 ? 0 : 1] ?? blockIds[0],
-      nextEpisodeId: episodeIds[index + 1],
     })),
   };
 
