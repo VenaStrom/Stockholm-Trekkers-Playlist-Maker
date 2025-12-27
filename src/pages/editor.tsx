@@ -1,12 +1,13 @@
-import { useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { usePageContext } from "../components/page-context/use-page-context";
 import { PageRoute } from "../components/page-context/page.internal";
-import { Project } from "@/types";
+import { Episode, Project } from "@/types";
 import { IconArrowBack2Outline, IconEditOutline, Spinner3DotsScaleMiddle } from "../components/icons";
 import { useDebounce } from "use-debounce";
 import EpisodeLi from "../components/editor/episode";
 import { openProject } from "@/functions/project/open-project";
 import { saveProject } from "@/functions/project/save-project";
+import { generateId } from "@/functions/sha256";
 
 export default function Editor() {
   const { setHeaderText, projectId, setRoute } = usePageContext();
@@ -79,9 +80,87 @@ export default function Editor() {
       });
   };
 
+  const episodesByBlockId = useMemo<Episode[][]>(() => {
+    if (!volatileProject) return [];
+    const grouped: Record<string, Episode[]> = {};
+    for (const ep of volatileProject.episodes) {
+      const id = ep.blockId;
+      grouped[id] ??= [];
+      grouped[id].push(ep);
+    }
+    return Object.values(grouped);
+  }, [volatileProject]);
+
+  // DEBUG
+  const [debugFilters, setDebugFilters] = useState<{ meta: boolean; episodes: boolean; blocks: boolean; }>({ meta: false, episodes: true, blocks: false, });
+  const debugProjectOutput = useMemo(() => {
+    if (!volatileProject) return null;
+    let output: Partial<Project> = {};
+
+    if (debugFilters.meta) {
+      output = { ...volatileProject };
+      delete output.blocks;
+      delete output.episodes;
+    }
+    if (debugFilters.blocks) output = { ...output, blocks: volatileProject.blocks };
+    if (debugFilters.episodes) output = { ...output, episodes: volatileProject.episodes };
+
+    return output;
+  }, [volatileProject, debugFilters]);
+
   return (
     <main className="flex flex-col lg:flex-row gap-x-8 gap-y-12 justify-center items-start pt-4 px-12">
+      {/* Side bar */}
       <aside className="min-w-1/4 not-lg:w-full flex flex-col gap-y-4">
+        {/* DEBUG TODO - remove */}
+        <div hidden={SHOW_DEBUG} className="absolute z-20 bg-abyss-800/80 rounded-sm h-full w-4/12">
+          <form
+            className="flex flow-row p-3 pb-0 gap-x-4 text-lg"
+            onChange={(e) => {
+              const form = e.currentTarget;
+              const newFilters = {
+                meta: (form.elements.namedItem("meta") as HTMLInputElement).checked,
+                episodes: (form.elements.namedItem("episodes") as HTMLInputElement).checked,
+                blocks: (form.elements.namedItem("blocks") as HTMLInputElement).checked,
+              };
+              setDebugFilters(newFilters);
+            }}
+          >
+            <label>
+              meta
+              <input
+                className="size-5"
+                name="meta"
+                defaultChecked={debugFilters.meta}
+                type="checkbox"
+              />
+            </label>
+            <label>
+              episodes
+              <input
+                className="size-5"
+                name="episodes"
+                defaultChecked={debugFilters.episodes}
+                type="checkbox"
+              />
+            </label>
+            <label>
+              blocks
+              <input
+                className="size-5"
+                name="blocks"
+                defaultChecked={debugFilters.blocks}
+                type="checkbox"
+              />
+            </label>
+          </form>
+          <pre className="text-xs mt-10 w-0">
+            {JSON.stringify(debouncedProjectData[0]) === JSON.stringify(volatileProject) ? "Saved" : "Saving..."}
+            <br />
+            {JSON.stringify(debugProjectOutput, null, 2)}
+          </pre>
+        </div>
+
         {/* Go back */}
         <button
           className="w-fit pe-3 ps-1.5 hover:bg-science-500 sticky top-5 shadow-sm"
@@ -141,28 +220,40 @@ export default function Editor() {
             />
           }
         </label>
-
-        {/* DEBUG TODO - remove */}
-        {SHOW_DEBUG &&
-          <pre className="opacity-50 text-xs mt-10 w-0">
-            {JSON.stringify(debouncedProjectData[0]) === JSON.stringify(volatileProject) ? "Saved" : "Saving..."}
-            <br />
-            {JSON.stringify(volatileProject, null, 2)}
-          </pre>
-        }
       </aside>
 
       <section className="lg:flex-1 not-lg:w-full">
         <ul>
-          {volatileProject?.episodes.map(ep => (
-            <EpisodeLi
-              key={`episode-${ep.id}`}
-              episode={ep}
-              project={volatileProject}
-              projectSetter={setVolatileProject}
-            />
+          {episodesByBlockId.map(epsInBlock => (
+            <Fragment key={`fragment-${epsInBlock?.[0]?.blockId ?? generateId()}`}>
+              BlockId: {epsInBlock?.[0]?.blockId}
+              {epsInBlock.map(ep => (
+                <EpisodeLi
+                  key={`episode-${ep.id}`}
+                  episode={ep}
+                  projectSetter={setVolatileProject}
+                />
+              ))}
+            </Fragment>
           ))}
         </ul>
+
+        <button
+          className="mt-4 px-4 py-2 bg-science-500 hover:bg-science-600 rounded-sm"
+          onClick={() => {
+            if (!volatileProject) return;
+            const newEpisode: Episode = {
+              id: generateId(),
+              blockId: volatileProject.blocks.at(-1)?.id ?? "",
+            };
+            setVolatileProject({
+              ...volatileProject,
+              episodes: [...volatileProject.episodes, newEpisode],
+            });
+          }}
+        >
+          Add Episode
+        </button>
       </section>
     </main>
   );

@@ -6,11 +6,9 @@ import { secondsToTimeString } from "../../functions/time-format";
 
 export default function EpisodeLi({
   episode,
-  project,
   projectSetter: setVolatileProject,
 }: {
   episode: Episode;
-  project: Project | null;
   projectSetter: React.Dispatch<React.SetStateAction<Project | null>>;
 }) {
   const [selectedFile, setSelectedFile] = useState<string | null>(episode.filePath ?? null);
@@ -129,8 +127,16 @@ export default function EpisodeLi({
       const previousEpisode = newEpisodes[thisIndex - 1];
       const thisEpisode = newEpisodes[thisIndex];
       if (!previousEpisode || !thisEpisode) return prevProject;
-      newEpisodes[thisIndex - 1] = thisEpisode;
-      newEpisodes[thisIndex] = previousEpisode;
+
+      // If moved block passed a blockId boundary, update blockIds
+      if (thisEpisode.blockId !== previousEpisode.blockId) {
+        thisEpisode.blockId = previousEpisode.blockId;
+      }
+      else {
+        // Swap positions
+        newEpisodes[thisIndex - 1] = thisEpisode;
+        newEpisodes[thisIndex] = previousEpisode;
+      }
 
       return { ...prevProject, episodes: newEpisodes };
     });
@@ -154,14 +160,26 @@ export default function EpisodeLi({
       const thisIndex = prevProject.episodes.findIndex(e => e.id === episode.id);
       if (thisIndex === -1 || thisIndex >= prevProject.episodes.length - 1) return prevProject; // Already at bottom
 
-      const newEpisodes = [...prevProject.episodes];
-      const nextEpisode = newEpisodes[thisIndex + 1];
-      const thisEpisode = newEpisodes[thisIndex];
-      if (!nextEpisode || !thisEpisode) return prevProject;
-      newEpisodes[thisIndex + 1] = thisEpisode;
-      newEpisodes[thisIndex] = nextEpisode;
+      const episodesCopy = [...prevProject.episodes];
+      const nextEpisode = episodesCopy[thisIndex + 1];
+      const thisEpisode = episodesCopy[thisIndex];
 
-      return { ...prevProject, episodes: newEpisodes };
+      if (!nextEpisode || !thisEpisode) {
+        console.info(`Could not find episodes at indices ${thisIndex} or ${thisIndex + 1}`);
+        return prevProject;
+      };
+
+      // If moved block passed a blockId boundary, update blockIds which will replace the move
+      if (thisEpisode.blockId !== nextEpisode.blockId) {
+        thisEpisode.blockId = nextEpisode.blockId;
+      }
+      else {
+        // Swap positions when in same block
+        episodesCopy[thisIndex + 1] = thisEpisode;
+        episodesCopy[thisIndex] = nextEpisode;
+      }
+
+      return { ...prevProject, episodes: episodesCopy };
     });
 
     // Keep moved episode in view / focused
@@ -246,10 +264,14 @@ export default function EpisodeLi({
         title="Drag to reorder"
         tabIndex={0}
         onKeyDown={(e) => {
+          if (e.repeat) return;
+          e.stopPropagation();
+
           if (e.key === "ArrowUp") {
             e.preventDefault();
             moveEpisodeUpOne();
-          } else if (e.key === "ArrowDown") {
+          }
+          else if (e.key === "ArrowDown") {
             e.preventDefault();
             moveEpisodeDownOne();
           }
