@@ -69,7 +69,7 @@ export async function saveProject(project: Project): Promise<boolean> {
   // Ensure trailing empty episode per block
   projectCopy.blocks.forEach(block => {
     const episodesInBlock = projectCopy.episodes.filter(e => e.blockId === block.id);
-    const hasTrailingEmpty = episodesInBlock.some(e => !e.filePath);
+    const hasTrailingEmpty = episodesInBlock.at(-1)?.filePath ? false : true;
     if (!hasTrailingEmpty) {
       const newEpisode: Episode = {
         id: generateId(),
