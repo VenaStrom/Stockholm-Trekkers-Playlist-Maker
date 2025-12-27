@@ -17,20 +17,41 @@ export default function EpisodeLi({
   const [selectedFile, setSelectedFile] = useState<string | null>(episode.filePath ?? null);
 
   // Helper. Produces a new Project where the given episode has its filePath set, and ensure each block has a trailing empty episode
-  const setFilePathOfEpisode = (project: Project, episodeId: string, filePath?: string): Project => {
-    const newEpisodes = project.episodes.map(ep => ep.id === episodeId ? { ...ep, filePath } : ep);
+  const updateEpisode = (project: Project, episodeId: string, filePath?: string): Project => {
+    const updatedEpisodes = project.episodes.map(ep => ep.id === episodeId ? { ...ep, filePath } : ep);
 
+    // Sort episodes so they are clumped by block id
+    const sortedEpisodes: Episode[] = [];
     project.blocks.forEach(block => {
-      const episodesInBlock = newEpisodes.filter(e => e.blockId === block.id);
-      const lastEpisode = episodesInBlock[episodesInBlock.length - 1];
-      const lastPath = lastEpisode?.filePath;
-      const hasTrailingEmpty = lastPath === undefined || lastPath.trim().length === 0;
-      if (!hasTrailingEmpty) {
-        newEpisodes.push({ id: generateId(), blockId: block.id });
+      const episodesInBlock = updatedEpisodes.filter(e => e.blockId === block.id);
+      sortedEpisodes.push(...episodesInBlock);
+    });
+
+    // Ensure each block has a trailing empty episode
+    project.blocks.forEach(block => {
+      const episodesInBlock = sortedEpisodes.filter(e => e.blockId === block.id);
+      const lastWithPathIndex = [...episodesInBlock].reverse().findIndex(e => e.filePath && e.filePath.trim().length > 0);
+      const trailingEmpties = episodesInBlock.filter((e, i) =>
+        // All episodes after last with path that is empty
+        i > episodesInBlock.length - 1 - lastWithPathIndex - 1
+        && (!e.filePath || e.filePath.trim().length === 0)
+      );
+      // If no trailing empty, add one
+      if (trailingEmpties.length === 0) {
+        sortedEpisodes.push({ id: generateId(), blockId: block.id });
+      }
+      // Remove all but last trailing empty
+      if (trailingEmpties.length > 1) {
+        for (let i = 0; i < trailingEmpties.length - 1; i++) {
+          const indexToRemove = sortedEpisodes.findIndex(e => e.id === trailingEmpties[i]!.id);
+          if (indexToRemove !== -1) {
+            sortedEpisodes.splice(indexToRemove, 1);
+          }
+        }
       }
     });
 
-    return { ...project, episodes: newEpisodes };
+    return { ...project, episodes: sortedEpisodes };
   };
 
   const chooseFile = () => {
@@ -53,7 +74,7 @@ export default function EpisodeLi({
 
         setVolatileProject((prevProject) => {
           if (!prevProject) return prevProject;
-          return setFilePathOfEpisode(prevProject, episode.id, fileString ?? undefined);
+          return updateEpisode(prevProject, episode.id, fileString ?? undefined);
         });
       }
       catch (err) {
@@ -77,7 +98,7 @@ export default function EpisodeLi({
   useEffect(() => {
     setVolatileProject((prevProject) => {
       if (!prevProject) return prevProject;
-      return setFilePathOfEpisode(prevProject, episode.id, selectedFile ?? undefined);
+      return updateEpisode(prevProject, episode.id, selectedFile ?? undefined);
     });
   }, [episode.id, selectedFile, setVolatileProject]);
 
