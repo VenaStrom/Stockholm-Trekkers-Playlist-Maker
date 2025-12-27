@@ -84,15 +84,21 @@ export default function ProjectCard({
       ]}
     />
 
-    <li className="w-full min-h-36 bg-abyss-800 rounded-sm p-4 ps-5 flex flex-row gap-x-4 *:h-full">
+    <li className="w-full min-h-36  bg-abyss-800 rounded-sm p-4 ps-5 flex flex-row gap-x-4 *:h-full">
       {/* Date and description */}
-      <div className="">
+      <div className="max-w-prose h-full overflow-hidden">
         <p className="text-xl">{projectMeta.date.trim() ? projectMeta.date : <span className="text-flare-700">[ no date set ]</span>}</p>
-        <p>{projectMeta.description?.trim() ?
-          projectMeta.description
-          :
-          <span className="text-flare-700">No description set</span>}
-        </p>
+        <div
+          className="overflow-scroll"
+        >
+          <pre className="max-w-prose text-sm text-abyss-200 mt-1">
+            {projectMeta.description?.trim() ?
+              projectMeta.description
+              :
+              <span className="text-flare-700">No description set</span>
+            }
+          </pre>
+        </div>
       </div>
 
       <span className="flex-1"></span>
@@ -116,7 +122,7 @@ export default function ProjectCard({
       </ul>
 
       {/* Actions */}
-      <div className="flex flex-col justify-between w-24">
+      <div className="flex flex-col justify-start gap-y-4 w-24">
         <button className="pe-1.5 ps-3 hover:bg-science-500" onClick={() => { setRoute(PageRoute.Editor); setProjectId(projectMeta.id); }}>
           Edit
           <span className="flex-1"></span>

@@ -7,7 +7,6 @@ import { useDebounce } from "use-debounce";
 import EpisodeLi from "../components/editor/episode";
 import { openProject } from "@/functions/project/open-project";
 import { saveProject } from "@/functions/project/save-project";
-import { generateId } from "@/functions/sha256";
 import BlockLi from "@/components/editor/block";
 
 export default function Editor() {
@@ -15,7 +14,6 @@ export default function Editor() {
   useEffect(() => setHeaderText("Editor"), [setHeaderText]);
 
   const [volatileProject, setVolatileProject] = useState<Project | null>(null);
-  const [SHOW_DEBUG, setSHOW_DEBUG] = useState(false);
 
   // Load project data on mount and projectId changes
   useEffect(() => {
@@ -29,19 +27,6 @@ export default function Editor() {
         console.error("Failed to open project:", err);
       });
   }, [projectId]);
-
-  // DEBUG register ctrl+D to toggle debug info
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.ctrlKey && e.key === "d") {
-        setSHOW_DEBUG(prev => !prev);
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
 
   // Save project data to file when changed
   const save = useCallback(async () => {
@@ -81,6 +66,7 @@ export default function Editor() {
       });
   };
 
+  // Group episodes by block id for easier rendering
   const episodesByBlockId = useMemo<Record<string, Episode[]>>(() => {
     if (!volatileProject) return {};
     const grouped: Record<string, Episode[]> = {};
@@ -92,76 +78,10 @@ export default function Editor() {
     return grouped;
   }, [volatileProject]);
 
-  // DEBUG
-  const [debugFilters, setDebugFilters] = useState<{ meta: boolean; episodes: boolean; blocks: boolean; }>({ meta: false, episodes: true, blocks: false, });
-  const debugProjectOutput = useMemo(() => {
-    if (!volatileProject) return null;
-    let output: Partial<Project> = {};
-
-    if (debugFilters.meta) {
-      output = { ...volatileProject };
-      delete output.blocks;
-      delete output.episodes;
-    }
-    if (debugFilters.blocks) output = { ...output, blocks: volatileProject.blocks };
-    if (debugFilters.episodes) output = { ...output, episodes: volatileProject.episodes };
-
-    return output;
-  }, [volatileProject, debugFilters]);
-
   return (
     <main className="flex flex-col lg:flex-row gap-x-8 gap-y-12 justify-center items-start pt-4 px-12 pb-10">
       {/* Side bar */}
       <aside className="min-w-1/4 not-lg:w-full flex flex-col gap-y-4">
-        {/* DEBUG TODO - remove */}
-        <div hidden={SHOW_DEBUG} className="absolute z-20 bg-abyss-800/80 rounded-sm h-full w-4/12">
-          <form
-            className="flex flow-row p-3 pb-0 gap-x-4 text-lg"
-            onChange={(e) => {
-              const form = e.currentTarget;
-              const newFilters = {
-                meta: (form.elements.namedItem("meta") as HTMLInputElement).checked,
-                episodes: (form.elements.namedItem("episodes") as HTMLInputElement).checked,
-                blocks: (form.elements.namedItem("blocks") as HTMLInputElement).checked,
-              };
-              setDebugFilters(newFilters);
-            }}
-          >
-            <label>
-              meta
-              <input
-                className="size-5"
-                name="meta"
-                defaultChecked={debugFilters.meta}
-                type="checkbox"
-              />
-            </label>
-            <label>
-              episodes
-              <input
-                className="size-5"
-                name="episodes"
-                defaultChecked={debugFilters.episodes}
-                type="checkbox"
-              />
-            </label>
-            <label>
-              blocks
-              <input
-                className="size-5"
-                name="blocks"
-                defaultChecked={debugFilters.blocks}
-                type="checkbox"
-              />
-            </label>
-          </form>
-          <pre className="text-xs mt-10 w-0">
-            {JSON.stringify(debouncedProjectData[0]) === JSON.stringify(volatileProject) ? "Saved" : "Saving..."}
-            <br />
-            {JSON.stringify(debugProjectOutput, null, 2)}
-          </pre>
-        </div>
-
         {/* Go back */}
         <button
           className="w-fit pe-3 ps-1.5 hover:bg-science-500 sticky top-5 shadow-sm"
@@ -201,28 +121,32 @@ export default function Editor() {
               <Spinner3DotsScaleMiddle className="w-fit h-9 inline-block align-middle mb-1" />
             </span>
             :
-            <textarea
-              onChange={(e) => {
-                onDescriptionChange(e);
-                const area = e.currentTarget;
-                area.style.height = "0px";
-                area.style.height = `${area.scrollHeight}px`;
-              }}
-              ref={(el) => {
-                if (!el) return;
-                el.style.overflow = "hidden";
-                el.style.resize = "none";
-                el.style.height = "0px";
-                el.style.height = `${el.scrollHeight}px`;
-              }}
-              defaultValue={volatileProject.description ?? ""}
-              placeholder="Optional description of project."
-              className="min-h-8 w-full pb-2 px-3 pt-3 text-sm font-thin"
-            />
+            <pre>
+              <textarea
+                onChange={(e) => {
+                  onDescriptionChange(e);
+                  const area = e.currentTarget;
+                  area.style.height = "0px";
+                  area.style.height = `${area.scrollHeight}px`;
+                }}
+                ref={(el) => {
+                  if (!el) return;
+                  el.style.overflow = "hidden";
+                  el.style.resize = "none";
+                  el.style.height = "0px";
+                  el.style.height = `${el.scrollHeight}px`;
+                }}
+                defaultValue={volatileProject.description ?? ""}
+                placeholder="Optional description of project."
+                className="min-h-8 w-full pb-2 px-3 pt-3 text-sm font-thin"
+              />
+            </pre>
           }
         </label>
       </aside>
 
+
+      {/* Editor area */}
       <section className="lg:flex-1 not-lg:w-full">
         <ul className="flex flex-col gap-y-3">
           {Object.entries(episodesByBlockId).map(([blockId, episodes]) => (
