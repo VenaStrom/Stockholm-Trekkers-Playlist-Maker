@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Episode, Project } from "@/types";
 import { IconDeleteOutline, IconDragIndicator, IconFolderOutline } from "../icons";
 import { open } from "@tauri-apps/plugin-dialog";
@@ -63,6 +63,20 @@ export default function EpisodeLi({
       return { ...prevProject, episodes: newEpisodes };
     });
   };
+
+  // Update project on selectedFile change
+  useEffect(() => {
+    const newEpisode: Episode = {
+      ...episode,
+      filePath: selectedFile ?? undefined,
+    };
+
+    setVolatileProject((prevProject) => {
+      if (!prevProject) return prevProject;
+      const newEpisodes = prevProject.episodes.map((ep) => ep.id === newEpisode.id ? newEpisode : ep);
+      return { ...prevProject, episodes: newEpisodes };
+    });
+  }, [episode, selectedFile, setVolatileProject]);
 
   // Drag handlers
   const [isDragOver, setDragOver] = useState(false);
@@ -229,6 +243,15 @@ export default function EpisodeLi({
   //   return selectedFile.includes("/") ? "/" : "\\";
   // }, [selectedFile]);
 
+  const isLastInBlockAndEmpty = useMemo(() => {
+    if (!volatileProject) return false;
+    const episodesInBlock = volatileProject.episodes
+      .filter(e => e.blockId === episode.blockId)
+      .filter(e => !e.filePath?.trim().length);
+    if (episodesInBlock.length === 0) return false;
+    return episodesInBlock[episodesInBlock.length - 1]?.id === episode.id;
+  }, [volatileProject, episode]);
+
   return (
     <li
       className={`w-full flex flex-row items-center ps-1 select-none min-w-0 ${isDragOver ? "ring-2 ring-science-500/60 rounded-sm" : ""}`}
@@ -237,8 +260,9 @@ export default function EpisodeLi({
       <div className="flex flex-row gap-x-6 items-center pe-10">
         {/* Delete button */}
         <button
-          onClick={deleteEpisode}
-          className="€icon text-flare-700 hover:text-red-alert-500"
+          className={`€icon text-flare-700 hover:text-red-alert-500 ${isLastInBlockAndEmpty ? "opacity-0 cursor-[inherit]" : ""}`}
+          onClick={isLastInBlockAndEmpty ? undefined : deleteEpisode}
+          aria-hidden={isLastInBlockAndEmpty}
         >
           <IconDeleteOutline className="size-6" />
         </button>
