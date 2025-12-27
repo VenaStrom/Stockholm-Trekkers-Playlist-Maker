@@ -122,7 +122,24 @@ export default function Editor() {
               <Spinner3DotsScaleMiddle className="w-fit h-9 inline-block align-middle mb-1" />
             </span>
             :
-            <textarea onChange={onDescriptionChange} value={volatileProject.description ?? ""} placeholder="Optional description of project."></textarea>
+            <textarea
+              onChange={(e) => {
+                onDescriptionChange(e);
+                const area = e.currentTarget;
+                area.style.height = "0px";
+                area.style.height = `${area.scrollHeight}px`;
+              }}
+              ref={(el) => {
+                if (!el) return;
+                el.style.overflow = "hidden";
+                el.style.resize = "none";
+                el.style.height = "0px";
+                el.style.height = `${el.scrollHeight}px`;
+              }}
+              value={volatileProject.description ?? ""}
+              placeholder="Optional description of project."
+              className="min-h-8 w-full pb-2"
+            />
           }
         </label>
 
