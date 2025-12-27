@@ -29,6 +29,8 @@ export type ProjectMeta = {
   dateCreated: number; // unix timestamp
   dateModified?: number; // unix timestamp
   optionsRev: number;
+  blockCount: number;
+  episodeCount: number;
 };
 export type ProjectData = {
   id: string;

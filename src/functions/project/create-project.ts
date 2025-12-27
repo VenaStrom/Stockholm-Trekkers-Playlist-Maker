@@ -18,6 +18,8 @@ export async function createProject(): Promise<Project> {
     description: "",
     dateCreated: Date.now(),
     optionsRev: OPTION_REVISION,
+    blockCount: 0,
+    episodeCount: 0,
   };
   const projectData: ProjectData = {
     id: projectId,

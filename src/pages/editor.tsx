@@ -4,7 +4,6 @@ import { PageRoute } from "../components/page-context/page.internal";
 import { Project } from "@/types";
 import { IconArrowBack2Outline, IconEditOutline, Spinner3DotsScaleMiddle } from "../components/icons";
 import { useDebounce } from "use-debounce";
-import BlockLi from "../components/editor/block";
 import EpisodeLi from "../components/editor/episode";
 import { openProject } from "@/functions/project/open-project";
 import { saveProject } from "@/functions/project/save-project";
@@ -138,33 +137,16 @@ export default function Editor() {
       </aside>
 
       <section className="lg:flex-1 not-lg:w-full">
-        <ul className="flex flex-col gap-y-4 not-lg:pb-52">
-          {volatileProject?.blocks.map((block, index) => {
-            return <BlockLi
-              key={`block-${block.id}`}
-              block={block}
-              blockIndex={index}
+        <ul>
+          {volatileProject?.episodes.map(ep => (
+            <EpisodeLi
+              key={`episode-${ep.id}`}
+              episode={ep}
+              project={volatileProject}
+              projectSetter={setVolatileProject}
             />
-          })}
+          ))}
         </ul>
-
-        {/*
-          Mount all episodes once here. Each EpisodeLi will portal its <li> into the
-          block-specific container `#block-episodes-{block.id}`. This keeps episode
-          component instances stable so they are not reconstructed when moved.
-         */}
-        <div aria-hidden style={{ position: "relative" }}>
-          <ul style={{ display: "none" }}>
-            {volatileProject?.episodes.map(ep => (
-              <EpisodeLi
-                key={`episode-${ep.id}`}
-                episode={ep}
-                project={volatileProject}
-                projectSetter={setVolatileProject}
-              />
-            ))}
-          </ul>
-        </div>
       </section>
     </main>
   );

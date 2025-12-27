@@ -1,5 +1,5 @@
 import React, { createContext } from "react";
-import { Project } from "@/types";
+import { ProjectMeta } from "@/types";
 
 export const PageRoute = {
   Projects: "projects",
@@ -14,8 +14,8 @@ export type PageContext = {
   setHeaderText: React.Dispatch<React.SetStateAction<string>>;
   projectId: string | null;
   setProjectId: React.Dispatch<React.SetStateAction<string | null>>;
-  projects: Project[];
-  setProjects: React.Dispatch<React.SetStateAction<Project[]>>;
+  projectMetas: ProjectMeta[];
+  setProjectMetas: React.Dispatch<React.SetStateAction<ProjectMeta[]>>;
 
   reload: () => void;
 };
@@ -26,8 +26,8 @@ export const PageContextDefaultValue: PageContext = {
   setHeaderText: () => { /* will be defined */ },
   projectId: null,
   setProjectId: () => { /* will be defined */ },
-  projects: [],
-  setProjects: () => { /* will be defined */ },
+  projectMetas: [],
+  setProjectMetas: () => { /* will be defined */ },
 
   reload: () => { /* will be defined */ },
 };

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Project } from "@/types";
+import { ProjectMeta } from "@/types";
 import { IconDeleteOutline, IconEditOutline, IconFileExportOutline } from "./icons";
 import Dialog from "./dialog";
 import { usePageContext } from "./page-context/use-page-context";
@@ -8,9 +8,9 @@ import { PageRoute } from "./page-context/page.internal";
 import { deleteProject } from "@/functions/project/delete-project";
 
 export default function ProjectCard({
-  project,
+  projectMeta,
 }: {
-  project: Project;
+  projectMeta: ProjectMeta;
 }) {
   const { toast } = useToast();
   const { setProjectId, setRoute, reload } = usePageContext();
@@ -25,18 +25,18 @@ export default function ProjectCard({
   };
 
   const handleDeleteProject = () => {
-    deleteProject(project.id)
+    deleteProject(projectMeta.id)
       .then(() => {
         toast(
           <span>
-            Successfully deleted project <span className="italic">{project.date}</span>.
+            Successfully deleted project <span className="italic">{projectMeta.date}</span>.
           </span>,
         );
       })
       .catch((error) => {
         toast(
           <span>
-            Failed to delete project <span className="italic">{project.date}</span>: {error instanceof Error ? error.message : String(error)}
+            Failed to delete project <span className="italic">{projectMeta.date}</span>: {error instanceof Error ? error.message : String(error)}
           </span>,
         );
       })
@@ -51,19 +51,19 @@ export default function ProjectCard({
     <Dialog
       visible={deleteDialogVisible}
       setVisible={setDeleteDialogVisible}
-      dialogHeader={<p className="text-lg">Delete Project {project.date}</p>}
+      dialogHeader={<p className="text-lg">Delete Project {projectMeta.date}</p>}
       dialogContent={<p>
-        Are you sure you want to delete the project <span className="italic">{project.date}?</span>
+        Are you sure you want to delete the project <span className="italic">{projectMeta.date}?</span>
         <span className="text-sm text-flare-500/60">
           <br />
-          This will project contains {project.blocks.length} blocks and {project.episodes.filter(e => e.filePath).length} episodes.
+          This will project contains {projectMeta.blockCount} blocks and {projectMeta.episodeCount} episodes.
           <br />
-          Created: {new Date(project.dateCreated).toLocaleDateString("en-SE")} {new Date(project.dateCreated).toLocaleTimeString("en-SE")}
+          Created: {new Date(projectMeta.dateCreated).toLocaleDateString("en-SE")} {new Date(projectMeta.dateCreated).toLocaleTimeString("en-SE")}
           {
-            project.dateModified
-            && project.dateModified !== project.dateCreated
+            projectMeta.dateModified
+            && projectMeta.dateModified !== projectMeta.dateCreated
             && (
-              <><br />Modified: {new Date(project.dateModified).toLocaleDateString("en-SE")} {new Date(project.dateModified).toLocaleTimeString("en-SE")}</>
+              <><br />Modified: {new Date(projectMeta.dateModified).toLocaleDateString("en-SE")} {new Date(projectMeta.dateModified).toLocaleTimeString("en-SE")}</>
             )
           }
         </span>
@@ -87,9 +87,9 @@ export default function ProjectCard({
     <li className="w-full min-h-36 bg-abyss-800 rounded-sm p-4 ps-5 flex flex-row gap-x-4 *:h-full">
       {/* Date and description */}
       <div className="">
-        <p className="text-xl">{project.date.trim() ? project.date : <span className="text-flare-700">[ no date set ]</span>}</p>
-        <p>{project.description?.trim() ?
-          project.description
+        <p className="text-xl">{projectMeta.date.trim() ? projectMeta.date : <span className="text-flare-700">[ no date set ]</span>}</p>
+        <p>{projectMeta.description?.trim() ?
+          projectMeta.description
           :
           <span className="text-flare-700">No description set</span>}
         </p>
@@ -100,24 +100,24 @@ export default function ProjectCard({
       {/* Stats */}
       <ul className="flex flex-col justify-start items-end">
         <li>
-          Created: {new Date(project.dateCreated).toLocaleDateString("en-SE")} {new Date(project.dateCreated).toLocaleTimeString("en-SE")}
+          Created: {new Date(projectMeta.dateCreated).toLocaleDateString("en-SE")} {new Date(projectMeta.dateCreated).toLocaleTimeString("en-SE")}
         </li>
-        {project.dateModified && project.dateModified !== project.dateCreated && (
+        {projectMeta.dateModified && projectMeta.dateModified !== projectMeta.dateCreated && (
           <li>
-            Modified: {new Date(project.dateModified).toLocaleDateString("en-SE")} {new Date(project.dateModified).toLocaleTimeString("en-SE")}
+            Modified: {new Date(projectMeta.dateModified).toLocaleDateString("en-SE")} {new Date(projectMeta.dateModified).toLocaleTimeString("en-SE")}
           </li>
         )}
         <li>
-          {project.blocks.length} blocks
+          {projectMeta.blockCount} blocks
         </li>
         <li>
-          {project.episodes.filter(e => e.filePath).length} episodes
+          {projectMeta.episodeCount} episodes
         </li>
       </ul>
 
       {/* Actions */}
       <div className="flex flex-col justify-between w-24">
-        <button className="pe-1.5 ps-3 hover:bg-science-500" onClick={() => { setRoute(PageRoute.Editor); setProjectId(project.id); }}>
+        <button className="pe-1.5 ps-3 hover:bg-science-500" onClick={() => { setRoute(PageRoute.Editor); setProjectId(projectMeta.id); }}>
           Edit
           <span className="flex-1"></span>
           <IconEditOutline className="inline size-6" />

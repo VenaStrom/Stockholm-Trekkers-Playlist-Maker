@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { usePageContext } from "../components/page-context/use-page-context";
 import ProjectCard from "../components/project-card";
-import { Project } from "@/types";
+import { ProjectMeta } from "@/types";
 import { IconAddBoxOutline, IconFolderOutline } from "../components/icons";
 import { path } from "@tauri-apps/api";
 import { useToast } from "../components/toast/useToast";
@@ -12,7 +12,7 @@ import { createProject } from "@/functions/project/create-project";
 
 export default function Projects() {
   const { toast } = useToast();
-  const { setHeaderText, projects, reload } = usePageContext();
+  const { setHeaderText, projectMetas, reload } = usePageContext();
   useEffect(() => setHeaderText("Projects"), [setHeaderText]);
 
   const revealProjectsFolder = () => {
@@ -43,7 +43,7 @@ export default function Projects() {
       });
   };
 
-  const sortByDateCreated = (a: Project, b: Project) => b.dateCreated - a.dateCreated;
+  const sortByDateCreated = (a: ProjectMeta, b: ProjectMeta) => b.dateCreated - a.dateCreated;
 
   return (
     <main className="w-full flex flex-col items-center overflow-y-auto">
@@ -62,8 +62,8 @@ export default function Projects() {
           </button>
         </li>
 
-        {projects.length ? projects.sort(sortByDateCreated).map((project, index) => (
-          <ProjectCard key={index} project={project} />
+        {projectMetas.length ? projectMetas.sort(sortByDateCreated).map((project, index) => (
+          <ProjectCard key={index} projectMeta={project} />
         ))
           :
           <li className="p-4 py-8">

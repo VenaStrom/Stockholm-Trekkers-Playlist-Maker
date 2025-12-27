@@ -1,5 +1,4 @@
-import { useMemo, useState, useEffect, useRef } from "react";
-import { createPortal } from "react-dom";
+import { useMemo, useState } from "react";
 import { Episode, Project } from "@/types";
 import { IconDeleteOutline, IconDragIndicator, IconFolderOutline } from "../icons";
 import { open } from "@tauri-apps/plugin-dialog";
@@ -9,7 +8,6 @@ export default function EpisodeLi({
   episode,
   project,
   projectSetter: setVolatileProject,
-
 }: {
   episode: Episode;
   project: Project | null;
@@ -191,67 +189,8 @@ export default function EpisodeLi({
     return selectedFile.includes("/") ? "/" : "\\";
   }, [selectedFile]);
 
-  // Portal target management, find the block's episode container element
-  const [container, setContainer] = useState<HTMLElement | null>(null);
-  useEffect(() => {
-    let mounted = true;
-    const id = `block-episodes-${episode.blockId}`;
-
-    const findAndSet = () => {
-      const el = document.getElementById(id);
-      if (el instanceof HTMLElement) {
-        if (mounted) setContainer(el);
-        return true;
-      }
-      return false;
-    };
-
-    if (!findAndSet()) {
-      // Poll briefly until the container is rendered (blocks render earlier in most cases)
-      const interval = setInterval(() => {
-        if (findAndSet()) {
-          clearInterval(interval);
-        }
-      }, 100);
-      return () => {
-        mounted = false;
-        clearInterval(interval);
-      };
-    }
-
-    return () => { mounted = false; };
-  }, [episode.blockId]);
-
-  // Ensure DOM order inside the container matches the project's episode order for this block
-  useEffect(() => {
-    if (!container) return;
-    if (!liRef.current) return;
-    if (!project) return;
-
-    // run on next tick to ensure portal node is attached
-    const t = setTimeout(() => {
-      try {
-        const blockEpisodes = project.episodes.filter(ep => ep.blockId === episode.blockId);
-        const desiredIndex = blockEpisodes.findIndex(ep => ep.id === episode.id);
-        if (desiredIndex === -1) return;
-
-        const children = Array.from(container.children).filter((c) => c.id?.startsWith?.("episode-"));
-        const referenceNode = children[desiredIndex] ?? null;
-        container.insertBefore(liRef.current as Node, referenceNode);
-      }
-      catch (err) {
-        console.debug('episode reorder error', err);
-      }
-    }, 0);
-
-    return () => clearTimeout(t);
-  }, [container, project, episode.blockId, episode.id]);
-
-  const liRef = useRef<HTMLLIElement | null>(null);
-
-  const li = (
+  return (
     <li
-      ref={liRef}
       className={`w-full flex flex-row items-center ps-1 select-none ${isDragOver ? "ring-2 ring-science-500/60 rounded-sm" : ""}`}
       id={`episode-${episode.id}`}
     >
@@ -312,14 +251,5 @@ export default function EpisodeLi({
         <IconDragIndicator className="size-6" />
       </span>
     </li>
-  );
-
-  // If we have a container, portal the LI into it. Otherwise return a hidden placeholder
-  if (container) return createPortal(li, container);
-
-  return (
-    <div style={{ display: "none" }} aria-hidden>
-      {li}
-    </div>
   );
 }

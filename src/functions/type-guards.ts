@@ -96,6 +96,8 @@ export function isProjectMetaOnly(obj: unknown): obj is ProjectMeta {
     dateCreated?: unknown;
     dateModified?: unknown;
     optionsRev?: unknown;
+    blockCount?: unknown;
+    episodeCount?: unknown;
   };
 
   if (typeof o.id !== "string") return false;
@@ -104,6 +106,8 @@ export function isProjectMetaOnly(obj: unknown): obj is ProjectMeta {
   if (typeof o.dateCreated !== "number") return false;
   if ("dateModified" in o && typeof o.dateModified !== "number") return false;
   if (typeof o.optionsRev !== "number") return false;
+  if (typeof o.blockCount !== "number") return false;
+  if (typeof o.episodeCount !== "number") return false;
 
   return true;
 }

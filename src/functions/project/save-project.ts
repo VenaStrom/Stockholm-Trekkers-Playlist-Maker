@@ -18,12 +18,18 @@ export async function saveProject(project: Project): Promise<void> {
   const metaFilePath = await path.join(projectDir, FileName.ProjectMeta);
   const dataFilePath = await path.join(projectDir, FileName.ProjectData);
 
+  // Used for meta stats, not to override the actual data
+  const truthyEpisodes = project.episodes.filter(e => e.filePath);
+  const blocksWithEpisodes = project.blocks.filter(b => truthyEpisodes.some(e => e.blockId === b.id));
+
   const projectMeta: ProjectMeta = {
     id: project.id,
     date: project.date,
     description: project.description,
     dateCreated: project.dateCreated,
     optionsRev: project.optionsRev,
+    blockCount: blocksWithEpisodes.length,
+    episodeCount: truthyEpisodes.length,
   };
 
   const projectData: ProjectData = {
