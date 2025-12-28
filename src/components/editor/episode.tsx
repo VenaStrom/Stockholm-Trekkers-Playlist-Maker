@@ -109,20 +109,6 @@ export default function EpisodeLi({
     });
   }, [episode.id, selectedFile, setVolatileProject]);
 
-  /** 
-   * Used after moving element to keep keyboard focus on the thumb (li fallback)
-   */
-  const focusThumb = (li: HTMLElement | null) => {
-    setTimeout(() => {
-      if (!(li instanceof HTMLElement)) return;
-      const thumb = li.querySelector(`[draggable="true"]`);
-      const focusEl = thumb instanceof HTMLElement ? thumb : li;
-      focusEl.tabIndex = 0;
-      focusEl.focus();
-      focusEl.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 0);
-  };
-
   // Drag/movement handlers
   const [isDragOver, setDragOver] = useState(false);
   const onDragStart = (e: React.DragEvent) => {
@@ -187,7 +173,15 @@ export default function EpisodeLi({
 
     window.__st_drag = null;
 
-    focusThumb(document.getElementById(`episode-${episode.id}`));
+    setTimeout(() => {
+      const li = document.getElementById(`episode-${episode.id}`);
+      if (!(li instanceof HTMLElement)) return;
+      const thumb = li.querySelector(`[draggable="true"]`);
+      const focusEl = thumb instanceof HTMLElement ? thumb : li;
+      focusEl.tabIndex = 0;
+      focusEl.focus();
+      focusEl.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 0);
   };
   const moveEpisodeUpOne = () => {
     if (!volatileProject) return;
@@ -215,7 +209,15 @@ export default function EpisodeLi({
 
     setVolatileProject(prev => prev ? { ...prev, episodes: episodesCopy } : prev);
 
-    focusThumb(document.getElementById(`episode-${episode.id}`));
+    setTimeout(() => {
+      const li = document.getElementById(`episode-${episode.id}`);
+      if (!(li instanceof HTMLElement)) return;
+      const thumb = li.querySelector(`[draggable="true"]`);
+      const focusEl = thumb instanceof HTMLElement ? thumb : li;
+      focusEl.tabIndex = 0;
+      focusEl.focus();
+      focusEl.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 0);
   };
   const moveEpisodeDownOne = () => {
     if (!volatileProject) return;
@@ -257,7 +259,15 @@ export default function EpisodeLi({
 
     setVolatileProject(prev => prev ? { ...prev, episodes: episodesCopy } : prev);
 
-    focusThumb(document.getElementById(`episode-${episode.id}`));
+    setTimeout(() => {
+      const li = document.getElementById(`episode-${episode.id}`);
+      if (!(li instanceof HTMLElement)) return;
+      const thumb = li.querySelector(`[draggable="true"]`);
+      const focusEl = thumb instanceof HTMLElement ? thumb : li;
+      focusEl.tabIndex = 0;
+      focusEl.focus();
+      focusEl.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 0);
   };
 
   // Memoized file name and route for prettier display :3

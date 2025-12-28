@@ -101,7 +101,7 @@ export default function BlockLi({
 
     window.__st_drag = null;
 
-    // Focus and scroll li into view
+    // Focus and scroll li into view (not thumb)
     setTimeout(() => {
       const li = document.getElementById(`block-${block.id}`);
       if (!(li instanceof HTMLElement)) return;
@@ -110,18 +110,6 @@ export default function BlockLi({
       li.scrollIntoView({ behavior: "smooth", block: "center" });
     }, 0);
   };
-
-  const fucusThumb = (li: HTMLElement | null) => {
-    setTimeout(() => {
-      if (!(li instanceof HTMLElement)) return;
-      const thumb = li.querySelector(`[draggable="true"]`);
-      const focusEl = thumb instanceof HTMLElement ? thumb : li; // Fallback to li if no thumb found
-      focusEl.tabIndex = 0;
-      focusEl.focus();
-      focusEl.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 0);
-  };
-
   const moveBlockUpOne = () => {
     if (!volatileProject) return;
 
@@ -130,9 +118,17 @@ export default function BlockLi({
 
     setVolatileProject(prev => prev ? moveBlock(prev, thisIndex, thisIndex - 1) : prev);
 
-    fucusThumb(document.getElementById(`block-${block.id}`));
-  };
 
+    setTimeout(() => {
+      const li = document.getElementById(`block-${block.id}`);
+      if (!(li instanceof HTMLElement)) return;
+      const thumb = li.querySelector(`[draggable="true"]`);
+      const focusEl = thumb instanceof HTMLElement ? thumb : li;
+      focusEl.tabIndex = 0;
+      focusEl.focus();
+      focusEl.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 0);
+  };
   const moveBlockDownOne = () => {
     if (!volatileProject) return;
 
@@ -141,7 +137,15 @@ export default function BlockLi({
 
     setVolatileProject(prev => prev ? moveBlock(prev, thisIndex, thisIndex + 1) : prev);
 
-    fucusThumb(document.getElementById(`block-${block.id}`));
+    setTimeout(() => {
+      const li = document.getElementById(`block-${block.id}`);
+      if (!(li instanceof HTMLElement)) return;
+      const thumb = li.querySelector(`[draggable="true"]`);
+      const focusEl = thumb instanceof HTMLElement ? thumb : li;
+      focusEl.tabIndex = 0;
+      focusEl.focus();
+      focusEl.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 0);
   };
 
   return (
