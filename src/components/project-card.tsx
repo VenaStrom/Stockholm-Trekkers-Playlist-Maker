@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { ProjectMeta } from "@/types";
-import { IconDeleteOutline, IconEditOutline, IconFileExportOutline } from "./icons";
-import Dialog from "./dialog";
-import { usePageContext } from "./page-context/use-page-context";
-import { useToast } from "./toast/useToast";
-import { PageRoute } from "./page-context/page.internal";
+import { IconDeleteOutline, IconEditOutline, IconFileExportOutline } from "@/components/icons";
+import Dialog from "@/components/dialog";
+import { usePageContext } from "@/components/page-context/use-page-context";
+import { useToast } from "@/components/toast/useToast";
+import { PageRoute } from "@/components/page-context/page.internal";
 import { deleteProject } from "@/functions/project/delete-project";
 
 export default function ProjectCard({

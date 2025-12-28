@@ -1,5 +1,5 @@
 import { Block } from "@/types";
-import { IconDeleteOutline, IconSettingsOutline } from "../icons";
+import { IconDeleteOutline, IconSettingsOutline } from "@/components/icons";
 
 export default function BlockLi({
   block,

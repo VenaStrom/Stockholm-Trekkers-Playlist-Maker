@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { PageContext } from "./page.internal";
+import { PageContext } from "@/components/page-context/page.internal";
 
 export function usePageContext(): PageContext {
   const ctx = useContext(PageContext);

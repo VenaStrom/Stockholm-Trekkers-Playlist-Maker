@@ -1,11 +1,11 @@
 import * as fs from "@tauri-apps/plugin-fs";
 import { path } from "@tauri-apps/api";
 import { PathName, FileName } from "@/global";
-import { isProject } from "../type-guards";
+import { isProject } from "@/functions/type-guards";
 import type { Episode, Project, ProjectData, ProjectMeta } from "@/types";
-import { createProject } from "./create-project";
-import { generateId } from "../sha256";
-import { openProject } from "./open-project";
+import { createProject } from "@/functions/project/create-project";
+import { generateId } from "@/functions/sha256";
+import { openProject } from "@/functions/project/open-project";
 
 export async function saveProject(project: Project): Promise<boolean> {
   const start = performance.now();

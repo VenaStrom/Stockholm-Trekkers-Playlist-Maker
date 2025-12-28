@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { IconCloseSmall } from "./icons";
+import { IconCloseSmall } from "@/components/icons";
 
 export type DialogProps = {
   visible: boolean;

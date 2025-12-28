@@ -1,14 +1,14 @@
-import "./global.tw.css";
-import { useEffect, useState } from "react";
+import "@/global.tw.css";
+import { IconLightDarkMode, IconLightModeOutline } from "@/components/icons";
 import { invoke } from "@tauri-apps/api/core";
-import Projects from "./pages/projects";
-import { usePageContext } from "./components/page-context/use-page-context";
-import { PageRoute } from "./components/page-context/page.internal";
+import { PageRoute } from "@/components/page-context/page.internal";
 import { setTheme } from "@tauri-apps/api/app";
-import { IconLightDarkMode, IconLightModeOutline } from "./components/icons";
-import { Toaster } from "./components/toast/toast";
-import Editor from "./pages/editor";
+import { Toaster } from "@/components/toast/toast";
+import { useEffect, useState } from "react";
+import { usePageContext } from "@/components/page-context/use-page-context";
+import Editor from "@/pages/editor";
 import packageJson from "../package.json" with { type: "json" };
+import Projects from "@/pages/projects";
 
 export default function App() {
   const [lightMode, setLightMode] = useState(() => {

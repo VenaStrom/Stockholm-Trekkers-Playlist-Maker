@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import { usePageContext } from "../components/page-context/use-page-context";
-import { PageRoute } from "../components/page-context/page.internal";
+import { usePageContext } from "@/components/page-context/use-page-context";
+import { PageRoute } from "@/components/page-context/page.internal";
 import { Episode, Project } from "@/types";
-import { IconArrowBack2Outline, IconEditOutline, Spinner3DotsScaleMiddle } from "../components/icons";
+import { IconArrowBack2Outline, IconEditOutline, Spinner3DotsScaleMiddle } from "@/components/icons";
 import { useDebounce } from "use-debounce";
-import EpisodeLi from "../components/editor/episode";
+import EpisodeLi from "@/components/editor/episode";
 import { openProject } from "@/functions/project/open-project";
 import { saveProject } from "@/functions/project/save-project";
 import BlockLi from "@/components/editor/block";

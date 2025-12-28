@@ -1,6 +1,6 @@
 import { useCallback, useContext, useState } from "react";
-import { ToastContext, ToastMessage } from "./toast.internal.ts";
-import { IconCloseSmall } from "../icons.tsx";
+import { ToastContext, ToastMessage } from "@/components/toast/toast.internal.ts";
+import { IconCloseSmall } from "@/components/icons.tsx";
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [toasts, setToasts] = useState<ToastMessage[]>([]);

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { PageContext, PageContextDefaultValue } from "./page.internal";
+import { PageContext, PageContextDefaultValue } from "@/components/page-context/page.internal";
 import { getAllProjectMetas } from "@/functions/project/get-all-projects";
 
 export function PageProvider({ children }: { children: React.ReactNode }) {

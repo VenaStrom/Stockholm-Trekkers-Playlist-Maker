@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { Episode, Project } from "@/types";
-import { IconDeleteOutline, IconDragIndicator, IconFolderOutline } from "../icons";
+import { IconDeleteOutline, IconDragIndicator, IconFolderOutline } from "@/components/icons";
 import { open } from "@tauri-apps/plugin-dialog";
-import { secondsToTimeString } from "../../functions/time-format";
+import { secondsToTimeString } from "@/functions/time-format";
 import { generateId } from "@/functions/sha256";
 
 export default function EpisodeLi({

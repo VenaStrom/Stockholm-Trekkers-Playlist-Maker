@@ -1,10 +1,10 @@
 import { useEffect } from "react";
-import { usePageContext } from "../components/page-context/use-page-context";
-import ProjectCard from "../components/project-card";
+import { usePageContext } from "@/components/page-context/use-page-context";
+import ProjectCard from "@/components/project-card";
 import { ProjectMeta } from "@/types";
-import { IconAddBoxOutline, IconFolderOutline } from "../components/icons";
+import { IconAddBoxOutline, IconFolderOutline } from "@/components/icons";
 import { path } from "@tauri-apps/api";
-import { useToast } from "../components/toast/useToast";
+import { useToast } from "@/components/toast/useToast";
 import { revealItemInDir } from "@tauri-apps/plugin-opener";
 import { invoke } from "@tauri-apps/api/core";
 import { FileName, PathName } from "@/global";
