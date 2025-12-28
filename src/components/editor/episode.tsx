@@ -161,7 +161,16 @@ export default function EpisodeLi({
       focusEl.scrollIntoView({ behavior: "smooth", block: "center" });
     }, 0);
   };
-  // Move up/down handlers
+  const focusThumb = (li: HTMLElement | null) => {
+    setTimeout(() => {
+      if (!(li instanceof HTMLElement)) return;
+      const thumb = li.querySelector(`[draggable="true"]`);
+      const focusEl = thumb instanceof HTMLElement ? thumb : li;
+      focusEl.tabIndex = 0;
+      focusEl.focus();
+      focusEl.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 0);
+  };
   const moveEpisodeUpOne = () => {
     if (!volatileProject) return;
 
@@ -188,16 +197,7 @@ export default function EpisodeLi({
 
     setVolatileProject(p => p ? { ...p, episodes: episodesCopy } : p);
 
-    // Keep moved episode in view / focused
-    setTimeout(() => {
-      const li = document.getElementById(`episode-${episode.id}`);
-      if (!(li instanceof HTMLElement)) return;
-      const thumb = li.querySelector('[draggable="true"]');
-      const focusEl = thumb instanceof HTMLElement ? thumb : li;
-      focusEl.tabIndex = 0;
-      focusEl.focus();
-      focusEl.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 0);
+    focusThumb(document.getElementById(`episode-${episode.id}`));
   };
   const moveEpisodeDownOne = () => {
     if (!volatileProject) return;
@@ -239,38 +239,23 @@ export default function EpisodeLi({
 
     setVolatileProject(p => p ? { ...p, episodes: episodesCopy } : p);
 
-    // Keep moved episode in view / focused
-    setTimeout(() => {
-      const li = document.getElementById(`episode-${episode.id}`);
-      if (!(li instanceof HTMLElement)) return;
-      const thumb = li.querySelector(`[draggable="true"]`);
-      const focusEl = thumb instanceof HTMLElement ? thumb : li;
-      focusEl.tabIndex = 0;
-      focusEl.focus();
-      focusEl.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 0);
+    focusThumb(document.getElementById(`episode-${episode.id}`));
   };
 
   // Memoized file name and route for prettier display :3
-  const fileName = useMemo(() => {
-    if (!selectedFile) return "No file selected";
+  const prettyFilePathParts = useMemo<{ fileName: string, fileRoute: string, delim: string } | null>(() => {
+    if (!selectedFile) return null;
+
+    const delim = selectedFile.includes("/") ? "/" : "\\";
     const parts = selectedFile.split(/[/\\]/);
-    return parts[parts.length - 1];
+    const fileName = parts[parts.length - 1];
+    if (!fileName) return null;
+
+    parts.pop();
+    const fileRoute = parts.join(delim);
+
+    return { fileName, fileRoute, delim };
   }, [selectedFile]);
-  // const fileRoute = useMemo(() => {
-  //   if (!selectedFile) return "No file selected";
-
-  //   // remove file name from path
-  //   const delim = selectedFile.includes("/") ? "/" : "\\";
-  //   const parts = selectedFile.split(/[/\\]/);
-  //   parts.pop();
-  //   return parts.join(delim);
-
-  // }, [selectedFile]);
-  // const delim = useMemo(() => {
-  //   if (!selectedFile) return "/";
-  //   return selectedFile.includes("/") ? "/" : "\\";
-  // }, [selectedFile]);
 
   const isLastAndEmptyInBlock = useMemo(() => {
     if (!volatileProject) return false;
@@ -306,10 +291,10 @@ export default function EpisodeLi({
         <div className="flex-1 min-w-0">
           <span style={{ direction: "rtl" }} className="block overflow-hidden text-start min-w-0">
             <span style={{ direction: "ltr" }} className={`truncate inline-block align-middle ${selectedFile ? "" : "text-flare-700"}`}>
-              {selectedFile ?
+              {(selectedFile && prettyFilePathParts) ?
                 // TODO fix truncation instead of this
-                // <><span className="text-flare-700">{fileRoute}{delim}</span>{fileName}</>
-                <><span className="text-flare-700"></span>{fileName}</>
+                // <><span className="text-flare-700">{prettyFilePathParts.fileRoute}{prettyFilePathParts.delim}</span>{prettyFilePathParts.fileName}</>
+                <><span className="text-flare-700"></span>{prettyFilePathParts.fileName}</>
                 : "No file selected"}
             </span>
           </span>
