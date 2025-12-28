@@ -116,7 +116,17 @@ export default function BlockLi({
   };
 
   return (
-    <li id={`block-${block.id}`} className={`bg-abyss-800 px-4 py-2 rounded-sm ${isDragOver ? "ring-2 ring-science-500/60 rounded-sm" : ""}`}>
+    <li
+      id={`block-${block.id}`}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+      onDragEnter={onDragEnter}
+      onDragLeave={onDragLeave}
+      className={`bg-abyss-800 px-4 py-2 rounded-sm ${isDragOver
+        ? "ring-2 ring-science-500/60 rounded-sm"
+        : ""}`
+      }
+    >
       {/* Header */}
       <div className="h-14 flex flex-row items-center gap-x-4">
         <p>
@@ -159,10 +169,6 @@ export default function BlockLi({
               }
             }}
             onDragStart={onDragStart}
-            onDragOver={onDragOver}
-            onDrop={onDrop}
-            onDragEnter={onDragEnter}
-            onDragLeave={onDragLeave}
           >
             <IconDragIndicator className="size-6" />
           </span>

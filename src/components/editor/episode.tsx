@@ -268,8 +268,15 @@ export default function EpisodeLi({
 
   return (
     <li
-      className={`w-full flex flex-row items-center ps-1 select-none min-w-0 ${isDragOver ? "ring-2 ring-science-500/60 rounded-sm" : ""}`}
       id={`episode-${episode.id}`}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+      onDragEnter={onDragEnter}
+      onDragLeave={onDragLeave}
+      className={`w-full flex flex-row items-center ps-1 select-none min-w-0 ${isDragOver
+        ? "ring-2 ring-science-500/60 rounded-sm"
+        : ""}`
+      }
     >
       <div className="flex flex-row gap-x-6 items-center pe-10">
         {/* Delete button */}
@@ -327,10 +334,6 @@ export default function EpisodeLi({
           }
         }}
         onDragStart={onDragStart}
-        onDragOver={onDragOver}
-        onDrop={onDrop}
-        onDragEnter={onDragEnter}
-        onDragLeave={onDragLeave}
       >
         <IconDragIndicator className="size-6" />
       </span>
