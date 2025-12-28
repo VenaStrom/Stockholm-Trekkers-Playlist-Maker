@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { usePageContext } from "@/components/page-context/use-page-context";
 import { PageRoute } from "@/components/page-context/page.internal";
 import { Episode, Project } from "@/types";
@@ -71,6 +71,32 @@ export default function Editor() {
       });
   };
 
+  // Ref for the description textarea so we can recalc height on resize
+  const descRef = useRef<HTMLTextAreaElement | null>(null);
+
+  // Recalculate textarea height when the window resizes
+  useEffect(() => {
+    const handler = () => {
+      const el = descRef.current;
+      if (!el) return;
+      el.style.height = "0px";
+      el.style.height = `${el.scrollHeight}px`;
+    };
+
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
+
+  // Ensure textarea has correct styles and height when description changes (including initial load)
+  useEffect(() => {
+    const el = descRef.current;
+    if (!el) return;
+    el.style.overflow = "hidden";
+    el.style.resize = "none";
+    el.style.height = "0px";
+    el.style.height = `${el.scrollHeight}px`;
+  }, [volatileProject?.description]);
+
   // Group episodes by block id for easier rendering
   const episodesByBlockId = useMemo<Record<string, Episode[]>>(() => {
     if (!volatileProject) return {};
@@ -134,13 +160,7 @@ export default function Editor() {
                   area.style.height = "0px";
                   area.style.height = `${area.scrollHeight}px`;
                 }}
-                ref={(el) => {
-                  if (!el) return;
-                  el.style.overflow = "hidden";
-                  el.style.resize = "none";
-                  el.style.height = "0px";
-                  el.style.height = `${el.scrollHeight}px`;
-                }}
+                ref={descRef}
                 defaultValue={volatileProject.description ?? ""}
                 placeholder="Optional description of project."
                 className="min-h-8 w-full pb-2 px-3 pt-3 text-sm font-thin"
