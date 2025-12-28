@@ -5,6 +5,13 @@ import { open } from "@tauri-apps/plugin-dialog";
 import { secondsToTimeString } from "@/functions/time-format";
 import { generateId } from "@/functions/sha256";
 
+/** 
+ * I don't like this, but this is very convenient to keep the UI prettier during drag-and-drop
+ */
+declare global {
+  interface Window { __st_drag?: string | null; }
+}
+
 export default function EpisodeLi({
   episode,
   project: volatileProject,
@@ -102,37 +109,65 @@ export default function EpisodeLi({
     });
   }, [episode.id, selectedFile, setVolatileProject]);
 
-  // Drag handlers
+  /** 
+   * Used after moving element to keep keyboard focus on the thumb (li fallback)
+   */
+  const focusThumb = (li: HTMLElement | null) => {
+    setTimeout(() => {
+      if (!(li instanceof HTMLElement)) return;
+      const thumb = li.querySelector(`[draggable="true"]`);
+      const focusEl = thumb instanceof HTMLElement ? thumb : li;
+      focusEl.tabIndex = 0;
+      focusEl.focus();
+      focusEl.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 0);
+  };
+
+  // Drag/movement handlers
   const [isDragOver, setDragOver] = useState(false);
   const onDragStart = (e: React.DragEvent) => {
-    e.dataTransfer.setData("text/plain", episode.id);
+    e.dataTransfer.setData("text/plain", `episode:${episode.id}`);
+    window.__st_drag = `episode:${episode.id}`; // To keep track of if moving a block or episode
     e.dataTransfer.effectAllowed = "move";
   };
+  const onDragEnd = () => {
+    window.__st_drag = null;
+    setDragOver(false);
+  };
   const onDragOver = (e: React.DragEvent) => {
-    e.preventDefault(); // Allow drop
+    e.preventDefault();
+    const draggedText: string = ((window.__st_drag ?? e.dataTransfer.getData("text/plain")) || "");
+    if (!draggedText.startsWith("episode:")) {
+      // Not an episode drag, ignore to avoid cross-highlighting
+      setDragOver(false);
+      return;
+    }
     e.dataTransfer.dropEffect = "move";
     setDragOver(true);
   };
   const onDragEnter = (e: React.DragEvent) => {
     e.preventDefault();
+    const draggedText: string = ((window.__st_drag ?? e.dataTransfer.getData("text/plain")) || "");
+    if (!draggedText.startsWith("episode:")) return;
     setDragOver(true);
   };
-  const onDragLeave = () => {
-    setDragOver(false);
-  };
+  const onDragLeave = () => setDragOver(false);
   const onDrop = (e: React.DragEvent) => {
     e.preventDefault();
-    const draggedId = e.dataTransfer.getData("text/plain");
+    const draggedText = (window.__st_drag ?? e.dataTransfer.getData("text/plain")) || "";
+    if (!draggedText.startsWith("episode:")) return;
+
     setDragOver(false);
+
+    const draggedId = draggedText.split(":")[1] ?? "";
     if (!draggedId || draggedId === episode.id) return;
 
     if (!volatileProject) return;
-
     const episodesCopy = [...volatileProject.episodes]
     const draggedEpisodeIndex = episodesCopy.findIndex(e => e.id === draggedId);
     const dropEpisodeIndex = episodesCopy.findIndex(e => e.id === episode.id);
     if (draggedEpisodeIndex === -1 || dropEpisodeIndex === -1) {
-      console.info(`Could not find episodes with ids ${draggedId} or ${episode.id}`);
+      console.warn(`[EpisodeLi onDrop] Could not find episodes with ids ${draggedId} or ${episode.id}`);
       return;
     }
 
@@ -148,28 +183,11 @@ export default function EpisodeLi({
     draggedEpisode.blockId = dropEpisode.blockId;
     episodesCopy.splice(dropEpisodeIndex, 0, draggedEpisode);
 
-    setVolatileProject(p => p ? { ...p, episodes: episodesCopy } : p);
+    setVolatileProject(prev => prev ? { ...prev, episodes: episodesCopy } : prev);
 
-    // Keep moved episode in view / focused
-    setTimeout(() => {
-      const li = document.getElementById(`episode-${episode.id}`);
-      if (!(li instanceof HTMLElement)) return;
-      const thumb = li.querySelector('[draggable="true"]');
-      const focusEl = thumb instanceof HTMLElement ? thumb : li;
-      focusEl.tabIndex = 0;
-      focusEl.focus();
-      focusEl.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 0);
-  };
-  const focusThumb = (li: HTMLElement | null) => {
-    setTimeout(() => {
-      if (!(li instanceof HTMLElement)) return;
-      const thumb = li.querySelector(`[draggable="true"]`);
-      const focusEl = thumb instanceof HTMLElement ? thumb : li;
-      focusEl.tabIndex = 0;
-      focusEl.focus();
-      focusEl.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 0);
+    window.__st_drag = null;
+
+    focusThumb(document.getElementById(`episode-${episode.id}`));
   };
   const moveEpisodeUpOne = () => {
     if (!volatileProject) return;
@@ -195,7 +213,7 @@ export default function EpisodeLi({
       episodesCopy[thisIndex] = { ...previousEpisode };
     }
 
-    setVolatileProject(p => p ? { ...p, episodes: episodesCopy } : p);
+    setVolatileProject(prev => prev ? { ...prev, episodes: episodesCopy } : prev);
 
     focusThumb(document.getElementById(`episode-${episode.id}`));
   };
@@ -237,7 +255,7 @@ export default function EpisodeLi({
       episodesCopy[thisIndex] = { ...nextEpisode };
     }
 
-    setVolatileProject(p => p ? { ...p, episodes: episodesCopy } : p);
+    setVolatileProject(prev => prev ? { ...prev, episodes: episodesCopy } : prev);
 
     focusThumb(document.getElementById(`episode-${episode.id}`));
   };
@@ -334,6 +352,7 @@ export default function EpisodeLi({
           }
         }}
         onDragStart={onDragStart}
+        onDragEnd={onDragEnd}
       >
         <IconDragIndicator className="size-6" />
       </span>

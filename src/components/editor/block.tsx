@@ -2,6 +2,13 @@ import { useState } from "react";
 import { Block, Project } from "@/types";
 import { IconDeleteOutline, IconSettingsOutline, IconDragIndicator } from "@/components/icons";
 
+/** 
+ * I don't like this, but this is very convenient to keep the UI prettier during drag-and-drop
+ */
+declare global {
+  interface Window { __st_drag?: string | null; }
+}
+
 export default function BlockLi({
   block,
   blockIndex,
@@ -44,35 +51,57 @@ export default function BlockLi({
   };
 
   const onDragStart = (e: React.DragEvent) => {
-    e.dataTransfer.setData("text/plain", block.id);
+    e.dataTransfer.setData("text/plain", `block:${block.id}`);
+    window.__st_drag = `block:${block.id}`; // To keep track of if moving a block or episode
     e.dataTransfer.effectAllowed = "move";
+  };
+  const onDragEnd = () => {
+    window.__st_drag = null;
+    setDragOver(false);
   };
   const onDragOver = (e: React.DragEvent) => {
     e.preventDefault();
+    const draggedText: string = ((window.__st_drag ?? e.dataTransfer.getData("text/plain")) || "");
+    if (!draggedText.startsWith("block:")) {
+      // Not a block drag, ignore to avoid cross-highlighting
+      setDragOver(false);
+      return;
+    }
     e.dataTransfer.dropEffect = "move";
     setDragOver(true);
   };
   const onDragEnter = (e: React.DragEvent) => {
     e.preventDefault();
+    const draggedText: string = ((window.__st_drag ?? e.dataTransfer.getData("text/plain")) || "");
+    if (!draggedText.startsWith("block:")) return;
     setDragOver(true);
   };
   const onDragLeave = () => setDragOver(false);
   const onDrop = (e: React.DragEvent) => {
     e.preventDefault();
-    const draggedId = e.dataTransfer.getData("text/plain");
-    setDragOver(false);
-    if (!draggedId || draggedId === block.id) return;
-    if (!setVolatileProject || !volatileProject) return;
+    const draggedText = (window.__st_drag ?? e.dataTransfer.getData("text/plain")) || "";
+    if (!draggedText.startsWith("block:")) return;
 
+    setDragOver(false);
+
+    const draggedId = draggedText.split(":")[1];
+    if (!draggedId || draggedId === block.id) return;
+
+    if (!volatileProject) return;
     const blocksCopy = [...volatileProject.blocks];
     const draggedIndex = blocksCopy.findIndex(b => b.id === draggedId);
     const dropIndex = blocksCopy.findIndex(b => b.id === block.id);
-    if (draggedIndex === -1 || dropIndex === -1) return;
+    if (draggedIndex === -1 || dropIndex === -1) {
+      console.warn(`[BlockLi onDrop] Could not find blocks with ids ${draggedId} or ${block.id}`);
+      return;
+    }
 
     const updated = moveBlock(volatileProject, draggedIndex, dropIndex);
     setVolatileProject(updated);
 
-    // focus and scroll into view
+    window.__st_drag = null;
+
+    // Focus and scroll li into view
     setTimeout(() => {
       const li = document.getElementById(`block-${block.id}`);
       if (!(li instanceof HTMLElement)) return;
@@ -169,6 +198,7 @@ export default function BlockLi({
               }
             }}
             onDragStart={onDragStart}
+            onDragEnd={onDragEnd}
           >
             <IconDragIndicator className="size-6" />
           </span>
