@@ -3,9 +3,8 @@ import { path } from "@tauri-apps/api";
 import { PathName, FileName } from "@/global";
 import { isProject } from "@/functions/type-guards";
 import type { Episode, Project, ProjectData, ProjectMeta } from "@/types";
-import { createProject } from "@/functions/project/create-project";
+import { createProject, openProject } from "@/functions/project";
 import { generateId } from "@/functions/sha256";
-import { openProject } from "@/functions/project/open-project";
 
 export async function saveProject(project: Project): Promise<boolean> {
   const start = performance.now();

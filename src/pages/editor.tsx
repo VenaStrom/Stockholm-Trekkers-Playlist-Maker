@@ -5,8 +5,7 @@ import { Episode, Project } from "@/types";
 import { IconArrowBack2Outline, IconEditOutline, Spinner3DotsScaleMiddle } from "@/components/icons";
 import { useDebounce } from "use-debounce";
 import EpisodeLi from "@/components/editor/episode";
-import { openProject } from "@/functions/project/open-project";
-import { saveProject } from "@/functions/project/save-project";
+import { openProject, saveProject } from "@/functions/project";
 import BlockLi from "@/components/editor/block";
 
 export default function Editor() {

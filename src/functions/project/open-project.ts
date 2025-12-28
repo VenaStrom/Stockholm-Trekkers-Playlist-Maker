@@ -1,4 +1,4 @@
-import { getAllProjectIds } from "@/functions/project/get-all-projects";
+import { getAllProjectIds } from "@/functions/project";
 import * as fs from "@tauri-apps/plugin-fs";
 import { path } from "@tauri-apps/api";
 import { PathName, FileName } from "@/global";

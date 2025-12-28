@@ -5,7 +5,7 @@ import Dialog from "@/components/dialog";
 import { usePageContext } from "@/components/page-context/use-page-context";
 import { useToast } from "@/components/toast/useToast";
 import { PageRoute } from "@/components/page-context/page.internal";
-import { deleteProject } from "@/functions/project/delete-project";
+import { deleteProject } from "@/functions/project";
 
 export default function ProjectCard({
   projectMeta,

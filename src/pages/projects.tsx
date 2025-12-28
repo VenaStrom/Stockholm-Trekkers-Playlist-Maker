@@ -8,7 +8,7 @@ import { useToast } from "@/components/toast/useToast";
 import { revealItemInDir } from "@tauri-apps/plugin-opener";
 import { invoke } from "@tauri-apps/api/core";
 import { FileName, PathName } from "@/global";
-import { createProject } from "@/functions/project/create-project";
+import { createProject } from "@/functions/project";
 
 export default function Projects() {
   const { toast } = useToast();

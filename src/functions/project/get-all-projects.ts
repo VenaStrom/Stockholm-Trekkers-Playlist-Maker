@@ -2,7 +2,7 @@ import { FileName, PathName } from "@/global";
 import type { Project, ProjectMeta } from "@/types";
 import { path } from "@tauri-apps/api";
 import * as fs from "@tauri-apps/plugin-fs";
-import { openProject, openProjectMetaOnly } from "@/functions/project/open-project";
+import { openProject, openProjectMetaOnly } from "@/functions/project";
 
 export async function getAllProjectIds(): Promise<Set<string>> {
   if (!await fs.exists(PathName.UserProjectsDir)) {

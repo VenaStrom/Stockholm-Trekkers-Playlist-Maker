@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { PageContext, PageContextDefaultValue } from "@/components/page-context/page.internal";
-import { getAllProjectMetas } from "@/functions/project/get-all-projects";
+import { getAllProjectMetas } from "@/functions/project";
 
 export function PageProvider({ children }: { children: React.ReactNode }) {
   const [route, setInternalRoute] = useState(PageContextDefaultValue.route);
