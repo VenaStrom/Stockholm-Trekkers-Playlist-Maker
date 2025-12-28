@@ -158,6 +158,8 @@ export default function Editor() {
             <BlockLi
               block={volatileProject?.blocks.find(b => b.id === blockId) ?? (() => { throw new Error("Missing block with id: " + blockId) })()}
               blockIndex={volatileProject.blocks.findIndex(b => b.id === blockId)}
+              project={volatileProject}
+              projectSetter={setVolatileProject}
               key={`block-${blockId}`}
             >
               {episodes.map(ep => (

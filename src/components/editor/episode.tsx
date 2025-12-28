@@ -243,7 +243,7 @@ export default function EpisodeLi({
     setTimeout(() => {
       const li = document.getElementById(`episode-${episode.id}`);
       if (!(li instanceof HTMLElement)) return;
-      const thumb = li.querySelector('[draggable="true"]');
+      const thumb = li.querySelector(`[draggable="true"]`);
       const focusEl = thumb instanceof HTMLElement ? thumb : li;
       focusEl.tabIndex = 0;
       focusEl.focus();
