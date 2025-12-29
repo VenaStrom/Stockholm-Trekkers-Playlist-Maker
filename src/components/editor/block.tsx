@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Block, Project } from "@/types";
-import { IconDeleteOutline, IconSettingsOutline, IconDragIndicator } from "@/components/icons";
+import { IconDragIndicator } from "@/components/icons";
+import { PopoverContainer, PopoverContent, PopoverTrigger } from "@/components/popover";
 
 /** 
  * I don't like this, but this is very convenient to keep the UI prettier during drag-and-drop
@@ -170,19 +171,17 @@ export default function BlockLi({
 
         {/* Controls */}
         <div className="flex flex-row gap-x-4 items-center">
-          <button
-            className="pe-1.5 ps-2.5 hover:bg-science-500 bg-abyss-200"
-          >
-            Block options
-            <IconSettingsOutline className="inline size-6 ms-0.5" />
-          </button>
+          <PopoverContainer>
+            <PopoverTrigger text="Block Options" />
 
-          <button
-            className="pe-1.5 ps-2.5 hover:bg-red-alert-500 bg-abyss-200"
-          >
-            Delete block
-            <IconDeleteOutline className="inline size-6 ms-0.5" />
-          </button>
+            <PopoverContent>
+              <button
+                type="button"
+              >
+                Edit Block
+              </button>
+            </PopoverContent>
+          </PopoverContainer>
 
           {/* Drag thumb for blocks */}
           <span
