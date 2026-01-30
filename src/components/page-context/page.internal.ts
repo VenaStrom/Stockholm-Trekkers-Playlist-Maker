@@ -17,6 +17,8 @@ export type PageContext = {
   projectMetas: ProjectMeta[];
   setProjectMetas: React.Dispatch<React.SetStateAction<ProjectMeta[]>>;
 
+  isPowerMode: boolean;
+
   reloadProjectMetaData: () => void;
 };
 export const PageContextDefaultValue: PageContext = {
@@ -28,6 +30,8 @@ export const PageContextDefaultValue: PageContext = {
   setProjectId: () => { /* will be defined */ },
   projectMetas: [],
   setProjectMetas: () => { /* will be defined */ },
+
+  isPowerMode: false,
 
   reloadProjectMetaData: () => { /* will be defined */ },
 };

@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import { PageContext, PageContextDefaultValue } from "@/components/page-context/page.internal";
 import { getAllProjectMetas } from "@/functions/project";
+import { PowerKey } from "@/global";
 
 export function PageProvider({ children }: { children: React.ReactNode }) {
   const [route, setInternalRoute] = useState(PageContextDefaultValue.route);
   const [headerText, setHeaderText] = useState(PageContextDefaultValue.headerText);
   const [projectId, setProjectId] = useState(PageContextDefaultValue.projectId);
   const [projectMetas, setProjectMetas] = useState<PageContext["projectMetas"]>([]);
+  const [isPowerMode, setIsPowerMode] = useState(PageContextDefaultValue.isPowerMode);
 
   const [forceReload, setForceReload] = useState(0);
   const reloadProjectMetaData = useCallback(() => setForceReload((prev) => prev + 1 % 9999), []);
@@ -28,6 +30,26 @@ export function PageProvider({ children }: { children: React.ReactNode }) {
       });
   }, [forceReload]);
 
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === PowerKey) setIsPowerMode(true);
+    };
+    const onKeyUp = (e: KeyboardEvent) => {
+      if (e.key === PowerKey) setIsPowerMode(false);
+    };
+    const onBlur = () => setIsPowerMode(false);
+
+    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("keyup", onKeyUp);
+    window.addEventListener("blur", onBlur);
+
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("keyup", onKeyUp);
+      window.removeEventListener("blur", onBlur);
+    };
+  }, []);
+
   const value: PageContext = {
     route,
     setRoute,
@@ -37,6 +59,8 @@ export function PageProvider({ children }: { children: React.ReactNode }) {
     setProjectId,
     projectMetas,
     setProjectMetas,
+
+    isPowerMode,
 
     reloadProjectMetaData,
   };

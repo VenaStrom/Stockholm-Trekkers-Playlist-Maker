@@ -209,7 +209,7 @@ export default function Editor() {
             <button
               type="button"
               className={`
-                bg-abyss-800 hover:bg-spore-500
+                bg-abyss-900 hover:bg-spore-500
                 text-flare-700 hover:text-abyss-500
 
                 w-full h-16

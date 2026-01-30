@@ -5,6 +5,11 @@ import type { BlockClip } from "@/types";
 export const OPTION_REVISION = 0;
 
 /** 
+ * Used for things like quick-deletes
+ */
+export const PowerKey = "Shift";
+
+/** 
  * Add another entry here to define the clip, and then reference it in BlockOptions below for it to appear in the UI
  */
 export const blockClips: Record<string, BlockClip> = {

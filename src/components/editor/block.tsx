@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Block, Project } from "@/types";
 import { IconDeleteOutline, IconDragIndicator } from "@/components/icons";
 import Dialog from "../dialog";
+import { usePageContext } from "../page-context/use-page-context";
+import { PowerKey } from "@/global";
 
 /** 
  * I don't like this, but this is very convenient to keep the UI prettier during drag-and-drop
@@ -24,6 +26,7 @@ export default function BlockLi({
   projectSetter: React.Dispatch<React.SetStateAction<Project | null>>;
 }) {
   const [isDragOver, setDragOver] = useState(false);
+  const { isPowerMode } = usePageContext();
 
   const moveBlock = (proj: Project, fromIndex: number, toIndex: number) => {
     const blocksCopy = [...proj.blocks];
@@ -161,8 +164,12 @@ export default function BlockLi({
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
 
   const handleDeleteProject = () => {
-    deleteBlock(block.id);
-    setDeleteDialogVisible(false);
+    if (isPowerMode) {
+      deleteBlock(block.id);
+      return;
+    }
+
+    setDeleteDialogVisible(true);
   };
 
   return (<>
@@ -182,7 +189,7 @@ export default function BlockLi({
         <p className="text-sm text-flare-500/60 pt-3">
           Hint:
           <br />
-          For quicker deletions, hold the [shift] key while clicking the delete button to skip this dialog.
+          For quicker deletions, hold the [{PowerKey}] key while clicking the delete button to skip this dialog.
         </p>
       </div>}
       buttons={[
@@ -193,7 +200,7 @@ export default function BlockLi({
           data-focus="true"
           key={"delete-button"}
           className="gap-x-1 pe-1 bg-red-alert-500 hover:bg-red-alert-700"
-          onClick={handleDeleteProject}
+          onClick={() => { deleteBlock(block.id); setDeleteDialogVisible(false); }}
         >
           Delete
           <IconDeleteOutline className="inline size-6" />
@@ -223,7 +230,7 @@ export default function BlockLi({
           <div>
             <button
               className="€icon hover:text-red-alert-500"
-              onClick={() => setDeleteDialogVisible(true)}
+              onClick={handleDeleteProject}
             >
               <IconDeleteOutline className="size-6" />
             </button>
