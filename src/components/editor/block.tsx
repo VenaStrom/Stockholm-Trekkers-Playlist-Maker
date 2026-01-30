@@ -231,6 +231,7 @@ export default function BlockLi({
             <button
               className="€icon hover:text-red-alert-500"
               onClick={handleDeleteProject}
+              title={isPowerMode ? "Delete block instantly" : "Delete block"}
             >
               {isPowerMode
                 ? <IconDeleteForeverOutline className="size-6 animate-shiver origin-bottom" />

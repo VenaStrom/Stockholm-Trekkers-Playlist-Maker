@@ -9,6 +9,7 @@ import { usePageContext } from "@/components/page-context/use-page-context";
 import Editor from "@/pages/editor";
 import packageJson from "../package.json" with { type: "json" };
 import Projects from "@/pages/projects";
+import { PowerKey } from "./global";
 
 export default function App() {
   const [lightMode, setLightMode] = useState(() => {
@@ -22,7 +23,7 @@ export default function App() {
     return window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
   });
 
-  const { headerText, route, setRoute, projectId } = usePageContext();
+  const { headerText, route, setRoute, projectId, isPowerMode } = usePageContext();
 
   // Set up keyboard shortcuts
   useEffect(() => {
@@ -117,6 +118,17 @@ export default function App() {
           </span>
         </span>
       </span>
+
+      {/* Power mode indicator */}
+      <p
+        className={`
+          text-abyss-200 font-medium tracking-wide transition-opacity
+          cursor-help
+          opacity-0
+          ${isPowerMode ? "opacity-100" : ""}
+        `}
+        title={`Power mode enables extra actions for power users. Triggered by holding the [${PowerKey}] key.`}
+      >[power mode]</p>
 
       {/* Light mode toggle */}
       <button
