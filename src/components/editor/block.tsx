@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Block, Project } from "@/types";
 import { IconDeleteOutline, IconDragIndicator } from "@/components/icons";
-import { PopoverContainer, PopoverContent, PopoverTrigger } from "@/components/popover";
+import Dialog from "../dialog";
 
 /** 
  * I don't like this, but this is very convenient to keep the UI prettier during drag-and-drop
@@ -50,7 +50,6 @@ export default function BlockLi({
 
     return { ...proj, blocks: blocksCopy, episodes: reorderedEpisodes };
   };
-
   const deleteBlock = (blockId: string) => {
     if (!volatileProject) return;
 
@@ -158,7 +157,50 @@ export default function BlockLi({
     }, 0);
   };
 
-  return (
+  // Dialog stuff
+  const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
+
+  const handleDeleteProject = () => {
+    deleteBlock(block.id);
+    setDeleteDialogVisible(false);
+  };
+
+  return (<>
+    {/* Delete dialog */}
+    <Dialog
+      visible={deleteDialogVisible}
+      setVisible={setDeleteDialogVisible}
+      dialogHeader={<p className="text-lg">Delete Block {blockIndex}</p>}
+      dialogContent={<div>
+        <p>
+          This will delete a block with {(() => {
+            const epCount = volatileProject?.episodes.filter(e => e.blockId === block.id).length ?? 0;
+            return epCount === 1 ? "1 episode" : `${epCount} episodes`;
+          })()}. Are you sure?
+        </p>
+
+        <p className="text-sm text-flare-500/60 pt-3">
+          Hint:
+          <br />
+          For quicker deletions, hold the [shift] key while clicking the delete button to skip this dialog.
+        </p>
+      </div>}
+      buttons={[
+        <button key={"cancel-button"} onClick={() => setDeleteDialogVisible(false)} >
+          Cancel
+        </button>,
+        <button
+          data-focus="true"
+          key={"delete-button"}
+          className="gap-x-1 pe-1 bg-red-alert-500 hover:bg-red-alert-700"
+          onClick={handleDeleteProject}
+        >
+          Delete
+          <IconDeleteOutline className="inline size-6" />
+        </button>
+      ]}
+    />
+
     <li
       id={`block-${block.id}`}
       onDragOver={onDragOver}
@@ -181,6 +223,7 @@ export default function BlockLi({
           <div>
             <button
               className="€icon hover:text-red-alert-500"
+              onClick={() => setDeleteDialogVisible(true)}
             >
               <IconDeleteOutline className="size-6" />
             </button>
@@ -224,5 +267,5 @@ export default function BlockLi({
         </ul>
       </div>
     </li>
-  );
+  </>);
 }
