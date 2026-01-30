@@ -6,5 +6,3 @@
 - Toggle auto save in menu bar (move light mode as well?)
 - Rework project card to be a button to edit project
 - Save indicator in editor (when saving, saved, error)
-
-- Drag handlers and reordering of episodes need to use linked list instead.

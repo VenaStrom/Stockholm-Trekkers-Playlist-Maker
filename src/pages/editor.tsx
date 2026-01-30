@@ -2,11 +2,13 @@ import { useEffect, useMemo, useState, useRef } from "react";
 import { usePageContext } from "@/components/page-context/use-page-context";
 import { PageRoute } from "@/components/page-context/page.internal";
 import { Episode, Project } from "@/types";
-import { IconArrowBack2Outline, IconEditOutline, Spinner3DotsScaleMiddle } from "@/components/icons";
+import { IconAdd, IconArrowBack2Outline, IconEditOutline, Spinner3DotsScaleMiddle } from "@/components/icons";
 import { useDebounce } from "use-debounce";
 import EpisodeLi from "@/components/editor/episode";
 import { openProject, saveProject } from "@/functions/project";
 import BlockLi from "@/components/editor/block";
+import { DefaultBlockOptions } from "@/consts";
+import { generateId } from "@/functions/sha256";
 
 export default function Editor() {
   const { setHeaderText, projectId, setRoute } = usePageContext();
@@ -71,7 +73,7 @@ export default function Editor() {
       });
   };
 
-  // Ref for the description textarea so we can recalc height on resize
+  // Ref for the description textarea so we can recalculate height on resize
   const descRef = useRef<HTMLTextAreaElement | null>(null);
 
   // Recalculate textarea height when the window resizes
@@ -113,14 +115,23 @@ export default function Editor() {
     <main className="flex flex-col lg:flex-row gap-x-8 gap-y-12 justify-center items-start pt-4 px-12 pb-10">
       {/* Side bar */}
       <aside className="min-w-1/4 not-lg:w-full flex flex-col gap-y-4">
-        {/* Go back */}
-        <button
-          className="w-fit pe-3 ps-1.5 hover:bg-science-500 sticky top-5 shadow-sm"
-          onClick={navigateBack}
-        >
-          <IconArrowBack2Outline className="inline size-6 me-1" />
-          Back to Projects
-        </button>
+        <div className="flex flex-row justify-between items-center">
+          {/* Go back */}
+          <button
+            className="w-fit pe-3 ps-1.5 hover:bg-science-500 sticky top-5 shadow-sm"
+            onClick={navigateBack}
+          >
+            <IconArrowBack2Outline className="inline size-6 me-1" />
+            Back to Projects
+          </button>
+
+          <span className="text-flare-700">
+            {JSON.stringify(debouncedProject) === JSON.stringify(volatileProject)
+              ? "Saved"
+              : "Saving..."
+            }
+          </span>
+        </div>
 
         {/* Date */}
         <div className="flex flex-row justify-center items-center">
@@ -170,7 +181,6 @@ export default function Editor() {
         </label>
       </aside>
 
-
       {/* Editor area */}
       <section className="lg:flex-1 not-lg:w-full">
         <ul className="flex flex-col gap-y-3">
@@ -192,6 +202,51 @@ export default function Editor() {
               ))}
             </BlockLi>
           ))}
+          <li
+            key="add-block-button"
+            className="flex flex-row justify-center items-center"
+          >
+            <button
+              type="button"
+              className={`
+                bg-abyss-800 hover:bg-spore-500
+                text-flare-700 hover:text-abyss-500
+
+                w-full h-16
+
+                flex flex-row justify-center items-center
+              `}
+              onClick={() => {
+                setVolatileProject(prev => {
+                  if (!prev) return prev;
+                  const blockId = generateId();
+                  return {
+                    ...prev,
+                    blocks: [
+                      ...prev.blocks,
+                      {
+                        id: blockId,
+                        options: { ...DefaultBlockOptions },
+                      },
+                    ],
+                    episodes: [
+                      ...prev.episodes,
+                      {
+                        id: generateId(),
+                        blockId: blockId,
+                      },
+                      {
+                        id: generateId(),
+                        blockId: blockId,
+                      },
+                    ],
+                  };
+                });
+              }}
+            >
+              <IconAdd className="size-12" />
+            </button>
+          </li>
         </ul>
       </section>
     </main>

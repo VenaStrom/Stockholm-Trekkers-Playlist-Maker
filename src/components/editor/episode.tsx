@@ -25,7 +25,14 @@ export default function EpisodeLi({
 
   // Helper. Produces a new Project where the given episode has its filePath set, and ensure each block has a trailing empty episode
   const updateEpisode = (project: Project, episodeId: string, filePath?: string): Project => {
-    const updatedEpisodes = project.episodes.map(ep => ep.id === episodeId ? { ...ep, filePath } : ep);
+    const updatedEpisodes = JSON.parse(JSON.stringify(project.episodes)) as Episode[];
+    const epIndex = updatedEpisodes.findIndex(ep => ep.id === episodeId);
+    if (epIndex === -1) {
+      console.warn(`[updateEpisode] Could not find episode with id ${episodeId}`);
+      return project;
+    }
+    if (!updatedEpisodes[epIndex]) throw new Error("Episode to update is undefined");
+    updatedEpisodes[epIndex] = { ...updatedEpisodes[epIndex], filePath, };
 
     // Sort episodes so they are clumped by block id
     const sortedEpisodes: Episode[] = [];
@@ -38,11 +45,13 @@ export default function EpisodeLi({
     project.blocks.forEach(block => {
       const episodesInBlock = sortedEpisodes.filter(e => e.blockId === block.id);
       const lastWithPathIndex = [...episodesInBlock].reverse().findIndex(e => e.filePath && e.filePath.trim().length > 0);
-      const trailingEmpties = episodesInBlock.filter((e, i) =>
-        // All episodes after last with path that is empty
-        i > episodesInBlock.length - 1 - lastWithPathIndex - 1
-        && (!e.filePath || e.filePath.trim().length === 0)
-      );
+      const trailingEmpties = lastWithPathIndex === -1
+        ? episodesInBlock
+        : episodesInBlock.filter((e, i) =>
+          // All episodes after last with path that is empty
+          i > episodesInBlock.length - 1 - lastWithPathIndex - 1
+          && (!e.filePath || e.filePath.trim().length === 0)
+        );
       // If no trailing empty, add one
       if (trailingEmpties.length === 0) {
         sortedEpisodes.push({ id: generateId(), blockId: block.id });

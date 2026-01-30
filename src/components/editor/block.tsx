@@ -19,7 +19,7 @@ export default function BlockLi({
 }: {
   block: Block;
   blockIndex: number;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   project: Project | null;
   projectSetter: React.Dispatch<React.SetStateAction<Project | null>>;
 }) {
@@ -217,7 +217,7 @@ export default function BlockLi({
           <span className="w-[7ch]">Duration</span>
         </div>
         <ul className="flex flex-col gap-y-2 pb-3 pt-1">
-          {children}
+          {children ?? null}
         </ul>
       </div>
     </li>

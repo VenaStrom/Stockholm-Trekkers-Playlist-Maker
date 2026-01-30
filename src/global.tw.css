@@ -47,7 +47,7 @@
 @layer base {
   * {
     font-family: "Bahnschrift", sans-serif;
-    @apply font-thin;
+    @apply font-thin tracking-normal;
   }
 
   html {
