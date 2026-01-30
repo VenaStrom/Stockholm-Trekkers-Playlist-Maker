@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Block, Project } from "@/types";
-import { IconDeleteOutline, IconDragIndicator } from "@/components/icons";
+import { IconDeleteForeverOutline, IconDeleteOutline, IconDragIndicator } from "@/components/icons";
 import Dialog from "../dialog";
 import { usePageContext } from "../page-context/use-page-context";
 import { PowerKey } from "@/global";
@@ -232,7 +232,10 @@ export default function BlockLi({
               className="€icon hover:text-red-alert-500"
               onClick={handleDeleteProject}
             >
-              <IconDeleteOutline className="size-6" />
+              {isPowerMode
+                ? <IconDeleteForeverOutline className="size-6 animate-shiver origin-bottom" />
+                : <IconDeleteOutline className="size-6" />
+              }
             </button>
           </div>
 

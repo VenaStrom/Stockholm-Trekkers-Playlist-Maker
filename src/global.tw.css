@@ -46,6 +46,8 @@
   --color-red-alert-700: var(--color-red-alert-700);
   --color-science-500: var(--color-science-500);
   --color-spore-500: var(--color-spore-500);
+
+  --animate-shiver: shiver 0.3s infinite;
 }
 
 @font-face {
@@ -107,5 +109,25 @@
 
   textarea {
     @apply bg-abyss-900 text-flare-500 rounded-sm px-2 py-1;
+  }
+
+  /* Custom animation - shiver */
+  @keyframes shiver {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    20% {
+      transform: translateX(-1px) rotate(2deg);
+    }
+    40% {
+      transform: translateX(1px) rotate(-2deg);
+    }
+    60% {
+      transform: translateX(-1px) rotate(2deg);
+    }
+    80% {
+      transform: translateX(1px) rotate(-2deg);
+    }
   }
 }
