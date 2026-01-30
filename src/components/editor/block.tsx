@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Block, Project } from "@/types";
-import { IconDragIndicator } from "@/components/icons";
+import { IconDeleteOutline, IconDragIndicator } from "@/components/icons";
 import { PopoverContainer, PopoverContent, PopoverTrigger } from "@/components/popover";
 
 /** 
@@ -49,6 +49,15 @@ export default function BlockLi({
     }
 
     return { ...proj, blocks: blocksCopy, episodes: reorderedEpisodes };
+  };
+
+  const deleteBlock = (blockId: string) => {
+    if (!volatileProject) return;
+
+    const updatedBlocks = volatileProject.blocks.filter(b => b.id !== blockId);
+    const updatedEpisodes = volatileProject.episodes.filter(e => e.blockId !== blockId);
+
+    setVolatileProject({ ...volatileProject, blocks: updatedBlocks, episodes: updatedEpisodes });
   };
 
   const onDragStart = (e: React.DragEvent) => {
@@ -156,40 +165,36 @@ export default function BlockLi({
       onDrop={onDrop}
       onDragEnter={onDragEnter}
       onDragLeave={onDragLeave}
-      className={`bg-abyss-800 px-4 py-2 rounded-sm ${isDragOver
+      className={`bg-abyss-900 px-4 py-2 rounded-sm ${isDragOver
         ? "ring-2 ring-science-500/60 rounded-sm"
         : ""}`
       }
     >
       {/* Header */}
-      <div className="h-14 flex flex-row items-center gap-x-4">
-        <p>
-          Block {blockIndex + 1}
-        </p>
+      <div className="h-12 flex flex-row items-center gap-x-4">
+        <p>Block {blockIndex + 1}</p>
 
         <span className="flex-1"></span>
 
         {/* Controls */}
         <div className="flex flex-row gap-x-4 items-center">
-          <PopoverContainer>
-            <PopoverTrigger text="Block Options" />
+          <div>
+            <button
+              className="€icon hover:text-red-alert-500"
+            >
+              <IconDeleteOutline className="size-6" />
+            </button>
+          </div>
 
-            <PopoverContent>
-              <button
-                type="button"
-              >
-                Edit Block
-              </button>
-            </PopoverContent>
-          </PopoverContainer>
-
-          {/* Drag thumb for blocks */}
+          {/* Drag thumb */}
           <span
             draggable
             className={`cursor-grab ms-2 text-flare-700 hover:opacity-80 transition-all`}
             aria-label="Drag to reorder block"
             title="Drag to reorder block"
             tabIndex={0}
+            onDragStart={onDragStart}
+            onDragEnd={onDragEnd}
             onKeyDown={(e) => {
               if (e.key === "ArrowUp") {
                 e.preventDefault();
@@ -200,8 +205,6 @@ export default function BlockLi({
                 moveBlockDownOne();
               }
             }}
-            onDragStart={onDragStart}
-            onDragEnd={onDragEnd}
           >
             <IconDragIndicator className="size-6" />
           </span>

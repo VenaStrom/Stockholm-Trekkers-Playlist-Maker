@@ -6,6 +6,7 @@
   --color-abyss-200: #a2a2a2;
   --color-abyss-500: #1f1f1f;
   --color-abyss-800: #181818;
+  --color-abyss-900: #0f0f0f;
   --color-command-300: #e0b93a;
   --color-command-500: #c0962e;
   --color-red-alert-500: #ff5b20;
@@ -16,9 +17,10 @@
 .light {
   --color-flare-500: #1f1f1f;
   --color-flare-700: #4a4a4a;
-  --color-abyss-200: #b4b4b4;
+  --color-abyss-200: #989898;
   --color-abyss-500: #f0f0f0;
-  --color-abyss-800: #fafafa;
+  --color-abyss-800: #e6e4e4;
+  --color-abyss-900: #ffffff;
   --color-command-300: #e6b944;
   --color-command-500: #d8ae42;
   --color-red-alert-500: #d43c14;
@@ -32,6 +34,7 @@
   --color-abyss-200: var(--color-abyss-200);
   --color-abyss-500: var(--color-abyss-500);
   --color-abyss-800: var(--color-abyss-800);
+  --color-abyss-900: var(--color-abyss-900);
   --color-command-300: var(--color-command-300);
   --color-command-500: var(--color-command-500);
   --color-red-alert-500: var(--color-red-alert-500);
@@ -55,7 +58,7 @@
   }
 
   body {
-    @apply bg-abyss-500 text-flare-500 max-h-screen h-screen *:w-full flex flex-col items-center justify-start;
+    @apply bg-abyss-800 text-flare-500 max-h-screen h-screen *:w-full flex flex-col items-center justify-start;
 
     & > main {
       @apply flex-1;
@@ -82,7 +85,7 @@
   }
 
   input[type="text"] {
-    @apply bg-abyss-800 text-flare-500 rounded-sm px-2 py-1;
+    @apply bg-abyss-900 text-flare-500 rounded-sm px-2 py-1;
   }
 
   label {
@@ -90,13 +93,13 @@
   }
 
   label:has(& > input[type="text"]):not(.€no-style) {
-    @apply bg-abyss-800 text-flare-500 rounded-sm px-2 py-1;
+    @apply bg-abyss-900 text-flare-500 rounded-sm px-2 py-1;
     & > input[type="text"] {
       @apply px-0;
     }
   }
 
   textarea {
-    @apply bg-abyss-800 text-flare-500 rounded-sm px-2 py-1;
+    @apply bg-abyss-900 text-flare-500 rounded-sm px-2 py-1;
   }
 }

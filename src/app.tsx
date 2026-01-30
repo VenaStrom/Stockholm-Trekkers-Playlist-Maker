@@ -94,7 +94,11 @@ export default function App() {
   }, [lightMode]);
 
   return (<>
-    <header className="bg-abyss-800 p-2 px-5 flex flex-row items-center gap-x-2">
+    <header className={`
+      p-2 px-5
+      flex flex-row items-center gap-x-2
+      ${route === PageRoute.Editor ? "bg-abyss-800" : "bg-abyss-900"}
+    `}>
       {/* Logo */}
       <img className="size-14" src="/icon/org/stockholm-trekkers-256x256.png" alt="Stockholm Trekkers Logo" />
       {/* App name */}

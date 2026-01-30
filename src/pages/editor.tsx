@@ -183,7 +183,7 @@ export default function Editor() {
 
       {/* Editor area */}
       <section className="lg:flex-1 not-lg:w-full">
-        <ul className="flex flex-col gap-y-3">
+        <ul className="flex flex-col gap-y-5">
           {Object.entries(episodesByBlockId).map(([blockId, episodes]) => (
             <BlockLi
               block={volatileProject?.blocks.find(b => b.id === blockId) ?? (() => { throw new Error("Missing block with id: " + blockId) })()}

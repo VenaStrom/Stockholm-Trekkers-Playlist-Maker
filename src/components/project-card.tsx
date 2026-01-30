@@ -84,7 +84,7 @@ export default function ProjectCard({
       ]}
     />
 
-    <li className="w-full min-h-36  bg-abyss-800 rounded-sm p-4 ps-5 flex flex-row gap-x-4 *:h-full">
+    <li className="w-full min-h-36 bg-abyss-900 rounded-sm p-4 ps-5 flex flex-row gap-x-4 *:h-full">
       {/* Date and description */}
       <div className="max-w-prose h-full overflow-hidden">
         <p className="text-xl">{projectMeta.date.trim() ? projectMeta.date : <span className="text-flare-700">[ no date set ]</span>}</p>
