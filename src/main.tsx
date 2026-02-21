@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { PageProvider } from "@/components/page-context/page-provider";
-import { ToastProvider } from "@/components/toast/toast";
+import { ToastProvider } from "@/components/toast";
 import App from "@/app";
 
 const root = document.getElementById("root");

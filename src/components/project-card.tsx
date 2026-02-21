@@ -3,7 +3,7 @@ import { ProjectMeta } from "@/types";
 import { IconDeleteOutline, IconEditOutline, IconFileExportOutline } from "@/components/icons";
 import Dialog from "@/components/dialog";
 import { usePageContext } from "@/components/page-context/use-page-context";
-import { useToast } from "@/components/toast/useToast";
+import { useToast } from "@/components/toast";
 import { PageRoute } from "@/components/page-context/page.internal";
 import { deleteProject } from "@/functions/project";
 
