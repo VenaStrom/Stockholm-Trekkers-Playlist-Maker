@@ -1,6 +1,7 @@
+import { useState } from "react";
+import { open } from "@tauri-apps/plugin-dialog";
 import { exportProject } from "@/functions/project";
 import { IconFileExportOutline } from "@/components/icons";
-import { useState } from "react";
 import { useToast } from "@/components/toast";
 import Dialog from "@/components/dialog";
 
@@ -18,13 +19,29 @@ export default function ExportButton({
       toast("No project data to export.");
       return;
     }
-    setIsModalOpen(true);
-    exportProject(projectID)
-      .then((res) => {
-        console.log(res);
-      })
+    open({
+      directory: true,
+      title: "Select export location. A folder with the project's name will be created here.",
+      canCreateDirectories: true,
+      recursive: true, // Needed to mkdir and copy things here
+    }).then((path) => {
+      if (!path) {
+        toast("Export cancelled.");
+        return;
+      }
+
+      setIsModalOpen(true);
+      exportProject(projectID, path)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch(e => {
+          console.error("Error exporting project:", e);
+        });
+    })
       .catch(e => {
-        console.error("Error exporting project:", e);
+        console.error("Error opening save dialog:", e);
+        toast("Failed to open save dialog. Please try again.");
       });
   };
 
