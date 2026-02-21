@@ -41,12 +41,12 @@ export function Toaster() {
   const { toasts, removeToast } = ctx;
 
   return (
-    <ul className="z-50 flex flex-col gap-y-2 absolute w-full justify-center items-center bottom-2 pointer-events-none transition-all">
+    <ul className="z-50 flex flex-col gap-y-2 fixed w-full justify-center items-center bottom-2 pointer-events-none transition-all">
       {toasts.map((t) => (
         <li
           key={t.id}
           className={`
-            bg-abyss-800
+            bg-abyss-900
             text-lg
             rounded-sm
             p-5
