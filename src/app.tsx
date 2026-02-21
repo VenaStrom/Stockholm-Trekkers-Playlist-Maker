@@ -98,6 +98,7 @@ export default function App() {
     <header className={`
       p-2 px-5
       flex flex-row items-center gap-x-2
+      h-(--header-height)
       ${route === PageRoute.Editor ? "bg-abyss-800" : "bg-abyss-900"}
     `}>
       {/* Logo */}

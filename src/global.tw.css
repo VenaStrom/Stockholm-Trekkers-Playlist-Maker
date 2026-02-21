@@ -14,6 +14,9 @@
   --color-red-alert-700: #e04a1a;
   --color-science-500: #2196f3;
   --color-spore-500: #4caf50;
+
+  --header-height: 5rem;
+  --body-max-h: calc(100vh - var(--header-height));
 }
 @custom-variant light (&:is(.light *));
 .light {
@@ -67,6 +70,7 @@
 
   body {
     @apply bg-abyss-800 text-flare-500 max-h-screen h-screen *:w-full flex flex-col items-center justify-start;
+    max-height: var(--body-max-h);
 
     & > main {
       @apply flex-1;

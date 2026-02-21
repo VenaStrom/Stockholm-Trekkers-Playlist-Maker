@@ -1,14 +1,14 @@
+import type { Episode, Project } from "@/types";
+import { DefaultBlockOptions } from "@/consts";
 import { useEffect, useMemo, useState, useRef } from "react";
+import { useDebounce } from "use-debounce";
+import { IconAdd, IconArrowBack2Outline, IconEditOutline, Spinner3DotsScaleMiddle } from "@/components/icons";
+import { openProject, saveProject } from "@/functions/project";
 import { usePageContext } from "@/components/page-context/use-page-context";
 import { PageRoute } from "@/components/page-context/page.internal";
-import { Episode, Project } from "@/types";
-import { IconAdd, IconArrowBack2Outline, IconEditOutline, Spinner3DotsScaleMiddle } from "@/components/icons";
-import { useDebounce } from "use-debounce";
-import EpisodeLi from "@/components/editor/episode";
-import { openProject, saveProject } from "@/functions/project";
-import BlockLi from "@/components/editor/block";
-import { DefaultBlockOptions } from "@/consts";
 import { generateId } from "@/functions/sha256";
+import EpisodeLi from "@/components/editor/episode";
+import BlockLi from "@/components/editor/block";
 
 export default function Editor() {
   const { setHeaderText, projectId, setRoute } = usePageContext();
@@ -114,7 +114,7 @@ export default function Editor() {
   return (
     <main className="flex flex-col lg:flex-row gap-x-8 gap-y-12 justify-center items-start pt-4 px-12 pb-10">
       {/* Side bar */}
-      <aside className="min-w-1/4 not-lg:w-full flex flex-col gap-y-4">
+      <aside className="min-w-1/4 not-lg:w-full flex flex-col gap-y-4 lg:sticky lg:top-6">
         <div className="flex flex-row justify-between items-center">
           {/* Go back */}
           <button
@@ -184,6 +184,7 @@ export default function Editor() {
       {/* Editor area */}
       <section className="lg:flex-1 not-lg:w-full">
         <ul className="flex flex-col gap-y-5">
+          {/* Blocks */}
           {Object.entries(episodesByBlockId).map(([blockId, episodes]) => (
             <BlockLi
               block={volatileProject?.blocks.find(b => b.id === blockId) ?? (() => { throw new Error("Missing block with id: " + blockId) })()}
@@ -202,6 +203,8 @@ export default function Editor() {
               ))}
             </BlockLi>
           ))}
+
+          {/* Create block button */}
           <li
             key="add-block-button"
             className="flex flex-row justify-center items-center"
