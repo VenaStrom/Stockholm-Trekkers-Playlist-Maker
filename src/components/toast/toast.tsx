@@ -1,5 +1,5 @@
 import { useCallback, useContext, useState } from "react";
-import { DefaultToastOptions, isToastOptions, ToastContext, ToastMessage, ToastOptions } from "@/components/toast/toast.internal.ts";
+import { DefaultToastOptions, isToastOptions, ToastContext, ToastMessage, ToastOptions } from "@/components/toast";
 import { IconCloseSmall } from "@/components/icons.tsx";
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {

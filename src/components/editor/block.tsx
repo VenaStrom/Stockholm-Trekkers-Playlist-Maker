@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { PowerKey } from "@/global";
 import type { Block, Project } from "@/types";
-import { usePageContext } from "@/components/page-context/use-page-context";
+import { usePageContext } from "@/components/page-context";
 import { IconDeleteForeverOutline, IconDeleteOutline, IconDragIndicator } from "@/components/icons";
 import Dialog from "@/components/dialog";
 

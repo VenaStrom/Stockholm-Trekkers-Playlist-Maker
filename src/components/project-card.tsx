@@ -1,9 +1,8 @@
 import { useState } from "react";
 import type { ProjectMeta } from "@/types";
 import { IconDeleteOutline, IconEditOutline } from "@/components/icons";
-import { usePageContext } from "@/components/page-context/use-page-context";
+import { usePageContext, PageRoute } from "@/components/page-context";
 import { useToast } from "@/components/toast";
-import { PageRoute } from "@/components/page-context/page.internal";
 import { deleteProject } from "@/functions/project";
 import Dialog from "@/components/dialog";
 import ExportButton from "@/components/button/export-button";

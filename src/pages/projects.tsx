@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { usePageContext } from "@/components/page-context/use-page-context";
+import { usePageContext } from "@/components/page-context";
 import ProjectCard from "@/components/project-card";
 import { ProjectMeta } from "@/types";
 import { IconAddBoxOutline, IconFolderOutline } from "@/components/icons";
