@@ -2,15 +2,17 @@ import type { Episode, Project } from "@/types";
 import { DefaultBlockOptions } from "@/consts";
 import { useEffect, useMemo, useState, useRef } from "react";
 import { useDebounce } from "use-debounce";
-import { IconAdd, IconArrowBack2Outline, IconEditOutline, Spinner3DotsScaleMiddle } from "@/components/icons";
+import { IconAdd, IconArrowBack2Outline, IconEditOutline, IconFileExportOutline, Spinner3DotsScaleMiddle } from "@/components/icons";
 import { openProject, saveProject } from "@/functions/project";
 import { usePageContext } from "@/components/page-context/use-page-context";
 import { PageRoute } from "@/components/page-context/page.internal";
 import { generateId } from "@/functions/sha256";
 import EpisodeLi from "@/components/editor/episode";
 import BlockLi from "@/components/editor/block";
+import { useToast } from "@/components/toast/useToast";
 
 export default function Editor() {
+  const { toast } = useToast();
   const { setHeaderText, projectId, setRoute } = usePageContext();
   useEffect(() => setHeaderText("Editor"), [setHeaderText]);
 
@@ -72,6 +74,13 @@ export default function Editor() {
         console.error("Error saving on navigation back:", err);
       });
   };
+  const downloadSaveFolder = () => {
+    toast(
+      <span>
+        Exporting project save folder is not yet implemented.
+      </span>
+    );
+  };
 
   // Ref for the description textarea so we can recalculate height on resize
   const descRef = useRef<HTMLTextAreaElement | null>(null);
@@ -115,6 +124,7 @@ export default function Editor() {
     <main className="flex flex-col lg:flex-row gap-x-8 gap-y-12 justify-center items-start pt-4 px-12 pb-10">
       {/* Side bar */}
       <aside className="min-w-1/4 not-lg:w-full flex flex-col gap-y-4 lg:sticky lg:top-6">
+        {/* Header */}
         <div className="flex flex-row justify-between items-center">
           {/* Go back */}
           <button
@@ -125,6 +135,7 @@ export default function Editor() {
             Back to Projects
           </button>
 
+          {/* Save status */}
           <span className="text-flare-700">
             {JSON.stringify(debouncedProject) === JSON.stringify(volatileProject)
               ? "Saved"
@@ -179,6 +190,18 @@ export default function Editor() {
             </pre>
           }
         </label>
+
+        {/* Export */}
+        <div className="flex flex-row items-center justify-center">
+          <button
+            className="pe-1.5 ps-3 hover:bg-spore-500"
+            onClick={downloadSaveFolder}
+          >
+            Export
+            <span className="flex-1"></span>
+            <IconFileExportOutline className="inline size-6" />
+          </button>
+        </div>
       </aside>
 
       {/* Editor area */}
