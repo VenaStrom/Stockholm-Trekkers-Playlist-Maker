@@ -265,7 +265,7 @@ export default function BlockLi({
         </div>
       </div>
 
-      <hr className="h-0.5 opacity-50" />
+      <hr className="h-px border-0 border-t border-abyss-200" />
 
       <div className="pt-3">
         <div className="flex flex-row gap-x-6 *:text-sm items-center ps-1">
