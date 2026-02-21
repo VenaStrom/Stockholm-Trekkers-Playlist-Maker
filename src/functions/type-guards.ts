@@ -1,11 +1,16 @@
 import type { Block, Episode, Project, ProjectData, ProjectMeta } from "@/types";
 
-function isPlainObject(x: unknown): x is Record<string, unknown> {
-  return !!x && typeof x === "object" && !Array.isArray(x);
+export function isStandardObject(obj: unknown): obj is Record<string, unknown> {
+  if (typeof obj !== "object") return false;
+  if (obj === null) return false;
+  if (Array.isArray(obj)) return false;
+  if (obj instanceof Date) return false;
+  if (obj instanceof File) return false;
+  return true;
 }
 
 export function isEpisode(obj: unknown): obj is Episode {
-  if (!isPlainObject(obj)) {
+  if (!isStandardObject(obj)) {
     console.warn("Episode type check: not an object");
     return false;
   }
@@ -48,7 +53,7 @@ export function isEpisode(obj: unknown): obj is Episode {
 }
 
 export function isBlock(obj: unknown): obj is Block {
-  if (!isPlainObject(obj)) {
+  if (!isStandardObject(obj)) {
     console.warn("Block type check: not an object");
     return false;
   }
@@ -60,7 +65,7 @@ export function isBlock(obj: unknown): obj is Block {
   }
 
   const options = o.options;
-  if (!isPlainObject(options)) {
+  if (!isStandardObject(options)) {
     console.warn("Block missing or invalid 'options'", { obj });
     return false;
   }
@@ -75,7 +80,7 @@ export function isBlock(obj: unknown): obj is Block {
 }
 
 export function isProjectMetaOnly(obj: unknown): obj is ProjectMeta {
-  if (!isPlainObject(obj)) {
+  if (!isStandardObject(obj)) {
     console.warn("ProjectMeta type check: not an object");
     return false;
   }
@@ -103,7 +108,7 @@ export function isProjectMetaOnly(obj: unknown): obj is ProjectMeta {
 }
 
 export function isProjectDataOnly(obj: unknown): obj is ProjectData {
-  if (!isPlainObject(obj)) {
+  if (!isStandardObject(obj)) {
     console.warn("ProjectData type check: not an object");
     return false;
   }
@@ -130,7 +135,7 @@ export function isProjectDataOnly(obj: unknown): obj is ProjectData {
 }
 
 export function isProject(obj: unknown): obj is Project {
-  if (!isPlainObject(obj)) {
+  if (!isStandardObject(obj)) {
     console.warn("Project type check: not an object");
     return false;
   }
