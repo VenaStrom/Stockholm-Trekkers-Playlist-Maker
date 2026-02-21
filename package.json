@@ -1,9 +1,10 @@
 {
   "name": "stockholm-trekkers-playlist-maker",
-  "private": true,
   "version": "4.0.0",
-  "type": "module",
   "author": "Vena Ström <strom.vena+stplay@gmail.com>",
+  "description": "A playlist maker for the Stockholm Trekkers organization.",
+  "license": "MIT",
+  "repository": "https://github.com/VenaStrom/Stockholm-Trekkers-Playlist-Maker.git",
   "contributors": [
     {
       "name": "Vena Ström",
@@ -11,17 +12,14 @@
       "url": "https://venastrom.se"
     }
   ],
-  "repository": "https://github.com/VenaStrom/Stockholm-Trekkers-Playlist-Maker.git",
-  "description": "A playlist maker for the Stockholm Trekkers organization.",
-  "license": "MIT",
   "scripts": {
     "dev": "yarn tauri dev",
     "build": "yarn download-assets && yarn tauri build && yarn rename-bundles",
     "vite:dev": "vite",
     "vite:build": "vite build",
     "tauri": "tauri",
-    "download-assets": "node scripts/download-video-assets.ts",
-    "rename-bundles": "node scripts/rename-bundles.ts",
+    "download-assets": "tsx scripts/download-video-assets.ts",
+    "rename-bundles": "tsx scripts/rename-bundles.ts",
     "lint": "tsc --noEmit && tsc --noEmit -p scripts/tsconfig.json && eslint && eslint -c scripts/eslint.config.ts"
   },
   "dependencies": {
@@ -49,8 +47,11 @@
     "globals": "^16.4.0",
     "sharp": "^0.34.4",
     "tailwindcss": "^4.1.18",
+    "tsx": "^4.21.0",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.50.0",
     "vite": "^7.3.0"
-  }
+  },
+  "private": true,
+  "type": "module"
 }

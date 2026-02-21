@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Block, Project } from "@/types";
-import { IconDeleteForeverOutline, IconDeleteOutline, IconDragIndicator } from "@/components/icons";
-import Dialog from "../dialog";
-import { usePageContext } from "../page-context/use-page-context";
 import { PowerKey } from "@/global";
+import type { Block, Project } from "@/types";
+import { usePageContext } from "@/components/page-context/use-page-context";
+import { IconDeleteForeverOutline, IconDeleteOutline, IconDragIndicator } from "@/components/icons";
+import Dialog from "@/components/dialog";
 
 /** 
  * I don't like this, but this is very convenient to keep the UI prettier during drag-and-drop

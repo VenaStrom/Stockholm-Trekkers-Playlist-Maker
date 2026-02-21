@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { IconArrowDropDown, IconCloseSmall } from "./icons";
+import { IconArrowDropDown, IconCloseSmall } from "@/components/icons";
 import { generateID } from "@/functions/sha256";
 
 type PopoverContext = {
