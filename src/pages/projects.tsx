@@ -33,8 +33,6 @@ export default function Projects() {
         reloadProjectMetaData(); // To have this one appear in the list
         toast(<>
           Made new project.
-          {/* Maybe remove this line VVV */}
-          {/* Made new project. <a href="" target="_blank" rel="noreferrer" onClick={(e) => { e.preventDefault(); setRoute(PageRoute.Editor); setProjectId(newProject.id); }}>Edit</a> */}
         </>);
       })
       .catch((e) => {

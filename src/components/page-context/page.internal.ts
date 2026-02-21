@@ -12,8 +12,8 @@ export type PageContext = {
   setRoute: React.Dispatch<React.SetStateAction<PageRoute>>;
   headerText: string;
   setHeaderText: React.Dispatch<React.SetStateAction<string>>;
-  projectId: string | null;
-  setProjectId: React.Dispatch<React.SetStateAction<string | null>>;
+  projectID: string | null;
+  setProjectID: React.Dispatch<React.SetStateAction<string | null>>;
   projectMetas: ProjectMeta[];
   setProjectMetas: React.Dispatch<React.SetStateAction<ProjectMeta[]>>;
 
@@ -26,8 +26,8 @@ export const PageContextDefaultValue: PageContext = {
   setRoute: () => { /* will be defined */ },
   headerText: "",
   setHeaderText: () => { /* will be defined */ },
-  projectId: null,
-  setProjectId: () => { /* will be defined */ },
+  projectID: null,
+  setProjectID: () => { /* will be defined */ },
   projectMetas: [],
   setProjectMetas: () => { /* will be defined */ },
 

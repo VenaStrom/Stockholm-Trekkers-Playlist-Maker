@@ -11,7 +11,7 @@ export function isEpisode(obj: unknown): obj is Episode {
   }
   const o = obj as {
     id?: unknown;
-    blockId?: unknown;
+    blockID?: unknown;
     filePath?: unknown;
     duration?: unknown;
     cachedStartTime?: unknown;
@@ -22,8 +22,8 @@ export function isEpisode(obj: unknown): obj is Episode {
     console.warn("Episode missing or invalid 'id'", { obj });
     return false;
   }
-  if (typeof o.blockId !== "string") {
-    console.warn("Episode missing or invalid 'blockId'", { obj });
+  if (typeof o.blockID !== "string") {
+    console.warn("Episode missing or invalid 'blockID'", { obj });
     return false;
   }
 

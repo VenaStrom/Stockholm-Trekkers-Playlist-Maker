@@ -4,7 +4,7 @@ import { PathName, FileName } from "@/global";
 import { isProject } from "@/functions/type-guards";
 import type { Episode, Project, ProjectData, ProjectMeta } from "@/types";
 import { createProject, openProject } from "@/functions/project";
-import { generateId } from "@/functions/sha256";
+import { generateID } from "@/functions/sha256";
 
 export async function saveProject(project: Project): Promise<boolean> {
   const start = performance.now();
@@ -24,13 +24,13 @@ export async function saveProject(project: Project): Promise<boolean> {
   }
 
   // If dupe episodes or blocks exist, warn and remove the dupe with the least data
-  const episodesById: Record<string, Episode[]> = {};
+  const episodesByID: Record<string, Episode[]> = {};
   projectCopy.episodes.forEach(e => {
     const id = e.id;
-    episodesById[id] ??= [];
-    episodesById[id].push(e);
+    episodesByID[id] ??= [];
+    episodesByID[id].push(e);
   });
-  for (const [id, episodes] of Object.entries(episodesById)) {
+  for (const [id, episodes] of Object.entries(episodesByID)) {
     if (episodes.length > 1) {
       console.warn(`[SaveProject] Duplicate episodes found with id ${id}. Keeping the episode with the most data.`);
       episodes.sort((a, b) => {
@@ -42,13 +42,13 @@ export async function saveProject(project: Project): Promise<boolean> {
       projectCopy.episodes = projectCopy.episodes.filter(e => e !== dupes[0]);
     }
   }
-  const blocksById: Record<string, number> = {};
+  const blocksByID: Record<string, number> = {};
   projectCopy.blocks.forEach(b => {
     const id = b.id;
-    blocksById[id] ??= 0;
-    blocksById[id]++;
+    blocksByID[id] ??= 0;
+    blocksByID[id]++;
   });
-  for (const [id, count] of Object.entries(blocksById)) {
+  for (const [id, count] of Object.entries(blocksByID)) {
     if (count > 1) {
       console.warn(`[SaveProject] Duplicate blocks found with id ${id}. Removing duplicates.`);
       let firstFound = false;
@@ -68,19 +68,19 @@ export async function saveProject(project: Project): Promise<boolean> {
   // Sort episodes so they are clumped by block id
   const episodesSorted: Episode[] = [];
   projectCopy.blocks.forEach(block => {
-    const episodesInBlock = projectCopy.episodes.filter(e => e.blockId === block.id);
+    const episodesInBlock = projectCopy.episodes.filter(e => e.blockID === block.id);
     episodesSorted.push(...episodesInBlock);
   });
   projectCopy.episodes = episodesSorted;
 
   // Ensure trailing empty episode per block
   projectCopy.blocks.forEach(block => {
-    const episodesInBlock = projectCopy.episodes.filter(e => e.blockId === block.id);
+    const episodesInBlock = projectCopy.episodes.filter(e => e.blockID === block.id);
     const hasTrailingEmpty = episodesInBlock.at(-1)?.filePath ? false : true;
     if (!hasTrailingEmpty) {
       const newEpisode: Episode = {
-        id: generateId(),
-        blockId: block.id,
+        id: generateID(),
+        blockID: block.id,
       };
       projectCopy.episodes.push(newEpisode);
     }

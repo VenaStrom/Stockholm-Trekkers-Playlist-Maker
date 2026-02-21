@@ -6,29 +6,29 @@ import { IconAdd, IconArrowBack2Outline, IconEditOutline, Spinner3DotsScaleMiddl
 import { openProject, saveProject } from "@/functions/project";
 import { usePageContext } from "@/components/page-context/use-page-context";
 import { PageRoute } from "@/components/page-context/page.internal";
-import { generateId } from "@/functions/sha256";
+import { generateID } from "@/functions/sha256";
 import EpisodeLi from "@/components/editor/episode";
 import BlockLi from "@/components/editor/block";
 import ExportButton from "@/components/button/export-button";
 
 export default function Editor() {
-  const { setHeaderText, projectId, setRoute } = usePageContext();
+  const { setHeaderText, projectID, setRoute } = usePageContext();
   useEffect(() => setHeaderText("Editor"), [setHeaderText]);
 
   const [volatileProject, setVolatileProject] = useState<Project | null>(null);
 
-  // Load project data on mount and projectId changes
+  // Load project data on mount and projectID changes
   useEffect(() => {
-    if (!projectId) return;
+    if (!projectID) return;
 
-    openProject(projectId)
+    openProject(projectID)
       .then((project) => {
         setVolatileProject(project);
       })
       .catch((err) => {
         console.error("Failed to open project:", err);
       });
-  }, [projectId]);
+  }, [projectID]);
 
   // Debouncing
   const [debouncedProject] = useDebounce(volatileProject, 500);
@@ -101,11 +101,11 @@ export default function Editor() {
   }, [volatileProject?.description]);
 
   // Group episodes by block id for easier rendering
-  const episodesByBlockId = useMemo<Record<string, Episode[]>>(() => {
+  const episodesByBlockID = useMemo<Record<string, Episode[]>>(() => {
     if (!volatileProject) return {};
     const grouped: Record<string, Episode[]> = {};
     for (const ep of volatileProject.episodes) {
-      const id = ep.blockId;
+      const id = ep.blockID;
       grouped[id] ??= [];
       grouped[id].push(ep);
     }
@@ -191,13 +191,13 @@ export default function Editor() {
       <section className="lg:flex-1 not-lg:w-full">
         <ul className="flex flex-col gap-y-5">
           {/* Blocks */}
-          {Object.entries(episodesByBlockId).map(([blockId, episodes]) => (
+          {Object.entries(episodesByBlockID).map(([blockID, episodes]) => (
             <BlockLi
-              block={volatileProject?.blocks.find(b => b.id === blockId) ?? (() => { throw new Error("Missing block with id: " + blockId) })()}
-              blockIndex={volatileProject.blocks.findIndex(b => b.id === blockId)}
+              block={volatileProject?.blocks.find(b => b.id === blockID) ?? (() => { throw new Error("Missing block with id: " + blockID) })()}
+              blockIndex={volatileProject.blocks.findIndex(b => b.id === blockID)}
               project={volatileProject}
               projectSetter={setVolatileProject}
-              key={`block-${blockId}`}
+              key={`block-${blockID}`}
             >
               {episodes.map(ep => (
                 <EpisodeLi
@@ -228,25 +228,25 @@ export default function Editor() {
               onClick={() => {
                 setVolatileProject(prev => {
                   if (!prev) return prev;
-                  const blockId = generateId();
+                  const blockID = generateID();
                   return {
                     ...prev,
                     blocks: [
                       ...prev.blocks,
                       {
-                        id: blockId,
+                        id: blockID,
                         options: { ...DefaultBlockOptions },
                       },
                     ],
                     episodes: [
                       ...prev.episodes,
                       {
-                        id: generateId(),
-                        blockId: blockId,
+                        id: generateID(),
+                        blockID: blockID,
                       },
                       {
-                        id: generateId(),
-                        blockId: blockId,
+                        id: generateID(),
+                        blockID: blockID,
                       },
                     ],
                   };

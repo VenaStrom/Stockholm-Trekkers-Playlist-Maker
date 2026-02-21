@@ -1,6 +1,6 @@
 import { DefaultBlockOptions } from "@/consts";
 import type { ProjectData, Project, ProjectMeta } from "@/types";
-import { generateId } from "@/functions/sha256";
+import { generateID } from "@/functions/sha256";
 import { OPTION_REVISION } from "@/global";
 import * as fs from "@tauri-apps/plugin-fs";
 import { path } from "@tauri-apps/api";
@@ -8,12 +8,12 @@ import { PathName, FileName } from "@/global";
 import { isProject } from "@/functions/type-guards";
 
 export async function createProject(): Promise<Project> {
-  const projectId = generateId();
-  const blockIds: [string, string] = [generateId(), generateId()];
-  const episodeIds: [string, string, string, string] = [generateId(), generateId(), generateId(), generateId()];
+  const projectID = generateID();
+  const blockIDs: [string, string] = [generateID(), generateID()];
+  const episodeIDs: [string, string, string, string] = [generateID(), generateID(), generateID(), generateID()];
 
   const projectMeta: ProjectMeta = {
-    id: projectId,
+    id: projectID,
     date: "",
     description: "",
     dateCreated: Date.now(),
@@ -22,14 +22,14 @@ export async function createProject(): Promise<Project> {
     episodeCount: 0,
   };
   const projectData: ProjectData = {
-    id: projectId,
-    blocks: blockIds.map(blockId => ({
-      id: blockId,
+    id: projectID,
+    blocks: blockIDs.map(blockID => ({
+      id: blockID,
       options: { ...DefaultBlockOptions },
     })),
-    episodes: episodeIds.map((episodeId, index) => ({
-      id: episodeId,
-      blockId: blockIds[index < 2 ? 0 : 1] ?? blockIds[0],
+    episodes: episodeIDs.map((episodeID, index) => ({
+      id: episodeID,
+      blockID: blockIDs[index < 2 ? 0 : 1] ?? blockIDs[0],
     })),
   };
 

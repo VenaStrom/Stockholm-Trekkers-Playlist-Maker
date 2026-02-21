@@ -6,7 +6,7 @@ import { PowerKey } from "@/global";
 export function PageProvider({ children }: { children: React.ReactNode }) {
   const [route, setInternalRoute] = useState(PageContextDefaultValue.route);
   const [headerText, setHeaderText] = useState(PageContextDefaultValue.headerText);
-  const [projectId, setProjectId] = useState(PageContextDefaultValue.projectId);
+  const [projectID, setProjectID] = useState(PageContextDefaultValue.projectID);
   const [projectMetas, setProjectMetas] = useState<PageContext["projectMetas"]>([]);
   const [isPowerMode, setIsPowerMode] = useState(PageContextDefaultValue.isPowerMode);
 
@@ -55,8 +55,8 @@ export function PageProvider({ children }: { children: React.ReactNode }) {
     setRoute,
     headerText,
     setHeaderText,
-    projectId,
-    setProjectId,
+    projectID: projectID,
+    setProjectID: setProjectID,
     projectMetas,
     setProjectMetas,
 

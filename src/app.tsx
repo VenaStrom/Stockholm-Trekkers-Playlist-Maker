@@ -23,7 +23,7 @@ export default function App() {
     return window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
   });
 
-  const { headerText, route, setRoute, projectId, isPowerMode } = usePageContext();
+  const { headerText, route, setRoute, projectID, isPowerMode } = usePageContext();
 
   // Set up keyboard shortcuts
   useEffect(() => {
@@ -59,7 +59,7 @@ export default function App() {
       // Forward to editor if project id is set
       if (e.altKey && e.key === "ArrowRight") {
         e.preventDefault();
-        if (route === PageRoute.Projects && projectId) {
+        if (route === PageRoute.Projects && projectID) {
           setRoute(PageRoute.Editor);
         }
       }

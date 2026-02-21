@@ -3,7 +3,7 @@ import { Episode, Project } from "@/types";
 import { IconDeleteOutline, IconDragIndicator, IconFolderOutline } from "@/components/icons";
 import { open } from "@tauri-apps/plugin-dialog";
 import { secondsToTimeString } from "@/functions/time-format";
-import { generateId } from "@/functions/sha256";
+import { generateID } from "@/functions/sha256";
 
 /** 
  * I don't like this, but this is very convenient to keep the UI prettier during drag-and-drop
@@ -24,11 +24,11 @@ export default function EpisodeLi({
   const [selectedFile, setSelectedFile] = useState<string | null>(episode.filePath ?? null);
 
   // Helper. Produces a new Project where the given episode has its filePath set, and ensure each block has a trailing empty episode
-  const updateEpisode = (project: Project, episodeId: string, filePath?: string): Project => {
+  const updateEpisode = (project: Project, episodeID: string, filePath?: string): Project => {
     const updatedEpisodes = JSON.parse(JSON.stringify(project.episodes)) as Episode[];
-    const epIndex = updatedEpisodes.findIndex(ep => ep.id === episodeId);
+    const epIndex = updatedEpisodes.findIndex(ep => ep.id === episodeID);
     if (epIndex === -1) {
-      console.warn(`[updateEpisode] Could not find episode with id ${episodeId}`);
+      console.warn(`[updateEpisode] Could not find episode with id ${episodeID}`);
       return project;
     }
     if (!updatedEpisodes[epIndex]) throw new Error("Episode to update is undefined");
@@ -37,13 +37,13 @@ export default function EpisodeLi({
     // Sort episodes so they are clumped by block id
     const sortedEpisodes: Episode[] = [];
     project.blocks.forEach(block => {
-      const episodesInBlock = updatedEpisodes.filter(e => e.blockId === block.id);
+      const episodesInBlock = updatedEpisodes.filter(e => e.blockID === block.id);
       sortedEpisodes.push(...episodesInBlock);
     });
 
     // Ensure each block has a trailing empty episode
     project.blocks.forEach(block => {
-      const episodesInBlock = sortedEpisodes.filter(e => e.blockId === block.id);
+      const episodesInBlock = sortedEpisodes.filter(e => e.blockID === block.id);
       const lastWithPathIndex = [...episodesInBlock].reverse().findIndex(e => e.filePath && e.filePath.trim().length > 0);
       const trailingEmpties = lastWithPathIndex === -1
         ? episodesInBlock
@@ -54,7 +54,7 @@ export default function EpisodeLi({
         );
       // If no trailing empty, add one
       if (trailingEmpties.length === 0) {
-        sortedEpisodes.push({ id: generateId(), blockId: block.id });
+        sortedEpisodes.push({ id: generateID(), blockID: block.id });
       }
       // Remove all but last trailing empty
       if (trailingEmpties.length > 1) {
@@ -154,15 +154,15 @@ export default function EpisodeLi({
 
     setDragOver(false);
 
-    const draggedId = draggedText.split(":")[1] ?? "";
-    if (!draggedId || draggedId === episode.id) return;
+    const draggedID = draggedText.split(":")[1] ?? "";
+    if (!draggedID || draggedID === episode.id) return;
 
     if (!volatileProject) return;
     const episodesCopy = [...volatileProject.episodes]
-    const draggedEpisodeIndex = episodesCopy.findIndex(e => e.id === draggedId);
+    const draggedEpisodeIndex = episodesCopy.findIndex(e => e.id === draggedID);
     const dropEpisodeIndex = episodesCopy.findIndex(e => e.id === episode.id);
     if (draggedEpisodeIndex === -1 || dropEpisodeIndex === -1) {
-      console.warn(`[EpisodeLi onDrop] Could not find episodes with ids ${draggedId} or ${episode.id}`);
+      console.warn(`[EpisodeLi onDrop] Could not find episodes with ids ${draggedID} or ${episode.id}`);
       return;
     }
 
@@ -173,9 +173,9 @@ export default function EpisodeLi({
       return;
     }
 
-    // Insert before and copy blockId of drop target onto dragged episode
+    // Insert before and copy blockID of drop target onto dragged episode
     episodesCopy.splice(draggedEpisodeIndex, 1);
-    draggedEpisode.blockId = dropEpisode.blockId;
+    draggedEpisode.blockID = dropEpisode.blockID;
     episodesCopy.splice(dropEpisodeIndex, 0, draggedEpisode);
 
     setVolatileProject(prev => prev ? { ...prev, episodes: episodesCopy } : prev);
@@ -206,9 +206,9 @@ export default function EpisodeLi({
       return;
     }
 
-    // If moved block passed a blockId boundary, update blockIds which will replace the move
-    if (thisEpisode.blockId !== previousEpisode.blockId) {
-      episodesCopy[thisIndex]!.blockId = previousEpisode.blockId;
+    // If moved block passed a blockID boundary, update blockIDs which will replace the move
+    if (thisEpisode.blockID !== previousEpisode.blockID) {
+      episodesCopy[thisIndex]!.blockID = previousEpisode.blockID;
     }
     else {
       // Swap positions when in same block
@@ -246,19 +246,19 @@ export default function EpisodeLi({
     // Special case: moving down from end of block to start of next block
     if (
       nextNextEpisode
-      && thisEpisode.blockId === nextEpisode.blockId // On the same block as the edge piece
+      && thisEpisode.blockID === nextEpisode.blockID // On the same block as the edge piece
       && (typeof nextEpisode.filePath === "undefined" || nextEpisode.filePath.trim().length === 0) // Edge piece is empty
-      && thisEpisode.blockId !== nextNextEpisode.blockId // Third piece is in next block, don't care if it's empty or not
+      && thisEpisode.blockID !== nextNextEpisode.blockID // Third piece is in next block, don't care if it's empty or not
     ) {
       // Get next block id
-      episodesCopy[thisIndex]!.blockId = nextNextEpisode.blockId;
+      episodesCopy[thisIndex]!.blockID = nextNextEpisode.blockID;
       // Swap with next episode to maintain order
       episodesCopy[thisIndex + 1] = { ...thisEpisode };
       episodesCopy[thisIndex] = { ...nextEpisode };
     }
-    // Only change block when passing a blockId boundary
-    else if (thisEpisode.blockId !== nextEpisode.blockId) {
-      episodesCopy[thisIndex]!.blockId = nextEpisode.blockId;
+    // Only change block when passing a blockID boundary
+    else if (thisEpisode.blockID !== nextEpisode.blockID) {
+      episodesCopy[thisIndex]!.blockID = nextEpisode.blockID;
     }
     // Swap positions when in same block
     else {
@@ -297,7 +297,7 @@ export default function EpisodeLi({
   const isLastAndEmptyInBlock = useMemo(() => {
     if (!volatileProject) return false;
     const episodesInBlock = volatileProject.episodes
-      .filter(e => e.blockId === episode.blockId)
+      .filter(e => e.blockID === episode.blockID)
       .filter(e => !e.filePath?.trim().length);
     if (episodesInBlock.length === 0) return false;
     return episodesInBlock[episodesInBlock.length - 1]?.id === episode.id;

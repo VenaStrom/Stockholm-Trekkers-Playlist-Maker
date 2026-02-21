@@ -14,7 +14,7 @@ export default function ProjectCard({
   projectMeta: ProjectMeta;
 }) {
   const { toast } = useToast();
-  const { setProjectId, setRoute, reloadProjectMetaData } = usePageContext();
+  const { setProjectID, setRoute, reloadProjectMetaData } = usePageContext();
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
 
   const handleDeleteProject = () => {
@@ -116,7 +116,7 @@ export default function ProjectCard({
 
       {/* Actions */}
       <div className="flex flex-col justify-start gap-y-4 w-24">
-        <button className="pe-1.5 ps-3 hover:bg-science-500" onClick={() => { setRoute(PageRoute.Editor); setProjectId(projectMeta.id); }}>
+        <button className="pe-1.5 ps-3 hover:bg-science-500" onClick={() => { setRoute(PageRoute.Editor); setProjectID(projectMeta.id); }}>
           Edit
           <span className="flex-1"></span>
           <IconEditOutline className="inline size-6" />

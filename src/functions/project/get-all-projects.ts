@@ -4,7 +4,7 @@ import { path } from "@tauri-apps/api";
 import * as fs from "@tauri-apps/plugin-fs";
 import { openProject, openProjectMetaOnly } from "@/functions/project";
 
-export async function getAllProjectIds(): Promise<Set<string>> {
+export async function getAllProjectIDs(): Promise<Set<string>> {
   if (!await fs.exists(PathName.UserProjectsDir)) {
     await fs.mkdir(PathName.UserProjectsDir, { recursive: true });
     return new Set();
@@ -40,14 +40,14 @@ export async function getAllProjectIds(): Promise<Set<string>> {
 export async function getAllProjectMetas(): Promise<ProjectMeta[]> {
   const projectMetas: ProjectMeta[] = [];
 
-  const allProjectIds = await getAllProjectIds();
-  for (const projectId of allProjectIds) {
+  const allProjectIDs = await getAllProjectIDs();
+  for (const projectID of allProjectIDs) {
     try {
-      const project = await openProjectMetaOnly(projectId);
+      const project = await openProjectMetaOnly(projectID);
       projectMetas.push(project);
     }
     catch (e) {
-      console.error(`Failed to open project with ID ${projectId}:`, e);
+      console.error(`Failed to open project with ID ${projectID}:`, e);
     }
   }
 
@@ -57,14 +57,14 @@ export async function getAllProjectMetas(): Promise<ProjectMeta[]> {
 export async function getAllProjects(): Promise<Project[]> {
   const projects: Project[] = [];
 
-  const allProjectIds = await getAllProjectIds();
-  for (const projectId of allProjectIds) {
+  const allProjectIDs = await getAllProjectIDs();
+  for (const projectID of allProjectIDs) {
     try {
-      const project = await openProject(projectId);
+      const project = await openProject(projectID);
       projects.push(project);
     }
     catch (e) {
-      console.error(`Failed to open project with ID ${projectId}:`, e);
+      console.error(`Failed to open project with ID ${projectID}:`, e);
     }
   }
 

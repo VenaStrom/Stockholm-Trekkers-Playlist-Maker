@@ -40,7 +40,7 @@ export default function BlockLi({
     // Rebuild episodes array to preserve clumping by block in new block order
     const episodesByBlock: Record<string, typeof proj.episodes> = {};
     for (const ep of proj.episodes) {
-      const id = ep.blockId;
+      const id = ep.blockID;
       episodesByBlock[id] ??= [];
       episodesByBlock[id].push(ep);
     }
@@ -53,11 +53,11 @@ export default function BlockLi({
 
     return { ...proj, blocks: blocksCopy, episodes: reorderedEpisodes };
   };
-  const deleteBlock = (blockId: string) => {
+  const deleteBlock = (blockID: string) => {
     if (!volatileProject) return;
 
-    const updatedBlocks = volatileProject.blocks.filter(b => b.id !== blockId);
-    const updatedEpisodes = volatileProject.episodes.filter(e => e.blockId !== blockId);
+    const updatedBlocks = volatileProject.blocks.filter(b => b.id !== blockID);
+    const updatedEpisodes = volatileProject.episodes.filter(e => e.blockID !== blockID);
 
     setVolatileProject({ ...volatileProject, blocks: updatedBlocks, episodes: updatedEpisodes });
   };
@@ -96,15 +96,15 @@ export default function BlockLi({
 
     setDragOver(false);
 
-    const draggedId = draggedText.split(":")[1];
-    if (!draggedId || draggedId === block.id) return;
+    const draggedID = draggedText.split(":")[1];
+    if (!draggedID || draggedID === block.id) return;
 
     if (!volatileProject) return;
     const blocksCopy = [...volatileProject.blocks];
-    const draggedIndex = blocksCopy.findIndex(b => b.id === draggedId);
+    const draggedIndex = blocksCopy.findIndex(b => b.id === draggedID);
     const dropIndex = blocksCopy.findIndex(b => b.id === block.id);
     if (draggedIndex === -1 || dropIndex === -1) {
-      console.warn(`[BlockLi onDrop] Could not find blocks with ids ${draggedId} or ${block.id}`);
+      console.warn(`[BlockLi onDrop] Could not find blocks with ids ${draggedID} or ${block.id}`);
       return;
     }
 
@@ -181,7 +181,7 @@ export default function BlockLi({
       dialogContent={<div>
         <p>
           This will delete a block with {(() => {
-            const epCount = volatileProject?.episodes.filter(e => e.blockId === block.id).length ?? 0;
+            const epCount = volatileProject?.episodes.filter(e => e.blockID === block.id).length ?? 0;
             return epCount === 1 ? "1 episode" : `${epCount} episodes`;
           })()}. Are you sure?
         </p>

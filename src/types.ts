@@ -1,7 +1,7 @@
 
 export type Episode = {
   id: string;
-  blockId: string;
+  blockID: string;
   filePath?: string;
   duration?: number; // in seconds
   cachedStartTime?: number; // in seconds

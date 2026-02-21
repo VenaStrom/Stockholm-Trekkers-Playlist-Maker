@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { IconArrowDropDown, IconCloseSmall } from "./icons";
-import { generateId } from "@/functions/sha256";
+import { generateID } from "@/functions/sha256";
 
 type PopoverContext = {
   anchorName: string;
@@ -21,7 +21,7 @@ function usePopover() {
 
 export function PopoverContainer({ children }: { children?: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [anchorName] = useState(() => generateId());
+  const [anchorName] = useState(() => generateID());
 
   return (
     <PopoverContext.Provider
