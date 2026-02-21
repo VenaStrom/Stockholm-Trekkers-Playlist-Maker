@@ -1,20 +1,26 @@
 import { useCallback, useContext, useState } from "react";
-import { ToastContext, ToastMessage } from "@/components/toast/toast.internal.ts";
+import { DefaultToastOptions, isToastOptions, ToastContext, ToastMessage, ToastOptions } from "@/components/toast/toast.internal.ts";
 import { IconCloseSmall } from "@/components/icons.tsx";
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
-  const defaultTimeout = 5000;
+  const toast = useCallback((
+    content: React.ReactNode,
+    options?: Partial<ToastOptions>,
+  ) => {
+    options = { ...options, ...DefaultToastOptions, }; // Hihi, side effects :3
 
-  const toast = useCallback((content: React.ReactNode, timeout: number = defaultTimeout) => {
+    if (!isToastOptions(options)) throw new Error("Invalid toast options");
+
     const id = Math.random().toString(36).slice(2, 9);
-    const newToast: ToastMessage = { id, content };
+    const newToast: ToastMessage = { id, content, mood: options.mood, };
+
     setToasts(current => [...current, newToast]);
 
     setTimeout(() => {
       setToasts(current => current.filter(t => t.id !== id));
-    }, timeout || defaultTimeout);
+    }, options.timeout);
 
     return id;
   }, []);
