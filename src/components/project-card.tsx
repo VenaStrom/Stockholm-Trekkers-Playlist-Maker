@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { ProjectMeta } from "@/types";
-import { IconDeleteOutline, IconEditOutline, IconFileExportOutline } from "@/components/icons";
+import { IconDeleteOutline, IconEditOutline } from "@/components/icons";
 import Dialog from "@/components/dialog";
 import { usePageContext } from "@/components/page-context/use-page-context";
 import { useToast } from "@/components/toast";
 import { PageRoute } from "@/components/page-context/page.internal";
 import { deleteProject } from "@/functions/project";
+import ExportButton from "./button/export-button";
 
 export default function ProjectCard({
   projectMeta,
@@ -15,14 +16,6 @@ export default function ProjectCard({
   const { toast } = useToast();
   const { setProjectId, setRoute, reloadProjectMetaData } = usePageContext();
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
-
-  const downloadSaveFolder = () => {
-    toast(
-      <span>
-        Exporting project save folder is not yet implemented.
-      </span>
-    );
-  };
 
   const handleDeleteProject = () => {
     deleteProject(projectMeta.id)
@@ -129,14 +122,7 @@ export default function ProjectCard({
           <IconEditOutline className="inline size-6" />
         </button>
 
-        <button
-          className="pe-1.5 ps-3 hover:bg-spore-500"
-          onClick={downloadSaveFolder}
-        >
-          Export
-          <span className="flex-1"></span>
-          <IconFileExportOutline className="inline size-6" />
-        </button>
+        <ExportButton projectID={projectMeta.id} />
 
         <button
           className="pe-1.5 ps-3 hover:bg-red-alert-500"

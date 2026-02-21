@@ -2,17 +2,16 @@ import type { Episode, Project } from "@/types";
 import { DefaultBlockOptions } from "@/consts";
 import { useEffect, useMemo, useState, useRef } from "react";
 import { useDebounce } from "use-debounce";
-import { IconAdd, IconArrowBack2Outline, IconEditOutline, IconFileExportOutline, Spinner3DotsScaleMiddle } from "@/components/icons";
+import { IconAdd, IconArrowBack2Outline, IconEditOutline, Spinner3DotsScaleMiddle } from "@/components/icons";
 import { openProject, saveProject } from "@/functions/project";
 import { usePageContext } from "@/components/page-context/use-page-context";
 import { PageRoute } from "@/components/page-context/page.internal";
 import { generateId } from "@/functions/sha256";
 import EpisodeLi from "@/components/editor/episode";
 import BlockLi from "@/components/editor/block";
-import { useToast } from "@/components/toast/useToast";
+import ExportButton from "@/components/button/export-button";
 
 export default function Editor() {
-  const { toast } = useToast();
   const { setHeaderText, projectId, setRoute } = usePageContext();
   useEffect(() => setHeaderText("Editor"), [setHeaderText]);
 
@@ -73,13 +72,6 @@ export default function Editor() {
       .catch(err => {
         console.error("Error saving on navigation back:", err);
       });
-  };
-  const downloadSaveFolder = () => {
-    toast(
-      <span>
-        Exporting project save folder is not yet implemented.
-      </span>
-    );
   };
 
   // Ref for the description textarea so we can recalculate height on resize
@@ -192,16 +184,7 @@ export default function Editor() {
         </label>
 
         {/* Export */}
-        <div className="flex flex-row items-center justify-center">
-          <button
-            className="pe-1.5 ps-3 hover:bg-spore-500"
-            onClick={downloadSaveFolder}
-          >
-            Export
-            <span className="flex-1"></span>
-            <IconFileExportOutline className="inline size-6" />
-          </button>
-        </div>
+        <ExportButton projectID={volatileProject?.id ?? null} />
       </aside>
 
       {/* Editor area */}
