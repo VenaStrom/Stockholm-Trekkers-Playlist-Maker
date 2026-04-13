@@ -15,7 +15,12 @@ export async function exportProject(projectID: string, saveLocation: string): Pr
   await fs.mkdir(saveDir, { recursive: true });
   console.info(`Made export dir at ${saveDir}.`);
 
-  
+  // Make "episodes", and "save-files" sub dirs
+  const episodesDir = await path.join(saveDir, "episodes");
+  const saveFilesDir = await path.join(saveDir, "save-files");
+  await fs.mkdir(episodesDir, { recursive: true });
+  await fs.mkdir(saveFilesDir, { recursive: true });
+  console.info(`Made sub dirs at ${episodesDir} and ${saveFilesDir}.`);
 
   return;
 }

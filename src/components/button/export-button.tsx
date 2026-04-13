@@ -51,10 +51,13 @@ export default function ExportButton({
       setVisible={setIsModalOpen}
       dialogHeader={<p className="text-lg">Export Project</p>}
       dialogContent={<p>
-        Exporting project data is not yet implemented.
+        Exporting project...
+        <br />
+        <br />
+        [No feedback implemented yet]
       </p>}
       buttons={[
-        <button>
+        <button data-focus="true">
           Cancel
         </button>,
       ]}
