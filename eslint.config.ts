@@ -1,8 +1,9 @@
+import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
-import reactPlugin from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
-import { Config, defineConfig, globalIgnores } from "eslint/config";
+import type { Config } from "eslint/config";
+import { defineConfig, globalIgnores } from "eslint/config";
 
 const commonRules: Config["rules"] = {
   "prefer-const": "warn",
@@ -50,12 +51,14 @@ const commonRules: Config["rules"] = {
 };
 
 export default defineConfig([
-  ...tseslint.configs.recommendedTypeChecked,
   { // App linting
-    ...reactPlugin.configs.recommended,
-    ...reactHooks.configs.recommended,
-    ...reactRefresh.configs.recommended,
-    name: "App src/",
+    extends: [
+      eslint.configs.recommended,
+      tseslint.configs.recommendedTypeChecked,
+      reactHooks.configs.flat.recommended,
+      reactRefresh.configs.vite,
+    ],
+    name: "app src/",
     files: ["src/**/*.{ts,tsx}"],
     rules: {
       "react-hooks/set-state-in-effect": "warn",
@@ -71,6 +74,9 @@ export default defineConfig([
     },
   },
   { // Script linting
+    extends: [
+      ...tseslint.configs.recommendedTypeChecked,
+    ],
     name: "scripts scripts/",
     files: ["scripts/**/*.{ts,tsx}", "*.ts"],
     rules: {

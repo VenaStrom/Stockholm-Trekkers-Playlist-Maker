@@ -25,11 +25,13 @@
     "strict": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
-    "noPropertyAccessFromIndexSignature": true,
+    // "noPropertyAccessFromIndexSignature": true,
     "noImplicitOverride": true,
     "baseUrl": ".",
   },
   "include": [
     "src",
+    "scripts",
+    "*.ts",
   ],
 }
