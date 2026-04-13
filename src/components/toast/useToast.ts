@@ -1,5 +1,6 @@
 import { useContext } from "react";
-import { ToastContext, ToastContextValue } from "@/components/toast";
+import type { ToastContextValue } from "@/components/toast";
+import { ToastContext } from "@/components/toast";
 
 export function useToast(): ToastContextValue {
   const ctx = useContext(ToastContext);

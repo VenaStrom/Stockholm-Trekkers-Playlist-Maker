@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Episode, Project } from "@/types";
+import type { Episode, Project } from "@/types";
 import { IconDeleteOutline, IconDragIndicator, IconFolderOutline } from "@/components/icons";
 import { open } from "@tauri-apps/plugin-dialog";
 import { secondsToTimeString } from "@/functions/time-format";
@@ -9,6 +9,7 @@ import { generateID } from "@/functions/sha256";
  * I don't like this, but this is very convenient to keep the UI prettier during drag-and-drop
  */
 declare global {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface Window { __st_drag?: string | null; }
 }
 
@@ -59,7 +60,7 @@ export default function EpisodeLi({
       // Remove all but last trailing empty
       if (trailingEmpties.length > 1) {
         for (let i = 0; i < trailingEmpties.length - 1; i++) {
-          const indexToRemove = sortedEpisodes.findIndex(e => e.id === trailingEmpties[i]!.id);
+          const indexToRemove = sortedEpisodes.findIndex(e => e.id === trailingEmpties[i]?.id);
           if (indexToRemove !== -1) {
             sortedEpisodes.splice(indexToRemove, 1);
           }
@@ -97,7 +98,7 @@ export default function EpisodeLi({
         console.error("Error during file selection:", err);
       }
     })()
-      .catch((err) => {
+      .catch((err: unknown) => {
         console.error("Error in chooseFile async function:", err);
       });
   };
@@ -208,7 +209,10 @@ export default function EpisodeLi({
 
     // If moved block passed a blockID boundary, update blockIDs which will replace the move
     if (thisEpisode.blockID !== previousEpisode.blockID) {
-      episodesCopy[thisIndex]!.blockID = previousEpisode.blockID;
+      if (!episodesCopy[thisIndex]) {
+        throw new Error("Episode at thisIndex is undefined after blockID change, this should never happen");
+      }
+      episodesCopy[thisIndex].blockID = previousEpisode.blockID;
     }
     else {
       // Swap positions when in same block
@@ -250,15 +254,21 @@ export default function EpisodeLi({
       && (typeof nextEpisode.filePath === "undefined" || nextEpisode.filePath.trim().length === 0) // Edge piece is empty
       && thisEpisode.blockID !== nextNextEpisode.blockID // Third piece is in next block, don't care if it's empty or not
     ) {
+      if (!episodesCopy[thisIndex]) {
+        throw new Error("Episode at thisIndex is undefined after blockID change, this should never happen");
+      }
       // Get next block id
-      episodesCopy[thisIndex]!.blockID = nextNextEpisode.blockID;
+      episodesCopy[thisIndex].blockID = nextNextEpisode.blockID;
       // Swap with next episode to maintain order
       episodesCopy[thisIndex + 1] = { ...thisEpisode };
       episodesCopy[thisIndex] = { ...nextEpisode };
     }
     // Only change block when passing a blockID boundary
     else if (thisEpisode.blockID !== nextEpisode.blockID) {
-      episodesCopy[thisIndex]!.blockID = nextEpisode.blockID;
+      if (!episodesCopy[thisIndex]) {
+        throw new Error("Episode at thisIndex is undefined after blockID change, this should never happen");
+      }
+      episodesCopy[thisIndex].blockID = nextEpisode.blockID;
     }
     // Swap positions when in same block
     else {

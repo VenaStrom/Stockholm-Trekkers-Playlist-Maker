@@ -35,12 +35,12 @@ export default function ExportButton({
         .then((res) => {
           console.log(res);
         })
-        .catch(e => {
-          console.error("Error exporting project:", e);
+        .catch((err: unknown) => {
+          console.error("Error exporting project:", err);
         });
     })
-      .catch(e => {
-        console.error("Error opening save dialog:", e);
+      .catch((err: unknown) => {
+        console.error("Error opening save dialog:", err);
         toast("Failed to open save dialog. Please try again.");
       });
   };

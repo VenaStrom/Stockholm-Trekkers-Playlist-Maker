@@ -9,6 +9,7 @@ import Dialog from "@/components/dialog";
  * I don't like this, but this is very convenient to keep the UI prettier during drag-and-drop
  */
 declare global {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface Window { __st_drag?: string | null; }
 }
 

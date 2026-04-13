@@ -31,7 +31,7 @@ export default function App() {
       if (e.ctrlKey && (e.key === "w" || e.key === "q")) {
         e.preventDefault();
         invoke("close")
-          .catch((err) => {
+          .catch((err: unknown) => {
             console.error("Failed to close app:", err);
           });
       }
@@ -79,14 +79,14 @@ export default function App() {
     if (lightMode) {
       document.body.classList.add("light");
       setTheme("light")
-        .catch((err) => {
+        .catch((err: unknown) => {
           console.error("Failed to set light theme:", err);
         });
       localStorage.setItem("lightMode", "true");
     } else {
       document.body.classList.remove("light");
       setTheme("dark")
-        .catch((err) => {
+        .catch((err: unknown) => {
           console.error("Failed to set dark theme:", err);
         });
       localStorage.setItem("lightMode", "false");

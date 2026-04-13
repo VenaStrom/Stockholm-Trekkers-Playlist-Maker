@@ -25,10 +25,11 @@ export default function ProjectCard({
           </span>,
         );
       })
-      .catch((error) => {
+      .catch((err: unknown) => {
+        const errorMessage = err instanceof Error ? err.message : String(err);
         toast(
           <span>
-            Failed to delete project <span className="italic">{projectMeta.date}</span>: {error instanceof Error ? error.message : String(error)}
+            Failed to delete project <span className="italic">{projectMeta.date}</span>: {errorMessage}
           </span>,
         );
       })

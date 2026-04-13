@@ -25,8 +25,8 @@ export function PageProvider({ children }: { children: React.ReactNode }) {
       .then((loadedMetas) => {
         setProjectMetas(loadedMetas);
       })
-      .catch((e) => {
-        console.error("Failed to load projects:", e);
+      .catch((err: unknown) => {
+        console.error("Failed to load projects:", err);
       });
   }, [forceReload]);
 

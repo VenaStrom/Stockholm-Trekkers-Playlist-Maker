@@ -24,7 +24,7 @@ export default function Editor() {
       .then((project) => {
         setVolatileProject(project);
       })
-      .catch((err) => {
+      .catch((err: unknown) => {
         console.error("Failed to open project:", err);
       });
   }, [projectID]);
@@ -45,7 +45,7 @@ export default function Editor() {
           console.info(`[Editor] Project saved. (${(performance.now() - start).toFixed(2)} ms)`);
         }
       })
-      .catch(err => {
+      .catch((err: unknown) => {
         console.error("Error in debounced save:", err);
       });
   }, [debouncedProject]);
@@ -68,7 +68,7 @@ export default function Editor() {
       .then(() => {
         setRoute(PageRoute.Projects);
       })
-      .catch(err => {
+      .catch((err: unknown) => {
         console.error("Error saving on navigation back:", err);
       });
   };

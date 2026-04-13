@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { usePageContext } from "@/components/page-context";
 import ProjectCard from "@/components/project-card";
-import { ProjectMeta } from "@/types";
+import type { ProjectMeta } from "@/types";
 import { IconAddBoxOutline, IconFolderOutline } from "@/components/icons";
 import { path } from "@tauri-apps/api";
 import { useToast } from "@/components/toast";
@@ -21,8 +21,8 @@ export default function Projects() {
         await invoke("mkdir", { dirPath: hiddenSubFolderPath, hidden: true, });
         await revealItemInDir(hiddenSubFolderPath);
       })
-      .catch((e) => {
-        console.error("Failed to open projects folder:", e);
+      .catch((err: unknown) => {
+        console.error("Failed to open projects folder:", err);
         toast("Failed to open projects folder. Please try again.");
       });
   };
@@ -35,8 +35,8 @@ export default function Projects() {
           Made new project.
         </>);
       })
-      .catch((e) => {
-        console.error("Failed to create new project:", e);
+      .catch((err: unknown) => {
+        console.error("Failed to create new project:", err);
         toast("Failed to create new project. Please try again.");
       });
   };

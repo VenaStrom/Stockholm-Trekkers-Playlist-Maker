@@ -1,5 +1,6 @@
-import React, { createContext } from "react";
-import { ProjectMeta } from "@/types";
+import type React from "react";
+import { createContext } from "react";
+import type { ProjectMeta } from "@/types";
 
 export const PageRoute = {
   Projects: "projects",
