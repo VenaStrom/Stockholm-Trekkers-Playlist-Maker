@@ -25,6 +25,7 @@
     "strict": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
+    "noImplicitAny": true,
     // "noPropertyAccessFromIndexSignature": true,
     "noImplicitOverride": true,
     "baseUrl": ".",
@@ -32,6 +33,6 @@
   "include": [
     "src",
     "scripts",
-    "*.ts",
+    "*.config.ts",
   ],
 }

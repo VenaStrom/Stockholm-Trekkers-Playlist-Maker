@@ -16,7 +16,7 @@
     "dev": "yarn tauri dev",
     "build": "yarn download-assets && yarn tauri build && yarn rename-bundles",
     "vite:dev": "vite",
-    "vite:build": "vite build",
+    "vite:build": "yarn lint && vite build",
     "tauri": "tauri",
     "download-assets": "tsx scripts/download-video-assets.ts",
     "rename-bundles": "tsx scripts/rename-bundles.ts",
