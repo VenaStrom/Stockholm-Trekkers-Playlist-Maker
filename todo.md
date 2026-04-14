@@ -8,8 +8,8 @@
 - Save indicator in editor (when saving, saved, error)
 
 
-- [ ] Index folder for episodes with fuzzy search
+- [ ] On home screen, index folder for episodes with fuzzy search to prefill when given a schedule
 - [ ] Re-encode to h264 by default but allow for other strategies like "preserve", "h264", "h265" ...
 - [ ] Run ffmpeg to grab previews throughout all the episodes to visually validate the project
 - [ ] On export, show a summery view of the project
-- [ ] 
+- [ ] Compile `.sh` and `.ps1` simultaneously
