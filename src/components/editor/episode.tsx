@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { Episode, Project } from "@/types";
 import { IconDeleteOutline, IconDragIndicator, IconFolderOutline } from "@/components/icons";
 import { open } from "@tauri-apps/plugin-dialog";
@@ -24,22 +24,13 @@ export default function EpisodeLi({
   projectSetter: React.Dispatch<React.SetStateAction<Project | null>>;
 }) {
   const [selectedFile, setSelectedFile] = useState<string | null>(episode.filePath ?? null);
+  const ffprobeRequestRef = useRef(0);
 
-  // Helper. Produces a new Project where the given episode has its filePath set, and ensure each block has a trailing empty episode
-  const updateEpisode = (project: Project, episodeID: string, episodeProps: Partial<Omit<Episode, "id">>): Project => {
-    const updatedEpisodes = JSON.parse(JSON.stringify(project.episodes)) as Episode[];
-    const epIndex = updatedEpisodes.findIndex(ep => ep.id === episodeID);
-    if (epIndex === -1) {
-      console.warn(`[updateEpisode] Could not find episode with id ${episodeID}`);
-      return project;
-    }
-    if (!updatedEpisodes[epIndex]) throw new Error("Episode to update is undefined");
-    updatedEpisodes[epIndex] = { ...updatedEpisodes[epIndex], ...episodeProps };
-
+  const normalizeEpisodes = (project: Project, episodes: Episode[]): Episode[] => {
     // Sort episodes so they are clumped by block id
     const sortedEpisodes: Episode[] = [];
     project.blocks.forEach(block => {
-      const episodesInBlock = updatedEpisodes.filter(e => e.blockID === block.id);
+      const episodesInBlock = episodes.filter(e => e.blockID === block.id);
       sortedEpisodes.push(...episodesInBlock);
     });
 
@@ -69,88 +60,118 @@ export default function EpisodeLi({
       }
     });
 
-    return { ...project, episodes: sortedEpisodes };
+    return sortedEpisodes;
   };
 
-  const chooseFile = () => {
-    if (episode.filePath) {
-      runFFprobe([
-        // Get duration of file for metadata display and sorting
-        "-v", "error",
-        "-select_streams", "v:0",
-        "-show_entries", "format=duration",
-        "-of", "default=noprint_wrappers=1:nokey=1",
-        episode.filePath,
-      ])
-        .then((o) => {
-          const durationSeconds = parseFloat(o.stdout);
-          if (isNaN(durationSeconds)) {
-            console.warn(`Could not parse duration from ffprobe output: ${o.stdout}`);
-            return;
-          }
+  const updateProjectEpisodes = (
+    project: Project,
+    updater: (episodes: Episode[]) => Episode[],
+  ): Project => {
+    const nextEpisodes = updater(project.episodes.map(ep => ({ ...ep })));
+    return { ...project, episodes: normalizeEpisodes(project, nextEpisodes) };
+  };
 
-          setVolatileProject((prevProject) => {
-            if (!prevProject) return prevProject;
-            return updateEpisode(prevProject, episode.id, { duration: durationSeconds });
-          });
-        })
-        .catch((e: unknown) => {
-          console.error("Error running FFprobe command:", e);
-        });
-    }
+  // Helper. Produces a new Project where the given episode has updated props and each block has exactly one trailing empty episode.
+  const updateEpisode = (
+    project: Project,
+    episodeID: string,
+    episodeProps: Partial<Omit<Episode, "id">>,
+  ): Project => {
+    return updateProjectEpisodes(project, (episodes) => {
+      const epIndex = episodes.findIndex(ep => ep.id === episodeID);
+      if (epIndex === -1) {
+        console.warn(`[updateEpisode] Could not find episode with id ${episodeID}`);
+        return episodes;
+      }
+      const targetEpisode = episodes[epIndex];
+      if (!targetEpisode) return episodes;
 
-    (async () => {
-      try {
-        const filePath = await open({
-          multiple: false,
-          directory: false,
-          filters: [
-            { name: "Video Files", extensions: ["wav", "mp4", "mov", "avi", "mkv", "gif"] },
-            { name: "Audio Files", extensions: ["mp3", "aac", "flac", "wav", "ogg", "m4a"] },
-            { name: "Image Files", extensions: ["png", "jpg", "jpeg", "gif", "bmp", "tiff"] },
-            { name: "All Files", extensions: ["*"] },
-          ],
-          title: "Select Episode Media File",
-        });
+      episodes[epIndex] = { ...targetEpisode, ...episodeProps };
+      return episodes;
+    });
+  };
 
-        const fileString = typeof filePath === "string" ? filePath : null;
-        setSelectedFile(fileString);
+  // Sync on selected file
+  useEffect(() => {
+    setSelectedFile(episode.filePath ?? null);
+  }, [episode.id, episode.filePath]);
+
+  const fetchDurationForPath = (episodeID: string, filePath: string) => {
+    const requestID = ++ffprobeRequestRef.current;
+
+    runFFprobe([
+      "-v", "error",
+      "-select_streams", "v:0",
+      "-show_entries", "format=duration",
+      "-of", "default=noprint_wrappers=1:nokey=1",
+      filePath,
+    ])
+      .then((o) => {
+        const durationSeconds = parseFloat(o.stdout);
+        if (isNaN(durationSeconds)) {
+          console.warn(`Could not parse duration from ffprobe output: ${o.stdout}`);
+          return;
+        }
 
         setVolatileProject((prevProject) => {
           if (!prevProject) return prevProject;
-          return updateEpisode(prevProject, episode.id, {
-            filePath: fileString ?? undefined,
-            duration: undefined, // Reset duration when file changes, will be re-populated on next metadata fetch
-          });
+          if (ffprobeRequestRef.current !== requestID) return prevProject;
+
+          const targetEpisode = prevProject.episodes.find(ep => ep.id === episodeID);
+          if (targetEpisode?.filePath !== filePath) {
+            return prevProject;
+          }
+
+          return updateEpisode(prevProject, episodeID, { duration: durationSeconds });
         });
-      }
-      catch (err) {
-        console.error("Error during file selection:", err);
-      }
-    })()
-      .catch((err: unknown) => {
-        console.error("Error in chooseFile async function:", err);
+      })
+      .catch((e: unknown) => {
+        console.error("Error running FFprobe command:", e);
       });
+  };
+
+  const chooseFile = async () => {
+    try {
+      const filePath = await open({
+        multiple: false,
+        directory: false,
+        filters: [
+          { name: "Video Files", extensions: ["wav", "mp4", "mov", "avi", "mkv", "gif"] },
+          { name: "Audio Files", extensions: ["mp3", "aac", "flac", "wav", "ogg", "m4a"] },
+          { name: "Image Files", extensions: ["png", "jpg", "jpeg", "gif", "bmp", "tiff"] },
+          { name: "All Files", extensions: ["*"] },
+        ],
+        title: "Select Episode Media File",
+      });
+
+      const fileString = typeof filePath === "string" ? filePath : null;
+      setSelectedFile(fileString);
+
+      setVolatileProject((prevProject) => {
+        if (!prevProject) return prevProject;
+        return updateEpisode(prevProject, episode.id, {
+          filePath: fileString ?? undefined,
+          duration: undefined, // Reset duration when file changes, will be re-populated on next metadata fetch
+        });
+      });
+
+      if (fileString) {
+        fetchDurationForPath(episode.id, fileString);
+      }
+    }
+    catch (err) {
+      console.error("Error during file selection:", err);
+    }
   };
 
   const deleteEpisode = () => {
     setVolatileProject((prevProject) => {
       if (!prevProject) return prevProject;
-      const newEpisodes = prevProject.episodes.filter((ep) => ep.id !== episode.id);
-      return { ...prevProject, episodes: newEpisodes };
-    });
-  };
-
-  // Update project state on selectedFile change
-  useEffect(() => {
-    setVolatileProject((prevProject) => {
-      if (!prevProject) return prevProject;
-      return updateEpisode(prevProject, episode.id, {
-        filePath: selectedFile ?? undefined,
-        duration: undefined, // Reset duration when file changes, will be re-populated on next metadata fetch
+      return updateProjectEpisodes(prevProject, (episodes) => {
+        return episodes.filter((ep) => ep.id !== episode.id);
       });
     });
-  }, [episode.id, selectedFile, setVolatileProject]);
+  };
 
   // Drag/movement handlers
   const [isDragOver, setDragOver] = useState(false);
@@ -191,28 +212,31 @@ export default function EpisodeLi({
     const draggedID = draggedText.split(":")[1] ?? "";
     if (!draggedID || draggedID === episode.id) return;
 
-    if (!volatileProject) return;
-    const episodesCopy = [...volatileProject.episodes];
-    const draggedEpisodeIndex = episodesCopy.findIndex(e => e.id === draggedID);
-    const dropEpisodeIndex = episodesCopy.findIndex(e => e.id === episode.id);
-    if (draggedEpisodeIndex === -1 || dropEpisodeIndex === -1) {
-      console.warn(`[EpisodeLi onDrop] Could not find episodes with ids ${draggedID} or ${episode.id}`);
-      return;
-    }
+    setVolatileProject((prevProject) => {
+      if (!prevProject) return prevProject;
 
-    const draggedEpisode = episodesCopy[draggedEpisodeIndex];
-    const dropEpisode = episodesCopy[dropEpisodeIndex];
-    if (!draggedEpisode || !dropEpisode) {
-      console.info(`Could not find episodes at indices ${draggedEpisodeIndex} or ${dropEpisodeIndex}`);
-      return;
-    }
+      return updateProjectEpisodes(prevProject, (episodes) => {
+        const draggedEpisodeIndex = episodes.findIndex(e => e.id === draggedID);
+        const dropEpisodeIndex = episodes.findIndex(e => e.id === episode.id);
+        if (draggedEpisodeIndex === -1 || dropEpisodeIndex === -1) {
+          console.warn(`[EpisodeLi onDrop] Could not find episodes with ids ${draggedID} or ${episode.id}`);
+          return episodes;
+        }
 
-    // Insert before and copy blockID of drop target onto dragged episode
-    episodesCopy.splice(draggedEpisodeIndex, 1);
-    draggedEpisode.blockID = dropEpisode.blockID;
-    episodesCopy.splice(dropEpisodeIndex, 0, draggedEpisode);
+        const draggedEpisode = episodes[draggedEpisodeIndex];
+        const dropEpisode = episodes[dropEpisodeIndex];
+        if (!draggedEpisode || !dropEpisode) {
+          console.info(`Could not find episodes at indices ${draggedEpisodeIndex} or ${dropEpisodeIndex}`);
+          return episodes;
+        }
 
-    setVolatileProject(prev => prev ? { ...prev, episodes: episodesCopy } : prev);
+        const movedEpisode: Episode = { ...draggedEpisode, blockID: dropEpisode.blockID };
+        const withoutDraggedEpisode = episodes.filter((_, index) => index !== draggedEpisodeIndex);
+        const adjustedDropIndex = draggedEpisodeIndex < dropEpisodeIndex ? dropEpisodeIndex - 1 : dropEpisodeIndex;
+        withoutDraggedEpisode.splice(adjustedDropIndex, 0, movedEpisode);
+        return withoutDraggedEpisode;
+      });
+    });
 
     window.__st_drag = null;
 
@@ -227,33 +251,35 @@ export default function EpisodeLi({
     }, 0);
   };
   const moveEpisodeUpOne = () => {
-    if (!volatileProject) return;
+    setVolatileProject((prevProject) => {
+      if (!prevProject) return prevProject;
 
-    const episodesCopy = [...volatileProject.episodes];
-    const thisIndex = episodesCopy.findIndex(e => e.id === episode.id);
-    if (thisIndex <= 0) return; // Already at top
+      return updateProjectEpisodes(prevProject, (episodes) => {
+        const thisIndex = episodes.findIndex(e => e.id === episode.id);
+        if (thisIndex <= 0) return episodes; // Already at top
 
-    const previousEpisode = episodesCopy[thisIndex - 1];
-    const thisEpisode = episodesCopy[thisIndex];
-    if (!previousEpisode || !thisEpisode) {
-      console.info(`Could not find episodes at indices ${thisIndex} or ${thisIndex - 1}`);
-      return;
-    }
+        const previousEpisode = episodes[thisIndex - 1];
+        const thisEpisode = episodes[thisIndex];
+        if (!previousEpisode || !thisEpisode) {
+          console.info(`Could not find episodes at indices ${thisIndex} or ${thisIndex - 1}`);
+          return episodes;
+        }
 
-    // If moved block passed a blockID boundary, update blockIDs which will replace the move
-    if (thisEpisode.blockID !== previousEpisode.blockID) {
-      if (!episodesCopy[thisIndex]) {
-        throw new Error("Episode at thisIndex is undefined after blockID change, this should never happen");
-      }
-      episodesCopy[thisIndex].blockID = previousEpisode.blockID;
-    }
-    else {
-      // Swap positions when in same block
-      episodesCopy[thisIndex - 1] = { ...thisEpisode };
-      episodesCopy[thisIndex] = { ...previousEpisode };
-    }
+        const nextEpisodes = [...episodes];
 
-    setVolatileProject(prev => prev ? { ...prev, episodes: episodesCopy } : prev);
+        // If moved block passed a blockID boundary, update blockIDs which will replace the move
+        if (thisEpisode.blockID !== previousEpisode.blockID) {
+          nextEpisodes[thisIndex] = { ...thisEpisode, blockID: previousEpisode.blockID };
+        }
+        else {
+          // Swap positions when in same block
+          nextEpisodes[thisIndex - 1] = { ...thisEpisode };
+          nextEpisodes[thisIndex] = { ...previousEpisode };
+        }
+
+        return nextEpisodes;
+      });
+    });
 
     setTimeout(() => {
       const li = document.getElementById(`episode-${episode.id}`);
@@ -266,50 +292,46 @@ export default function EpisodeLi({
     }, 0);
   };
   const moveEpisodeDownOne = () => {
-    if (!volatileProject) return;
+    setVolatileProject((prevProject) => {
+      if (!prevProject) return prevProject;
 
-    const episodesCopy = [...volatileProject.episodes];
-    const thisIndex = episodesCopy.findIndex(e => e.id === episode.id);
-    if (thisIndex === -1 || thisIndex >= episodesCopy.length - 1) return; // Already at bottom
+      return updateProjectEpisodes(prevProject, (episodes) => {
+        const thisIndex = episodes.findIndex(e => e.id === episode.id);
+        if (thisIndex === -1 || thisIndex >= episodes.length - 1) return episodes; // Already at bottom
 
-    const thisEpisode = episodesCopy[thisIndex];
-    const nextEpisode = episodesCopy[thisIndex + 1];
-    if (!thisEpisode || !nextEpisode) {
-      console.info(`Could not find episodes at indices ${thisIndex} or ${thisIndex + 1}`);
-      return;
-    }
-    const nextNextEpisode = episodesCopy[thisIndex + 2];
+        const thisEpisode = episodes[thisIndex];
+        const nextEpisode = episodes[thisIndex + 1];
+        if (!thisEpisode || !nextEpisode) {
+          console.info(`Could not find episodes at indices ${thisIndex} or ${thisIndex + 1}`);
+          return episodes;
+        }
+        const nextNextEpisode = episodes[thisIndex + 2];
+        const nextEpisodes = [...episodes];
 
-    // Special case: moving down from end of block to start of next block
-    if (
-      nextNextEpisode
-      && thisEpisode.blockID === nextEpisode.blockID // On the same block as the edge piece
-      && (typeof nextEpisode.filePath === "undefined" || nextEpisode.filePath.trim().length === 0) // Edge piece is empty
-      && thisEpisode.blockID !== nextNextEpisode.blockID // Third piece is in next block, don't care if it's empty or not
-    ) {
-      if (!episodesCopy[thisIndex]) {
-        throw new Error("Episode at thisIndex is undefined after blockID change, this should never happen");
-      }
-      // Get next block id
-      episodesCopy[thisIndex].blockID = nextNextEpisode.blockID;
-      // Swap with next episode to maintain order
-      episodesCopy[thisIndex + 1] = { ...thisEpisode };
-      episodesCopy[thisIndex] = { ...nextEpisode };
-    }
-    // Only change block when passing a blockID boundary
-    else if (thisEpisode.blockID !== nextEpisode.blockID) {
-      if (!episodesCopy[thisIndex]) {
-        throw new Error("Episode at thisIndex is undefined after blockID change, this should never happen");
-      }
-      episodesCopy[thisIndex].blockID = nextEpisode.blockID;
-    }
-    // Swap positions when in same block
-    else {
-      episodesCopy[thisIndex + 1] = { ...thisEpisode };
-      episodesCopy[thisIndex] = { ...nextEpisode };
-    }
+        // Special case: moving down from end of block to start of next block
+        if (
+          nextNextEpisode
+          && thisEpisode.blockID === nextEpisode.blockID // On the same block as the edge piece
+          && (typeof nextEpisode.filePath === "undefined" || nextEpisode.filePath.trim().length === 0) // Edge piece is empty
+          && thisEpisode.blockID !== nextNextEpisode.blockID // Third piece is in next block, don't care if it's empty or not
+        ) {
+          // Get next block id
+          nextEpisodes[thisIndex] = { ...nextEpisode };
+          nextEpisodes[thisIndex + 1] = { ...thisEpisode, blockID: nextNextEpisode.blockID };
+        }
+        // Only change block when passing a blockID boundary
+        else if (thisEpisode.blockID !== nextEpisode.blockID) {
+          nextEpisodes[thisIndex] = { ...thisEpisode, blockID: nextEpisode.blockID };
+        }
+        // Swap positions when in same block
+        else {
+          nextEpisodes[thisIndex + 1] = { ...thisEpisode };
+          nextEpisodes[thisIndex] = { ...nextEpisode };
+        }
 
-    setVolatileProject(prev => prev ? { ...prev, episodes: episodesCopy } : prev);
+        return nextEpisodes;
+      });
+    });
 
     setTimeout(() => {
       const li = document.getElementById(`episode-${episode.id}`);
@@ -389,7 +411,9 @@ export default function EpisodeLi({
 
         <button
           className="bg-abyss-200 hover:bg-spore-500 ps-3"
-          onClick={chooseFile}
+          onClick={() => {
+            void chooseFile();
+          }}
         >
           Select file
           <IconFolderOutline className="inline size-6 ms-0.5" />
