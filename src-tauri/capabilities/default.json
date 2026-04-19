@@ -24,6 +24,16 @@
     "fs:allow-copy-file",
     "fs:allow-mkdir",
     "dialog:default",
-    "dialog:allow-open"
+    "dialog:allow-open",
+    {
+      "identifier": "shell:allow-execute",
+      "allow": [
+        {
+          "name": "ffmpeg",
+          "cmd": "ffmpeg",
+          "args": true
+        }
+      ]
+    }
   ]
 }
