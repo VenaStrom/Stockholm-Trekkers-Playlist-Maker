@@ -9,6 +9,7 @@ import { generateID } from "@/functions/sha256";
 import EpisodeLi from "@/components/editor/episode";
 import BlockLi from "@/components/editor/block";
 import ExportButton from "@/components/button/export-button";
+import { parseDate } from "@/functions/date-parser";
 
 export default function Editor() {
   const { setHeaderText, projectID, setRoute } = usePageContext();
@@ -52,8 +53,10 @@ export default function Editor() {
 
   // Handlers
   const onDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newDate = e.target.value;
-    setVolatileProject(prev => prev ? { ...prev, date: newDate } : prev);
+    setVolatileProject(prev => prev ? { ...prev, date: e.target.value } : prev);
+  };
+  const onDateBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    setVolatileProject(prev => prev ? { ...prev, date: parseDate(e.target.value) } : prev);
   };
   const onDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newDescription = e.target.value;
@@ -145,6 +148,7 @@ export default function Editor() {
                 :
                 <input
                   onChange={onDateChange}
+                  onBlur={onDateBlur}
                   value={volatileProject.date}
                   name="date"
                   className="text-center text-xl"
