@@ -1,16 +1,17 @@
 use hf;
 use std::fs::create_dir_all;
+use tauri_plugin_log::{Target, TargetKind};
 
 #[tauri::command]
 fn close() {
-  println!("Closing application");
+  log::info!("Closing application");
   std::process::exit(0);
 }
 
 #[tauri::command]
 async fn mkdir(dir_path: String, hidden: Option<bool>) -> Result<(), String> {
   // Create the application directory folder
-  println!("Creating app data dir folder: {}", dir_path);
+  log::info!("Creating app data dir folder: {}", dir_path);
 
   let full_path = std::path::Path::new(&dir_path);
 
@@ -50,6 +51,18 @@ async fn mkdir(dir_path: String, hidden: Option<bool>) -> Result<(), String> {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
   tauri::Builder::default()
+    .plugin(
+      tauri_plugin_log::Builder::new()
+        .level(log::LevelFilter::Info)
+        .targets([
+          Target::new(TargetKind::LogDir {
+            file_name: Some("app".into()),
+          }),
+          Target::new(TargetKind::Stdout),
+          Target::new(TargetKind::Webview),
+        ])
+        .build(),
+    )
     .plugin(tauri_plugin_dialog::init())
     .plugin(tauri_plugin_fs::init())
     .plugin(tauri_plugin_opener::init())

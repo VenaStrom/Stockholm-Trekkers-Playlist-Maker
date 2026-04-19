@@ -21,12 +21,14 @@
     "download-assets": "tsx scripts/download-video-assets.ts",
     "prepare-ffmpeg-sidecar": "tsx scripts/prepare-ffmpeg-sidecar.ts",
     "rename-bundles": "tsx scripts/rename-bundles.ts",
+    "logs:open": "tsx scripts/open-logs.ts",
     "lint": "tsc --noEmit -p ./tsconfig.json && eslint -c ./eslint.config.ts --cache --concurrency auto"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.10.1",
     "@tauri-apps/plugin-dialog": "~2",
     "@tauri-apps/plugin-fs": "~2",
+    "@tauri-apps/plugin-log": "~2",
     "@tauri-apps/plugin-opener": "~2",
     "@tauri-apps/plugin-shell": "^2.3.5",
     "js-sha256": "^0.11.1",
