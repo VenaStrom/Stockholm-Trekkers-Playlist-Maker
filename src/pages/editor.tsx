@@ -52,12 +52,6 @@ export default function Editor() {
   }, [debouncedProject]);
 
   // Handlers
-  const onDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setVolatileProject(prev => prev ? { ...prev, date: e.target.value } : prev);
-  };
-  const onDateBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    setVolatileProject(prev => prev ? { ...prev, date: parseDate(e.target.value) } : prev);
-  };
   const onDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newDescription = e.target.value;
     setVolatileProject(prev => prev ? { ...prev, description: newDescription } : prev);
@@ -147,8 +141,8 @@ export default function Editor() {
                 <Spinner3DotsScaleMiddle className="w-fit h-9 inline-block align-middle mb-1" />
                 :
                 <input
-                  onChange={onDateChange}
-                  onBlur={onDateBlur}
+                  onChange={e => setVolatileProject(prev => prev ? { ...prev, date: e.target.value } : prev)}
+                  onBlur={e => setVolatileProject(prev => prev ? { ...prev, date: parseDate(e.target.value) } : prev)}
                   value={volatileProject.date}
                   name="date"
                   className="text-center text-xl"
