@@ -48,6 +48,7 @@ const commonRules: Config["rules"] = {
   "eqeqeq": ["error", "smart"],
   "semi": ["error", "always"],
   "comma-dangle": ["error", "always-multiline"], // Would be nice but not tweakable enough
+  "no-extra-boolean-cast": "off",
 };
 
 export default defineConfig([
