@@ -13,7 +13,9 @@ function onlyDigits(input: string): string {
 function iso(year: string | number, month: string | number, day: string | number): string {
   return `${year.toString()}-${month.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
 }
-
+/** 
+ * TODO: handle months of different lengths
+ */
 export function parseDate(unparsedDate: string): string {
   if (unparsedDate === "") return unparsedDate;
 
