@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 import { usePageContext, PageRoute } from "@/components/page-context";
 import Editor from "@/pages/editor";
 import Projects from "@/pages/projects";
-import packageJson from "../package.json" with { type: "json" };
 
 export default function App() {
   const [lightMode, setLightMode] = useState(() => {
@@ -94,12 +93,14 @@ export default function App() {
   }, [lightMode]);
 
   return (<>
-    <header className={`
-      p-2 px-5
-      flex flex-row items-center gap-x-2
-      h-(--header-height)
-      ${route === PageRoute.Editor ? "bg-abyss-800" : "bg-abyss-900"}
-    `}>
+    <header
+      className={`
+        p-2 px-5
+        flex flex-row items-center gap-x-2
+        h-(--header-height)
+        ${route === PageRoute.Editor ? "bg-abyss-800" : "bg-abyss-900"}
+      `}
+    >
       {/* Logo */}
       <img className="size-14" src="/icon/org/stockholm-trekkers-256x256.png" alt="Stockholm Trekkers Logo" />
       {/* App name */}
@@ -144,16 +145,18 @@ export default function App() {
       </button>
 
       {/* Credit */}
-      <p className="flex flex-col items-end leading-5 text-sm">
-        {packageJson.contributors?.[0] && <>
-          <span>Made by <a href={packageJson.contributors[0].url} target="_blank" rel="noreferrer">{packageJson.contributors[0].name}</a></span>
-          <span>
-            <a href={`mailto:${packageJson.contributors[0].email}?subject=Playlist%20Maker`} target="_blank" rel="noreferrer">
-              {packageJson.contributors[0].email.replace(/\+\w*?(?=@)/, "")}
-            </a>
-          </span>
-        </>}
-      </p>
+      <div className="flex flex-row gap-x-4 leading-5 text-sm">
+        {__AUTHOR__ &&
+          <p className="flex flex-col items-end">
+            <span>Made by <a href={__AUTHOR__.url} target="_blank" rel="noreferrer">{__AUTHOR__.name}</a></span>
+            <span>
+              <a href={`mailto:${__AUTHOR__.email}?subject=Playlist%20Maker`} target="_blank" rel="noreferrer">
+                {__AUTHOR__.email.replace(/\+\w*?(?=@)/, "")}
+              </a>
+            </span>
+          </p>
+        }
+      </div>
     </header>
 
     {(() => {
@@ -164,6 +167,13 @@ export default function App() {
           return <Projects />;
       }
     })()}
+
+    <footer className="w-full flex flex-row justify-end py-0.5 px-3 pointer-events-none">
+      <p className="flex flex-row gap-x-6 text-flare-500/70 italic text-sm pointer-events-auto">
+        {__VERSION__ && <span>{`Version ${__VERSION__}`}</span>}
+        <span>Built {new Date(__BUILD_DATE__).toLocaleDateString("en-SE", { year: "numeric", month: "2-digit", day: "2-digit" })}</span>
+      </p>
+    </footer>
 
     <Toaster />
   </>);

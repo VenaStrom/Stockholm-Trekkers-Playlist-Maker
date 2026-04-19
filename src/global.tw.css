@@ -70,7 +70,8 @@
 
   body {
     @apply bg-abyss-800 text-flare-500 max-h-screen h-screen *:w-full flex flex-col items-center justify-start;
-    max-height: var(--body-max-h);
+    /* TODO: why is this needed? it didn't push the footer all the way down */
+    /* max-height: var(--body-max-h); */
 
     & > main {
       @apply flex-1;
