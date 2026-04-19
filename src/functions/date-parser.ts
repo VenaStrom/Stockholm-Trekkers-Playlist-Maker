@@ -21,13 +21,13 @@ export function parseDate(unparsedDate: string): string {
   if (date === "") return unparsedDate;
 
   const thisYear: string = new Date().getFullYear().toString();
-  const thisMonth: number = (new Date().getMonth() + 1);
+  const thisMonth: number = new Date().getMonth() + 1;
 
-  // Assume the date is in the format YYYYMMDD
+  // YYYYMMDD
   if (date.length === 8) {
     const month = Number(date.slice(4, 6));
 
-    // If the month is valid, assume the date is in the format YYYYMMDD
+    // If the month is valid, YYYYMMDD
     if (month >= 1 && month <= 12) {
       return iso(date.slice(0, 4), date.slice(4, 6), date.slice(6, 8));
     }
@@ -36,11 +36,11 @@ export function parseDate(unparsedDate: string): string {
     return unparsedDate;
   }
 
-  // Assume the date is in the format YYYYMM0D
+  // YYYYMM0D
   if (date.length === 7) {
     const month = Number(date.slice(4, 6));
 
-    // If the month is valid, assume the date is in the format YYYYMM0D
+    // If the month is valid, YYYYMM0D
     if (month >= 1 && month <= 12) {
       return iso(date.slice(0, 4), date.slice(4, 6), date.slice(6, 7));
     }
@@ -49,11 +49,11 @@ export function parseDate(unparsedDate: string): string {
     return unparsedDate;
   }
 
-  // Assume the date is in the format YYMMDD
+  // YYMMDD
   if (date.length === 6) {
     const month = Number(date.slice(2, 4));
 
-    // If the month is valid, assume the date is in the format YYMMDD
+    // If the month is valid, YYMMDD
     if (month >= 1 && month <= 12) {
       return iso(thisYear.slice(0, 2) + date.slice(0, 2), date.slice(2, 4), date.slice(4, 6));
     }
@@ -62,11 +62,11 @@ export function parseDate(unparsedDate: string): string {
     return unparsedDate;
   }
 
-  // Assume the date is in the format MMDD
+  // MMDD
   if (date.length === 4) {
     const month = Number(date.slice(0, 2));
 
-    // If the month is valid, assume the date is in the format MMDD
+    // If the month is valid, MMDD
     if (month >= 1 && month <= 12) {
       return iso(thisYear, date.slice(0, 2), date.slice(2, 4));
     }
@@ -79,12 +79,12 @@ export function parseDate(unparsedDate: string): string {
   if (date.length === 3) {
     const firstTwoDigits = Number(date.slice(0, 2));
 
-    // Assume the date is in the format MM0D
+    // MM0D
     if (firstTwoDigits <= 12) {
       return iso(thisYear, date.slice(0, 2), date.slice(2, 3));
     }
 
-    // Assume the date is in the format MDD
+    // MDD
     if (firstTwoDigits > 12) {
       return iso(thisYear, date.slice(0, 1), date.slice(1, 3));
     }
@@ -92,7 +92,7 @@ export function parseDate(unparsedDate: string): string {
 
   const day = Number(date);
 
-  // Assume the date is in the format DD
+  // DD
   if (date.length === 2 && day >= 1 && day <= 31) {
 
     // If the date is today or in the future, assume it's this month
@@ -106,7 +106,7 @@ export function parseDate(unparsedDate: string): string {
     }
   }
 
-  // Assume the date is in the format 0D
+  // 0D
   if (date.length === 1 && day >= 1 && day <= 9) {
 
     // If the day hasn't passed, assume it's this month
@@ -120,7 +120,6 @@ export function parseDate(unparsedDate: string): string {
     }
   }
 
-  // Return input if nothing catches.
-  console.info("Date parser did not recognize the format of the input, returning it as is.", { input: unparsedDate });
+  // Fallback: return as is
   return unparsedDate;
 }
