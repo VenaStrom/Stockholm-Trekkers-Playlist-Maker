@@ -21,7 +21,14 @@
     "fs:allow-temp-read",
     "fs:allow-temp-write",
     "fs:allow-exists",
-    "fs:allow-copy-file",
+    {
+      "identifier": "fs:allow-copy-file",
+      "allow": [
+        {
+          "path": "/**"
+        }
+      ]
+    },
     "fs:allow-mkdir",
     "dialog:default",
     "dialog:allow-open",

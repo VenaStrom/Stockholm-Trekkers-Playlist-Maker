@@ -58,3 +58,10 @@ export const FileName = {
   RevealTarget: ".target",
 } as const;
 export type FileName = (typeof FileName)[keyof typeof FileName];
+
+export const ExportNames = {
+  SaveFile: "project-data.json",
+  EpisodeDir: "episodes",
+  SaveDir: "save-files",
+} as const;
+export type ExportNames = (typeof ExportNames)[keyof typeof ExportNames];
