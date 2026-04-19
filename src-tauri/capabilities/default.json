@@ -32,6 +32,7 @@
     "fs:allow-mkdir",
     "dialog:default",
     "dialog:allow-open",
+    "log:default",
     {
       "identifier": "shell:allow-execute",
       "allow": [
