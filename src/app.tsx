@@ -71,7 +71,7 @@ export default function App() {
       window.removeEventListener("keydown", lightModeListener);
       window.removeEventListener("keydown", backListener);
     };
-  });
+  }, [projectID, route, setRoute]);
 
   // Apply light/dark mode
   useEffect(() => {

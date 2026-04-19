@@ -10,18 +10,18 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     content: React.ReactNode,
     options?: Partial<ToastOptions>,
   ) => {
-    options = { ...options, ...DefaultToastOptions }; // Hihi, side effects :3
+    const mergedOptions = { ...DefaultToastOptions, ...options };
 
-    if (!isToastOptions(options)) throw new Error("Invalid toast options");
+    if (!isToastOptions(mergedOptions)) throw new Error("Invalid toast options");
 
     const id = Math.random().toString(36).slice(2, 9);
-    const newToast: ToastMessage = { id, content, mood: options.mood };
+    const newToast: ToastMessage = { id, content, mood: mergedOptions.mood };
 
     setToasts(current => [...current, newToast]);
 
     setTimeout(() => {
       setToasts(current => current.filter(t => t.id !== id));
-    }, options.timeout);
+    }, mergedOptions.timeout);
 
     return id;
   }, []);
@@ -48,8 +48,8 @@ export function Toaster() {
   const { toasts, removeToast } = ctx;
 
   return (
-    <ul className="z-50 flex flex-col gap-y-2 fixed w-full justify-center items-center bottom-2 pointer-events-none transition-all">
-      {toasts.map((t) => (
+    <ul className="z-50 flex flex-col gap-y-2 px-8 fixed w-full justify-center items-end bottom-2 pointer-events-none transition-all">
+      {toasts.map(t => (
         <li
           key={t.id}
           className={`
@@ -59,6 +59,10 @@ export function Toaster() {
             p-5
             flex flex-row justify-center items-center gap-x-3
             pointer-events-auto
+            border-l-4
+            ${t.mood === "info" && "border-l-command-300"}
+            ${t.mood === "happy" && "border-l-spore-500"}
+            ${t.mood === "angry" && "border-l-red-alert-500"}
           `}
         >
           {t.content}
