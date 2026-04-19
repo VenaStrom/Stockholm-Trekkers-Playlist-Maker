@@ -146,6 +146,11 @@ export default function App() {
 
       {/* Credit */}
       <div className="flex flex-row gap-x-4 leading-5 text-sm">
+        <p className="flex flex-col items-end gap-x-6 text-flare-500/60 italic">
+          {__VERSION__ && <span>{`Version ${__VERSION__}`}</span>}
+          <span>Built {new Date(__BUILD_DATE__).toLocaleDateString("en-SE", { year: "numeric", month: "2-digit", day: "2-digit" })}</span>
+        </p>
+
         {__AUTHOR__ &&
           <p className="flex flex-col items-end">
             <span>Made by <a href={__AUTHOR__.url} target="_blank" rel="noreferrer">{__AUTHOR__.name}</a></span>
@@ -167,13 +172,6 @@ export default function App() {
           return <Projects />;
       }
     })()}
-
-    <footer className="w-full flex flex-row justify-end py-0.5 px-3 pointer-events-none">
-      <p className="flex flex-row gap-x-6 text-flare-500/70 italic text-sm pointer-events-auto">
-        {__VERSION__ && <span>{`Version ${__VERSION__}`}</span>}
-        <span>Built {new Date(__BUILD_DATE__).toLocaleDateString("en-SE", { year: "numeric", month: "2-digit", day: "2-digit" })}</span>
-      </p>
-    </footer>
 
     <Toaster />
   </>);
