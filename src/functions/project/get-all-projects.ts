@@ -22,7 +22,7 @@ export async function getAllProjectIDs(): Promise<Set<string>> {
     const projectFilePath = await path.join(
       PathName.UserProjectsDir,
       foundDirName,
-      FileName.ProjectMeta
+      FileName.ProjectMeta,
     );
     if (await fs.exists(projectFilePath)) {
       validProjects.push(foundDirName);

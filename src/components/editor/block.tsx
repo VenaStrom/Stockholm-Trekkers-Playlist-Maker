@@ -205,7 +205,7 @@ export default function BlockLi({
         >
           Delete
           <IconDeleteOutline className="inline size-6" />
-        </button>
+        </button>,
       ]}
     />
 

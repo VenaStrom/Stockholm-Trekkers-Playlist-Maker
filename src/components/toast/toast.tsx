@@ -10,12 +10,12 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     content: React.ReactNode,
     options?: Partial<ToastOptions>,
   ) => {
-    options = { ...options, ...DefaultToastOptions, }; // Hihi, side effects :3
+    options = { ...options, ...DefaultToastOptions }; // Hihi, side effects :3
 
     if (!isToastOptions(options)) throw new Error("Invalid toast options");
 
     const id = Math.random().toString(36).slice(2, 9);
-    const newToast: ToastMessage = { id, content, mood: options.mood, };
+    const newToast: ToastMessage = { id, content, mood: options.mood };
 
     setToasts(current => [...current, newToast]);
 

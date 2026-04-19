@@ -16,7 +16,7 @@ const commonRules: Config["rules"] = {
       "caughtErrorsIgnorePattern": "^_",
       "destructuredArrayIgnorePattern": "^_",
       "varsIgnorePattern": "^_",
-      "ignoreRestSiblings": true
+      "ignoreRestSiblings": true,
     },
   ],
   "@typescript-eslint/no-unsafe-argument": "warn",
@@ -37,7 +37,7 @@ const commonRules: Config["rules"] = {
   "@typescript-eslint/consistent-type-exports": "warn",
   "@typescript-eslint/consistent-type-definitions": ["warn", "type"],
   "@typescript-eslint/ban-ts-comment": "error",
-  "@typescript-eslint/prefer-nullish-coalescing": ["warn", { ignorePrimitives: { string: true, boolean: true, }, },],
+  "@typescript-eslint/prefer-nullish-coalescing": ["warn", { ignorePrimitives: { string: true, boolean: true } }],
   "@typescript-eslint/prefer-optional-chain": "warn",
   "@typescript-eslint/restrict-template-expressions": "warn",
   "@typescript-eslint/no-base-to-string": "warn",
@@ -46,8 +46,8 @@ const commonRules: Config["rules"] = {
   "@typescript-eslint/no-for-in-array": "error",
   "@/no-useless-assignment": "warn",
   "eqeqeq": ["error", "smart"],
-  // "semi": ["error", "always"],
-  // "comma-dangle": ["error", "always-multiline",], // Would be nice but not tweakable enough
+  "semi": ["error", "always"],
+  "comma-dangle": ["error", "always-multiline"], // Would be nice but not tweakable enough
 };
 
 export default defineConfig([

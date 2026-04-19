@@ -13,5 +13,5 @@ createRoot(root).render(
         <App />
       </ToastProvider>
     </PageProvider>
-  </StrictMode>
+  </StrictMode>,
 );

@@ -73,7 +73,7 @@ export default function ProjectCard({
         >
           Delete
           <IconDeleteOutline className="inline size-6" />
-        </button>
+        </button>,
       ]}
     />
 

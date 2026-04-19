@@ -33,7 +33,7 @@ export default function EpisodeLi({
       return project;
     }
     if (!updatedEpisodes[epIndex]) throw new Error("Episode to update is undefined");
-    updatedEpisodes[epIndex] = { ...updatedEpisodes[epIndex], filePath, };
+    updatedEpisodes[epIndex] = { ...updatedEpisodes[epIndex], filePath };
 
     // Sort episodes so they are clumped by block id
     const sortedEpisodes: Episode[] = [];
@@ -51,7 +51,7 @@ export default function EpisodeLi({
         : episodesInBlock.filter((e, i) =>
           // All episodes after last with path that is empty
           i > episodesInBlock.length - 1 - lastWithPathIndex - 1
-          && (!e.filePath || e.filePath.trim().length === 0)
+          && (!e.filePath || e.filePath.trim().length === 0),
         );
       // If no trailing empty, add one
       if (trailingEmpties.length === 0) {
@@ -159,7 +159,7 @@ export default function EpisodeLi({
     if (!draggedID || draggedID === episode.id) return;
 
     if (!volatileProject) return;
-    const episodesCopy = [...volatileProject.episodes]
+    const episodesCopy = [...volatileProject.episodes];
     const draggedEpisodeIndex = episodesCopy.findIndex(e => e.id === draggedID);
     const dropEpisodeIndex = episodesCopy.findIndex(e => e.id === episode.id);
     if (draggedEpisodeIndex === -1 || dropEpisodeIndex === -1) {
@@ -196,7 +196,7 @@ export default function EpisodeLi({
   const moveEpisodeUpOne = () => {
     if (!volatileProject) return;
 
-    const episodesCopy = [...volatileProject.episodes]
+    const episodesCopy = [...volatileProject.episodes];
     const thisIndex = episodesCopy.findIndex(e => e.id === episode.id);
     if (thisIndex <= 0) return; // Already at top
 
@@ -235,7 +235,7 @@ export default function EpisodeLi({
   const moveEpisodeDownOne = () => {
     if (!volatileProject) return;
 
-    const episodesCopy = [...volatileProject.episodes]
+    const episodesCopy = [...volatileProject.episodes];
     const thisIndex = episodesCopy.findIndex(e => e.id === episode.id);
     if (thisIndex === -1 || thisIndex >= episodesCopy.length - 1) return; // Already at bottom
 

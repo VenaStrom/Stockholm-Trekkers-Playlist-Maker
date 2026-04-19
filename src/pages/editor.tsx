@@ -192,7 +192,7 @@ export default function Editor() {
           {/* Blocks */}
           {Object.entries(episodesByBlockID).map(([blockID, episodes]) => (
             <BlockLi
-              block={volatileProject?.blocks.find(b => b.id === blockID) ?? (() => { throw new Error("Missing block with id: " + blockID) })()}
+              block={volatileProject?.blocks.find(b => b.id === blockID) ?? (() => { throw new Error("Missing block with id: " + blockID); })()}
               blockIndex={volatileProject.blocks.findIndex(b => b.id === blockID)}
               project={volatileProject}
               projectSetter={setVolatileProject}

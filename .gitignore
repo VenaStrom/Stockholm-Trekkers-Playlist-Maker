@@ -41,3 +41,5 @@ src/prisma/generated/
 .env.local
 
 dev.db
+
+.eslintcache

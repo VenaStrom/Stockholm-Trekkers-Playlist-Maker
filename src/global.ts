@@ -19,7 +19,7 @@ export const blockClips: Record<string, BlockClip> = {
     duration: 60,
     file: "1_min_countdown.mp4",
     description: "Adds a 1 minute countdown before playing the first episode of the block",
-    allowedPlacement: { leading: true, },
+    allowedPlacement: { leading: true },
   },
   EmergencyRoutine: {
     name: "Emergency Routine",
@@ -27,7 +27,7 @@ export const blockClips: Record<string, BlockClip> = {
     duration: 59,
     file: "1_min_emergency.mp4",
     description: "Adds a 1 minute clip, describing our emergency routines, before playing the first episode of the block",
-    allowedPlacement: { leading: true, trailing: true, },
+    allowedPlacement: { leading: true, trailing: true },
   },
   SignInReminder: {
     name: "Sign In Reminder",
@@ -35,7 +35,7 @@ export const blockClips: Record<string, BlockClip> = {
     duration: 20,
     file: "20_sec_sign_in_reminder.mp4",
     description: "Adds a 20 second clip, reminding the audience to sign the attendance sheet, after the last episode of the block",
-    allowedPlacement: { trailing: true, },
+    allowedPlacement: { trailing: true },
   },
   CovidDisclaimer: {
     name: "COVID-19 Disclaimer",
@@ -43,7 +43,7 @@ export const blockClips: Record<string, BlockClip> = {
     duration: 60,
     file: "1_min_covid.mp4",
     description: "Adds a 1 minute clip, reminding the audience of our COVID-19 guidelines, before playing the first episode of the block",
-    allowedPlacement: { leading: true, },
+    allowedPlacement: { leading: true },
   },
 } as const;
 
