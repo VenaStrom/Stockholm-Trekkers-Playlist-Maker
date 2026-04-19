@@ -1,7 +1,7 @@
 import * as fs from "@tauri-apps/plugin-fs";
 import { path } from "@tauri-apps/api";
 import { PathName, FileName } from "@/global";
-import { isProject } from "@/functions/type-guards";
+import { isProject } from "@/types";
 import type { Episode, Project, ProjectData, ProjectMeta } from "@/types";
 import { createProject, openProject } from "@/functions/project";
 import { generateID } from "@/functions/sha256";

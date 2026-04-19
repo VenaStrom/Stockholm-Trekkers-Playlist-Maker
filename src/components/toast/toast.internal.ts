@@ -1,4 +1,4 @@
-import { isStandardObject } from "@/functions/type-guards";
+import { isStandardObject } from "@/types";
 import { createContext } from "react";
 
 export const Mood = {

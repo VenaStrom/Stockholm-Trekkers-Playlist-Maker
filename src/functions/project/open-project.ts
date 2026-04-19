@@ -2,7 +2,7 @@ import { getAllProjectIDs } from "@/functions/project";
 import * as fs from "@tauri-apps/plugin-fs";
 import { path } from "@tauri-apps/api";
 import { PathName, FileName } from "@/global";
-import { isProject, isProjectMetaOnly } from "@/functions/type-guards";
+import { isProject, isProjectMetaOnly } from "@/types";
 import type { Project, ProjectMeta } from "@/types";
 
 export async function openProject(projectID: string): Promise<Project> {

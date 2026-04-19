@@ -5,7 +5,7 @@ import { OPTION_REVISION } from "@/global";
 import * as fs from "@tauri-apps/plugin-fs";
 import { path } from "@tauri-apps/api";
 import { PathName, FileName } from "@/global";
-import { isProject } from "@/functions/type-guards";
+import { isProject } from "@/types";
 
 export async function createProject(): Promise<Project> {
   const projectID = generateID();
