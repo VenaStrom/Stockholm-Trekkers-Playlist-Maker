@@ -40,11 +40,11 @@ export function isEpisode(obj: unknown): obj is Episode {
     console.warn("Episode optional 'duration' is invalid", { obj });
     return false;
   }
-  if (o.cachedStartTime != null && typeof o.cachedStartTime !== "number") {
+  if (o.cachedStartTime != null && typeof o.cachedStartTime !== "string") {
     console.warn("Episode optional 'cachedStartTime' is invalid", { obj });
     return false;
   }
-  if (o.cachedEndTime != null && typeof o.cachedEndTime !== "number") {
+  if (o.cachedEndTime != null && typeof o.cachedEndTime !== "string") {
     console.warn("Episode optional 'cachedEndTime' is invalid", { obj });
     return false;
   }

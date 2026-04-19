@@ -4,8 +4,8 @@ export type Episode = {
   blockID: string;
   filePath?: string;
   duration?: number; // in seconds
-  cachedStartTime?: number; // in seconds
-  cachedEndTime?: number; // in seconds
+  cachedStartTime?: string;
+  cachedEndTime?: string;
 };
 
 export type BlockClip = {
