@@ -10,78 +10,113 @@ function onlyDigits(input: string): string {
   return result;
 }
 
+function iso(year: string | number, month: string | number, day: string | number): string {
+  return `${year.toString()}-${month.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
+}
+
 export function parseDate(unparsedDate: string): string {
   if (unparsedDate === "") return unparsedDate;
 
-  const strippedDate = onlyDigits(unparsedDate);
-  if (strippedDate === "") return unparsedDate;
+  const date = onlyDigits(unparsedDate);
+  if (date === "") return unparsedDate;
+
+  const thisYear: string = new Date().getFullYear().toString();
+  const thisMonth: number = (new Date().getMonth() + 1);
 
   // Assume the date is in the format YYYYMMDD
-  if (strippedDate.length === 8) {
-    return `${strippedDate.slice(0, 4)}-${strippedDate.slice(4, 6)}-${strippedDate.slice(6, 8)}`;
+  if (date.length === 8) {
+    const month = Number(date.slice(4, 6));
+
+    // If the month is valid, assume the date is in the format YYYYMMDD
+    if (month >= 1 && month <= 12) {
+      return iso(date.slice(0, 4), date.slice(4, 6), date.slice(6, 8));
+    }
+
+    // If the month is invalid, return as is
+    return unparsedDate;
   }
 
   // Assume the date is in the format YYYYMM0D
-  if (strippedDate.length === 7) {
-    return `${strippedDate.slice(0, 4)}-${strippedDate.slice(4, 6)}-${strippedDate.slice(6, 7).padStart(2, "0")}`;
+  if (date.length === 7) {
+    const month = Number(date.slice(4, 6));
+
+    // If the month is valid, assume the date is in the format YYYYMM0D
+    if (month >= 1 && month <= 12) {
+      return iso(date.slice(0, 4), date.slice(4, 6), date.slice(6, 7));
+    }
+
+    // If the month is invalid, return as is
+    return unparsedDate;
   }
 
   // Assume the date is in the format YYMMDD
-  if (strippedDate.length === 6) {
-    const currentCentury = new Date().getFullYear().toString().slice(0, 2);
-    return `${currentCentury}${strippedDate.slice(0, 2)}-${strippedDate.slice(2, 4)}-${strippedDate.slice(4, 6)}`;
+  if (date.length === 6) {
+    const month = Number(date.slice(2, 4));
+
+    // If the month is valid, assume the date is in the format YYMMDD
+    if (month >= 1 && month <= 12) {
+      return iso(thisYear.slice(0, 2) + date.slice(0, 2), date.slice(2, 4), date.slice(4, 6));
+    }
+
+    // If the month is invalid, return as is
+    return unparsedDate;
   }
 
   // Assume the date is in the format MMDD
-  if (strippedDate.length === 4) {
-    const currentYear = new Date().getFullYear();
-    return `${currentYear}-${strippedDate.slice(0, 2)}-${strippedDate.slice(2, 4)}`;
+  if (date.length === 4) {
+    const month = Number(date.slice(0, 2));
+
+    // If the month is valid, assume the date is in the format MMDD
+    if (month >= 1 && month <= 12) {
+      return iso(thisYear, date.slice(0, 2), date.slice(2, 4));
+    }
+
+    // If the month is invalid, return as is
+    return unparsedDate;
   }
 
   // MM0D || MDD
-  if (strippedDate.length === 3) {
-    const firstTwoDigits = Number(strippedDate.slice(0, 2));
+  if (date.length === 3) {
+    const firstTwoDigits = Number(date.slice(0, 2));
 
     // Assume the date is in the format MM0D
     if (firstTwoDigits <= 12) {
-      const currentYear = new Date().getFullYear();
-      return `${currentYear}-${strippedDate.slice(0, 2).padStart(2, "0")}-${strippedDate.slice(2, 3).padStart(2, "0")}`;
+      return iso(thisYear, date.slice(0, 2), date.slice(2, 3));
     }
 
     // Assume the date is in the format MDD
     if (firstTwoDigits > 12) {
-      const currentYear = new Date().getFullYear();
-      return `${currentYear}-${strippedDate.slice(0, 1).padStart(2, "0")}-${strippedDate.slice(1, 3)}`;
+      return iso(thisYear, date.slice(0, 1), date.slice(1, 3));
     }
   }
 
-  const day = Number(strippedDate);
+  const day = Number(date);
 
   // Assume the date is in the format DD
-  if (strippedDate.length === 2 && day >= 1 && day <= 31) {
+  if (date.length === 2 && day >= 1 && day <= 31) {
 
     // If the date is today or in the future, assume it's this month
     if (day >= new Date().getDate()) {
-      return `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${strippedDate}`;
+      return iso(thisYear, thisMonth, date);
     }
 
     // If the day has passed, assume it's next month
     if (day < new Date().getDate()) {
-      return `${new Date().getFullYear()}-${new Date().getMonth() + 2}-${strippedDate}`;
+      return iso(thisYear, thisMonth + 1, date);
     }
   }
 
   // Assume the date is in the format 0D
-  if (strippedDate.length === 1 && day >= 1 && day <= 9) {
+  if (date.length === 1 && day >= 1 && day <= 9) {
 
     // If the day hasn't passed, assume it's this month
     if (day >= new Date().getDate()) {
-      return `${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, "0")}-${strippedDate.padStart(2, "0")}`;
+      return iso(thisYear, thisMonth, date);
     }
 
     // If the day has passed, assume it's next month
     if (day < new Date().getDate()) {
-      return `${new Date().getFullYear()}-${(new Date().getMonth() + 2).toString().padStart(2, "0")}-${strippedDate.padStart(2, "0")}`;
+      return iso(thisYear, thisMonth + 1, date);
     }
   }
 
