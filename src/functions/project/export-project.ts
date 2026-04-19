@@ -11,7 +11,7 @@ export async function exportProject(projectID: string, saveLocation: string): Pr
   console.info(`Read project data for ${project.date} ${projectID}.`);
 
   // TODO: overwrite logic
-  const saveDir = await path.join(saveLocation, project.date);
+  const saveDir = await path.join(saveLocation, project.date || `playlist-missing-date_id-${projectID}`);
   await fs.mkdir(saveDir, { recursive: true });
   console.info(`Made export dir at ${saveDir}.`);
 
@@ -21,6 +21,4 @@ export async function exportProject(projectID: string, saveLocation: string): Pr
   await fs.mkdir(episodesDir, { recursive: true });
   await fs.mkdir(saveFilesDir, { recursive: true });
   console.info(`Made sub dirs at ${episodesDir} and ${saveFilesDir}.`);
-
-  return;
 }
