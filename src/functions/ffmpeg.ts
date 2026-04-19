@@ -9,7 +9,7 @@ export type FFmpegOutput = {
 };
 
 export async function runFFmpeg(args: ReadonlyArray<FFmpegArg>): Promise<FFmpegOutput> {
-  const result = await Command.sidecar("ffmpeg", [...args]).execute();
+  const result = await Command.sidecar("binaries/ffmpeg", [...args]).execute();
 
   if (result.code !== 0) {
     throw new Error(`FFmpeg failed with code ${result.code}: ${result.stderr}`);

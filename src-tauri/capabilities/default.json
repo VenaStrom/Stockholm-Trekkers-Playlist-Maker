@@ -37,8 +37,8 @@
       "identifier": "shell:allow-execute",
       "allow": [
         {
-          "name": "ffmpeg",
-          "cmd": "ffmpeg",
+          "name": "binaries/ffmpeg",
+          "sidecar": true,
           "args": true
         }
       ]
