@@ -27,7 +27,8 @@
   "bundle": {
     "active": true,
     "externalBin": [
-      "binaries/ffmpeg"
+      "binaries/ffmpeg",
+      "binaries/ffprobe"
     ],
     "icon": [
       "icons/64x64.png",

@@ -4,6 +4,7 @@ import { IconDeleteOutline, IconDragIndicator, IconFolderOutline } from "@/compo
 import { open } from "@tauri-apps/plugin-dialog";
 import { secondsToTimeString } from "@/functions/time-format";
 import { generateID } from "@/functions/sha256";
+import { runFFprobe } from "@/functions/ffmpeg";
 
 /** 
  * I don't like this, but this is very convenient to keep the UI prettier during drag-and-drop
@@ -25,7 +26,7 @@ export default function EpisodeLi({
   const [selectedFile, setSelectedFile] = useState<string | null>(episode.filePath ?? null);
 
   // Helper. Produces a new Project where the given episode has its filePath set, and ensure each block has a trailing empty episode
-  const updateEpisode = (project: Project, episodeID: string, filePath?: string): Project => {
+  const updateEpisode = (project: Project, episodeID: string, episodeProps: Partial<Omit<Episode, "id">>): Project => {
     const updatedEpisodes = JSON.parse(JSON.stringify(project.episodes)) as Episode[];
     const epIndex = updatedEpisodes.findIndex(ep => ep.id === episodeID);
     if (epIndex === -1) {
@@ -33,7 +34,7 @@ export default function EpisodeLi({
       return project;
     }
     if (!updatedEpisodes[epIndex]) throw new Error("Episode to update is undefined");
-    updatedEpisodes[epIndex] = { ...updatedEpisodes[epIndex], filePath };
+    updatedEpisodes[epIndex] = { ...updatedEpisodes[epIndex], ...episodeProps };
 
     // Sort episodes so they are clumped by block id
     const sortedEpisodes: Episode[] = [];
@@ -72,6 +73,32 @@ export default function EpisodeLi({
   };
 
   const chooseFile = () => {
+    if (episode.filePath) {
+      runFFprobe([
+        // Get duration of file for metadata display and sorting
+        "-v", "error",
+        "-select_streams", "v:0",
+        "-show_entries", "format=duration",
+        "-of", "default=noprint_wrappers=1:nokey=1",
+        episode.filePath,
+      ])
+        .then((o) => {
+          const durationSeconds = parseFloat(o.stdout);
+          if (isNaN(durationSeconds)) {
+            console.warn(`Could not parse duration from ffprobe output: ${o.stdout}`);
+            return;
+          }
+
+          setVolatileProject((prevProject) => {
+            if (!prevProject) return prevProject;
+            return updateEpisode(prevProject, episode.id, { duration: durationSeconds });
+          });
+        })
+        .catch((e: unknown) => {
+          console.error("Error running FFprobe command:", e);
+        });
+    }
+
     (async () => {
       try {
         const filePath = await open({
@@ -91,7 +118,10 @@ export default function EpisodeLi({
 
         setVolatileProject((prevProject) => {
           if (!prevProject) return prevProject;
-          return updateEpisode(prevProject, episode.id, fileString ?? undefined);
+          return updateEpisode(prevProject, episode.id, {
+            filePath: fileString ?? undefined,
+            duration: undefined, // Reset duration when file changes, will be re-populated on next metadata fetch
+          });
         });
       }
       catch (err) {
@@ -115,7 +145,10 @@ export default function EpisodeLi({
   useEffect(() => {
     setVolatileProject((prevProject) => {
       if (!prevProject) return prevProject;
-      return updateEpisode(prevProject, episode.id, selectedFile ?? undefined);
+      return updateEpisode(prevProject, episode.id, {
+        filePath: selectedFile ?? undefined,
+        duration: undefined, // Reset duration when file changes, will be re-populated on next metadata fetch
+      });
     });
   }, [episode.id, selectedFile, setVolatileProject]);
 
@@ -335,7 +368,7 @@ export default function EpisodeLi({
           <IconDeleteOutline className="size-6" />
         </button>
         {/* Start time */}
-        <span className={`w-[5ch] ${!episode.cachedStartTime ? "text-flare-700" : ""}`}>{episode.cachedStartTime ?? "--:--"}</span>
+        <span className={`w-[5ch] ${!episode.cachedStartTime ? "text-flare-700" : ""}`}>{episode.cachedStartTime || "--:--"}</span>
         {/* Duration */}
         <span className={`w-[7ch] ps-0.5 ${!episode.duration ? "text-flare-700" : ""}`}>{episode.duration ? secondsToTimeString(episode.duration) : "-"}</span>
       </div>
