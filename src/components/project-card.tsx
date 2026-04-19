@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { ProjectMeta } from "@/types";
-import { IconDeleteOutline, IconEditOutline } from "@/components/icons";
+import { IconDeleteForeverOutline, IconDeleteOutline, IconEditOutline } from "@/components/icons";
 import { usePageContext, PageRoute } from "@/components/page-context";
 import { useToast } from "@/components/toast";
 import { deleteProject } from "@/functions/project";
@@ -13,7 +13,7 @@ export default function ProjectCard({
   projectMeta: ProjectMeta;
 }) {
   const { toast } = useToast();
-  const { setProjectID, setRoute, reloadProjectMetaData } = usePageContext();
+  const { setProjectID, setRoute, reloadProjectMetaData, isPowerMode } = usePageContext();
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
 
   const handleDeleteProject = () => {
@@ -77,7 +77,7 @@ export default function ProjectCard({
       ]}
     />
 
-    <li className="w-full min-h-36 bg-abyss-900 rounded-sm p-4 ps-5 flex flex-row gap-x-4 *:h-full">
+    <li className="w-full min-h-fit bg-abyss-900 rounded-sm p-4 ps-5 flex flex-row gap-x-4 *:h-full">
       {/* Date and description */}
       <div className="max-w-prose h-full overflow-hidden">
         <p className="text-xl">{projectMeta.date.trim() ? projectMeta.date : <span className="text-flare-700">[ no date set ]</span>}</p>
@@ -126,11 +126,14 @@ export default function ProjectCard({
 
         <button
           className="pe-1.5 ps-3 hover:bg-red-alert-500"
-          onClick={() => setDeleteDialogVisible(true)}
+          onClick={() => isPowerMode ? handleDeleteProject() : setDeleteDialogVisible(true)}
+          title={isPowerMode ? "Delete project instantly" : "Delete project"}
         >
           Delete
           <span className="flex-1"></span>
-          <IconDeleteOutline className="inline size-6" />
+          {isPowerMode
+            ? <IconDeleteForeverOutline className="size-6 animate-shiver origin-bottom" />
+            : <IconDeleteOutline className="inline size-6" />}
         </button>
       </div>
     </li>
