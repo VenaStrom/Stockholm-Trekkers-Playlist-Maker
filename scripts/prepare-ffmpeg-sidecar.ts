@@ -36,10 +36,10 @@ async function main(): Promise<void> {
   const extension = process.platform === "win32" ? ".exe" : "";
 
   const destinationDir = resolve("src-tauri", "binaries");
-  const ffmpegDestinationPath = resolve(destinationDir, `ffmpeg-${targetTriple}${extension}`);
+  const ffmpegDestinationPath = resolve(destinationDir, `stplay-ffmpeg-${targetTriple}${extension}`);
 
   const ffprobeSourcePath = ffprobeStatic.path;
-  const ffprobeDestinationPath = resolve(destinationDir, `ffprobe-${targetTriple}${extension}`);
+  const ffprobeDestinationPath = resolve(destinationDir, `stplay-ffprobe-${targetTriple}${extension}`);
 
   await mkdir(destinationDir, { recursive: true });
   await copyFile(ffmpegStatic, ffmpegDestinationPath);

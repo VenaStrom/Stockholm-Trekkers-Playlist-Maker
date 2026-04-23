@@ -10,8 +10,16 @@ export type FFmpegOutput = {
 
 export type FFprobeOutput = FFmpegOutput;
 
+async function executeWithFallback(sidecarName: string, commandName: string, args: ReadonlyArray<string>): Promise<FFmpegOutput> {
+  try {
+    return await Command.sidecar(sidecarName, [...args]).execute();
+  } catch {
+    return await Command.create(commandName, [...args]).execute();
+  }
+}
+
 export async function runFFmpeg(args: ReadonlyArray<FFmpegArg>): Promise<FFmpegOutput> {
-  const result = await Command.sidecar("binaries/ffmpeg", [...args]).execute();
+  const result = await executeWithFallback("binaries/stplay-ffmpeg", "ffmpeg", args);
 
   if (result.code !== 0) {
     throw new Error(`FFmpeg failed with code ${result.code}: ${result.stderr}`);
@@ -21,7 +29,7 @@ export async function runFFmpeg(args: ReadonlyArray<FFmpegArg>): Promise<FFmpegO
 }
 
 export async function runFFprobe(args: ReadonlyArray<string>): Promise<FFprobeOutput> {
-  const result = await Command.sidecar("binaries/ffprobe", [...args]).execute();
+  const result = await executeWithFallback("binaries/stplay-ffprobe", "ffprobe", args);
 
   if (result.code !== 0) {
     throw new Error(`FFprobe failed with code ${result.code}: ${result.stderr}`);

@@ -37,13 +37,23 @@
       "identifier": "shell:allow-execute",
       "allow": [
         {
-          "name": "binaries/ffmpeg",
+          "name": "binaries/stplay-ffmpeg",
           "sidecar": true,
           "args": true
         },
         {
-          "name": "binaries/ffprobe",
+          "name": "binaries/stplay-ffprobe",
           "sidecar": true,
+          "args": true
+        },
+        {
+          "cmd": "ffmpeg",
+          "name": "ffmpeg",
+          "args": true
+        },
+        {
+          "cmd": "ffprobe",
+          "name": "ffprobe",
           "args": true
         }
       ]

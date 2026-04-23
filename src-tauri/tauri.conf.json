@@ -26,10 +26,21 @@
   },
   "bundle": {
     "active": true,
-    "externalBin": [
-      "binaries/ffmpeg",
-      "binaries/ffprobe"
+    "targets": [
+      "deb",
+      "nsis"
     ],
+    "resources": [
+      "video-assets/**/*"
+    ],
+    "externalBin": null,
+    "linux": {
+      "deb": {
+        "depends": [
+          "ffmpeg"
+        ]
+      }
+    },
     "icon": [
       "icons/64x64.png",
       "icons/128x128.png",

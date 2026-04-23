@@ -13,17 +13,17 @@
     }
   ],
   "scripts": {
+    "tauri": "tauri",
     "dev": "yarn prepare-ffmpeg-sidecar && yarn tauri dev",
     "build": "yarn download-assets && yarn prepare-ffmpeg-sidecar && yarn tauri build && yarn rename-bundles",
-    "generate-ffmpeg-arg-types": "tsx scripts/generate-ffmpeg-arg-types.ts",
     "vite:dev": "vite",
     "vite:build": "yarn lint && vite build",
-    "tauri": "tauri",
+    "lint": "tsc --noEmit -p ./tsconfig.json && eslint -c ./eslint.config.ts --cache --concurrency auto",
     "download-assets": "tsx scripts/download-video-assets.ts",
+    "generate-ffmpeg-arg-types": "tsx scripts/generate-ffmpeg-arg-types.ts",
     "prepare-ffmpeg-sidecar": "tsx scripts/prepare-ffmpeg-sidecar.ts",
     "rename-bundles": "tsx scripts/rename-bundles.ts",
-    "logs:open": "tsx scripts/open-logs.ts",
-    "lint": "tsc --noEmit -p ./tsconfig.json && eslint -c ./eslint.config.ts --cache --concurrency auto"
+    "logs:open": "tsx scripts/open-logs.ts"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.10.1",
