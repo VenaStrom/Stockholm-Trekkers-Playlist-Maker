@@ -23,8 +23,15 @@ export default function EpisodeLi({
   project: Project | null;
   projectSetter: React.Dispatch<React.SetStateAction<Project | null>>;
 }) {
-  const [selectedFile, setSelectedFile] = useState<string | null>(episode.filePath ?? null);
   const ffprobeRequestRef = useRef(0);
+  const [selectedFile, setSelectedFile] = useState<string | null>(episode.filePath ?? null);
+  const previousEpisode = useMemo(() => {
+    if (!volatileProject) return null;
+    const episodesInBlock = volatileProject.episodes.filter(e => e.blockID === episode.blockID);
+    const index = episodesInBlock.findIndex(e => e.id === episode.id);
+    if (index === -1) return null;
+    return episodesInBlock[index - 1] ?? null;
+  }, [volatileProject, episode]);
 
   const normalizeEpisodes = (project: Project, episodes: Episode[]): Episode[] => {
     // Sort episodes so they are clumped by block id
@@ -378,7 +385,7 @@ export default function EpisodeLi({
         </button>
 
         {/* Start time */}
-        <span className={`w-[5ch] ${!episode.cachedStartTime ? "text-flare-700" : ""}`}>{episode.cachedStartTime || "--:--"}</span>
+        <span className={`w-[5ch] ${!episode.cachedStartTime ? "text-flare-700" : ""}`}>{episode.cachedStartTime || previousEpisode?.cachedEndTime || "--:--"}</span>
 
         {/* Duration */}
         <span className={`w-[7ch] ps-0.5 text-flare-700`}>{episode.cachedDuration ? secondsToHHMMSS(episode.cachedDuration) : "-"}</span>
