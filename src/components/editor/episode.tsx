@@ -375,10 +375,15 @@ export default function EpisodeLi({
         >
           <IconDeleteOutline className="size-6" />
         </button>
+
         {/* Start time */}
         <span className={`w-[5ch] ${!episode.cachedStartTime ? "text-flare-700" : ""}`}>{episode.cachedStartTime || "--:--"}</span>
+
         {/* Duration */}
-        <span className={`w-[7ch] ps-0.5 ${!episode.cachedDuration ? "text-flare-700" : ""}`}>{episode.cachedDuration ? secondsToTimeString(episode.cachedDuration) : "-"}</span>
+        <span className={`w-[7ch] ps-0.5 text-flare-700`}>{episode.cachedDuration ? secondsToTimeString(episode.cachedDuration) : "-"}</span>
+
+        {/* Encoding */}
+        <span className={`w-[4ch] text-flare-700`}>{episode.cachedEncoding ? episode.cachedEncoding : "-"}</span>
       </div>
 
       {/* Custom file input */}

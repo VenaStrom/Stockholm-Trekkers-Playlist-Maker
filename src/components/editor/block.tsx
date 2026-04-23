@@ -243,7 +243,7 @@ export default function BlockLi({
 
         {/* Controls */}
         <div className="flex flex-row gap-x-4 items-center">
-          <div>
+          <label>
             <button
               className="€icon hover:text-red-alert-500"
               onClick={handleDeleteBlock}
@@ -254,7 +254,7 @@ export default function BlockLi({
                 : <IconDeleteOutline className="size-6" />
               }
             </button>
-          </div>
+          </label>
 
           {/* Drag thumb */}
           <span
@@ -288,6 +288,7 @@ export default function BlockLi({
           <span className="w-6"></span>
           <span className="w-[6ch]">Start</span>
           <span className="w-[7ch]">Duration</span>
+          <span className="w-[4ch] ps-1">Encoding</span>
         </div>
         <ul className="flex flex-col gap-y-2 pb-3 pt-1">
           {children ?? null}
