@@ -10,6 +10,7 @@ import EpisodeLi from "@/components/editor/episode";
 import BlockLi from "@/components/editor/block";
 import ExportButton from "@/components/button/export-button";
 import { parseDate } from "@/functions/date-parser";
+import { runFFprobe } from "@/functions/ffmpeg";
 
 export default function Editor() {
   const { setHeaderText, projectID, setRoute } = usePageContext();
@@ -24,6 +25,39 @@ export default function Editor() {
     openProject(projectID)
       .then((project) => {
         setVolatileProject(project);
+
+        const episodesToBeProbed = project.episodes
+          .filter((e): e is Episode & { duration: undefined; filePath: string; } => !e.duration && !!e.filePath);
+        if (episodesToBeProbed.length === 0) return;
+
+        // On mount, get all episodes durations
+        const ffprobeJobs = episodesToBeProbed.map(e =>
+          runFFprobe([
+            "-v", "error",
+            "-select_streams", "v:0",
+            "-show_entries", "format=duration",
+            "-of", "default=noprint_wrappers=1:nokey=1",
+            e.filePath,
+          ]).then(o => ({
+            id: e.id,
+            duration: parseFloat(o.stdout),
+          })),
+        );
+        Promise.all(ffprobeJobs)
+          .then(results => {
+            setVolatileProject(prev => {
+              if (!prev) return prev;
+              const episodesByID = Object.fromEntries(prev.episodes.map(e => [e.id, e]));
+              for (const result of results) {
+                const episode = episodesByID[result.id];
+                if (episode) episode.duration = result.duration;
+              }
+              return { ...prev };
+            });
+          })
+          .catch((err: unknown) => {
+            console.error("Error running ffprobe on episodes:", err);
+          });
       })
       .catch((err: unknown) => {
         console.error("Failed to open project:", err);
