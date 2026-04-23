@@ -29,6 +29,13 @@ export default function BlockLi({
   const [isDragOver, setDragOver] = useState(false);
   const { isPowerMode } = usePageContext();
 
+  const updateProject = (updater: (project: Project) => Project) => {
+    setVolatileProject((prevProject) => {
+      if (!prevProject) return prevProject;
+      return updater(prevProject);
+    });
+  };
+
   const moveBlock = (proj: Project, fromIndex: number, toIndex: number) => {
     const blocksCopy = [...proj.blocks];
     const [moved] = blocksCopy.splice(fromIndex, 1);
@@ -55,12 +62,11 @@ export default function BlockLi({
     return { ...proj, blocks: blocksCopy, episodes: reorderedEpisodes };
   };
   const deleteBlock = (blockID: string) => {
-    if (!volatileProject) return;
-
-    const updatedBlocks = volatileProject.blocks.filter(b => b.id !== blockID);
-    const updatedEpisodes = volatileProject.episodes.filter(e => e.blockID !== blockID);
-
-    setVolatileProject({ ...volatileProject, blocks: updatedBlocks, episodes: updatedEpisodes });
+    updateProject((project) => {
+      const updatedBlocks = project.blocks.filter(b => b.id !== blockID);
+      const updatedEpisodes = project.episodes.filter(e => e.blockID !== blockID);
+      return { ...project, blocks: updatedBlocks, episodes: updatedEpisodes };
+    });
   };
 
   const onDragStart = (e: React.DragEvent) => {
@@ -100,17 +106,16 @@ export default function BlockLi({
     const draggedID = draggedText.split(":")[1];
     if (!draggedID || draggedID === block.id) return;
 
-    if (!volatileProject) return;
-    const blocksCopy = [...volatileProject.blocks];
-    const draggedIndex = blocksCopy.findIndex(b => b.id === draggedID);
-    const dropIndex = blocksCopy.findIndex(b => b.id === block.id);
-    if (draggedIndex === -1 || dropIndex === -1) {
-      console.warn(`[BlockLi onDrop] Could not find blocks with ids ${draggedID} or ${block.id}`);
-      return;
-    }
+    updateProject((project) => {
+      const draggedIndex = project.blocks.findIndex(b => b.id === draggedID);
+      const dropIndex = project.blocks.findIndex(b => b.id === block.id);
+      if (draggedIndex === -1 || dropIndex === -1) {
+        console.warn(`[BlockLi onDrop] Could not find blocks with ids ${draggedID} or ${block.id}`);
+        return project;
+      }
 
-    const updated = moveBlock(volatileProject, draggedIndex, dropIndex);
-    setVolatileProject(updated);
+      return moveBlock(project, draggedIndex, dropIndex);
+    });
 
     window.__st_drag = null;
 
@@ -124,12 +129,11 @@ export default function BlockLi({
     }, 0);
   };
   const moveBlockUpOne = () => {
-    if (!volatileProject) return;
-
-    const thisIndex = volatileProject.blocks.findIndex(b => b.id === block.id);
-    if (thisIndex <= 0) return;
-
-    setVolatileProject(prev => prev ? moveBlock(prev, thisIndex, thisIndex - 1) : prev);
+    updateProject((project) => {
+      const thisIndex = project.blocks.findIndex(b => b.id === block.id);
+      if (thisIndex <= 0) return project;
+      return moveBlock(project, thisIndex, thisIndex - 1);
+    });
 
 
     setTimeout(() => {
@@ -143,12 +147,11 @@ export default function BlockLi({
     }, 0);
   };
   const moveBlockDownOne = () => {
-    if (!volatileProject) return;
-
-    const thisIndex = volatileProject.blocks.findIndex(b => b.id === block.id);
-    if (thisIndex === -1 || thisIndex >= volatileProject.blocks.length - 1) return;
-
-    setVolatileProject(prev => prev ? moveBlock(prev, thisIndex, thisIndex + 1) : prev);
+    updateProject((project) => {
+      const thisIndex = project.blocks.findIndex(b => b.id === block.id);
+      if (thisIndex === -1 || thisIndex >= project.blocks.length - 1) return project;
+      return moveBlock(project, thisIndex, thisIndex + 1);
+    });
 
     setTimeout(() => {
       const li = document.getElementById(`block-${block.id}`);
@@ -163,7 +166,6 @@ export default function BlockLi({
 
   // Dialog stuff
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
-
   const handleDeleteProject = () => {
     if (isPowerMode) {
       deleteBlock(block.id);

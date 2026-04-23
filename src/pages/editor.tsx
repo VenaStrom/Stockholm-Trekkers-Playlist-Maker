@@ -64,7 +64,7 @@ export default function Editor() {
       });
   }, [projectID]);
 
-  // Debouncing
+  // Saving project
   const [debouncedProject] = useDebounce(volatileProject, 500);
   useEffect(() => {
     if (!debouncedProject) return;
@@ -86,10 +86,6 @@ export default function Editor() {
   }, [debouncedProject]);
 
   // Handlers
-  const onDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newDescription = e.target.value;
-    setVolatileProject(prev => prev ? { ...prev, description: newDescription } : prev);
-  };
   const navigateBack = () => {
     if (!volatileProject) {
       setRoute(PageRoute.Projects);
@@ -119,7 +115,6 @@ export default function Editor() {
     window.addEventListener("resize", handler);
     return () => window.removeEventListener("resize", handler);
   }, []);
-
   // Ensure textarea has correct styles and height when description changes (including initial load)
   useEffect(() => {
     const el = descRef.current;
@@ -200,7 +195,7 @@ export default function Editor() {
             <pre>
               <textarea
                 onChange={(e) => {
-                  onDescriptionChange(e);
+                  setVolatileProject(prev => prev ? { ...prev, description: e.target.value } : prev);
                   const area = e.currentTarget;
                   area.style.height = "0px";
                   area.style.height = `${area.scrollHeight}px`;
