@@ -2,57 +2,42 @@ import { mmssToSeconds, secondsToMMSS } from "@/functions/project/time-format";
 import type { Block, Episode, Project } from "@/types";
 
 type BlockDefinedTime = Block & Required<Pick<Block, "startTime">>;
-type EpisodeTiming = Pick<Episode, "cachedStartTime" | "cachedEndTime">;
 
 export function compileTimeline(project: Project): Project {
   const blocks = project.blocks.filter((b): b is BlockDefinedTime => !!b.startTime);
 
-  const blockEpisodesMap = project.episodes.reduce<Record<string, Episode[]>>((acc, episode) => {
-    if (!episode.blockID) return acc;
+  const blockEpisodesMap: Record<string, Episode[]> = {};
 
-    const episodesInBlock = acc[episode.blockID] ?? [];
-    return {
-      ...acc,
-      [episode.blockID]: [...episodesInBlock, episode],
-    };
-  }, {});
+  for (const episode of project.episodes) {
+    if (!episode.blockID) continue;
 
-  const episodeTimings = blocks.reduce<Record<string, EpisodeTiming>>((acc, block) => {
+    blockEpisodesMap[episode.blockID] ??= [];
+    blockEpisodesMap[episode.blockID]?.push(episode);
+  }
+
+  for (const block of blocks) {
     const episodesInBlock = blockEpisodesMap[block.id];
-    if (!episodesInBlock || episodesInBlock.some(e => !e.cachedDuration)) return acc;
+    if (!episodesInBlock) continue;
 
-    const initialCursor = mmssToSeconds(block.startTime) ?? 0;
-    const blockResult = episodesInBlock.reduce(
-      (state, episode) => {
-        const duration = episode.cachedDuration;
-        if (!duration) return state;
+    if (episodesInBlock.some(e => !e.cachedDuration)) {
+      console.warn(`Skipping block ${block.id} because at least one episode is missing duration`);
+      continue;
+    }
 
-        const nextCursor = state.cursor + duration;
-        return {
-          cursor: nextCursor,
-          timings: {
-            ...state.timings,
-            [episode.id]: {
-              cachedStartTime: secondsToMMSS(state.cursor),
-              cachedEndTime: secondsToMMSS(nextCursor),
-            },
-          },
-        };
-      },
-      { cursor: initialCursor, timings: {} as Record<string, EpisodeTiming> },
-    );
+    const blockStartSeconds = mmssToSeconds(block.startTime);
+    let acc = blockStartSeconds ?? 0;
 
-    return {
-      ...acc,
-      ...blockResult.timings,
-    };
-  }, {});
+    for (const episode of episodesInBlock) {
+      if (!episode.cachedDuration) {
+        console.warn(`Episode ${episode.id} is missing cachedDuration, skipping...`, { episode });
+        continue;
+      }
 
-  return {
-    ...project,
-    episodes: project.episodes.map(episode => {
-      const timing = episodeTimings[episode.id];
-      return timing ? { ...episode, ...timing } : episode;
-    }),
-  };
+      episode.cachedStartTime = secondsToMMSS(acc);
+      episode.cachedEndTime = secondsToMMSS(acc + episode.cachedDuration);
+      acc += episode.cachedDuration;
+    }
+  }
+
+  return project;
 }
