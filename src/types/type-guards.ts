@@ -1,4 +1,14 @@
+import { Encoding } from "@/types";
 import type { Block, Episode, Project, ProjectData, ProjectMeta } from "@/types";
+
+export function isKnownEncoding(value: unknown): value is (typeof Encoding)[keyof typeof Encoding] {
+  if (typeof value !== "string") return false;
+  return Object.values(Encoding).includes(value as (typeof Encoding)[keyof typeof Encoding]);
+}
+
+export function isEncoding(value: unknown): value is Episode["cachedEncoding"] {
+  return typeof value === "string";
+}
 
 export function isStandardObject(obj: unknown): obj is Record<string, unknown> {
   if (typeof obj !== "object") return false;
@@ -18,9 +28,11 @@ export function isEpisode(obj: unknown): obj is Episode {
     id?: unknown;
     blockID?: unknown;
     filePath?: unknown;
-    duration?: unknown;
     cachedStartTime?: unknown;
     cachedEndTime?: unknown;
+    cachedDuration?: unknown;
+    cachedSize?: unknown;
+    cachedEncoding?: unknown;
   };
 
   if (typeof o.id !== "string") {
@@ -36,16 +48,24 @@ export function isEpisode(obj: unknown): obj is Episode {
     console.warn("Episode optional 'filePath' is invalid", { obj });
     return false;
   }
-  if (o.duration != null && typeof o.duration !== "number") {
-    console.warn("Episode optional 'duration' is invalid", { obj });
-    return false;
-  }
   if (o.cachedStartTime != null && typeof o.cachedStartTime !== "string") {
     console.warn("Episode optional 'cachedStartTime' is invalid", { obj });
     return false;
   }
   if (o.cachedEndTime != null && typeof o.cachedEndTime !== "string") {
     console.warn("Episode optional 'cachedEndTime' is invalid", { obj });
+    return false;
+  }
+  if (o.cachedDuration != null && typeof o.cachedDuration !== "number") {
+    console.warn("Episode optional 'cachedDuration' is invalid", { obj });
+    return false;
+  }
+  if (o.cachedSize != null && typeof o.cachedSize !== "number") {
+    console.warn("Episode optional 'cachedSize' is invalid", { obj });
+    return false;
+  }
+  if (o.cachedEncoding != null && !isEncoding(o.cachedEncoding)) {
+    console.warn("Episode optional 'cachedEncoding' is invalid", { obj });
     return false;
   }
 
@@ -93,6 +113,7 @@ export function isProjectMetaOnly(obj: unknown): obj is ProjectMeta {
     optionsRev?: unknown;
     blockCount?: unknown;
     episodeCount?: unknown;
+    exportSize?: unknown;
   };
 
   if (typeof o.id !== "string") return false;
@@ -103,6 +124,7 @@ export function isProjectMetaOnly(obj: unknown): obj is ProjectMeta {
   if (typeof o.optionsRev !== "number") return false;
   if (typeof o.blockCount !== "number") return false;
   if (typeof o.episodeCount !== "number") return false;
+  if ("exportSize" in o && typeof o.exportSize !== "number") return false;
 
   return true;
 }

@@ -122,7 +122,7 @@ export default function EpisodeLi({
             return prevProject;
           }
 
-          return updateEpisode(prevProject, episodeID, { duration: durationSeconds });
+          return updateEpisode(prevProject, episodeID, { cachedDuration: durationSeconds });
         });
       })
       .catch((e: unknown) => {
@@ -151,7 +151,7 @@ export default function EpisodeLi({
         if (!prevProject) return prevProject;
         return updateEpisode(prevProject, episode.id, {
           filePath: fileString ?? undefined,
-          duration: undefined, // Reset duration when file changes, will be re-populated on next metadata fetch
+          cachedDuration: undefined, // Reset duration when file changes, will be re-populated on next metadata fetch
         });
       });
 
@@ -392,7 +392,7 @@ export default function EpisodeLi({
         {/* Start time */}
         <span className={`w-[5ch] ${!episode.cachedStartTime ? "text-flare-700" : ""}`}>{episode.cachedStartTime || "--:--"}</span>
         {/* Duration */}
-        <span className={`w-[7ch] ps-0.5 ${!episode.duration ? "text-flare-700" : ""}`}>{episode.duration ? secondsToTimeString(episode.duration) : "-"}</span>
+        <span className={`w-[7ch] ps-0.5 ${!episode.cachedDuration ? "text-flare-700" : ""}`}>{episode.cachedDuration ? secondsToTimeString(episode.cachedDuration) : "-"}</span>
       </div>
 
       {/* Custom file input */}

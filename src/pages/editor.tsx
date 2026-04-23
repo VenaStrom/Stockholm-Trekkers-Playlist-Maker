@@ -27,7 +27,7 @@ export default function Editor() {
         setVolatileProject(project);
 
         const episodesToBeProbed = project.episodes
-          .filter((e): e is Episode & { duration: undefined; filePath: string; } => !e.duration && !!e.filePath);
+          .filter((e): e is Episode & { duration: undefined; filePath: string; } => !e.cachedDuration && !!e.filePath);
         if (episodesToBeProbed.length === 0) return;
 
         // On mount, get all episodes durations
@@ -50,7 +50,7 @@ export default function Editor() {
               const episodesByID = Object.fromEntries(prev.episodes.map(e => [e.id, e]));
               for (const result of results) {
                 const episode = episodesByID[result.id];
-                if (episode) episode.duration = result.duration;
+                if (episode) episode.cachedDuration = result.duration;
               }
               return { ...prev };
             });

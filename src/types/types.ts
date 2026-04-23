@@ -1,11 +1,18 @@
+import type { Encoding } from "@/types";
 
 export type Episode = {
   id: string;
   blockID: string;
   filePath?: string;
-  duration?: number; // in seconds
+
+  // Calculated
   cachedStartTime?: string;
   cachedEndTime?: string;
+
+  // Probed meta
+  cachedDuration?: number; // in seconds
+  cachedSize?: number; // in bytes
+  cachedEncoding?: Encoding;
 };
 
 export type BlockClip = {
@@ -31,6 +38,7 @@ export type ProjectMeta = {
   optionsRev: number;
   blockCount: number;
   episodeCount: number;
+  exportSize?: number; // in bytes
 };
 export type ProjectData = {
   id: string;
