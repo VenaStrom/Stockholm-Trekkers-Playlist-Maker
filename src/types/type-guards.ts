@@ -1,13 +1,16 @@
 import { Encoding } from "@/types";
 import type { Block, Episode, Project, ProjectData, ProjectMeta } from "@/types";
 
-export function isKnownEncoding(value: unknown): value is (typeof Encoding)[keyof typeof Encoding] {
+export function isEncoding(value: unknown): value is Encoding {
   if (typeof value !== "string") return false;
-  return Object.values(Encoding).includes(value as (typeof Encoding)[keyof typeof Encoding]);
-}
 
-export function isEncoding(value: unknown): value is Episode["cachedEncoding"] {
-  return typeof value === "string";
+  // Check if it's one of the known encodings
+  const knownEncodings: string[] = Object.values(Encoding);
+  if (knownEncodings.includes(value)) return true;
+
+  // Allow any string (for future-proofing), but log a warning
+  console.warn(`Unknown encoding '${value}' encountered. This may be a future encoding or an invalid value.`);
+  return true;
 }
 
 export function isStandardObject(obj: unknown): obj is Record<string, unknown> {

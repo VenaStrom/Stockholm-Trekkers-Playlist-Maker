@@ -5,6 +5,7 @@ import { open } from "@tauri-apps/plugin-dialog";
 import { secondsToTimeString } from "@/functions/time-format";
 import { generateID } from "@/functions/sha256";
 import { runFFprobe } from "@/functions/ffmpeg";
+import { probeEpisode } from "@/functions/episode-probe";
 
 /** 
  * I don't like this, but this is very convenient to keep the UI prettier during drag-and-drop
