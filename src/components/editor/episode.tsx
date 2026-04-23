@@ -374,16 +374,7 @@ export default function EpisodeLi({
       }
     >
       {/* Delete and info */}
-      <div className="flex flex-row gap-x-6 items-center pe-10">
-        {/* Delete button */}
-        <button
-          className={`€icon text-flare-700 hover:text-red-alert-500 ${isLastAndEmptyInBlock ? "opacity-0 cursor-[inherit]" : ""}`}
-          onClick={isLastAndEmptyInBlock ? undefined : deleteEpisode}
-          aria-hidden={isLastAndEmptyInBlock}
-        >
-          <IconDeleteOutline className="size-6" />
-        </button>
-
+      <div className="flex flex-row gap-x-6 items-center pe-3">
         {/* Start time */}
         <span className={`w-[5ch] ${!episode.cachedStartTime ? "text-flare-700" : ""}`}>{episode.cachedStartTime || previousEpisode?.cachedEndTime || "--:--"}</span>
 
@@ -392,6 +383,15 @@ export default function EpisodeLi({
 
         {/* Encoding */}
         <span className={`w-[4ch] text-flare-700`}>{episode.cachedEncoding ? episode.cachedEncoding : "-"}</span>
+
+        {/* Delete button */}
+        <button
+          className={`€icon ps-3 text-flare-700 hover:text-red-alert-500 ${isLastAndEmptyInBlock ? "opacity-0 cursor-[inherit]" : ""}`}
+          onClick={isLastAndEmptyInBlock ? undefined : deleteEpisode}
+          aria-hidden={isLastAndEmptyInBlock}
+        >
+          <IconDeleteOutline className="size-6" />
+        </button>
       </div>
 
       {/* Custom file input */}
