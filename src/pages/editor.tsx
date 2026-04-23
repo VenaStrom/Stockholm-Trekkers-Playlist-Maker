@@ -9,8 +9,8 @@ import { generateID } from "@/functions/sha256";
 import EpisodeLi from "@/components/editor/episode";
 import BlockLi from "@/components/editor/block";
 import ExportButton from "@/components/button/export-button";
-import { parseDate } from "@/functions/date-parser";
-import { probeEpisode } from "@/functions/episode-probe";
+import { parseDate } from "@/functions/project/date-parser";
+import { probeEpisode } from "@/functions/project/episode-probe";
 
 export default function Editor() {
   const { setHeaderText, projectID, setRoute } = usePageContext();

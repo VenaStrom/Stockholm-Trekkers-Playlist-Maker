@@ -4,7 +4,7 @@ import type { Block, Project } from "@/types";
 import { usePageContext } from "@/components/page-context";
 import { IconDeleteForeverOutline, IconDeleteOutline, IconDragIndicator } from "@/components/icons";
 import Dialog from "@/components/dialog";
-import { parseBlockTime } from "@/functions/time-parser";
+import { parseBlockTime } from "@/functions/project/time-parser";
 
 /** 
  * I don't like this, but this is very convenient to keep the UI prettier during drag-and-drop

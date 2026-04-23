@@ -2,9 +2,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { Episode, Project } from "@/types";
 import { IconDeleteOutline, IconDragIndicator, IconFolderOutline } from "@/components/icons";
 import { open } from "@tauri-apps/plugin-dialog";
-import { secondsToTimeString } from "@/functions/time-format";
+import { secondsToTimeString } from "@/functions/project/time-format";
 import { generateID } from "@/functions/sha256";
-import { probeEpisode } from "@/functions/episode-probe";
+import { probeEpisode } from "@/functions/project/episode-probe";
 
 /** 
  * I don't like this, but this is very convenient to keep the UI prettier during drag-and-drop
@@ -366,6 +366,7 @@ export default function EpisodeLi({
         : ""}`
       }
     >
+      {/* Delete and info */}
       <div className="flex flex-row gap-x-6 items-center pe-10">
         {/* Delete button */}
         <button
