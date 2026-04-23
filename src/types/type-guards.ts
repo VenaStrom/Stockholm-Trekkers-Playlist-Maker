@@ -24,47 +24,37 @@ export function isEpisode(obj: unknown): obj is Episode {
     console.warn("Episode type check: not an object");
     return false;
   }
-  const o = obj as {
-    id?: unknown;
-    blockID?: unknown;
-    filePath?: unknown;
-    cachedStartTime?: unknown;
-    cachedEndTime?: unknown;
-    cachedDuration?: unknown;
-    cachedSize?: unknown;
-    cachedEncoding?: unknown;
-  };
 
-  if (typeof o.id !== "string") {
+  if (!("id" in obj) || typeof obj["id"] !== "string") {
     console.warn("Episode missing or invalid 'id'", { obj });
     return false;
   }
-  if (typeof o.blockID !== "string") {
+  if (!("blockID" in obj) || typeof obj["blockID"] !== "string") {
     console.warn("Episode missing or invalid 'blockID'", { obj });
     return false;
   }
 
-  if (o.filePath != null && typeof o.filePath !== "string") {
+  if ("filePath" in obj && obj["filePath"] != null && typeof obj["filePath"] !== "string") {
     console.warn("Episode optional 'filePath' is invalid", { obj });
     return false;
   }
-  if (o.cachedStartTime != null && typeof o.cachedStartTime !== "string") {
+  if ("cachedStartTime" in obj && obj["cachedStartTime"] != null && typeof obj["cachedStartTime"] !== "string") {
     console.warn("Episode optional 'cachedStartTime' is invalid", { obj });
     return false;
   }
-  if (o.cachedEndTime != null && typeof o.cachedEndTime !== "string") {
+  if ("cachedEndTime" in obj && obj["cachedEndTime"] != null && typeof obj["cachedEndTime"] !== "string") {
     console.warn("Episode optional 'cachedEndTime' is invalid", { obj });
     return false;
   }
-  if (o.cachedDuration != null && typeof o.cachedDuration !== "number") {
+  if ("cachedDuration" in obj && obj["cachedDuration"] != null && typeof obj["cachedDuration"] !== "number") {
     console.warn("Episode optional 'cachedDuration' is invalid", { obj });
     return false;
   }
-  if (o.cachedSize != null && typeof o.cachedSize !== "number") {
+  if ("cachedSize" in obj && obj["cachedSize"] != null && typeof obj["cachedSize"] !== "number") {
     console.warn("Episode optional 'cachedSize' is invalid", { obj });
     return false;
   }
-  if (o.cachedEncoding != null && !isEncoding(o.cachedEncoding)) {
+  if ("cachedEncoding" in obj && obj["cachedEncoding"] != null && !isEncoding(obj["cachedEncoding"])) {
     console.warn("Episode optional 'cachedEncoding' is invalid", { obj });
     return false;
   }
@@ -77,14 +67,13 @@ export function isBlock(obj: unknown): obj is Block {
     console.warn("Block type check: not an object");
     return false;
   }
-  const o = obj as { id?: unknown; options?: unknown; };
 
-  if (typeof o.id !== "string") {
+  if (!("id" in obj) || typeof obj["id"] !== "string") {
     console.warn("Block missing or invalid 'id'", { obj });
     return false;
   }
 
-  const options = o.options;
+  const options = obj["options"];
   if (!isStandardObject(options)) {
     console.warn("Block missing or invalid 'options'", { obj });
     return false;
@@ -104,27 +93,16 @@ export function isProjectMetaOnly(obj: unknown): obj is ProjectMeta {
     console.warn("ProjectMeta type check: not an object");
     return false;
   }
-  const o = obj as {
-    id?: unknown;
-    date?: unknown;
-    description?: unknown;
-    dateCreated?: unknown;
-    dateModified?: unknown;
-    optionsRev?: unknown;
-    blockCount?: unknown;
-    episodeCount?: unknown;
-    exportSize?: unknown;
-  };
 
-  if (typeof o.id !== "string") return false;
-  if (typeof o.date !== "string") return false;
-  if (typeof o.description !== "string") return false;
-  if (typeof o.dateCreated !== "number") return false;
-  if ("dateModified" in o && typeof o.dateModified !== "number") return false;
-  if (typeof o.optionsRev !== "number") return false;
-  if (typeof o.blockCount !== "number") return false;
-  if (typeof o.episodeCount !== "number") return false;
-  if ("exportSize" in o && typeof o.exportSize !== "number") return false;
+  if (!("id" in obj) || typeof obj["id"] !== "string") return false;
+  if (!("date" in obj) || typeof obj["date"] !== "string") return false;
+  if (!("description" in obj) || typeof obj["description"] !== "string") return false;
+  if (!("dateCreated" in obj) || typeof obj["dateCreated"] !== "number") return false;
+  if ("dateModified" in obj && typeof obj["dateModified"] !== "number") return false;
+  if (!("optionsRev" in obj) || typeof obj["optionsRev"] !== "number") return false;
+  if (!("blockCount" in obj) || typeof obj["blockCount"] !== "number") return false;
+  if (!("episodeCount" in obj) || typeof obj["episodeCount"] !== "number") return false;
+  if ("exportSize" in obj && typeof obj["exportSize"] !== "number") return false;
 
   return true;
 }
@@ -134,20 +112,19 @@ export function isProjectDataOnly(obj: unknown): obj is ProjectData {
     console.warn("ProjectData type check: not an object");
     return false;
   }
-  const o = obj as { id?: unknown; blocks?: unknown; episodes?: unknown };
 
-  if (typeof o.id !== "string") {
+  if (!("id" in obj) || typeof obj["id"] !== "string") {
     console.warn("ProjectData missing or invalid 'id'", { obj });
     return false;
   }
 
-  const blocks = o.blocks;
+  const blocks = obj["blocks"];
   if (!Array.isArray(blocks) || !(blocks as unknown[]).every((b) => isBlock(b))) {
     console.warn("ProjectData 'blocks' invalid", { obj });
     return false;
   }
 
-  const episodes = o.episodes;
+  const episodes = obj["episodes"];
   if (!Array.isArray(episodes) || !(episodes as unknown[]).every((e) => isEpisode(e))) {
     console.warn("ProjectData 'episodes' invalid", { obj });
     return false;
@@ -161,22 +138,21 @@ export function isProject(obj: unknown): obj is Project {
     console.warn("Project type check: not an object");
     return false;
   }
-  const o = obj as { blocks?: unknown; episodes?: unknown };
-
-  // Check meta
-  if (!isProjectMetaOnly(obj)) return false;
 
   // Check data (blocks & episodes)
-  const blocks = o.blocks;
+  const blocks = obj["blocks"];
   if (!Array.isArray(blocks) || !(blocks as unknown[]).every((b) => isBlock(b))) {
     console.warn("Project 'blocks' invalid", { obj });
     return false;
   }
-  const episodes = o.episodes;
+  const episodes = obj["episodes"];
   if (!Array.isArray(episodes) || !(episodes as unknown[]).every((e) => isEpisode(e))) {
     console.warn("Project 'episodes' invalid", { obj });
     return false;
   }
+
+  // Check meta
+  if (!isProjectMetaOnly(obj)) return false;
 
   return true;
 }
