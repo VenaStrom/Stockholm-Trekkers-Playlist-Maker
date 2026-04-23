@@ -10,11 +10,11 @@ function onlyDigits(input: string): string {
   return result;
 }
 
-function mmss(minutes: string | number, seconds: string | number): string {
+function hhmm(hours: string | number, minutes: string | number): string {
+  hours = hours.toString().padStart(2, "0");
   minutes = minutes.toString().padStart(2, "0");
-  seconds = seconds.toString().padStart(2, "0");
 
-  return `${minutes}:${seconds}`;
+  return `${hours}:${minutes}`;
 }
 
 export function parseBlockTime(unparsedTime: string): string {
@@ -30,7 +30,7 @@ export function parseBlockTime(unparsedTime: string): string {
 
   // HH:MM
   if (time.length === 4) {
-    return mmss(s(0, 2), s(2, 4));
+    return hhmm(s(0, 2), s(2, 4));
   }
 
   // 0H:MM || HH:M0
@@ -39,12 +39,12 @@ export function parseBlockTime(unparsedTime: string): string {
 
     // HH:M0
     if (firstTwoDigits < 24) {
-      return mmss(firstTwoDigits, s(2, 3) + "0");
+      return hhmm(firstTwoDigits, s(2, 3) + "0");
     }
 
     // 0H:MM
     else {
-      return mmss(s(0, 1), s(1, 3));
+      return hhmm(s(0, 1), s(1, 3));
     }
   }
 
@@ -52,19 +52,19 @@ export function parseBlockTime(unparsedTime: string): string {
   if (time.length === 2) {
     // HH:00
     if (Number(time) < 24) {
-      return mmss(s(0, 2), 0);
+      return hhmm(s(0, 2), 0);
     }
 
     // 0H:M0
     else {
-      return mmss(s(0, 1), s(1, 2) + "0");
+      return hhmm(s(0, 1), s(1, 2) + "0");
     }
   }
 
   // 0H:00
   if (time.length === 1) {
     // Assume format is 0H:00
-    return mmss(s(0, 1), 0);
+    return hhmm(s(0, 1), 0);
   }
 
   return unparsedTime;

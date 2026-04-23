@@ -1,4 +1,4 @@
-import { mmssToSeconds, secondsToHHMMSS } from "@/functions/project/time-format";
+import { hhmmToSeconds, secondsToHHMM } from "@/functions/project/time-format";
 import type { Block, Episode, Project } from "@/types";
 
 type BlockDefinedTime = Block & Required<Pick<Block, "startTime">>;
@@ -24,8 +24,17 @@ export function compileTimeline(project: Project): Project {
       continue;
     }
 
-    const blockStartSeconds = mmssToSeconds(block.startTime);
-    let acc = blockStartSeconds ?? 0;
+    const blockStartSeconds = hhmmToSeconds(block.startTime);
+    if (!blockStartSeconds) {
+      console.warn(`Invalid start time for block ${block.id}: ${block.startTime}`);
+      for (const episode of episodesInBlock) {
+        episode.cachedStartTime = undefined;
+        episode.cachedEndTime = undefined;
+      }
+      continue;
+    }
+
+    let acc = blockStartSeconds;
 
     for (const episode of episodesInBlock) {
       if (!episode.cachedDuration) {
@@ -33,8 +42,8 @@ export function compileTimeline(project: Project): Project {
         continue;
       }
 
-      episode.cachedStartTime = secondsToHHMMSS(acc);
-      episode.cachedEndTime = secondsToHHMMSS(acc + episode.cachedDuration);
+      episode.cachedStartTime = secondsToHHMM(acc);
+      episode.cachedEndTime = secondsToHHMM(acc + episode.cachedDuration);
       acc += episode.cachedDuration;
     }
   }
