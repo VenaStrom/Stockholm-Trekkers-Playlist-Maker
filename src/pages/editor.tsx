@@ -10,7 +10,7 @@ import EpisodeLi from "@/components/editor/episode";
 import BlockLi from "@/components/editor/block";
 import ExportButton from "@/components/button/export-button";
 import { parseDate } from "@/functions/date-parser";
-import { runFFprobe } from "@/functions/ffmpeg";
+import { probeEpisode } from "@/functions/episode-probe";
 
 export default function Editor() {
   const { setHeaderText, projectID, setRoute } = usePageContext();
@@ -27,31 +27,25 @@ export default function Editor() {
         setVolatileProject(project);
 
         const episodesToBeProbed = project.episodes
-          .filter((e): e is Episode & { duration: undefined; filePath: string; } => !e.cachedDuration && !!e.filePath);
+          .filter((e): e is Episode & { filePath: string; } => !!e.filePath);
         if (episodesToBeProbed.length === 0) return;
 
-        // On mount, get all episodes durations
-        const ffprobeJobs = episodesToBeProbed.map(e =>
-          runFFprobe([
-            "-v", "error",
-            "-select_streams", "v:0",
-            "-show_entries", "format=duration",
-            "-of", "default=noprint_wrappers=1:nokey=1",
-            e.filePath,
-          ]).then(o => ({
-            id: e.id,
-            duration: parseFloat(o.stdout),
-          })),
-        );
+        const ffprobeJobs = episodesToBeProbed.map(probeEpisode);
+
         Promise.all(ffprobeJobs)
-          .then(results => {
+          .then(probedEpisodes => {
             setVolatileProject(prev => {
               if (!prev) return prev;
-              const episodesByID = Object.fromEntries(prev.episodes.map(e => [e.id, e]));
-              for (const result of results) {
-                const episode = episodesByID[result.id];
-                if (episode) episode.cachedDuration = result.duration;
+
+              for (const probed of probedEpisodes) {
+                const targetEpisodeIndex = prev.episodes.findIndex(e => e.id === probed.id);
+                if (targetEpisodeIndex === -1) {
+                  console.warn(`Probed episode with id ${probed.id} not found in project episodes. Skipping update for this episode.`);
+                  continue;
+                }
+                prev.episodes[targetEpisodeIndex] = probed;
               }
+
               return { ...prev };
             });
           })

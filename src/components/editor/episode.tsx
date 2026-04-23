@@ -4,7 +4,6 @@ import { IconDeleteOutline, IconDragIndicator, IconFolderOutline } from "@/compo
 import { open } from "@tauri-apps/plugin-dialog";
 import { secondsToTimeString } from "@/functions/time-format";
 import { generateID } from "@/functions/sha256";
-import { runFFprobe } from "@/functions/ffmpeg";
 import { probeEpisode } from "@/functions/episode-probe";
 
 /** 
@@ -94,40 +93,26 @@ export default function EpisodeLi({
 
   // Sync on selected file
   useEffect(() => {
-    setSelectedFile(episode.filePath ?? null);
+    setSelectedFile(episode.filePath || null);
   }, [episode.id, episode.filePath]);
 
   const fetchDurationForPath = (episodeID: string, filePath: string) => {
     const requestID = ++ffprobeRequestRef.current;
 
-    runFFprobe([
-      "-v", "error",
-      "-select_streams", "v:0",
-      "-show_entries", "format=duration",
-      "-of", "default=noprint_wrappers=1:nokey=1",
-      filePath,
-    ])
-      .then((o) => {
-        const durationSeconds = parseFloat(o.stdout);
-        if (isNaN(durationSeconds)) {
-          console.warn(`Could not parse duration from ffprobe output: ${o.stdout}`);
-          return;
-        }
+    probeEpisode({ ...episode, filePath })
+      .then((probedEpisode) => {
+        setVolatileProject(prev => {
+          if (!prev) return prev;
+          if (ffprobeRequestRef.current !== requestID) return prev;
 
-        setVolatileProject((prevProject) => {
-          if (!prevProject) return prevProject;
-          if (ffprobeRequestRef.current !== requestID) return prevProject;
+          const targetEpisode = prev.episodes.find(ep => ep.id === episodeID);
+          if (targetEpisode?.filePath !== filePath) return prev;
 
-          const targetEpisode = prevProject.episodes.find(ep => ep.id === episodeID);
-          if (targetEpisode?.filePath !== filePath) {
-            return prevProject;
-          }
-
-          return updateEpisode(prevProject, episodeID, { cachedDuration: durationSeconds });
+          return updateEpisode(prev, episodeID, probedEpisode);
         });
       })
       .catch((e: unknown) => {
-        console.error("Error running FFprobe command:", e);
+        console.error("Error probing episode file:", e);
       });
   };
 
