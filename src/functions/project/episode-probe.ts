@@ -24,10 +24,7 @@ function isMediaFileProbeResult(obj: unknown): obj is MediaFileProbeResult {
 
 type EpisodeDefinedPath = Episode & Required<Pick<Episode, "filePath">>;
 type ProbedEpisode = Episode
-  & Required<Pick<Episode, "filePath">>
-  & Required<Pick<Episode, "cachedDuration">>
-  & Required<Pick<Episode, "cachedEncoding">>
-  & Required<Pick<Episode, "cachedSize">>;
+  & Required<Pick<Episode, "filePath" | "cachedDuration" | "cachedEncoding" | "cachedSize">>
 
 export async function probeEpisode(episode: EpisodeDefinedPath): Promise<ProbedEpisode> {
   const probeResult = await runFFprobe([
