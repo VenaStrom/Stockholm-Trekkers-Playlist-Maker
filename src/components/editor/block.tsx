@@ -4,6 +4,7 @@ import type { Block, Project } from "@/types";
 import { usePageContext } from "@/components/page-context";
 import { IconDeleteForeverOutline, IconDeleteOutline, IconDragIndicator } from "@/components/icons";
 import Dialog from "@/components/dialog";
+import { parseBlockTime } from "@/functions/time-parser";
 
 /** 
  * I don't like this, but this is very convenient to keep the UI prettier during drag-and-drop
@@ -26,8 +27,11 @@ export default function BlockLi({
   project: Project | null;
   projectSetter: React.Dispatch<React.SetStateAction<Project | null>>;
 }) {
-  const [isDragOver, setDragOver] = useState(false);
   const { isPowerMode } = usePageContext();
+
+  const [isDragOver, setDragOver] = useState(false);
+  const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
+  const [blockStartTime, setBlockStartTime] = useState<string | null>(block.startTime || null);
 
   const updateProject = (updater: (project: Project) => Project) => {
     setVolatileProject((prevProject) => {
@@ -36,7 +40,7 @@ export default function BlockLi({
     });
   };
 
-  const moveBlock = (proj: Project, fromIndex: number, toIndex: number) => {
+  const moveBlock = (proj: Project, fromIndex: number, toIndex: number): Project => {
     const blocksCopy = [...proj.blocks];
     const [moved] = blocksCopy.splice(fromIndex, 1);
     if (!moved) {
@@ -67,6 +71,13 @@ export default function BlockLi({
       const updatedEpisodes = project.episodes.filter(e => e.blockID !== blockID);
       return { ...project, blocks: updatedBlocks, episodes: updatedEpisodes };
     });
+  };
+  const handleDeleteBlock = () => {
+    if (isPowerMode) {
+      deleteBlock(block.id);
+      return;
+    }
+    setDeleteDialogVisible(true);
   };
 
   const onDragStart = (e: React.DragEvent) => {
@@ -164,17 +175,6 @@ export default function BlockLi({
     }, 0);
   };
 
-  // Dialog stuff
-  const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
-  const handleDeleteProject = () => {
-    if (isPowerMode) {
-      deleteBlock(block.id);
-      return;
-    }
-
-    setDeleteDialogVisible(true);
-  };
-
   return (<>
     {/* Delete dialog */}
     <Dialog
@@ -213,8 +213,8 @@ export default function BlockLi({
 
     <li
       id={`block-${block.id}`}
-      onDragOver={onDragOver}
       onDrop={onDrop}
+      onDragOver={onDragOver}
       onDragEnter={onDragEnter}
       onDragLeave={onDragLeave}
       className={`bg-abyss-900 px-4 py-2 rounded-sm ${isDragOver
@@ -226,6 +226,19 @@ export default function BlockLi({
       <div className="h-12 flex flex-row items-center gap-x-4">
         <p>Block {blockIndex + 1}</p>
 
+        {/* Block start time */}
+        <label>
+          <input
+            aria-label="block start time in format --:--"
+            className="bg-abyss-500 w-[6ch] text-center"
+            type="text"
+            placeholder="--:--"
+            value={blockStartTime ?? ""}
+            onChange={e => setBlockStartTime(e.target.value || null)}
+            onBlur={e => setBlockStartTime(parseBlockTime(e.target.value) || null)}
+          />
+        </label>
+
         <span className="flex-1"></span>
 
         {/* Controls */}
@@ -233,7 +246,7 @@ export default function BlockLi({
           <div>
             <button
               className="€icon hover:text-red-alert-500"
-              onClick={handleDeleteProject}
+              onClick={handleDeleteBlock}
               title={isPowerMode ? "Delete block instantly" : "Delete block"}
             >
               {isPowerMode

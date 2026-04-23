@@ -88,6 +88,11 @@ export function isBlock(obj: unknown): obj is Block {
     return false;
   }
 
+  if ("startTime" in obj && typeof obj["startTime"] !== "string") {
+    console.warn("Block optional 'startTime' is invalid", { obj });
+    return false;
+  }
+
   return true;
 }
 

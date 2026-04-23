@@ -27,6 +27,7 @@ export type BlockClip = {
 export type Block = {
   id: string;
   options: Record<string, BlockClip["default"]>;
+  startTime?: string;
 };
 
 export type ProjectMeta = {
