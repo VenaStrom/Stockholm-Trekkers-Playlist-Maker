@@ -131,6 +131,29 @@ export default function Editor() {
     return grouped;
   }, [volatileProject]);
 
+  // Debug hotkey
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      // Ctrl + P to wipe all cached probe data (for testing purposes)
+      if (e.key === "p" && e.ctrlKey) {
+        setVolatileProject(prev => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            episodes: prev.episodes.map(ep => ({
+              ...ep,
+              cachedDuration: undefined,
+              cachedEncoding: undefined,
+              cachedSize: undefined,
+            })),
+          };
+        });
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [debouncedProject, volatileProject]);
+
   return (
     <main className="flex flex-col lg:flex-row gap-x-8 gap-y-12 justify-center items-start pt-4 px-12 pb-10">
       {/* Side bar */}
