@@ -39,6 +39,12 @@ export default function BlockLi({
       return updater(prevProject);
     });
   };
+  const updateBlock = (updatedFields: Partial<Block>) => {
+    updateProject((project) => {
+      const updatedBlocks = project.blocks.map(b => b.id === block.id ? { ...b, ...updatedFields } : b);
+      return { ...project, blocks: updatedBlocks };
+    });
+  };
 
   const moveBlock = (proj: Project, fromIndex: number, toIndex: number): Project => {
     const blocksCopy = [...proj.blocks];
@@ -235,7 +241,10 @@ export default function BlockLi({
             placeholder="--:--"
             value={blockStartTime ?? ""}
             onChange={e => setBlockStartTime(e.target.value || null)}
-            onBlur={e => setBlockStartTime(parseBlockTime(e.target.value) || null)}
+            onBlur={e => {
+              setBlockStartTime(parseBlockTime(e.target.value));
+              updateBlock({ startTime: parseBlockTime(e.target.value) });
+            }}
           />
         </label>
 
