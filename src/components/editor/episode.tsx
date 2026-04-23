@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { Episode, Project } from "@/types";
 import { IconDeleteOutline, IconDragIndicator, IconFolderOutline } from "@/components/icons";
 import { open } from "@tauri-apps/plugin-dialog";
-import { secondsToMMSS } from "@/functions/project/time-format";
+import { secondsToHHMMSS } from "@/functions/project/time-format";
 import { generateID } from "@/functions/sha256";
 import { probeEpisode } from "@/functions/project/episode-probe";
 
@@ -381,7 +381,7 @@ export default function EpisodeLi({
         <span className={`w-[5ch] ${!episode.cachedStartTime ? "text-flare-700" : ""}`}>{episode.cachedStartTime || "--:--"}</span>
 
         {/* Duration */}
-        <span className={`w-[7ch] ps-0.5 text-flare-700`}>{episode.cachedDuration ? secondsToMMSS(episode.cachedDuration) : "-"}</span>
+        <span className={`w-[7ch] ps-0.5 text-flare-700`}>{episode.cachedDuration ? secondsToHHMMSS(episode.cachedDuration) : "-"}</span>
 
         {/* Encoding */}
         <span className={`w-[4ch] text-flare-700`}>{episode.cachedEncoding ? episode.cachedEncoding : "-"}</span>

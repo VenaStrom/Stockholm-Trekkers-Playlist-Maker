@@ -1,4 +1,4 @@
-import { mmssToSeconds, secondsToMMSS } from "@/functions/project/time-format";
+import { mmssToSeconds, secondsToHHMMSS } from "@/functions/project/time-format";
 import type { Block, Episode, Project } from "@/types";
 
 type BlockDefinedTime = Block & Required<Pick<Block, "startTime">>;
@@ -19,7 +19,7 @@ export function compileTimeline(project: Project): Project {
     const episodesInBlock = blockEpisodesMap[block.id];
     if (!episodesInBlock) continue;
 
-    if (episodesInBlock.some(e => !e.cachedDuration)) {
+    if (episodesInBlock.some(e => !!e.filePath && !e.cachedDuration)) {
       console.warn(`Skipping block ${block.id} because at least one episode is missing duration`);
       continue;
     }
@@ -33,8 +33,8 @@ export function compileTimeline(project: Project): Project {
         continue;
       }
 
-      episode.cachedStartTime = secondsToMMSS(acc);
-      episode.cachedEndTime = secondsToMMSS(acc + episode.cachedDuration);
+      episode.cachedStartTime = secondsToHHMMSS(acc);
+      episode.cachedEndTime = secondsToHHMMSS(acc + episode.cachedDuration);
       acc += episode.cachedDuration;
     }
   }

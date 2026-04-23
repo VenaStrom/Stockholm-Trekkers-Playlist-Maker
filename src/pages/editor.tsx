@@ -11,12 +11,19 @@ import BlockLi from "@/components/editor/block";
 import ExportButton from "@/components/button/export-button";
 import { parseDate } from "@/functions/project/date-parser";
 import { probeEpisode } from "@/functions/project/episode-probe";
+import { compileTimeline } from "@/functions/compile-timeline";
 
 export default function Editor() {
   const { setHeaderText, projectID, setRoute } = usePageContext();
   useEffect(() => setHeaderText("Editor"), [setHeaderText]);
 
-  const [volatileProject, setVolatileProject] = useState<Project | null>(null);
+  const [volatileProject, setVolatileProjectInner] = useState<Project | null>(null);
+  const setVolatileProject: typeof setVolatileProjectInner = (value) => {
+    setVolatileProjectInner(prev => {
+      const newValue = typeof value === "function" ? value(prev) : value;
+      return newValue ? compileTimeline(newValue) : newValue;
+    });
+  };
 
   // Load project data on mount and projectID changes
   useEffect(() => {

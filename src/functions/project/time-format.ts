@@ -1,5 +1,5 @@
 
-export function secondsToMMSS(totalSeconds: number): string {
+export function secondsToHHMMSS(totalSeconds: number): string {
   const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = Math.floor(totalSeconds % 60);
@@ -11,11 +11,11 @@ export function secondsToMMSS(totalSeconds: number): string {
   return hoursStr + minutesStr + secondsStr;
 }
 
-export function mmssToSeconds(mmss: string): number | null {
-  const parts = mmss.split(':').map(part => part.trim());
+export function mmssToSeconds(hhmmss: string): number | null {
+  const parts = hhmmss.split(':').map(part => part.trim());
   if (parts.length === 0 || parts.length > 2) return null;
 
-  const [mm, ss] = parts;
+  const [ss, mm, hh] = parts.reverse();
 
-  return (Number(mm) || 0) * 60 + (Number(ss) || 0);
+  return (Number(hh) || 0) * 3600 + (Number(mm) || 0) * 60 + (Number(ss) || 0);
 }
