@@ -1,35 +1,54 @@
 import { openProject } from "@/functions/project";
 import { ExportNames } from "@/global";
+import type { Project } from "@/types";
 import { path } from "@tauri-apps/api";
 import * as fs from "@tauri-apps/plugin-fs";
 
 export async function exportProject(projectID: string, saveLocation: string): Promise<void> {
-  if (!projectID || !saveLocation) {
-    throw new Error("Project ID and save location must be provided for export.");
-  }
+  if (!projectID || !saveLocation) throw new Error("Project ID and save location must be provided for export.");
+
   console.info(`Exporting project ${projectID}...`);
+
   const project = await openProject(projectID);
   console.info(`Read project data for ${project.date} ${projectID}.`);
 
   // TODO: overwrite logic
   const saveDir = await path.join(saveLocation, project.date || `playlist-missing-date_id-${projectID}`);
-  await fs.mkdir(saveDir, { recursive: true });
+  await fs.mkdir(saveDir, { recursive: true }); // TODO: technically a redundant call due to later mkdir?
   console.info(`Made export dir at ${saveDir}.`);
 
   // Make "episodes", and "save-files" sub dirs
-  const episodesDir = await path.join(saveDir, ExportNames.EpisodeDir);
-  const saveFilesDir = await path.join(saveDir, ExportNames.SaveDir);
-  await fs.mkdir(episodesDir, { recursive: true });
-  await fs.mkdir(saveFilesDir, { recursive: true });
+  const [episodesDir, saveFilesDir] = await Promise.all([
+    makeDirRecursive(saveDir, ExportNames.EpisodeDir),
+    makeDirRecursive(saveDir, ExportNames.SaveDir),
+  ]);
   console.info(`Made sub dirs at ${episodesDir} and ${saveFilesDir}.`);
 
-  // Save project data to "save-files" sub dir
-  const projectDataPath = await path.join(saveFilesDir, ExportNames.SaveFile);
+  // Copy assets
+  await Promise.all([
+    copyProjectFile(project, saveFilesDir),
+    copyEpisodes(project, episodesDir),
+  ]);
+  console.info(`Finished copying assets for project ${projectID}.`);
+
+  console.info(`Finished exporting project ${projectID} to ${saveDir}.`);
+}
+
+async function makeDirRecursive(baseDir: string, dir: string): Promise<string> {
+  const newDir = await path.join(baseDir, dir);
+  await fs.mkdir(newDir, { recursive: true });
+  return newDir;
+}
+
+async function copyProjectFile(project: Project, saveDir: string): Promise<void> {
+  const projectDataPath = await path.join(saveDir, ExportNames.SaveFile);
   await fs.writeTextFile(projectDataPath, JSON.stringify(project));
   console.info(`Saved project data to ${projectDataPath}.`);
+}
 
-  // Copy episode files to "episodes" sub dir
+async function copyEpisodes(project: Project, episodesDir: string): Promise<void[]> {
   const copyJobs: Promise<void>[] = [];
+
   for (const episode of project.episodes) {
     if (!episode.filePath) {
       console.warn(`Episode ${episode.id} is missing filePath. Skipping copy for this episode.`, episode);
@@ -39,7 +58,7 @@ export async function exportProject(projectID: string, saveLocation: string): Pr
     const episodeFileName = await path.basename(episode.filePath);
     const destPath = await path.join(episodesDir, episodeFileName);
 
-    console.info("Making copy job for episode file from", episode.filePath, "to", destPath, episode);
+    console.info("Making copy job for episode file from", episode.filePath, "to", destPath, episode); // Kinda messy log but if something fails I wanna know about it
     copyJobs.push(fs.copyFile(episode.filePath, destPath)
       .then(() => {
         console.info(`Copied episode file from ${episode.filePath} to ${destPath}.`);
@@ -49,6 +68,5 @@ export async function exportProject(projectID: string, saveLocation: string): Pr
       }));
   }
 
-  await Promise.all(copyJobs);
-  console.info(`Finished exporting project ${projectID} to ${saveDir}.`);
+  return await Promise.all(copyJobs);
 }
