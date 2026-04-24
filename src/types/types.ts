@@ -16,17 +16,18 @@ export type Episode = {
 };
 
 export type BlockClip = {
+  id: string;
   name: string; // Display name
   default: boolean | number; // Mostly gonna be checkboxes but some configs would like numbers
   duration: number; // In seconds
-  file: string; // Path in the asset bundle
+  file: string; // Path in the exported bundle, probs clips/
   description: string;
   allowedPlacement: { leading?: boolean; trailing?: boolean; wrapped?: boolean; }
 };
 
 export type Block = {
   id: string;
-  options: Record<string, BlockClip["default"]>;
+  options: Record<Block["id"], BlockClip["default"]>;
   startTime?: string;
 };
 

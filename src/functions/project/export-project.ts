@@ -1,5 +1,5 @@
 import { openProject } from "@/functions/project";
-import { ExportNames } from "@/global";
+import { ExportNames, PathName } from "@/global";
 import type { Project } from "@/types";
 import { path } from "@tauri-apps/api";
 import * as fs from "@tauri-apps/plugin-fs";
@@ -18,16 +18,22 @@ export async function exportProject(projectID: string, saveLocation: string): Pr
   console.info(`Made export dir at ${saveDir}.`);
 
   // Make "episodes", and "save-files" sub dirs
-  const [episodesDir, saveFilesDir] = await Promise.all([
+  const [
+    episodesDir,
+    saveFilesDir,
+    clipsDir,
+  ] = await Promise.all([
     makeDirRecursive(saveDir, ExportNames.EpisodeDir),
     makeDirRecursive(saveDir, ExportNames.SaveDir),
+    makeDirRecursive(saveDir, ExportNames.ClipsDir),
   ]);
-  console.info(`Made sub dirs at ${episodesDir} and ${saveFilesDir}.`);
+  console.info(`Made sub dirs at ${episodesDir}, ${saveFilesDir}, and ${clipsDir}.`);
 
   // Copy assets
   await Promise.all([
     copyProjectFile(project, saveFilesDir),
     copyEpisodes(project, episodesDir),
+    copyClips(project, clipsDir),
   ]);
   console.info(`Finished copying assets for project ${projectID}.`);
 
@@ -40,13 +46,13 @@ async function makeDirRecursive(baseDir: string, dir: string): Promise<string> {
   return newDir;
 }
 
-async function copyProjectFile(project: Project, saveDir: string): Promise<void> {
-  const projectDataPath = await path.join(saveDir, ExportNames.SaveFile);
+async function copyProjectFile(project: Project, exportDir: string): Promise<void> {
+  const projectDataPath = await path.join(exportDir, ExportNames.SaveFile);
   await fs.writeTextFile(projectDataPath, JSON.stringify(project));
   console.info(`Saved project data to ${projectDataPath}.`);
 }
 
-async function copyEpisodes(project: Project, episodesDir: string): Promise<void[]> {
+async function copyEpisodes(project: Project, exportDir: string): Promise<void[]> {
   const copyJobs: Promise<void>[] = [];
 
   for (const episode of project.episodes) {
@@ -56,7 +62,7 @@ async function copyEpisodes(project: Project, episodesDir: string): Promise<void
     }
 
     const episodeFileName = await path.basename(episode.filePath);
-    const destPath = await path.join(episodesDir, episodeFileName);
+    const destPath = await path.join(exportDir, episodeFileName);
 
     console.info("Making copy job for episode file from", episode.filePath, "to", destPath, episode); // Kinda messy log but if something fails I wanna know about it
     copyJobs.push(fs.copyFile(episode.filePath, destPath)
@@ -65,6 +71,32 @@ async function copyEpisodes(project: Project, episodesDir: string): Promise<void
       })
       .catch((e: unknown) => {
         console.error(`Failed to copy episode file from ${episode.filePath} to ${destPath}.`, e);
+      }));
+  }
+
+  return await Promise.all(copyJobs);
+}
+
+async function copyClips(_project: Project, exportDir: string): Promise<void[]> {
+  // TODO: filter which clips should be copied based on project options
+
+  const sourceFiles = (await fs.readDir(PathName.ClipsDir))
+    .map(f => f.isFile ? f.name : null)
+    .filter((n): n is string => typeof n === "string");
+
+  const copyJobs: Promise<void>[] = [];
+
+  for (const fileName of sourceFiles) {
+    const sourcePath = await path.join(PathName.ClipsDir, fileName);
+    const destPath = await path.join(exportDir, fileName);
+
+    console.info("Making copy job for clip file from", sourcePath, "to", destPath); // Kinda messy log but if something fails I wanna know about it
+    copyJobs.push(fs.copyFile(sourcePath, destPath)
+      .then(() => {
+        console.info(`Copied clip file from ${sourcePath} to ${destPath}.`);
+      })
+      .catch((e: unknown) => {
+        console.error(`Failed to copy clip file from ${sourcePath} to ${destPath}.`, e);
       }));
   }
 

@@ -22,6 +22,17 @@
     "fs:allow-temp-write",
     "fs:allow-exists",
     {
+      "identifier": "fs:allow-read-dir",
+      "allow": [
+        {
+          "path": "$RESOURCE/video-assets"
+        },
+        {
+          "path": "$RESOURCE/video-assets/**"
+        }
+      ]
+    },
+    {
       "identifier": "fs:allow-copy-file",
       "allow": [
         {
