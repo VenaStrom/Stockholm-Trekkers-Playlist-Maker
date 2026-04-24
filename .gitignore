@@ -44,3 +44,5 @@ src/prisma/generated/
 dev.db
 
 .eslintcache
+
+ignore/

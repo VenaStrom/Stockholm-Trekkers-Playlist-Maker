@@ -36,5 +36,6 @@ export default defineConfig(() => ({
     "__BUILD_DATE__": JSON.stringify(Date.now()),
     "__VERSION__": JSON.stringify(process.env.npm_package_version),
     "__AUTHOR__": packageJSON.contributors[0] ? JSON.stringify(packageJSON.contributors[0]) : undefined,
+    "__REPOSITORY_URL__": packageJSON.repository ? JSON.stringify(packageJSON.repository) : undefined,
   },
 }));
