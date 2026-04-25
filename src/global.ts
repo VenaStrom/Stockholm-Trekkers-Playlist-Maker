@@ -1,4 +1,4 @@
-import { path } from "@tauri-apps/api";
+// import { path } from "@tauri-apps/api";
 import type { BlockClip } from "@/types";
 
 export const OPTION_REVISION = 0;
@@ -50,11 +50,11 @@ export const blockClips: BlockClip[] = [
   },
 ] as const;
 
-export const PathName = {
-  UserProjectsDir: await path.join(await path.appDataDir(), "projects"),
-  ClipsDir: await path.resolveResource("video-assets"),
-} as const;
-export type PathName = (typeof PathName)[keyof typeof PathName];
+// export const PathName = {
+//   UserProjectsDir: await path.join(await path.appDataDir(), "projects"),
+//   ClipsDir: await path.resolveResource("video-assets"),
+// } as const;
+// export type PathName = (typeof PathName)[keyof typeof PathName];
 
 export const FileName = {
   ProjectMeta: "meta.json",
