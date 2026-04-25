@@ -88,7 +88,7 @@ wait_until() {
     while true; do
       now=$(date +%s)
       if ((now >= target_time)); then
-        print "Reached target time $time_string. Continuing...\n"
+        print "$GRAY" "Reached target time $time_string, continuing...\n"
         break
       fi
       sleep 1
@@ -205,3 +205,8 @@ enqueue "episodes/The-Shipment.mkv"
 # -
 long_pause
 print "\n"
+
+print "$BOLD" "Playlist ended. No more blocks to play.\n"
+print "You may now exit VLC and this script.\n\n"
+print "Have a nice evening! :3\n"
+print "/ Vena \x1b[31m<3\x1b[0m\n"
