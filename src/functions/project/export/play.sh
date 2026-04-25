@@ -137,27 +137,29 @@ print "Waiting 3 seconds...\n"
 sleep 3
 
 print "Embedded description:\n"
-print "$ITALIC" "$GRAY" "Program för trekdagen 2 maj 2026:\nTEMA:   Vänner och fiender (eller var det kanske tvärt om…)\n\n10:10   The Enemy             TNG 3:7\n10:55   PAUS\n11:25   Blood of Patriots     ORV 2:10\n12:15   Nemesis               VOY 4:4\n13:00   LUNCH\n14:30   Preemptive Strike     TNG 7:24\n15:15   PAUS med uppstart av spel \n15:30   The Shipment          ENT 3:7\n16:15   PAUS\n16:45   For the Cause         DS9 4:21\n17:30   Investigations        VOY 2:20\n18:15   PAUS\n18:30   Hippocratic Oath      DS9 4:3\n19:15   Common Ground         SGA 3:7\n20:00   SLUT"
+# __DESCRIPTION_CODE__
+# print "$ITALIC" "$GRAY" "Program för trekdagen 2 maj 2026:\nTEMA:   Vänner och fiender (eller var det kanske tvärt om…)\n\n10:10   The Enemy             TNG 3:7\n10:55   PAUS\n11:25   Blood of Patriots     ORV 2:10\n12:15   Nemesis               VOY 4:4\n13:00   LUNCH\n14:30   Preemptive Strike     TNG 7:24\n15:15   PAUS med uppstart av spel \n15:30   The Shipment          ENT 3:7\n16:15   PAUS\n16:45   For the Cause         DS9 4:21\n17:30   Investigations        VOY 2:20\n18:15   PAUS\n18:30   Hippocratic Oath      DS9 4:3\n19:15   Common Ground         SGA 3:7\n20:00   SLUT"
 print "\n\n"
 
 # Constructed "schedule" from the playlist data
 print "Parsed playlist\n"
-print "$GRAY" "Playlist 2026-05-02\n"
-print "$GRAY" " 9 episodes in 4 blocks\n\n"
-print "$GRAY" " Blocks:\n"
-print "$GRAY" "  - Block 1: 10:10\n"
-print "$GRAY" "     10:10   the-enemy.mkv\n"
-print "$GRAY" "\n"
-print "$GRAY" "  - Block 2: 05:60\n"
-print "$GRAY" "     11:25   Blood-of-Patriots\n"
-print "$GRAY" "     12:15   Nemesis\n"
-print "$GRAY" "\n"
-print "$GRAY" "  - Block 3: 14:00\n"
-print "$GRAY" "     14:30   Preemptive-Strike\n"
-print "$GRAY" "     15:30   The-Shipment\n"
-print "$GRAY" "\n"
-print "$GRAY" "  - Block 4: unknown time\n"
-print "$GRAY" "     16:45   For-the-Cause\n"
+# __PARSED_PLAYLIST_CODE__
+# print "$GRAY" "Playlist 2026-05-02\n"
+# print "$GRAY" " 9 episodes in 4 blocks\n\n"
+# print "$GRAY" " Blocks:\n"
+# print "$GRAY" "  - Block 1: 10:10\n"
+# print "$GRAY" "     10:10   the-enemy.mkv\n"
+# print "$GRAY" "\n"
+# print "$GRAY" "  - Block 2: 05:60\n"
+# print "$GRAY" "     11:25   Blood-of-Patriots\n"
+# print "$GRAY" "     12:15   Nemesis\n"
+# print "$GRAY" "\n"
+# print "$GRAY" "  - Block 3: 14:00\n"
+# print "$GRAY" "     14:30   Preemptive-Strike\n"
+# print "$GRAY" "     15:30   The-Shipment\n"
+# print "$GRAY" "\n"
+# print "$GRAY" "  - Block 4: unknown time\n"
+# print "$GRAY" "     16:45   For-the-Cause\n"
 print "\n\n"
 
 # Ensure VLC is installed, and is running, ready for control commands
@@ -169,60 +171,32 @@ print "Leading pause block to have something to display\n"
 long_pause play=true
 print "\n"
 
-# Block 1
-# Block header
-wait_until "10:07.40" # Adjust so episode starts at 10:10
-print "$BOLD" "Block 1 - 10:10\n"
-print "$GRAY" "id=3af7e166474ce708 options: leading_Countdown=true, leading_EmergencyRoutine=true, trailing_EmergencyRoutine=true, trailing_SignInReminder=true, leading_CovidDisclaimer=false\n"
-# Block leading options
-play "clips/1_min_countdown.mp4"
-enqueue "clips/1_min_emergency.mp4"
-enqueue "20_sec_sign_in_reminder.mp4"
-# Block episodes
-print "Block episodes:\n"
-enqueue "episodes/the-enemy.mkv"
-# Block trailing options
-enqueue "20_sec_sign_in_reminder.mp4"
-long_pause
-print "\n"
-
-# Block 2
-# Block header
-wait_until "11:22.40" # Adjust so episode starts at 11:25
-print "$BOLD" "Block 2 - 11:25\n"
-print "$GRAY" "id=59681d02cc3024f8 options: leading_Countdown=true, leading_EmergencyRoutine=true, trailing_EmergencyRoutine=true, trailing_SignInReminder=false, leading_CovidDisclaimer=false\n"
-# Block leading options
-play "clips/1_min_countdown.mp4"
-enqueue "clips/1_min_emergency.mp4"
-enqueue "20_sec_sign_in_reminder.mp4"
-# Block episodes
-print "Block episodes:\n"
-enqueue "episodes/Blood-of-Patriots.mkv"
-enqueue "episodes/Nemesis.mkv"
-# Block trailing options
-# -
-long_pause
-print "\n"
-
-# Block 3
-# Block header
-wait_until "14:27.40" # Adjust so episode starts at 14:30
-print "$BOLD" "Block 3 - 14:30\n"
-print "$GRAY" "id=68d1df012066e048 options: leading_Countdown=true, leading_EmergencyRoutine=true, trailing_EmergencyRoutine=true, trailing_SignInReminder=false, leading_CovidDisclaimer=false\n"
-# Block leading options
-play "clips/1_min_countdown.mp4"
-enqueue "clips/1_min_emergency.mp4"
-enqueue "20_sec_sign_in_reminder.mp4"
-# Block episodes
-print "Block episodes:\n"
-enqueue "episodes/Preemptive-Strike.mkv"
-enqueue "episodes/The-Shipment.mkv"
-# Block trailing options
-# -
-long_pause
-print "\n"
+# __BLOCKS_CODE__
 
 print "$BOLD" "Playlist ended. No more blocks to play.\n"
 print "You may now exit VLC and this script.\n\n"
 print "Have a nice evening! :3\n"
-print "/ Vena \x1b[31m<3\x1b[0m\n"
+print "/ __SIGN_OFF_NAME__ \x1b[31m<3\x1b[0m\n"
+
+# __DELETE__
+# Everything after the above line will be deleted by the play-file.ts script so templates can be kept down here.
+
+exit 0 # Fallback in case this gets included
+
+# __BLOCK_TEMPLATE_START__
+# Block __BLOCK_NUMBER__
+# Block header
+wait_until "__ADJUSTED_BLOCK_START_TIME__" # Adjusted for leading clips to align episode start time to block start time
+print "$BOLD" "Block __BLOCK_NUMBER__ - __BLOCK_START_TIME__\n"
+print "$GRAY" "id=__BLOCK_ID__ options: __BLOCK_OPTIONS__\n"
+# Block leading options
+# __LEADING_CLIPS_CODE__
+# play "episodes/episode"
+# Block episodes
+print "Block episodes:\n"
+# __EPISODES_CODE__
+# Block trailing options
+# __TRAILING_CLIPS_CODE__
+long_pause
+print "\n"
+# __BLOCK_TEMPLATE_END__
