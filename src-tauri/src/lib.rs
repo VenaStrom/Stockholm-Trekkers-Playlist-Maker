@@ -4,6 +4,32 @@ use time::macros::format_description;
 use time::OffsetDateTime;
 use tauri_plugin_log::{RotationStrategy, Target, TargetKind, TimezoneStrategy};
 
+fn compact_log_target(raw_target: &str) -> String {
+  // Keep only the last identifier and trim noisy line/column suffixes.
+  // Example:
+  // webview:info@http://localhost:1420/node_modules/.vite/deps/@tauri-apps_plugin-log.js:179:12
+  // -> 
+  // webview:info@tauri-apps_plugin-log.js:179:12
+  let Some((prefix, target)) = raw_target.split_once('@') else {
+    return raw_target.to_string();
+  };
+
+  let target = target.trim();
+  if target.is_empty() {
+    return raw_target.to_string();
+  }
+
+  // Remove query/fragment noise and keep only the final path segment.
+  let target = target.split(['?', '#']).next().unwrap_or(target);
+  let target = target
+    .rsplit(['/', '\\'])
+    .find(|segment| !segment.is_empty())
+    .unwrap_or(target);
+  let target = target.strip_prefix('@').unwrap_or(target);
+
+  format!("{prefix}@{target}")
+}
+
 fn daily_log_file_name() -> String {
   let now = OffsetDateTime::now_local().unwrap_or_else(|_| OffsetDateTime::now_utc());
   let date_format = format_description!("[year]-[month]-[day]");
@@ -73,8 +99,20 @@ pub fn run() {
     .plugin(
       tauri_plugin_log::Builder::new()
         .level(log::LevelFilter::Info)
-        .rotation_strategy(RotationStrategy::KeepAll)
         .timezone_strategy(TimezoneStrategy::UseLocal)
+        .format(|out, message, record| {
+          let now = OffsetDateTime::now_local().unwrap_or_else(|_| OffsetDateTime::now_utc());
+          let time_format = format_description!("[hour]:[minute]:[second]");
+          let time = now
+            .format(&time_format)
+            .unwrap_or_else(|_| "00:00:00".to_string());
+
+          let level = record.level();
+          let target = compact_log_target(record.target());
+
+          out.finish(format_args!("[{time}][{level}][{target}] {message}"));
+        })
+        .rotation_strategy(RotationStrategy::KeepAll)
         .max_file_size(1024 * 1024)
         .targets([
           Target::new(TargetKind::LogDir {

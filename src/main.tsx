@@ -1,12 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import {
-  debug as tauriDebug,
-  error as tauriError,
-  info as tauriInfo,
-  trace as tauriTrace,
-  warn as tauriWarn,
-} from "@tauri-apps/plugin-log";
+import { debug as tauriDebug, error as tauriError, info as tauriInfo, trace as tauriTrace, warn as tauriWarn } from "@tauri-apps/plugin-log";
 import { invoke } from "@tauri-apps/api/core";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { PageProvider } from "@/components/page-context";
