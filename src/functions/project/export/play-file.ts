@@ -2,20 +2,14 @@ import type { Project } from "@/types";
 import { writeFileSync, readFileSync } from "node:fs";
 
 const shTemplate = readFileSync("src/functions/project/export/play.sh", "utf-8");
+const ps1Template = readFileSync("src/functions/project/export/play.ps1", "utf-8");
 
-// Extraction
-const templateVariableRegex = /__[A-Z_]+__/g;
-const extractedVariables: Record<string, string> = {};
-for (const match of shTemplate.matchAll(templateVariableRegex)) {
-  const varName = match[0];
-  extractedVariables[varName] = "";
-}
-console.info("Extracted these variables from play.sh");
+const templateVariableRegex = /__[A-Z_]__/g;
 
 type PlayFiles = { ps1: string; sh: string };
 
 export function makePlayFiles(project: Project): PlayFiles {
-  const f: PlayFiles = { ps1: "", sh: shTemplate.toString() };
+  const f: PlayFiles = { ps1: ps1Template.toString(), sh: shTemplate.toString() };
 
   const templateInfo = {
     __SIGN_OFF_NAME__: __AUTHOR__.name.split(" ")[0] || __AUTHOR__.name,
@@ -30,42 +24,17 @@ export function makePlayFiles(project: Project): PlayFiles {
     __PLAYLIST_ID__: project.id,
     __BLOCK_COUNT__: project.blockCount.toString(),
     __EPISODE_COUNT__: project.episodeCount.toString(),
-    __DESCRIPTION_CODE__: "",
-    __PARSED_PLAYLIST_CODE__: "",
+    __DESCRIPTION_CODE__: project.description.trim().split("\n").map(line => `print "$GRAY" "${line}\\n"`).join("\n"),
+    __PARSED_PLAYLIST_CODE__: projectToString(project).split("\n").map(line => `print "$GRAY" "${line}\\n"`).join("\n"),
     __BLOCKS_CODE__: "",
-
-
-    __DELETE__: "",
-
-
-    __BLOCK_TEMPLATE_START__: "",
-
-    __BLOCK_NUMBER__: "",
-    __ADJUSTED_BLOCK_START_TIME__: "",
-    __BLOCK_START_TIME__: "",
-    __BLOCK_ID__: "",
-    __BLOCK_OPTIONS__: "",
-    __LEADING_CLIPS_CODE__: "",
-    __EPISODES_CODE__: "",
-    __TRAILING_CLIPS_CODE__: "",
-
-    __BLOCK_TEMPLATE_END__: "",
   };
 
-  // Mismatch warning for missing variables 
-  const extraLocalVars = Object.keys(templateInfo).filter(k => !(k in extractedVariables));
-  const missingLocalVars = Object.keys(extractedVariables).filter(k => !(k in templateInfo));
-  if (extraLocalVars.length > 0) {
-    console.warn("Warning: These local variables are defined in templateInfo but not found in the template:\n", extraLocalVars);
+  // Replace variables in the template
+  for (const [varName, value] of Object.entries(templateInfo)) {
+    const regex = new RegExp(varName, "g");
+    f.sh = f.sh.replace(regex, value);
+    f.ps1 = f.ps1.replace(regex, value);
   }
-  if (missingLocalVars.length > 0) {
-    console.warn("Warning: These variables are used in the template but not defined in templateInfo:\n", missingLocalVars);
-  }
-
-  // Description
-  templateInfo.__DESCRIPTION_CODE__ = project.description.split("\n").map(line => `print "$GRAY" "${line}\\n"`).join("\n");
-
-
 
   // Warn if any template variables are not replaced
   if (f.sh.match(templateVariableRegex)) {
@@ -78,6 +47,47 @@ export function makePlayFiles(project: Project): PlayFiles {
   }
 
   return f;
+}
+
+function block(details: {
+  blockNumber: string;
+  adjustedBlockStartTime: string;
+  blockStartTime: string;
+  blockID: string;
+  blockOptions: string;
+  leadingClipsCode: string;
+  episodeCode: string;
+  trailingClipsCode: string;
+}): string {
+  return `
+# Block ${details.blockNumber}
+# Block header
+wait_until "${details.adjustedBlockStartTime}" # Adjusted for leading clips to align episode start time to block start time
+print "$BOLD" "Block ${details.blockNumber} - ${details.blockStartTime}\n"
+print "$GRAY" "id=${details.blockID} options: ${details.blockOptions}\n"
+# Block leading options
+${details.leadingClipsCode}
+# Block episodes
+print "Block episodes:\n"
+${details.episodeCode}
+# Block trailing options
+${details.trailingClipsCode}
+long_pause
+print "\n"
+  `.trim();
+}
+
+function projectToString(project: Project): string {
+  return `
+Project ${project.date}
+${project.blocks.map((block, index) => {
+    const episodes = project.episodes.filter(e => e.blockID === block.id && e.filePath);
+    return `
+Block ${index + 1} - ${block.startTime || "No start time"}
+${episodes.map(e => `  ${(e.cachedStartTime || "--:--").padEnd(8, " ")} ${e.filePath?.split(/[\\/]/).pop()}`).join("\n")}
+      `.trim();
+  }).join("\n")}
+  `.trim();
 }
 
 const __AUTHOR__ = { name: "Vena", email: "strom.vena+stplay@gmail.com" };

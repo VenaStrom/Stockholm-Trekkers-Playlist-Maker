@@ -196,12 +196,12 @@ print "Waiting 3 seconds...\n"
 Start-Sleep -Seconds 3
 
 print "Embedded description:\n"
-# __DESCRIPTION_CODE__
+__DESCRIPTION_CODE__
 print "\n\n"
 
 # Constructed "schedule" from the playlist data
 print "Parsed playlist\n"
-# __PARSED_PLAYLIST_CODE__
+__PARSED_PLAYLIST_CODE__
 print "\n\n"
 
 # Ensure VLC is installed, and is running, ready for control commands
@@ -213,32 +213,9 @@ print "Leading pause block to have something to display\n"
 long_pause play=true
 print "\n"
 
-# __BLOCKS_CODE__
+__BLOCKS_CODE__
 
 print "$BOLD" "Playlist ended. No more blocks to play.\n"
 print "You may now exit VLC and this script.\n\n"
 print "Have a nice evening! :3\n"
 print "/ __SIGN_OFF_NAME__ $([char]27)[31m<3$([char]27)[0m\n"
-
-# __DELETE__
-# Everything after the above line will be deleted by the play-file.ts script so templates can be kept down here.
-
-exit 0 # Fallback in case this gets included
-
-# __BLOCK_TEMPLATE_START__
-# Block __BLOCK_NUMBER__
-# Block header
-wait_until "__ADJUSTED_BLOCK_START_TIME__" # Adjusted for leading clips to align episode start time to block start time
-print "$BOLD" "Block __BLOCK_NUMBER__ - __BLOCK_START_TIME__\n"
-print "$GRAY" "id=__BLOCK_ID__ options: __BLOCK_OPTIONS__\n"
-# Block leading options
-# __LEADING_CLIPS_CODE__
-# play "episodes/episode"
-# Block episodes
-print "Block episodes:\n"
-# __EPISODES_CODE__
-# Block trailing options
-# __TRAILING_CLIPS_CODE__
-long_pause
-print "\n"
-# __BLOCK_TEMPLATE_END__
