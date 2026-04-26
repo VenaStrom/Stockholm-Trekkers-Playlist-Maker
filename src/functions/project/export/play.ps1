@@ -193,11 +193,11 @@ print "- Keep this computer disconnected from the internet for security.\n"
 print "\n"
 print "$GRAY" "VLC logs will be written to $VLC_LOG_FILE\n"
 
-# Ensure VLC is installed, and is running, ready for control commands
-ensure_vlc_running
-
 print "Waiting 3 seconds...\n"
 Start-Sleep -Seconds 3
+
+# Ensure VLC is installed, and is running, ready for control commands
+ensure_vlc_running
 
 print "Embedded description:\n"
 __DESCRIPTION_CODE__

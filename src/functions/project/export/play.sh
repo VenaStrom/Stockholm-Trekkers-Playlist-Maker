@@ -36,7 +36,7 @@ VLC_BASE_ARGS=(--one-instance --fullscreen --sub-language=swe,eng,any --deinterl
 VLC_LOG_FILE="./vlc.log"
 
 log_vlc_line() {
-  printf '[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$1" >> "$VLC_LOG_FILE"
+  printf '[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$1" >>"$VLC_LOG_FILE"
 }
 
 run_vlc() {
@@ -148,11 +148,11 @@ print "- Keep this computer disconnected from the internet for security.\n"
 print "\n"
 print "$GRAY" "VLC logs will be written to $VLC_LOG_FILE\n"
 
-# Ensure VLC is installed, and is running, ready for control commands
-ensure_vlc_running
-
 print "Waiting 3 seconds...\n"
 sleep 3
+
+# Ensure VLC is installed, and is running, ready for control commands
+ensure_vlc_running
 
 print "Embedded description:\n"
 __DESCRIPTION_CODE__
