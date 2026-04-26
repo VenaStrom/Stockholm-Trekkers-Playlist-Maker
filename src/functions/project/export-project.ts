@@ -1,5 +1,6 @@
+import { deepCopy } from "@/functions/deep-copy";
 import { openProject } from "@/functions/project";
-import { ExportNames, PathName } from "@/global";
+import { basicPauseClipFileName, blockClips, ExportNames, PathName } from "@/global";
 import type { Project } from "@/types";
 import { path } from "@tauri-apps/api";
 import * as fs from "@tauri-apps/plugin-fs";
@@ -77,11 +78,16 @@ async function copyEpisodes(project: Project, exportDir: string): Promise<void[]
   return await Promise.all(copyJobs);
 }
 
-async function copyClips(_project: Project, exportDir: string): Promise<void[]> {
-  // TODO: filter which clips should be copied based on project options
+async function copyClips(project: Project, exportDir: string): Promise<void[]> {
+  const usedIDs = [...new Set<string>(project.blocks.flatMap(b => Object.entries(b.options).filter(([_, enabled]) => enabled).map(([id]) => id.split("__")[1])).filter((id): id is string => typeof id === "string"))];
+  const usedClips = deepCopy(blockClips.filter(c => usedIDs.includes(c.id)));
 
   const sourceFiles = (await fs.readDir(PathName.ClipsDir))
     .map(f => f.isFile ? f.name : null)
+    .filter(n => !!n && (
+      n.endsWith(basicPauseClipFileName)
+      || usedClips.some(c => c.file.endsWith(n))
+    ))
     .filter((n): n is string => typeof n === "string");
 
   const copyJobs: Promise<void>[] = [];

@@ -1,3 +1,4 @@
+import { deepCopy } from "@/functions/deep-copy";
 import { hhmmToSeconds, secondsToHHMM } from "@/functions/project/time-format";
 import { blockClips, ExportNames } from "@/global";
 import type { EpisodeDefinedPath, PlayFiles, Project } from "@/types";
@@ -145,8 +146,4 @@ ${episodes.map(e => `  ${(e.cachedStartTime || "--:--").padEnd(8, " ")} ${e.file
       `.trim();
   }).join("\n")}
   `.trim();
-}
-
-function deepCopy<T>(obj: T): T {
-  return JSON.parse(JSON.stringify(obj) as unknown as string) as T;
 }

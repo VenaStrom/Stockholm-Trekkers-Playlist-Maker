@@ -50,6 +50,11 @@ export const blockClips: BlockClip[] = [
   },
 ] as const;
 
+/** 
+ * When pruning which clips should be copied on export, this will always be included
+ */
+export const basicPauseClipFileName = "30_min_pause.mp4";
+
 export const PathName = {
   UserProjectsDir: await path.join(await path.appDataDir(), "projects"),
   ClipsDir: await path.resolveResource("video-assets"),
