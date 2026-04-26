@@ -7,8 +7,11 @@ import {
   trace as tauriTrace,
   warn as tauriWarn,
 } from "@tauri-apps/plugin-log";
+import { invoke } from "@tauri-apps/api/core";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 import { PageProvider } from "@/components/page-context";
 import { ToastProvider } from "@/components/toast";
+import { exportProject } from "@/functions/project";
 import App from "@/app";
 
 const formatLogValue = (value: unknown): string => {
@@ -76,7 +79,84 @@ const installConsoleForwarder = () => {
   };
 };
 
-const bootstrap = () => {
+type CliExportArgs = {
+  projectID: string;
+  saveLocation: string;
+};
+
+const parseExportArgs = (argv: string[]): CliExportArgs | null => {
+  const tokens = argv.slice(1);
+  if (tokens[0] !== "export") return null;
+
+  let projectID = "";
+  let saveLocation = "";
+
+  for (let i = 1; i < tokens.length; i++) {
+    const token = tokens[i] ?? "";
+    const next = tokens[i + 1] ?? "";
+
+    if (token === "--project-id" || token === "--project" || token === "--id" || token === "-p") {
+      projectID = next;
+      i++;
+      continue;
+    }
+
+    if (token.startsWith("--project-id=")) {
+      projectID = token.split("=", 2)[1] ?? "";
+      continue;
+    }
+
+    if (token === "--out" || token === "--output" || token === "-o") {
+      saveLocation = next;
+      i++;
+      continue;
+    }
+
+    if (token.startsWith("--out=") || token.startsWith("--output=")) {
+      saveLocation = token.split("=", 2)[1] ?? "";
+      continue;
+    }
+  }
+
+  if (!projectID || !saveLocation) {
+    throw new Error("Missing CLI args. Usage: app export --project-id <id> --out <folder>");
+  }
+
+  return { projectID, saveLocation };
+};
+
+const maybeRunCliExportMode = async (): Promise<boolean> => {
+  let argv: string[];
+  try {
+    argv = await invoke<string[]>("get_cli_args");
+  } catch {
+    return false;
+  }
+
+  if (!Array.isArray(argv) || argv.length < 2) return false;
+
+  const requestedExport = argv.slice(1).includes("export");
+
+  try {
+    const parsed = parseExportArgs(argv);
+    if (!parsed) return false;
+
+    console.info(`CLI export start: projectID=${parsed.projectID}, out=${parsed.saveLocation}`);
+    await exportProject(parsed.projectID, parsed.saveLocation);
+    console.info("CLI export finished successfully.");
+  } catch (e: unknown) {
+    if (!requestedExport) return false;
+    console.error("CLI export failed.", e);
+  }
+
+  await invoke("close").catch((e: unknown) => {
+    console.error("Failed to close app after CLI export.", e);
+  });
+
+  return true;
+};
+
+const bootstrap = async () => {
   installConsoleForwarder();
 
   window.addEventListener("error", (event) => {
@@ -86,6 +166,9 @@ const bootstrap = () => {
   window.addEventListener("unhandledrejection", (event) => {
     console.error("unhandled rejection", event.reason);
   });
+
+  const didRunCliExport = await maybeRunCliExportMode();
+  if (didRunCliExport) return;
 
   const root = document.getElementById("root");
   if (!root) throw new Error("Failed to find root element");
@@ -99,11 +182,13 @@ const bootstrap = () => {
       </PageProvider>
     </StrictMode>,
   );
+
+  await getCurrentWindow().show().catch((e: unknown) => {
+    console.error("Failed to show app window.", e);
+  });
 };
 
-try {
-  bootstrap();
-} catch (e: unknown) {
+void bootstrap().catch((e: unknown) => {
   console.error("Failed to bootstrap application", e);
   alert("An unexpected error occurred while starting the application. Please check the console for details.");
-}
+});

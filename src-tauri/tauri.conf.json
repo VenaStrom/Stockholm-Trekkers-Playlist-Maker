@@ -15,6 +15,7 @@
         "title": "Stockholm Trekkers Playlist Maker",
         "width": 1920,
         "height": 1080,
+        "visible": false,
         "resizable": true,
         "maximizable": true,
         "maximized": true

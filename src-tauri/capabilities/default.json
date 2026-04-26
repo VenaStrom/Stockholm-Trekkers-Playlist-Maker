@@ -40,7 +40,32 @@
         }
       ]
     },
-    "fs:allow-mkdir",
+    {
+      "identifier": "fs:allow-mkdir",
+      "allow": [
+        "$HOME/Downloads",
+        "$HOME/Downloads/**",
+        "$HOME/Desktop",
+        "$HOME/Desktop/**",
+        "$HOME/downloads",
+        "$HOME/downloads/**",
+        "$HOME/desktop",
+        "$HOME/desktop/**"
+      ]
+    },
+    {
+      "identifier": "fs:allow-write-text-file",
+      "allow": [
+        "$HOME/Downloads",
+        "$HOME/Downloads/**",
+        "$HOME/Desktop",
+        "$HOME/Desktop/**",
+        "$HOME/downloads",
+        "$HOME/downloads/**",
+        "$HOME/desktop",
+        "$HOME/desktop/**"
+      ]
+    },
     "dialog:default",
     "dialog:allow-open",
     "log:default",
