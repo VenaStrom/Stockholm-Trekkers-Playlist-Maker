@@ -106,13 +106,16 @@ wait_until() {
     local hour="${BASH_REMATCH[1]}"
     local minute="${BASH_REMATCH[2]}"
     local second="${BASH_REMATCH[4]:-00}"
+    local hour_num=$((10#$hour))
+    local minute_num=$((10#$minute))
+    local second_num=$((10#$second))
 
-    if ((hour > 23 || minute > 59 || second > 59)); then
+    if ((hour_num > 23 || minute_num > 59 || second_num > 59)); then
       print "$YELLOW" "Warning: Invalid time value '$time_string'. Expected HH:MM, HH:MM:SS, or HH:MM.SS. Continuing without waiting.\n"
       return
     fi
 
-    target_time=$(date -d "today $hour:$minute:$second" +%s)
+    target_time=$(date -d "today $hour_num:$minute_num:$second_num" +%s)
     local now
     while true; do
       now=$(date +%s)
