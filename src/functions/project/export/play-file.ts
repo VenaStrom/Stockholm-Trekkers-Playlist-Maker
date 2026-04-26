@@ -15,7 +15,7 @@ export function makePlayFiles(project: Project): PlayFiles {
 
   const templateInfo: Record<string, string> = {
     __SIGN_OFF_NAME__: author.name.split(" ")[0] || author.name,
-    author: author.name,
+    __AUTHOR__: author.name,
     __APP_VERSION__: __VERSION__ || "__VERSION__",
     __REPO_URL__: __REPOSITORY_URL__ || "__REPOSITORY_URL__",
     __EMAIL__: author.email,

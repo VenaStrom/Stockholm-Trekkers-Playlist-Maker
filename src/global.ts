@@ -73,5 +73,7 @@ export const ExportNames = {
   EpisodeDir: "episodes",
   SaveDir: "save-files",
   ClipsDir: "clips",
+  PlayFileSh: "play.sh",
+  PlayFilePs1: "play.ps1",
 } as const;
 export type ExportNames = (typeof ExportNames)[keyof typeof ExportNames];

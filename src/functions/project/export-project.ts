@@ -1,5 +1,6 @@
 import { deepCopy } from "@/functions/deep-copy";
 import { openProject } from "@/functions/project";
+import { makePlayFiles } from "@/functions/project/export/play-file";
 import { basicPauseClipFileName, blockClips, ExportNames, PathName } from "@/global";
 import type { Project } from "@/types";
 import { path } from "@tauri-apps/api";
@@ -37,6 +38,10 @@ export async function exportProject(projectID: string, saveLocation: string): Pr
     copyClips(project, clipsDir),
   ]);
   console.info(`Finished copying assets for project ${projectID}.`);
+
+  // Make play files
+  await copyPlayFiles(project, saveDir);
+  console.info(`Finished copying play files for project ${projectID}.`);
 
   console.info(`Finished exporting project ${projectID} to ${saveDir}.`);
 }
@@ -107,4 +112,21 @@ async function copyClips(project: Project, exportDir: string): Promise<void[]> {
   }
 
   return await Promise.all(copyJobs);
+}
+
+async function copyPlayFiles(project: Project, exportDir: string): Promise<void[]> {
+  const playFiles = makePlayFiles(project);
+
+  const [
+    playFileShPath,
+    playFilePs1Path,
+  ] = await Promise.all([
+    path.join(exportDir, ExportNames.PlayFileSh),
+    path.join(exportDir, ExportNames.PlayFilePs1),
+  ]);
+
+  return await Promise.all([
+    fs.writeTextFile(playFileShPath, playFiles.sh),
+    fs.writeTextFile(playFilePs1Path, playFiles.ps1),
+  ]);
 }
