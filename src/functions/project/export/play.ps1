@@ -2,33 +2,33 @@
 
 # Functions
 function print {
-	param(
-		[Parameter(ValueFromRemainingArguments = $true)]
-		[string[]]$ArgsIn
-	)
+  param(
+    [Parameter(ValueFromRemainingArguments = $true)]
+    [string[]]$ArgsIn
+  )
 
-	if (-not $ArgsIn) {
-		return
-	}
+  if (-not $ArgsIn) {
+    return
+  }
 
-	$codes = @()
-	$index = 0
-	while ($index -lt $ArgsIn.Length -and $ArgsIn[$index] -match '^[0-9]+([;][0-9]+)*$') {
-		$codes += $ArgsIn[$index]
-		$index++
-	}
+  $codes = @()
+  $index = 0
+  while ($index -lt $ArgsIn.Length -and $ArgsIn[$index] -match '^[0-9]+([;][0-9]+)*$') {
+    $codes += $ArgsIn[$index]
+    $index++
+  }
 
-	$text = if ($index -lt $ArgsIn.Length) { $ArgsIn[$index] } else { "" }
-	$text = [System.Text.RegularExpressions.Regex]::Unescape($text)
+  $text = if ($index -lt $ArgsIn.Length) { $ArgsIn[$index] } else { "" }
+  $text = [System.Text.RegularExpressions.Regex]::Unescape($text)
 
-	$ansiEsc = [char]27
-	if ($codes.Count -gt 0) {
-		$seq = ($codes | ForEach-Object { "$ansiEsc[$_" + "m" }) -join ""
-		Write-Host -NoNewline ($seq + $text + "$ansiEsc[0m")
-	}
-	else {
-		Write-Host -NoNewline $text
-	}
+  $ansiEsc = [char]27
+  if ($codes.Count -gt 0) {
+    $seq = ($codes | ForEach-Object { "$ansiEsc[$_" + "m" }) -join ""
+    Write-Host -NoNewline ($seq + $text + "$ansiEsc[0m")
+  }
+  else {
+    Write-Host -NoNewline $text
+  }
 }
 
 # ANSI color codes
@@ -45,131 +45,130 @@ $ITALIC = 3
 $UNDERLINE = 4
 
 $VLC_BASE_ARGS = @(
-	"--one-instance",
-	"--fullscreen",
-	"--sub-language=swe,eng,any",
-	"--deinterlace=0",
-	"--embedded-video",
-	"--no-loop",
-	"--no-play-and-pause",
-	"--no-random",
-	"--no-repeat",
-	"--no-video-title-show",
-	"--qt-auto-raise=0",
-	"--qt-continue=0",
-	"--qt-fullscreen-screennumber=1",
-	"--qt-notification=0",
-	"--no-qt-fs-controller",
-	"--no-qt-name-in-title",
-	"--no-qt-recentplay",
-	"--no-qt-updates-notif",
-	"--no-qt-privacy-ask"
+  "--one-instance",
+  "--fullscreen",
+  "--sub-language=swe,eng,any",
+  "--deinterlace=0",
+  "--embedded-video",
+  "--no-loop",
+  "--no-play-and-pause",
+  "--no-random",
+  "--no-repeat",
+  "--no-video-title-show",
+  "--qt-auto-raise=0",
+  "--qt-continue=0",
+  "--qt-fullscreen-screennumber=1",
+  "--qt-notification=0",
+  "--no-qt-fs-controller",
+  "--no-qt-name-in-title",
+  "--no-qt-recentplay",
+  "--no-qt-updates-notif",
+  "--no-qt-privacy-ask"
 )
 
 function ensure_vlc_running {
-	print "Ensuring VLC is running...\n"
-	$args = @($VLC_BASE_ARGS + "--playlist-enqueue" + "--no-playlist-autostart")
-	Start-Process -FilePath "vlc" -ArgumentList $args | Out-Null
-	Start-Sleep -Seconds 1
+  $vlcArgs = @($VLC_BASE_ARGS + "--playlist-enqueue" + "--no-playlist-autostart")
+  Start-Process -FilePath "vlc" -ArgumentList $vlcArgs | Out-Null
+  Start-Sleep -Seconds 1
 }
 
 function play {
-	param(
-		[Parameter(ValueFromRemainingArguments = $true)]
-		[string[]]$ArgsIn
-	)
+  param(
+    [Parameter(ValueFromRemainingArguments = $true)]
+    [string[]]$ArgsIn
+  )
 
-	$silent = $false
-	$index = 0
-	while ($index -lt $ArgsIn.Length -and ($ArgsIn[$index] -eq "silent=true" -or $ArgsIn[$index] -eq "--silent")) {
-		$silent = $true
-		$index++
-	}
+  $silent = $false
+  $index = 0
+  while ($index -lt $ArgsIn.Length -and ($ArgsIn[$index] -eq "silent=true" -or $ArgsIn[$index] -eq "--silent")) {
+    $silent = $true
+    $index++
+  }
 
-	$file = if ($index -lt $ArgsIn.Length) { $ArgsIn[$index] } else { "" }
-	if (-not $silent) {
-		print "Playing $file...\n"
-	}
+  $file = if ($index -lt $ArgsIn.Length) { $ArgsIn[$index] } else { "" }
+  if (-not $silent) {
+    print "Playing $file...\n"
+  }
 
-	& vlc @VLC_BASE_ARGS $file *> $null
-	Start-Sleep -Seconds 1
+  & vlc @VLC_BASE_ARGS $file *> $null
+  Start-Sleep -Seconds 1
 }
 
 function enqueue {
-	param(
-		[Parameter(ValueFromRemainingArguments = $true)]
-		[string[]]$ArgsIn
-	)
+  param(
+    [Parameter(ValueFromRemainingArguments = $true)]
+    [string[]]$ArgsIn
+  )
 
-	$silent = $false
-	$index = 0
-	while ($index -lt $ArgsIn.Length -and ($ArgsIn[$index] -eq "silent=true" -or $ArgsIn[$index] -eq "--silent")) {
-		$silent = $true
-		$index++
-	}
+  $silent = $false
+  $index = 0
+  while ($index -lt $ArgsIn.Length -and ($ArgsIn[$index] -eq "silent=true" -or $ArgsIn[$index] -eq "--silent")) {
+    $silent = $true
+    $index++
+  }
 
-	$file = if ($index -lt $ArgsIn.Length) { $ArgsIn[$index] } else { "" }
-	if (-not $silent) {
-		print "Enqueuing $file...\n"
-	}
+  $file = if ($index -lt $ArgsIn.Length) { $ArgsIn[$index] } else { "" }
+  if (-not $silent) {
+    print "Enqueuing $file...\n"
+  }
 
-	& vlc @VLC_BASE_ARGS "--playlist-enqueue" $file *> $null
-	Start-Sleep -Seconds 1
+  & vlc @VLC_BASE_ARGS "--playlist-enqueue" $file *> $null
+  Start-Sleep -Seconds 1
 }
 
 function long_pause {
-	param(
-		[Parameter(ValueFromRemainingArguments = $true)]
-		[string[]]$ArgsIn
-	)
+  param(
+    [Parameter(ValueFromRemainingArguments = $true)]
+    [string[]]$ArgsIn
+  )
 
-	$playNow = $false
-	foreach ($arg in $ArgsIn) {
-		if ($arg -eq "play=true") {
-			$playNow = $true
-		}
-	}
+  $playNow = $false
+  foreach ($arg in $ArgsIn) {
+    if ($arg -eq "play=true") {
+      $playNow = $true
+    }
+  }
 
-	print "$GRAY" "Adding long pause block (8 x 30 min)\n"
-	if ($playNow) {
-		play silent=true "clips/30_min_pause.mp4"
-	}
-	else {
-		enqueue silent=true "clips/30_min_pause.mp4"
-	}
+  print "$GRAY" "Adding long pause block (8 x 30 min)\n"
+  if ($playNow) {
+    play silent=true "clips/30_min_pause.mp4"
+  }
+  else {
+    enqueue silent=true "clips/30_min_pause.mp4"
+  }
 
-	enqueue silent=true "clips/30_min_pause.mp4"
-	enqueue silent=true "clips/30_min_pause.mp4"
-	enqueue silent=true "clips/30_min_pause.mp4"
-	enqueue silent=true "clips/30_min_pause.mp4"
-	enqueue silent=true "clips/30_min_pause.mp4"
-	enqueue silent=true "clips/30_min_pause.mp4"
-	enqueue silent=true "clips/30_min_pause.mp4"
+  enqueue silent=true "clips/30_min_pause.mp4"
+  enqueue silent=true "clips/30_min_pause.mp4"
+  enqueue silent=true "clips/30_min_pause.mp4"
+  enqueue silent=true "clips/30_min_pause.mp4"
+  enqueue silent=true "clips/30_min_pause.mp4"
+  enqueue silent=true "clips/30_min_pause.mp4"
+  enqueue silent=true "clips/30_min_pause.mp4"
 }
 
 function wait_until {
-	param([string]$time_string)
+  param([string]$time_string)
 
-	# Examples: "10:10", "10:10:30", or "10:10.30"
-	if ($time_string -match '^([0-9]{1,2}):([0-9]{2})([:.]([0-9]{2}))?$') {
-		$hour = [int]$Matches[1]
-		$minute = [int]$Matches[2]
-		$second = if ($Matches[4]) { [int]$Matches[4] } else { 0 }
+  # Examples: "10:10", "10:10:30", or "10:10.30"
+  if ($time_string -match '^([0-9]{1,2}):([0-9]{2})([:.]([0-9]{2}))?$') {
+    $hour = [int]$Matches[1]
+    $minute = [int]$Matches[2]
+    $second = if ($Matches[4]) { [int]$Matches[4] } else { 0 }
 
-		if ($hour -gt 23 -or $minute -gt 59 -or $second -gt 59) {
-			print "$YELLOW" "Warning: Invalid time value '$time_string'. Expected HH:MM, HH:MM:SS, or HH:MM.SS. Continuing without waiting.\n"
-			return
-		}
+    if ($hour -gt 23 -or $minute -gt 59 -or $second -gt 59) {
+      print "$YELLOW" "Warning: Invalid time value '$time_string'. Expected HH:MM, HH:MM:SS, or HH:MM.SS. Continuing without waiting.\n"
+      return
+    }
 
-		$targetTime = (Get-Date).Date.AddHours($hour).AddMinutes($minute).AddSeconds($second)
-		while ((Get-Date) -lt $targetTime) {
-			Start-Sleep -Seconds 1
-		}
-		print "$GRAY" "Reached target time $time_string, continuing...\n"
-	}
-	else {
-		print "$YELLOW" "Warning: Invalid time format '$time_string'. Expected HH:MM, HH:MM:SS, or HH:MM.SS. Continuing without waiting.\n"
-	}
+    $targetTime = (Get-Date).Date.AddHours($hour).AddMinutes($minute).AddSeconds($second)
+    while ((Get-Date) -lt $targetTime) {
+      Start-Sleep -Seconds 1
+    }
+    print "$GRAY" "Reached target time $time_string, continuing...\n"
+  }
+  else {
+    print "$YELLOW" "Warning: Invalid time format '$time_string'. Expected HH:MM, HH:MM:SS, or HH:MM.SS. Continuing without waiting.\n"
+  }
 }
 
 print "\n"
@@ -192,6 +191,9 @@ print "- Check the computers time and timezone settings.\n"
 print "- Keep this computer disconnected from the internet for security.\n"
 print "\n"
 
+# Ensure VLC is installed, and is running, ready for control commands
+ensure_vlc_running
+
 print "Waiting 3 seconds...\n"
 Start-Sleep -Seconds 3
 
@@ -203,9 +205,6 @@ print "\n\n"
 print "Parsed playlist\n"
 __PARSED_PLAYLIST_CODE__
 print "\n\n"
-
-# Ensure VLC is installed, and is running, ready for control commands
-ensure_vlc_running
 
 # Playback logic
 print "Starting playback...\n\n"

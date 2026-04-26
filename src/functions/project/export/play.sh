@@ -35,7 +35,6 @@ UNDERLINE=4
 VLC_BASE_ARGS=(--one-instance --fullscreen --sub-language=swe,eng,any --deinterlace=0 --embedded-video --no-loop --no-play-and-pause --no-random --no-repeat --no-video-title-show --qt-auto-raise=0 --qt-continue=0 --qt-fullscreen-screennumber=1 --qt-notification=0 --no-qt-fs-controller --no-qt-name-in-title --no-qt-recentplay --no-qt-updates-notif --no-qt-privacy-ask)
 
 ensure_vlc_running() {
-  print "Ensuring VLC is running...\n"
   vlc "${VLC_BASE_ARGS[@]}" --playlist-enqueue --no-playlist-autostart &>/dev/null &
   sleep 1
 }
@@ -133,6 +132,9 @@ print "- Check the computers time and timezone settings.\n"
 print "- Keep this computer disconnected from the internet for security.\n"
 print "\n"
 
+# Ensure VLC is installed, and is running, ready for control commands
+ensure_vlc_running
+
 print "Waiting 3 seconds...\n"
 sleep 3
 
@@ -144,9 +146,6 @@ print "\n\n"
 print "Parsed playlist\n"
 __PARSED_PLAYLIST_CODE__
 print "\n\n"
-
-# Ensure VLC is installed, and is running, ready for control commands
-ensure_vlc_running
 
 # Playback logic
 print "Starting playback...\n\n"
