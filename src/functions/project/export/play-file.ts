@@ -1,15 +1,12 @@
 import { hhmmToSeconds, secondsToHHMM } from "@/functions/project/time-format";
 import { blockClips, ExportNames } from "@/global";
-import type { Episode, Project } from "@/types";
+import type { EpisodeDefinedPath, PlayFiles, Project } from "@/types";
 import { writeFileSync, readFileSync } from "node:fs";
 
 const shTemplate = readFileSync("src/functions/project/export/play.sh", "utf-8");
 const ps1Template = readFileSync("src/functions/project/export/play.ps1", "utf-8");
 
 const templateVariableRegex = /__[A-Z_]+__/g;
-
-type EpisodeDefinedPath = Episode & Required<Pick<Episode, "filePath">>;
-type PlayFiles = { ps1: string; sh: string };
 
 export function makePlayFiles(project: Project): PlayFiles {
   const f: PlayFiles = { ps1: ps1Template.toString(), sh: shTemplate.toString() };
@@ -105,7 +102,6 @@ function makeBlocks(project: Project): string {
     .filter((b): b is string => b !== null)
     .join("\n\n");
 }
-
 function blockString(details: {
   blockNumber: string;
   adjustedBlockStartTime: string;
@@ -125,22 +121,18 @@ long_pause
 print "\\n"
   `.trim();
 }
-
 function play(filePath: string): string {
   return `play "${filePath}"\n`;
 }
 function enqueue(filePath: string): string {
   return `enqueue "${filePath}"\n`;
 }
-
 function playSeries(paths: string[], enqueueAll: boolean = false): string {
   return paths.map((p, i) => (enqueueAll || i > 0)
     ? enqueue(p)
     : play(p),
   ).join("");
 }
-
-
 function projectToString(project: Project): string {
   return `
 Project ${project.date}

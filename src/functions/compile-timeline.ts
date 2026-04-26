@@ -1,7 +1,6 @@
 import { hhmmToSeconds, secondsToHHMM } from "@/functions/project/time-format";
-import type { Block, Episode, Project } from "@/types";
+import type { BlockDefinedTime, Episode, Project } from "@/types";
 
-type BlockDefinedTime = Block & Required<Pick<Block, "startTime">>;
 
 export function compileTimeline(project: Project): Project {
   const blocks = project.blocks.filter((b): b is BlockDefinedTime => !!b.startTime);

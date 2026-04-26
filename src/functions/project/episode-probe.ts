@@ -1,5 +1,5 @@
 import { runFFprobe } from "@/functions/ffmpeg";
-import type { Encoding, Episode } from "@/types";
+import type { Encoding, ProbedEpisode, EpisodeDefinedPath } from "@/types";
 import { isEncoding, isStandardObject } from "@/types";
 
 type MediaFileProbeResult = {
@@ -21,10 +21,6 @@ function isMediaFileProbeResult(obj: unknown): obj is MediaFileProbeResult {
 
   return true;
 }
-
-type EpisodeDefinedPath = Episode & Required<Pick<Episode, "filePath">>;
-type ProbedEpisode = Episode
-  & Required<Pick<Episode, "filePath" | "cachedDuration" | "cachedEncoding" | "cachedSize">>
 
 export async function probeEpisode(episode: EpisodeDefinedPath): Promise<ProbedEpisode> {
   const probeResult = await runFFprobe([

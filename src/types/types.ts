@@ -14,6 +14,8 @@ export type Episode = {
   cachedSize?: number; // in bytes
   cachedEncoding?: Encoding;
 };
+export type EpisodeDefinedPath = Episode & Required<Pick<Episode, "filePath">>;
+export type ProbedEpisode = Episode & Required<Pick<Episode, "filePath" | "cachedDuration" | "cachedEncoding" | "cachedSize">>
 
 export type BlockClip = {
   id: string;
@@ -31,6 +33,7 @@ export type Block = {
   options: Record<Block["id"], BlockClip["default"]>;
   startTime?: string;
 };
+export type BlockDefinedTime = Block & Required<Pick<Block, "startTime">>;
 
 export type ProjectMeta = {
   id: string;
@@ -49,3 +52,5 @@ export type ProjectData = {
   episodes: Episode[];
 };
 export type Project = ProjectMeta & Omit<ProjectData, "id">;
+
+export type PlayFiles = { ps1: string; sh: string };
