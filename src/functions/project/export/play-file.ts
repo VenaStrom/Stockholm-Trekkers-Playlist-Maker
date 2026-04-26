@@ -4,7 +4,7 @@ import { writeFileSync, readFileSync } from "node:fs";
 const shTemplate = readFileSync("src/functions/project/export/play.sh", "utf-8");
 const ps1Template = readFileSync("src/functions/project/export/play.ps1", "utf-8");
 
-const templateVariableRegex = /__[A-Z_]__/g;
+const templateVariableRegex = /__[A-Z_]+__/g;
 
 type PlayFiles = { ps1: string; sh: string };
 
@@ -29,8 +29,24 @@ export function makePlayFiles(project: Project): PlayFiles {
     __BLOCKS_CODE__: "",
   };
 
+  project.blocks.forEach((block, index) => {
+    const episodes = project.episodes.filter(e => e.blockID === block.id && e.filePath);
+    
+    const block = blockString({
+      blockNumber: (index + 1).toString(),
+      blockID: block.id,
+      blockOptions: JSON.stringify(block.options),
+      blockStartTime: block.startTime || "--:--",
+      adjustedBlockStartTime: "",
+      episodeCode: "",
+      leadingClipsCode: "",
+      trailingClipsCode: "",
+    });
+  });
+
   // Replace variables in the template
   for (const [varName, value] of Object.entries(templateInfo)) {
+    if (!value) continue; // Skip falsy
     const regex = new RegExp(varName, "g");
     f.sh = f.sh.replace(regex, value);
     f.ps1 = f.ps1.replace(regex, value);
@@ -49,7 +65,7 @@ export function makePlayFiles(project: Project): PlayFiles {
   return f;
 }
 
-function block(details: {
+function blockString(details: {
   blockNumber: string;
   adjustedBlockStartTime: string;
   blockStartTime: string;
