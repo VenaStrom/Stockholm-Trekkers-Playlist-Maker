@@ -12,7 +12,6 @@ import ExportButton from "@/components/button/export-button";
 import { parseDate } from "@/functions/project/date-parser";
 import { probeEpisode } from "@/functions/project/episode-probe";
 import { compileTimeline } from "@/functions/compile-timeline";
-import { makePlayFiles } from "@/functions/project/export/play-file";
 
 export default function Editor() {
   const { setHeaderText, projectID, setRoute } = usePageContext();
@@ -25,10 +24,6 @@ export default function Editor() {
       return newValue ? compileTimeline(newValue) : newValue;
     });
   };
-
-  useEffect(() => {
-    if (volatileProject) console.log(makePlayFiles(volatileProject));
-  }, [volatileProject]);
 
   // Load project data on mount and projectID changes
   useEffect(() => {
