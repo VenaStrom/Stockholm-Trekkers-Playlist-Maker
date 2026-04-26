@@ -1,14 +1,17 @@
 use hf;
+use std::fmt::Arguments;
 use std::fs::create_dir_all;
+use tauri_plugin_log::fern::FormatCallback;
+use tauri_plugin_log::log::Record;
+use tauri_plugin_log::{RotationStrategy, Target, TargetKind, TimezoneStrategy};
 use time::macros::format_description;
 use time::OffsetDateTime;
-use tauri_plugin_log::{RotationStrategy, Target, TargetKind, TimezoneStrategy};
 
 fn compact_log_target(raw_target: &str) -> String {
   // Keep only the last identifier and trim noisy line/column suffixes.
   // Example:
   // webview:info@http://localhost:1420/node_modules/.vite/deps/@tauri-apps_plugin-log.js:179:12
-  // -> 
+  // ->
   // webview:info@tauri-apps_plugin-log.js:179:12
   let Some((prefix, target)) = raw_target.split_once('@') else {
     return raw_target.to_string();
@@ -38,6 +41,35 @@ fn daily_log_file_name() -> String {
     .unwrap_or_else(|_| "unknown-date".to_string());
 
   format!("app_{date}")
+}
+
+fn format_log_record(out: FormatCallback, message: &Arguments, record: &Record, use_color: bool) {
+  let now = OffsetDateTime::now_local().unwrap_or_else(|_| OffsetDateTime::now_utc());
+  let date_time_format = format_description!("[year]-[month]-[day] [hour]:[minute]:[second]");
+  let timestamp = now
+    .format(&date_time_format)
+    .unwrap_or_else(|_| "unknown-date 00:00:00".to_string());
+
+  let level = record.level();
+  let target = compact_log_target(record.target());
+
+  if use_color {
+    let level_color = match level {
+      log::Level::Trace => "90", // bright black / gray
+      log::Level::Debug => "36", // cyan
+      log::Level::Info => "32",  // green
+      log::Level::Warn => "33",  // yellow
+      log::Level::Error => "31", // red
+    };
+
+    // Keep metadata visually quiet while leaving the message content unchanged.
+    out.finish(format_args!(
+      "\x1b[{level_color}m[{level}]\x1b[0m\x1b[90m[{timestamp}]\x1b[0m {message} \x1b[90m{target}\x1b[0m"
+    ));
+    return;
+  }
+
+  out.finish(format_args!("[{level}][{timestamp}][{target}] {message}"));
 }
 
 #[tauri::command]
@@ -100,26 +132,18 @@ pub fn run() {
       tauri_plugin_log::Builder::new()
         .level(log::LevelFilter::Info)
         .timezone_strategy(TimezoneStrategy::UseLocal)
-        .format(|out, message, record| {
-          let now = OffsetDateTime::now_local().unwrap_or_else(|_| OffsetDateTime::now_utc());
-          let time_format = format_description!("[hour]:[minute]:[second]");
-          let time = now
-            .format(&time_format)
-            .unwrap_or_else(|_| "00:00:00".to_string());
-
-          let level = record.level();
-          let target = compact_log_target(record.target());
-
-          out.finish(format_args!("[{time}][{level}][{target}] {message}"));
-        })
+        .clear_format()
         .rotation_strategy(RotationStrategy::KeepAll)
         .max_file_size(1024 * 1024)
         .targets([
           Target::new(TargetKind::LogDir {
             file_name: Some(log_file_name),
-          }),
-          Target::new(TargetKind::Stdout),
-          Target::new(TargetKind::Webview),
+          })
+          .format(|out, message, record| format_log_record(out, message, record, false)),
+          Target::new(TargetKind::Stdout)
+            .format(|out, message, record| format_log_record(out, message, record, true)),
+          Target::new(TargetKind::Webview)
+            .format(|out, message, record| format_log_record(out, message, record, false)),
         ])
         .build(),
     )
