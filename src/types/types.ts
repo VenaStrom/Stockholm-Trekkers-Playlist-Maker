@@ -18,7 +18,8 @@ export type Episode = {
 export type BlockClip = {
   id: string;
   name: string; // Display name
-  default: boolean | number; // Mostly gonna be checkboxes but some configs would like numbers
+  default: boolean;
+  value?: number;
   duration: number; // In seconds
   file: string; // Path in the exported bundle, probs clips/
   description: string;
