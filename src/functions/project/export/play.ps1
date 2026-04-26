@@ -43,32 +43,33 @@ $GRAY = 90
 $BOLD = 1
 $ITALIC = 3
 $UNDERLINE = 4
+$VLC_BASE_ARGS = @("--one-instance", "--fullscreen", "--sub-language=swe,eng,any", "--deinterlace=0", "--embedded-video", "--no-loop", "--no-play-and-pause", "--no-random", "--no-repeat", "--no-video-title-show", "--qt-auto-raise=0", "--qt-continue=0", "--qt-fullscreen-screennumber=1", "--qt-notification=0", "--no-qt-fs-controller", "--no-qt-name-in-title", "--no-qt-recentplay", "--no-qt-privacy-ask")
+$VLC_LOG_FILE = "./vlc.log"
 
-$VLC_BASE_ARGS = @(
-  "--one-instance",
-  "--fullscreen",
-  "--sub-language=swe,eng,any",
-  "--deinterlace=0",
-  "--embedded-video",
-  "--no-loop",
-  "--no-play-and-pause",
-  "--no-random",
-  "--no-repeat",
-  "--no-video-title-show",
-  "--qt-auto-raise=0",
-  "--qt-continue=0",
-  "--qt-fullscreen-screennumber=1",
-  "--qt-notification=0",
-  "--no-qt-fs-controller",
-  "--no-qt-name-in-title",
-  "--no-qt-recentplay",
-  "--no-qt-updates-notif",
-  "--no-qt-privacy-ask"
-)
+function log_vlc_line {
+  param([string]$Line)
+
+  $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+  Add-Content -Path $VLC_LOG_FILE -Value "[$timestamp] $Line"
+}
+
+function run_vlc {
+  param(
+    [Parameter(ValueFromRemainingArguments = $true)]
+    [string[]]$VlcArgs
+  )
+
+  log_vlc_line "CMD: vlc $($VlcArgs -join ' ')"
+  & vlc @VlcArgs 2>&1 | ForEach-Object {
+    log_vlc_line "$_"
+  }
+  $exitCode = $LASTEXITCODE
+  log_vlc_line "EXIT: $exitCode"
+  return $exitCode
+}
 
 function ensure_vlc_running {
-  $vlcArgs = @($VLC_BASE_ARGS + "--playlist-enqueue" + "--no-playlist-autostart")
-  Start-Process -FilePath "vlc" -ArgumentList $vlcArgs | Out-Null
+  run_vlc @VLC_BASE_ARGS "--playlist-enqueue" "--no-playlist-autostart" | Out-Null
   Start-Sleep -Seconds 1
 }
 
@@ -90,7 +91,7 @@ function play {
     print "Playing $file...\n"
   }
 
-  & vlc @VLC_BASE_ARGS $file *> $null
+  run_vlc @VLC_BASE_ARGS $file | Out-Null
   Start-Sleep -Seconds 1
 }
 
@@ -112,7 +113,7 @@ function enqueue {
     print "Enqueuing $file...\n"
   }
 
-  & vlc @VLC_BASE_ARGS "--playlist-enqueue" $file *> $null
+  run_vlc @VLC_BASE_ARGS "--playlist-enqueue" $file | Out-Null
   Start-Sleep -Seconds 1
 }
 
@@ -190,6 +191,7 @@ print "- Copy playlist folder to the computer.\n"
 print "- Check the computers time and timezone settings.\n"
 print "- Keep this computer disconnected from the internet for security.\n"
 print "\n"
+print "$GRAY" "VLC logs will be written to $VLC_LOG_FILE\n"
 
 # Ensure VLC is installed, and is running, ready for control commands
 ensure_vlc_running

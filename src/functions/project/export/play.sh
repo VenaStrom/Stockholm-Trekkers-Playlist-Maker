@@ -32,10 +32,25 @@ GRAY=90
 BOLD=1
 ITALIC=3
 UNDERLINE=4
-VLC_BASE_ARGS=(--one-instance --fullscreen --sub-language=swe,eng,any --deinterlace=0 --embedded-video --no-loop --no-play-and-pause --no-random --no-repeat --no-video-title-show --qt-auto-raise=0 --qt-continue=0 --qt-fullscreen-screennumber=1 --qt-notification=0 --no-qt-fs-controller --no-qt-name-in-title --no-qt-recentplay --no-qt-updates-notif --no-qt-privacy-ask)
+VLC_BASE_ARGS=(--one-instance --fullscreen --sub-language=swe,eng,any --deinterlace=0 --embedded-video --no-loop --no-play-and-pause --no-random --no-repeat --no-video-title-show --qt-auto-raise=0 --qt-continue=0 --qt-fullscreen-screennumber=1 --qt-notification=0 --no-qt-fs-controller --no-qt-name-in-title --no-qt-recentplay --no-qt-privacy-ask)
+VLC_LOG_FILE="./vlc.log"
+
+log_vlc_line() {
+  printf '[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$1" >> "$VLC_LOG_FILE"
+}
+
+run_vlc() {
+  log_vlc_line "CMD: vlc $*"
+  vlc "$@" 2>&1 | while IFS= read -r line; do
+    log_vlc_line "$line"
+  done
+  local exit_code="${PIPESTATUS[0]}"
+  log_vlc_line "EXIT: $exit_code"
+  return "$exit_code"
+}
 
 ensure_vlc_running() {
-  vlc "${VLC_BASE_ARGS[@]}" --playlist-enqueue --no-playlist-autostart &>/dev/null &
+  run_vlc "${VLC_BASE_ARGS[@]}" --playlist-enqueue --no-playlist-autostart &
   sleep 1
 }
 play() {
@@ -48,7 +63,7 @@ play() {
   if [[ "$silent" != true ]]; then
     print "Playing $file...\n"
   fi
-  vlc "${VLC_BASE_ARGS[@]}" "$file" &>/dev/null
+  run_vlc "${VLC_BASE_ARGS[@]}" "$file"
   sleep 1
 }
 enqueue() {
@@ -61,7 +76,7 @@ enqueue() {
   if [[ "$silent" != true ]]; then
     print "Enqueuing $file...\n"
   fi
-  vlc "${VLC_BASE_ARGS[@]}" --playlist-enqueue "$file" &>/dev/null
+  run_vlc "${VLC_BASE_ARGS[@]}" --playlist-enqueue "$file"
   sleep 1
 }
 long_pause() {
@@ -131,6 +146,7 @@ print "- Copy playlist folder to the computer.\n"
 print "- Check the computers time and timezone settings.\n"
 print "- Keep this computer disconnected from the internet for security.\n"
 print "\n"
+print "$GRAY" "VLC logs will be written to $VLC_LOG_FILE\n"
 
 # Ensure VLC is installed, and is running, ready for control commands
 ensure_vlc_running
