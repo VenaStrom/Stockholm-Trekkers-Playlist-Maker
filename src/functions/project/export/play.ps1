@@ -69,7 +69,15 @@ function run_vlc {
 }
 
 function ensure_vlc_running {
-  run_vlc @VLC_BASE_ARGS "--playlist-enqueue" "--no-playlist-autostart" | Out-Null
+  $ensureArgs = @($VLC_BASE_ARGS + @("--playlist-enqueue", "--no-playlist-autostart"))
+  log_vlc_line "CMD(BG): vlc $($ensureArgs -join ' ')"
+  try {
+    $proc = Start-Process -FilePath "vlc" -ArgumentList $ensureArgs -PassThru
+    log_vlc_line "STARTED(BG): pid=$($proc.Id)"
+  }
+  catch {
+    log_vlc_line "START_FAILED(BG): $($_.Exception.Message)"
+  }
   Start-Sleep -Seconds 1
 }
 
