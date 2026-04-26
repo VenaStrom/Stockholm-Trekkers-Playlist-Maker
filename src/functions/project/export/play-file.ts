@@ -1,22 +1,23 @@
 import { hhmmToSeconds, secondsToHHMM } from "@/functions/project/time-format";
 import { blockClips, ExportNames } from "@/global";
 import type { EpisodeDefinedPath, PlayFiles, Project } from "@/types";
-import { writeFileSync, readFileSync } from "node:fs";
-
-const shTemplate = readFileSync("src/functions/project/export/play.sh", "utf-8");
-const ps1Template = readFileSync("src/functions/project/export/play.ps1", "utf-8");
 
 const templateVariableRegex = /__[A-Z_]+__/g;
+const author = __AUTHOR__ ?? { name: "__AUTHOR__.name", email: "__AUTHOR__.email", url: "__AUTHOR__.url" };
 
 export function makePlayFiles(project: Project): PlayFiles {
-  const f: PlayFiles = { ps1: ps1Template.toString(), sh: shTemplate.toString() };
+  if (!__PLAY_PS1_TEMPLATE__ || !__PLAY_SH_TEMPLATE__) {
+    throw new Error("Play file templates are not defined. Cannot generate play files.");
+  }
 
-  const templateInfo = {
-    __SIGN_OFF_NAME__: __AUTHOR__.name.split(" ")[0] || __AUTHOR__.name,
-    __AUTHOR__: __AUTHOR__.name,
-    __APP_VERSION__: __VERSION__,
-    __REPO_URL__: __REPOSITORY_URL__,
-    __EMAIL__: __AUTHOR__.email,
+  const f: PlayFiles = { ps1: __PLAY_PS1_TEMPLATE__.toString(), sh: __PLAY_SH_TEMPLATE__.toString() };
+
+  const templateInfo: Record<string, string> = {
+    __SIGN_OFF_NAME__: author.name.split(" ")[0] || author.name,
+    author: author.name,
+    __APP_VERSION__: __VERSION__ || "__VERSION__",
+    __REPO_URL__: __REPOSITORY_URL__ || "__REPOSITORY_URL__",
+    __EMAIL__: author.email,
     __OPTIONS_REV__: project.optionsRev.toString(),
     __PLAYLIST_DATE__: project.date,
     __CREATED_DATE__: new Date(project.dateCreated).toISOString(),
@@ -149,14 +150,3 @@ ${episodes.map(e => `  ${(e.cachedStartTime || "--:--").padEnd(8, " ")} ${e.file
 function deepCopy<T>(obj: T): T {
   return JSON.parse(JSON.stringify(obj) as unknown as string) as T;
 }
-
-const __AUTHOR__ = { name: "Vena", email: "strom.vena+stplay@gmail.com" };
-const __VERSION__ = "4.0.0";
-const __REPOSITORY_URL__ = "https://github.com/VenaStrom/Stockholm-Trekkers-Playlist-Maker";
-
-const project = { "id": "2b1cfa9bccf0730d", "date": "2026-05-02", "description": "Program för trekdagen 2 maj 2026:\nTEMA:   Vänner och fiender (eller var det kanske tvärt om…)\n\n10:10   The Enemy             TNG 3:7\n10:55   PAUS\n11:25   Blood of Patriots     ORV 2:10\n12:15   Nemesis               VOY 4:4\n13:00   LUNCH\n14:30   Preemptive Strike     TNG 7:24\n15:15   PAUS med uppstart av spel \n15:30   The Shipment          ENT 3:7\n16:15   PAUS\n16:45   For the Cause         DS9 4:21\n17:30   Investigations        VOY 2:20\n18:15   PAUS\n18:30   Hippocratic Oath      DS9 4:3\n19:15   Common Ground         SGA 3:7\n20:00   SLUT\n", "dateCreated": 1777200844576, "optionsRev": 0, "blockCount": 3, "episodeCount": 3, "blocks": [{ "id": "734db63fad9a2c02", "options": { "leading__countdown": true, "leading__emergency_routine": true, "trailing__emergency_routine": true, "trailing__sign_in_reminder": false, "leading__covid_disclaimer": false }, "startTime": "10:10" }, { "id": "8d21cb44a1fa463d", "options": { "leading__countdown": true, "leading__emergency_routine": true, "trailing__emergency_routine": true, "trailing__sign_in_reminder": false, "leading__covid_disclaimer": false }, "startTime": "11:25" }, { "id": "7e156d660878effe", "options": { "leading__countdown": true, "leading__emergency_routine": true, "trailing__emergency_routine": true, "trailing__sign_in_reminder": false, "leading__covid_disclaimer": false }, "startTime": "" }], "episodes": [{ "id": "80c1c5efe741630d", "blockID": "734db63fad9a2c02", "filePath": "/home/vena/Videos/2025-10-04/episodes/Star Trek - Lower Decks S03E06 - Hear All Trust Nothing.mkv", "cachedDuration": 1585.251, "cachedSize": 490887983, "cachedEncoding": "h264", "cachedStartTime": "10:10", "cachedEndTime": "10:36" }, { "id": "c39e321c6d6f882b", "blockID": "734db63fad9a2c02" }, { "id": "3e2095707fe800e7", "blockID": "8d21cb44a1fa463d", "filePath": "/home/vena/Videos/2025-10-04/episodes/Star Trek TNG S01E26 - The Neutral Zone.mkv", "cachedDuration": 2733.648, "cachedSize": 2496581781, "cachedEncoding": "h264", "cachedStartTime": "11:25", "cachedEndTime": "12:10" }, { "id": "12fc923724db9e47", "blockID": "8d21cb44a1fa463d", "filePath": "/home/vena/Videos/2025-10-04/episodes/SPOCK-Never-Trust-a-Klingon.mp4", "cachedDuration": 260, "cachedSize": 24597944, "cachedEncoding": "hevc", "cachedStartTime": "12:10", "cachedEndTime": "12:14" }, { "id": "6b369b9805ead585", "blockID": "8d21cb44a1fa463d" }, { "id": "eb09aeedc72b6299", "blockID": "7e156d660878effe" }, { "id": "ba8210feb49fc851", "blockID": "7e156d660878effe" }] };
-
-const res = makePlayFiles(project);
-
-writeFileSync("ignore/play.ps1", res.ps1);
-writeFileSync("ignore/play.sh", res.sh);
