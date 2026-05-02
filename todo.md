@@ -13,3 +13,6 @@
 - [ ] Run ffmpeg to grab previews throughout all the episodes to visually validate the project
 - [ ] On export, show a summery view of the project
 - [ ] Compile `.sh` and `.ps1` simultaneously
+- [ ] In runtime save progress per episode to be able to resume playback after interruption
+- [ ] When playing a playlist "too late" in the day, do a more graceful skip to the correct block and episode (episode times manifest?)
+- [ ] Put more than 3 hours of pauses before the playlist and after every block
