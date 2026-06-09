@@ -28,7 +28,6 @@
     "noImplicitAny": true,
     // "noPropertyAccessFromIndexSignature": true,
     "noImplicitOverride": true,
-    "baseUrl": ".",
   },
   "include": [
     "src",

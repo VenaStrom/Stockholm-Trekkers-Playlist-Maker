@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import type { Episode, Project } from "@/types";
 import { IconDeleteOutline, IconDragIndicator, IconFolderOutline } from "@/components/icons";
 import { open } from "@tauri-apps/plugin-dialog";
@@ -24,7 +24,7 @@ export default function EpisodeLi({
   projectSetter: React.Dispatch<React.SetStateAction<Project | null>>;
 }) {
   const ffprobeRequestRef = useRef(0);
-  const [selectedFile, setSelectedFile] = useState<string | null>(episode.filePath ?? null);
+  const selectedFile = episode.filePath ?? null;
   const previousEpisode = useMemo(() => {
     if (!volatileProject) return null;
     const episodesInBlock = volatileProject.episodes.filter(e => e.blockID === episode.blockID);
@@ -98,11 +98,6 @@ export default function EpisodeLi({
     });
   };
 
-  // Sync on selected file
-  useEffect(() => {
-    setSelectedFile(episode.filePath || null);
-  }, [episode.id, episode.filePath]);
-
   const fetchDurationForPath = (episodeID: string, filePath: string) => {
     const requestID = ++ffprobeRequestRef.current;
 
@@ -138,7 +133,6 @@ export default function EpisodeLi({
       });
 
       const fileString = typeof filePath === "string" ? filePath : null;
-      setSelectedFile(fileString);
 
       setVolatileProject((prevProject) => {
         if (!prevProject) return prevProject;

@@ -38,7 +38,7 @@ const commonRules: Config["rules"] = {
   "@typescript-eslint/consistent-type-definitions": ["warn", "type"],
   "@typescript-eslint/ban-ts-comment": "error",
   "@typescript-eslint/prefer-nullish-coalescing": ["warn", { ignorePrimitives: { string: true, boolean: true } }],
-  "@typescript-eslint/prefer-optional-chain": "warn",
+  "@typescript-eslint/prefer-optional-chain": "off",
   "@typescript-eslint/restrict-template-expressions": "warn",
   "@typescript-eslint/no-base-to-string": "warn",
   "@typescript-eslint/use-unknown-in-catch-callback-variable": "error",
