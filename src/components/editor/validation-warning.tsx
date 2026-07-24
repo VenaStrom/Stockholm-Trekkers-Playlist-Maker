@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { IconWarning } from "@/components/icons";
 
 /**
  * Floating non-blocking warning below an input, like v3's validation windows.
@@ -20,9 +21,10 @@ export default function ValidationWarning({ warning }: { warning: string | null;
       `}
       role="alert"
     >
-      <span className="text-command-500">{warning}</span>
+      <IconWarning className="size-4 shrink-0 text-command-300" aria-hidden="true" />
+      <span className="text-flare-500 font-normal">{warning}</span>
       <button
-        className="text-flare-500 hover:text-flare-500 select-none"
+        className="text-flare-500 hover:text-command-300 select-none"
         onClick={() => setIgnoredWarning(warning)}
       >
         Ignore
