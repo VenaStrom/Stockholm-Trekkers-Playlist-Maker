@@ -6,7 +6,7 @@
 - [x] Export feedback: real progress, a working cancel (terminate + delete partial folder), and error/cancelled/success end states with an open-folder button (currently "[No feedback implemented yet]")
 - [x] Export validation: block export on missing episode files (currently warn + skip) and on missing date; confirm before overwriting an existing export folder (`export-project.ts` TODO)
 - [ ] Import save file (native picker, overwrite confirm) + migration from the v3 save format (see `old-save-file.json`)
-- [ ] Editor validation warnings: duplicate and overlapping block times, invalid/very early/very late/non-5-min times, past/weekday/far-future dates (+ easter eggs: 47, 17:01, 2063-04-05 🖖)
+- [x] Editor validation warnings: duplicate and overlapping block times, invalid/very early/very late/non-5-min times, past/weekday/far-future dates (+ easter eggs: 47, 17:01, 2063-04-05 🖖)
 - [x] Flush save on close/quit — Ctrl+Q is an immediate exit and can lose the 500 ms debounce window
 - [x] Ctrl+S manual save
 - [ ] CI: build + draft-release workflows (no `.github/` on this branch)

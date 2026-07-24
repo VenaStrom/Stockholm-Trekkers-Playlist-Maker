@@ -6,8 +6,10 @@ import { usePageContext } from "@/components/page-context";
 import { IconDeleteForeverOutline, IconDeleteOutline, IconDragIndicator } from "@/components/icons";
 import Dialog from "@/components/dialog";
 import BlockOptionsEditor from "@/components/editor/block-options-editor";
+import ValidationWarning from "@/components/editor/validation-warning";
 import { PopoverContainer, PopoverContent, PopoverTrigger } from "@/components/popover";
 import { parseBlockTime } from "@/functions/project/time-parser";
+import { validateBlockTime } from "@/functions/project/validate-inputs";
 
 /** 
  * I don't like this, but this is very convenient to keep the UI prettier during drag-and-drop
@@ -236,7 +238,7 @@ export default function BlockLi({
         <p>Block {blockIndex + 1}</p>
 
         {/* Block start time */}
-        <label>
+        <label className="relative">
           <input
             aria-label="block start time in format --:--"
             className="bg-abyss-500 w-[6ch] text-center"
@@ -249,6 +251,7 @@ export default function BlockLi({
               updateBlock({ startTime: parseBlockTime(e.target.value) });
             }}
           />
+          {volatileProject && <ValidationWarning warning={validateBlockTime(block, volatileProject)} />}
         </label>
 
         {/* Block options (leading/trailing clips): one dot per catalog option, lit when enabled */}

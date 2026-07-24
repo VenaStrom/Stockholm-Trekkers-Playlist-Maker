@@ -11,6 +11,8 @@ import BlockLi from "@/components/editor/block";
 import ExportButton from "@/components/button/export-button";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { parseDate } from "@/functions/project/date-parser";
+import { validateDate } from "@/functions/project/validate-inputs";
+import ValidationWarning from "@/components/editor/validation-warning";
 import { probeEpisode } from "@/functions/project/episode-probe";
 import { compileTimeline } from "@/functions/compile-timeline";
 
@@ -236,8 +238,9 @@ export default function Editor() {
 
         {/* Date */}
         <div className="flex flex-row justify-center items-center">
-          <label className="w-fit flex flex-col">
+          <label className="w-fit flex flex-col relative">
             Date
+            {volatileProject && <ValidationWarning warning={validateDate(volatileProject.date)} />}
             <span className="bg-abyss-800 rounded-sm pe-2">
               {!volatileProject ?
                 <Spinner3DotsScaleMiddle className="w-fit h-9 inline-block align-middle mb-1" />
