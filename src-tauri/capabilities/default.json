@@ -12,8 +12,22 @@
     "core:window:allow-destroy",
     "core:app:allow-set-app-theme",
     "opener:default",
-    "opener:allow-open-path",
-    "opener:allow-reveal-item-in-dir",
+    {
+      "identifier": "opener:allow-open-path",
+      "allow": [
+        {
+          "path": "**"
+        }
+      ]
+    },
+    {
+      "identifier": "opener:allow-reveal-item-in-dir",
+      "allow": [
+        {
+          "path": "**"
+        }
+      ]
+    },
     "fs:default",
     "fs:allow-appdata-meta-recursive",
     "fs:allow-appdata-read-recursive",
@@ -23,7 +37,14 @@
     "fs:allow-app-write-recursive",
     "fs:allow-temp-read",
     "fs:allow-temp-write",
-    "fs:allow-exists",
+    {
+      "identifier": "fs:allow-exists",
+      "allow": [
+        {
+          "path": "**"
+        }
+      ]
+    },
     {
       "identifier": "fs:allow-read-dir",
       "allow": [
@@ -39,7 +60,7 @@
       "identifier": "fs:allow-copy-file",
       "allow": [
         {
-          "path": "/**"
+          "path": "**"
         }
       ]
     },
@@ -47,34 +68,24 @@
       "identifier": "fs:allow-remove",
       "allow": [
         {
-          "path": "/**"
+          "path": "**"
         }
       ]
     },
     {
       "identifier": "fs:allow-mkdir",
       "allow": [
-        "$HOME/Downloads",
-        "$HOME/Downloads/**",
-        "$HOME/Desktop",
-        "$HOME/Desktop/**",
-        "$HOME/downloads",
-        "$HOME/downloads/**",
-        "$HOME/desktop",
-        "$HOME/desktop/**"
+        {
+          "path": "**"
+        }
       ]
     },
     {
       "identifier": "fs:allow-write-text-file",
       "allow": [
-        "$HOME/Downloads",
-        "$HOME/Downloads/**",
-        "$HOME/Desktop",
-        "$HOME/Desktop/**",
-        "$HOME/downloads",
-        "$HOME/downloads/**",
-        "$HOME/desktop",
-        "$HOME/desktop/**"
+        {
+          "path": "**"
+        }
       ]
     },
     "dialog:default",
