@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useRef } from "react";
 import { IconArrowDropDown, IconCloseSmall } from "@/components/icons";
 import { generateID } from "@/functions/sha256";
 
@@ -52,7 +52,7 @@ export function PopoverTrigger({ text, children }: { text?: string; children?: R
             setIsOpen((open) => !open);
           }
         }}
-        className="inline-block pe-1.5 ps-3 hover:bg-science-500 bg-abyss-200"
+        className="inline-block pe-1.5 ps-3 select-none cursor-pointer hover:text-science-500"
       >
         {children}
         <IconArrowDropDown className="inline size-6 ms-0.5" />
@@ -63,7 +63,7 @@ export function PopoverTrigger({ text, children }: { text?: string; children?: R
   return (
     <button
       type="button"
-      className="inline-block pe-1.5 ps-3 hover:bg-science-500 bg-abyss-200"
+      className="inline-block pe-1.5 ps-3 select-none cursor-pointer hover:text-science-500"
       onClick={() => setIsOpen((open) => !open)}
       data-popover-anchor={anchorName}
     >
@@ -77,6 +77,32 @@ export function PopoverContent({ children }: { children?: React.ReactNode }) {
   const { isOpen, setIsOpen, anchorName } = usePopover();
 
   const [pos, setPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const contentRef = useRef<HTMLDivElement | null>(null);
+
+  // Light dismiss: close on click outside or Escape, like a dialog
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const onPointerDown = (e: PointerEvent) => {
+      const target = e.target;
+      if (!(target instanceof Node)) return;
+      if (contentRef.current?.contains(target)) return;
+      // Let the trigger's own click handler do the toggling
+      const anchorEl = document.querySelector(`[data-popover-anchor="${anchorName}"]`);
+      if (anchorEl instanceof HTMLElement && anchorEl.contains(target)) return;
+      setIsOpen(false);
+    };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsOpen(false);
+    };
+
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [isOpen, anchorName, setIsOpen]);
 
   useEffect(() => {
     let raf = 0;
@@ -111,6 +137,7 @@ export function PopoverContent({ children }: { children?: React.ReactNode }) {
 
   return (
     <div
+      ref={contentRef}
       style={{
         top: pos.y,
         left: pos.x,

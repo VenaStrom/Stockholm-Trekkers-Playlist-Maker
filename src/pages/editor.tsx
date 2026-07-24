@@ -1,5 +1,5 @@
 import type { Episode, Project } from "@/types";
-import { DefaultBlockOptions } from "@/consts";
+import { getUserDefaultBlockOptions } from "@/functions/block-options";
 import { useEffect, useMemo, useState, useRef } from "react";
 import { useDebounce } from "use-debounce";
 import { IconAdd, IconArrowBack2Outline, IconEditOutline, Spinner3DotsScaleMiddle } from "@/components/icons";
@@ -334,7 +334,7 @@ export default function Editor() {
                       ...prev.blocks,
                       {
                         id: blockID,
-                        options: { ...DefaultBlockOptions },
+                        options: getUserDefaultBlockOptions(),
                       },
                     ],
                     episodes: [

@@ -1,4 +1,4 @@
-import { DefaultBlockOptions } from "@/consts";
+import { getUserDefaultBlockOptions } from "@/functions/block-options";
 import type { ProjectData, Project, ProjectMeta } from "@/types";
 import { generateID } from "@/functions/sha256";
 import { OPTION_REVISION } from "@/global";
@@ -25,7 +25,7 @@ export async function createProject(): Promise<Project> {
     id: projectID,
     blocks: blockIDs.map(blockID => ({
       id: blockID,
-      options: { ...DefaultBlockOptions },
+      options: getUserDefaultBlockOptions(),
     })),
     episodes: episodeIDs.map((episodeID, index) => ({
       id: episodeID,

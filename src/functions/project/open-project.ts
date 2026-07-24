@@ -1,3 +1,4 @@
+import { reconcileBlockOptions } from "@/functions/block-options";
 import { getAllProjectIDs } from "@/functions/project";
 import * as fs from "@tauri-apps/plugin-fs";
 import { path } from "@tauri-apps/api";
@@ -78,5 +79,13 @@ async function internalOpenProject(projectID: string, includeData = true): Promi
     throw new Error(`Invalid full project format for project ID: ${projectID}`);
   }
 
-  return fullProject;
+  // Reconcile saved options against the current clip catalog, so projects
+  // saved before a clip was added/removed/renamed degrade gracefully
+  return {
+    ...fullProject,
+    blocks: fullProject.blocks.map(block => ({
+      ...block,
+      options: reconcileBlockOptions(block.options),
+    })),
+  };
 }

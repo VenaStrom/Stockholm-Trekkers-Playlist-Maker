@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { PowerKey } from "@/global";
+import { allOptionEntries } from "@/functions/block-options";
 import type { Block, Project } from "@/types";
 import { usePageContext } from "@/components/page-context";
 import { IconDeleteForeverOutline, IconDeleteOutline, IconDragIndicator } from "@/components/icons";
 import Dialog from "@/components/dialog";
+import BlockOptionsEditor from "@/components/editor/block-options-editor";
+import { PopoverContainer, PopoverContent, PopoverTrigger } from "@/components/popover";
 import { parseBlockTime } from "@/functions/project/time-parser";
 
 /** 
@@ -247,6 +250,33 @@ export default function BlockLi({
             }}
           />
         </label>
+
+        {/* Block options (leading/trailing clips): one dot per catalog option, lit when enabled */}
+        <PopoverContainer>
+          <PopoverTrigger>
+            <span className="inline-flex flex-row items-center gap-x-1 me-2 align-middle">
+              {allOptionEntries().map(({ key, placement, clip }) => (
+                <span
+                  key={key}
+                  title={`${clip.name} (${placement})`}
+                  className={`
+                    inline-block size-4.5 rounded-sm border-2 border-abyss-800
+                    ${block.options[key]
+                      ? placement === "leading" ? "bg-science-500" : "bg-spore-500"
+                      : "bg-abyss-500"}
+                  `}
+                ></span>
+              ))}
+            </span>
+            Options
+          </PopoverTrigger>
+          <PopoverContent>
+            <BlockOptionsEditor
+              options={block.options}
+              onToggle={(key, checked) => updateBlock({ options: { ...block.options, [key]: checked } })}
+            />
+          </PopoverContent>
+        </PopoverContainer>
 
         <span className="flex-1"></span>
 

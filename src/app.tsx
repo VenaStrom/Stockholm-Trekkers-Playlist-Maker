@@ -1,11 +1,14 @@
 import "@/global.tw.css";
 import { PowerKey } from "@/global";
-import { IconLightDarkMode, IconLightModeOutline } from "@/components/icons";
+import { IconLightDarkMode, IconLightModeOutline, IconSettingsOutline } from "@/components/icons";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { setTheme } from "@tauri-apps/api/app";
 import { Toaster } from "@/components/toast/toast";
 import { useEffect, useState } from "react";
 import { usePageContext, PageRoute } from "@/components/page-context";
+import { getUserDefaultBlockOptions, resetUserDefaultBlockOptions, setUserDefaultBlockOptions } from "@/functions/block-options";
+import BlockOptionsEditor from "@/components/editor/block-options-editor";
+import Dialog from "@/components/dialog";
 import Editor from "@/pages/editor";
 import Projects from "@/pages/projects";
 
@@ -22,6 +25,10 @@ export default function App() {
   });
 
   const { headerText, route, setRoute, projectID, isPowerMode } = usePageContext();
+
+  // Settings panel
+  const [settingsVisible, setSettingsVisible] = useState(false);
+  const [defaultBlockOptions, setDefaultBlockOptions] = useState(getUserDefaultBlockOptions);
 
   // Set up keyboard shortcuts
   useEffect(() => {
@@ -133,6 +140,15 @@ export default function App() {
         title={`Power mode enables extra actions for power users. Triggered by holding the [${PowerKey}] key.`}
       >[power mode]</p>
 
+      {/* Settings */}
+      <button
+        className="h-full px-3 €icon"
+        onClick={() => setSettingsVisible(true)}
+        title="Settings"
+      >
+        <IconSettingsOutline className="size-8" />
+      </button>
+
       {/* Light mode toggle */}
       <button
         className="h-full px-3 €icon"
@@ -174,6 +190,44 @@ export default function App() {
           return <Projects />;
       }
     })()}
+
+    {/* Settings dialog */}
+    <Dialog
+      visible={settingsVisible}
+      setVisible={setSettingsVisible}
+      dialogHeader={<p className="text-lg">Settings</p>}
+      dialogContent={<div>
+        <p className="pb-2">Default options for new blocks</p>
+        <BlockOptionsEditor
+          options={defaultBlockOptions}
+          onToggle={(key, checked) => {
+            setDefaultBlockOptions(prev => {
+              const next = { ...prev, [key]: checked };
+              setUserDefaultBlockOptions(next);
+              return next;
+            });
+          }}
+        />
+        <p className="text-sm text-flare-500/60 pt-2">
+          Applies to blocks you create from now on. Existing blocks keep their own options.
+        </p>
+      </div>}
+      buttons={[
+        <button
+          key="reset-button"
+          onClick={() => {
+            resetUserDefaultBlockOptions();
+            setDefaultBlockOptions(getUserDefaultBlockOptions());
+          }}
+          title="Go back to the built-in defaults"
+        >
+          Reset
+        </button>,
+        <button data-focus="true" key="close-button" onClick={() => setSettingsVisible(false)}>
+          Close
+        </button>,
+      ]}
+    />
 
     <Toaster />
   </>);

@@ -1,7 +1,8 @@
 # Parity with v3 (Electron)
 
-- [ ] Block options UI: per-block dropdown to toggle leading/trailing clips (countdown, emergency, covid, sign-in reminder) with option dots in the block header — data model and export already support this, only the UI is missing
-  - [ ] Reconcile saved options against the current clip catalog on load (carry over checked state) so renamed/removed clips degrade gracefully
+- [x] Block options UI: per-block dropdown to toggle leading/trailing clips (countdown, emergency, covid, sign-in reminder) with option dots in the block header — data model and export already support this, only the UI is missing
+  - [x] Reconcile saved options against the current clip catalog on load (carry over checked state) so renamed/removed clips degrade gracefully
+  - [x] Settings panel (gear in header) where the default options for new blocks are user-definable (persisted in localStorage)
 - [x] Export feedback: real progress, a working cancel (terminate + delete partial folder), and error/cancelled/success end states with an open-folder button (currently "[No feedback implemented yet]")
 - [x] Export validation: block export on missing episode files (currently warn + skip) and on missing date; confirm before overwriting an existing export folder (`export-project.ts` TODO)
 - [ ] Import save file (native picker, overwrite confirm) + migration from the v3 save format (see `old-save-file.json`)
