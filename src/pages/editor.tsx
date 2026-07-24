@@ -225,7 +225,7 @@ export default function Editor() {
                   area.style.height = `${area.scrollHeight}px`;
                 }}
                 ref={descRef}
-                defaultValue={volatileProject.description ?? ""}
+                defaultValue={volatileProject.description}
                 placeholder="Optional description of project."
                 className="min-h-8 w-full pb-2 px-3 pt-3 text-sm font-thin"
               />

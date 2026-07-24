@@ -85,7 +85,7 @@ export default function ProjectCard({
           className="overflow-scroll"
         >
           <pre className="max-w-prose text-sm text-abyss-200 mt-1">
-            {projectMeta.description?.trim() ?
+            {projectMeta.description.trim() ?
               projectMeta.description
               :
               <span className="text-flare-700">No description set</span>

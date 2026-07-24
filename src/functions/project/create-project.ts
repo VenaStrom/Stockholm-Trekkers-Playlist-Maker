@@ -29,7 +29,7 @@ export async function createProject(): Promise<Project> {
     })),
     episodes: episodeIDs.map((episodeID, index) => ({
       id: episodeID,
-      blockID: blockIDs[index < 2 ? 0 : 1] ?? blockIDs[0],
+      blockID: blockIDs[index < 2 ? 0 : 1],
     })),
   };
 
@@ -49,7 +49,7 @@ export async function createProject(): Promise<Project> {
     ...projectData,
   };
 
-  if (!isProject) {
+  if (!isProject(mergedProject)) {
     throw new Error("Created project is invalid.");
   }
 

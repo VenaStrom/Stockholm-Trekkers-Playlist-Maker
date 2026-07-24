@@ -58,7 +58,7 @@ export default function Dialog({
   return (
     // Modal background
     <div
-      {...rest ?? {}}
+      {...rest}
       className="z-40 transition-all fixed top-0 left-0 w-full h-full bg-black/50 flex justify-center items-center"
       onClick={(e) => {
         if (e.target === e.currentTarget) {

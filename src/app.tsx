@@ -18,9 +18,7 @@ export default function App() {
     }
 
     // If no preference, use system preference
-    return !!window.matchMedia
-      ? window.matchMedia("(prefers-color-scheme: light)").matches
-      : false;
+    return window.matchMedia("(prefers-color-scheme: light)").matches;
   });
 
   const { headerText, route, setRoute, projectID, isPowerMode } = usePageContext();

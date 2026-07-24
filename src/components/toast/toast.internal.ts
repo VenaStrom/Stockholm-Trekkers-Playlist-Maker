@@ -20,7 +20,7 @@ export function isToastOptions(obj: unknown): obj is ToastOptions {
   if (!isStandardObject(obj)) return false;
   if (typeof obj.timeout !== "number") return false;
   if (typeof obj.mood !== "string") return false;
-  if (!Mood[obj.mood as Mood]) return false;
+  if (!Object.values(Mood).includes(obj.mood as Mood)) return false;
   return true;
 }
 export const DefaultToastTimeout = 5000 as const;
