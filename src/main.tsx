@@ -136,7 +136,11 @@ const maybeRunCliExportMode = async (): Promise<boolean> => {
     if (!parsed) return false;
 
     console.info(`CLI export start: projectID=${parsed.projectID}, out=${parsed.saveLocation}`);
-    await exportProject(parsed.projectID, parsed.saveLocation);
+    // Headless runs are non-interactive, so replace an existing export folder instead of failing
+    await exportProject(parsed.projectID, parsed.saveLocation, {
+      overwrite: true,
+      onProgress: (progress) => console.info(`CLI export: ${progress.message}`),
+    });
     console.info("CLI export finished successfully.");
   } catch (e: unknown) {
     if (!requestedExport) return false;

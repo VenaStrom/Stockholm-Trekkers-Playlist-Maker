@@ -2,8 +2,8 @@
 
 - [ ] Block options UI: per-block dropdown to toggle leading/trailing clips (countdown, emergency, covid, sign-in reminder) with option dots in the block header — data model and export already support this, only the UI is missing
   - [ ] Reconcile saved options against the current clip catalog on load (carry over checked state) so renamed/removed clips degrade gracefully
-- [ ] Export feedback: real progress, a working cancel (terminate + delete partial folder), and error/cancelled/success end states with an open-folder button (currently "[No feedback implemented yet]")
-- [ ] Export validation: block export on missing episode files (currently warn + skip) and on missing date; confirm before overwriting an existing export folder (`export-project.ts` TODO)
+- [x] Export feedback: real progress, a working cancel (terminate + delete partial folder), and error/cancelled/success end states with an open-folder button (currently "[No feedback implemented yet]")
+- [x] Export validation: block export on missing episode files (currently warn + skip) and on missing date; confirm before overwriting an existing export folder (`export-project.ts` TODO)
 - [ ] Import save file (native picker, overwrite confirm) + migration from the v3 save format (see `old-save-file.json`)
 - [ ] Editor validation warnings: duplicate and overlapping block times, invalid/very early/very late/non-5-min times, past/weekday/far-future dates (+ easter eggs: 47, 17:01, 2063-04-05 🖖)
 - [x] Flush save on close/quit — Ctrl+Q is an immediate exit and can lose the 500 ms debounce window
