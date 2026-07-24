@@ -36,7 +36,7 @@ async function internalOpenProject(projectID: string, includeData = true): Promi
     JSON.parse(metaFileContent);
   }
   catch (e: unknown) {
-    throw new Error(`Failed to parse project file for project ID: ${projectID}. Error: ${e instanceof Error ? e.message : String(e)}`);
+    throw new Error(`Failed to parse project file for project ID: ${projectID}. Error: ${e instanceof Error ? e.message : String(e)}`, { cause: e });
   }
   const projectMeta: unknown = JSON.parse(metaFileContent);
 
@@ -63,7 +63,7 @@ async function internalOpenProject(projectID: string, includeData = true): Promi
     JSON.parse(dataFileContent);
   }
   catch (e: unknown) {
-    throw new Error(`Failed to parse project data file for project ID: ${projectID}. Error: ${e instanceof Error ? e.message : String(e)}`);
+    throw new Error(`Failed to parse project data file for project ID: ${projectID}. Error: ${e instanceof Error ? e.message : String(e)}`, { cause: e });
   }
 
   const projectData: unknown = JSON.parse(dataFileContent);

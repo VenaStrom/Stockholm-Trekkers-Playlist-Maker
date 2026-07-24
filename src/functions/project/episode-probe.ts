@@ -37,7 +37,7 @@ export async function probeEpisode(episode: EpisodeDefinedPath): Promise<ProbedE
   }
   catch (e: unknown) {
     console.error("Failed to parse FFprobe output:", e, { output: probeResult.stdout });
-    throw new Error("Failed to parse FFprobe output");
+    throw new Error("Failed to parse FFprobe output", { cause: e });
   }
   if (!isMediaFileProbeResult(parsed)) {
     console.error("FFprobe output does not match expected structure:", { parsed });

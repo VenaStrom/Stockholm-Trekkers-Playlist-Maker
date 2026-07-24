@@ -44,10 +44,10 @@ const commonRules: Config["rules"] = {
   "@typescript-eslint/use-unknown-in-catch-callback-variable": "error",
   "@typescript-eslint/consistent-type-assertions": "error",
   "@typescript-eslint/no-for-in-array": "error",
-  "@/no-useless-assignment": "warn",
+  "no-useless-assignment": "warn",
   "eqeqeq": ["error", "smart"],
   "semi": ["error", "always"],
-  "comma-dangle": ["error", "always-multiline"], // Would be nice but not tweakable enough
+  "comma-dangle": ["error", "always-multiline"],
   "no-extra-boolean-cast": "off",
 };
 
@@ -64,7 +64,7 @@ export default defineConfig([
     rules: {
       "react-hooks/set-state-in-effect": "warn",
       "react-hooks/set-state-in-render": "warn",
-      "react-hooks/immutability": "warn", // This should probably be a warning but the current recipe pipeline is dependant on it :sweat_smile:
+      "react-hooks/immutability": "error",
       ...commonRules,
     },
     languageOptions: {
@@ -76,6 +76,7 @@ export default defineConfig([
   },
   { // Script linting
     extends: [
+      eslint.configs.recommended,
       ...tseslint.configs.recommendedTypeChecked,
     ],
     name: "scripts scripts/",
