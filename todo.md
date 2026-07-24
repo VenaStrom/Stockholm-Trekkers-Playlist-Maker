@@ -19,15 +19,16 @@
 
 # Polish
 
-- Give user feedback when exporting a project save file (currently an a tag with download)
-- Make toasts stay when hovering
-- When no projects exist, create and open a new project automatically without landing on the project
-  - Is this even desirable?
-- Add date input to date input instead of just text input
-- Toggle auto save in menu bar (move light mode as well?)
-- Rework project card to be a button to edit project (+ mini preview of blocks/episodes like v3 cards)
-- Save indicator in editor (when saving, saved, error)
-- Polish the command line output of the play files (`play.sh` / `play.ps1`) so it's as easy as possible to parse what is happening at a glance: clear now-playing/queued lines, which block is active and when the next one starts, visible countdown while waiting, and warnings that stand out from normal status
+- [ ] Give user feedback when exporting a project save file (currently an a tag with download)
+- [ ] Make toasts stay when hovering
+- [ ] When no projects exist, create and open a new project automatically without landing on the project
+  - [ ] Is this even desirable?
+- [ ] Add date input to date input instead of just text input
+- [ ] Toggle auto save in menu bar (move light mode as well?)
+- [ ] Rework project card to be a button to edit project (+ mini preview of blocks/episodes like v3 cards)
+- [ ] Save indicator in editor (when saving, saved, error)
+- [ ] Polish the command line output of the play files (`play.sh` / `play.ps1`) so it's as easy as possible to parse what is happening at a glance: clear now-playing/queued lines, which block is active and when the next one starts, visible countdown while waiting, and warnings that stand out from normal status
+- [ ] the outputted project save file should be relative to bundle root, not the device dependant absolute paths of assets.
 
 # Features
 
