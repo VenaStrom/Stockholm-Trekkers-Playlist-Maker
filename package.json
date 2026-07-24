@@ -1,14 +1,14 @@
 {
   "name": "stockholm-trekkers-playlist-maker",
   "version": "4.0.0",
-  "author": "Vena Ström <strom.vena+stplay@gmail.com>",
+  "author": "Vena Ström <vena.strom+stplay@pm.me>",
   "description": "A playlist maker for the Stockholm Trekkers organization.",
   "license": "MIT",
   "repository": "https://github.com/VenaStrom/Stockholm-Trekkers-Playlist-Maker.git",
   "contributors": [
     {
       "name": "Vena Ström",
-      "email": "strom.vena+stplay@gmail.com",
+      "email": "vena.strom+stplay@pm.me",
       "url": "https://venastrom.se"
     }
   ],
