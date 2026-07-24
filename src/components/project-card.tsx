@@ -49,7 +49,7 @@ export default function ProjectCard({
         Are you sure you want to delete the project <span className="italic">{projectMeta.date}?</span>
         <span className="text-sm text-flare-500/60">
           <br />
-          This will project contains {projectMeta.blockCount} blocks and {projectMeta.episodeCount} episodes.
+          This project contains {projectMeta.blockCount} blocks and {projectMeta.episodeCount} episodes.
           <br />
           Created: {new Date(projectMeta.dateCreated).toLocaleDateString("en-SE")} {new Date(projectMeta.dateCreated).toLocaleTimeString("en-SE")}
           {

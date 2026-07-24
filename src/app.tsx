@@ -1,7 +1,7 @@
 import "@/global.tw.css";
 import { PowerKey } from "@/global";
 import { IconLightDarkMode, IconLightModeOutline } from "@/components/icons";
-import { invoke } from "@tauri-apps/api/core";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 import { setTheme } from "@tauri-apps/api/app";
 import { Toaster } from "@/components/toast/toast";
 import { useEffect, useState } from "react";
@@ -29,7 +29,9 @@ export default function App() {
     const closeListener = (e: KeyboardEvent) => {
       if (e.ctrlKey && (e.key === "w" || e.key === "q")) {
         e.preventDefault();
-        invoke("close")
+        // Request a close instead of exiting directly so the editor's
+        // close-requested listener can flush any pending save first
+        getCurrentWindow().close()
           .catch((err: unknown) => {
             console.error("Failed to close app:", err);
           });

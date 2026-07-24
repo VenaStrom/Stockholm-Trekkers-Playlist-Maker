@@ -9,6 +9,7 @@ import { generateID } from "@/functions/sha256";
 import EpisodeLi from "@/components/editor/episode";
 import BlockLi from "@/components/editor/block";
 import ExportButton from "@/components/button/export-button";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 import { parseDate } from "@/functions/project/date-parser";
 import { probeEpisode } from "@/functions/project/episode-probe";
 import { compileTimeline } from "@/functions/compile-timeline";
@@ -85,6 +86,54 @@ export default function Editor() {
         console.error("Error in debounced save:", err);
       });
   }, [debouncedProject]);
+
+  // Keep a ref to the latest project so the close listener and Ctrl+S always save current state
+  const volatileProjectRef = useRef(volatileProject);
+  useEffect(() => {
+    volatileProjectRef.current = volatileProject;
+  }, [volatileProject]);
+
+  // Ctrl+S to force an immediate save, skipping the debounce
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key === "s") {
+        e.preventDefault();
+        const project = volatileProjectRef.current;
+        if (!project) return;
+        saveProject(project)
+          .then(() => {
+            console.info("[Editor] Project saved via Ctrl+S.");
+          })
+          .catch((err: unknown) => {
+            console.error("Error saving via Ctrl+S:", err);
+          });
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
+
+  // Flush any pending save before the window closes (Ctrl+W/Q or the window close button)
+  useEffect(() => {
+    const unlistenPromise = getCurrentWindow().onCloseRequested(async (event) => {
+      const project = volatileProjectRef.current;
+      if (!project) return;
+      event.preventDefault();
+      try {
+        await saveProject(project);
+      } catch (err: unknown) {
+        console.error("Error saving on window close:", err);
+      }
+      await getCurrentWindow().destroy();
+    });
+    return () => {
+      unlistenPromise
+        .then(unlisten => unlisten())
+        .catch((err: unknown) => {
+          console.error("Failed to remove close-requested listener:", err);
+        });
+    };
+  }, []);
 
   // Handlers
   const navigateBack = () => {

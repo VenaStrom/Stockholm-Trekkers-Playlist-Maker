@@ -6,16 +6,15 @@
 - [ ] Export validation: block export on missing episode files (currently warn + skip) and on missing date; confirm before overwriting an existing export folder (`export-project.ts` TODO)
 - [ ] Import save file (native picker, overwrite confirm) + migration from the v3 save format (see `old-save-file.json`)
 - [ ] Editor validation warnings: duplicate and overlapping block times, invalid/very early/very late/non-5-min times, past/weekday/far-future dates (+ easter eggs: 47, 17:01, 2063-04-05 🖖)
-- [ ] Flush save on close/quit — Ctrl+Q is an immediate exit and can lose the 500 ms debounce window
-- [ ] Ctrl+S manual save
+- [x] Flush save on close/quit — Ctrl+Q is an immediate exit and can lose the 500 ms debounce window
+- [x] Ctrl+S manual save
 - [ ] CI: build + draft-release workflows (no `.github/` on this branch)
 - [ ] Installer: keep-save-files prompt on uninstall, preserve user data on update (v3 `installer.nsh` behavior)
 - [ ] Play scripts: kill pre-existing VLC instances and show a "VLC not found, install it" message like v3's ps1
 
 # Bugs
 
-- [ ] `create-project.ts` — `if (!isProject)` checks the function reference instead of calling it; validation never runs
-- [ ] Delete-project dialog copy: "This will project contains N blocks…"
+- [x] Delete-project dialog copy: "This will project contains N blocks…"
 
 # Polish
 
