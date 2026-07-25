@@ -126,8 +126,48 @@ async function writeProjectFiles(meta: ProjectMeta, data: ProjectData): Promise<
   await fs.writeTextFile(await path.join(projectDir, FileName.ProjectData), JSON.stringify(data, null, 2));
 }
 
-/** Imports a parsed save file of either format as a NEW project (fresh ID) */
-async function importParsedProject(value: unknown): Promise<ProjectMeta> {
+/** Windows drive/UNC prefixes or a leading slash count as absolute */
+function isAbsolutePath(p: string): boolean {
+  return /^(?:[a-zA-Z]:[\\/]|[\\/])/.test(p);
+}
+
+/**
+ * Turns relative episode paths in a save file into absolute ones, anchored at
+ * the imported file's location: ./episodes/ep1.mkv next to the save file wins;
+ * otherwise the save file's parent folder is tried, which covers a
+ * project-data.json inside an export bundle's save-files/ subfolder whose
+ * paths are relative to the bundle root.
+ */
+async function resolveEpisodePaths(episodes: Episode[], saveFileDir: string): Promise<Episode[]> {
+  const parentDir = await path.dirname(saveFileDir);
+  const resolved: Episode[] = [];
+
+  for (const episode of episodes) {
+    if (!episode.filePath || isAbsolutePath(episode.filePath)) {
+      resolved.push(episode);
+      continue;
+    }
+
+    let resolvedPath: string | null = null;
+    for (const baseDir of [saveFileDir, parentDir]) {
+      const candidate = await path.normalize(await path.join(baseDir, episode.filePath));
+      if (await fs.exists(candidate)) {
+        resolvedPath = candidate;
+        break;
+      }
+    }
+    // Nothing on disk: keep the save-file-dir interpretation so the miss is visible
+    resolvedPath ??= await path.normalize(await path.join(saveFileDir, episode.filePath));
+
+    console.info(`Resolved relative episode path "${episode.filePath}" to "${resolvedPath}".`);
+    resolved.push({ ...episode, filePath: resolvedPath });
+  }
+
+  return resolved;
+}
+
+/** Parses a save file of either format into a NEW project (fresh ID), without writing it */
+function parseSaveFile(value: unknown): { meta: ProjectMeta; data: ProjectData; } {
   // v4 format: a full project dump, e.g. project-data.json from an export bundle
   if (isProject(value)) {
     const projectID = generateID();
@@ -146,16 +186,13 @@ async function importParsedProject(value: unknown): Promise<ProjectMeta> {
       blocks: value.blocks.map(block => ({ ...block, options: reconcileBlockOptions(block.options) })),
       episodes: value.episodes,
     };
-    await writeProjectFiles(meta, data);
-    return meta;
+    return { meta, data };
   }
 
   // v3 format from the Electron app
   const v3Save = parseV3Save(value);
   if (v3Save) {
-    const { meta, data } = convertV3Save(v3Save);
-    await writeProjectFiles(meta, data);
-    return meta;
+    return convertV3Save(v3Save);
   }
 
   throw new Error("Unrecognized save file format.");
@@ -172,7 +209,10 @@ export async function importProjectFromFile(filePath: string): Promise<ProjectMe
     throw new Error(`Not a valid JSON file: ${filePath}`, { cause: e });
   }
 
-  return await importParsedProject(parsed);
+  const { meta, data } = parseSaveFile(parsed);
+  data.episodes = await resolveEpisodePaths(data.episodes, await path.dirname(filePath));
+  await writeProjectFiles(meta, data);
+  return meta;
 }
 
 /**
