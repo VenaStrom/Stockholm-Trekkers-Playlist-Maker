@@ -13,7 +13,8 @@
 - [x] CI: build + draft-release workflows (no `.github/` on this branch)
 - [x] Installer: keep-save-files prompt on uninstall, preserve user data on update (v3 `installer.nsh` behavior)
   - Tauri's NSIS keeps appdata by default (`deleteAppDataOnUninstall: false`), so v4 needs no custom installer script
-- [ ] Play scripts: kill pre-existing VLC instances and show a "VLC not found, install it" message like v3's ps1
+- [x] Play scripts: kill pre-existing VLC instances and show a "VLC not found, install it" message like v3's ps1
+  - ps1 also probes the default `C:\Program Files\VideoLAN\VLC` install dirs since VLC is rarely on PATH on Windows
 
 # Bugs
 
@@ -29,7 +30,7 @@
 - [ ] Toggle auto save in menu bar (move light mode as well?)
 - [ ] Rework project card to be a button to edit project (+ mini preview of blocks/episodes like v3 cards)
 - [ ] Save indicator in editor (when saving, saved, error)
-- [ ] Polish the command line output of the play files (`play.sh` / `play.ps1`) so it's as easy as possible to parse what is happening at a glance: clear now-playing/queued lines, which block is active and when the next one starts, visible countdown while waiting, and warnings that stand out from normal status
+- [x] Polish the command line output of the play files (`play.sh` / `play.ps1`) so it's as easy as possible to parse what is happening at a glance: clear now-playing/queued lines, which block is active and when the next one starts, visible countdown while waiting, and warnings that stand out from normal status
 - [ ] the outputted project save file should be relative to bundle root, not the device dependant absolute paths of assets.
 
 # Features
@@ -44,4 +45,4 @@
 - [x] Compile `.sh` and `.ps1` simultaneously
 - [ ] In runtime save progress per episode to be able to resume playback after interruption
 - [ ] When playing a playlist "too late" in the day, do a more graceful skip to the correct block and episode (episode times manifest?)
-- [ ] Put more than 3 hours of pauses before the playlist and after every block
+- [x] Put more than 3 hours of pauses before the playlist and after every block (both are 8 x 30 min = 4 h)

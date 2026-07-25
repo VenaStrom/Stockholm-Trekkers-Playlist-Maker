@@ -114,11 +114,12 @@ function blockString(details: {
 }): string {
   return `
 # Block ${details.blockNumber}
-# Block header
-wait_until "${details.adjustedBlockStartTime}" # Adjusted for leading clips to align episode start time to block start time
-print "$BOLD" "Block ${details.blockNumber} - ${details.blockStartTime}\\n"
+# Start time is adjusted for leading clips so the first episode lands exactly on the block start time
+wait_until "${details.adjustedBlockStartTime}" "Block ${details.blockNumber}"
+print "$BOLD" "$BLUE" "======== Block ${details.blockNumber} - episodes start at ${details.blockStartTime} ========\\n"
 print "$GRAY" "id=${details.blockID} options: ${details.blockOptions}\\n"
 ${details.playCode}
+print "$GRAY" "Block ${details.blockNumber} queued in full. Pause filler follows until the next block.\\n"
 long_pause
 print "\\n"
   `.trim();

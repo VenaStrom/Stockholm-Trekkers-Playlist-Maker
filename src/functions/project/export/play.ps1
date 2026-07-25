@@ -68,6 +68,38 @@ function run_vlc {
   return $exitCode
 }
 
+function ensure_vlc_installed {
+  if (Get-Command vlc -ErrorAction SilentlyContinue) {
+    return
+  }
+
+  # VLC installs are usually not on PATH on Windows, so probe the default locations
+  $defaultDirs = @(
+    "C:\Program Files\VideoLAN\VLC",
+    "C:\Program Files (x86)\VideoLAN\VLC"
+  )
+  foreach ($dir in $defaultDirs) {
+    if (Test-Path (Join-Path $dir "vlc.exe")) {
+      $env:PATH = "$dir;" + $env:PATH
+      print "$GRAY" "Found VLC at $dir\n"
+      return
+    }
+  }
+
+  print "$BOLD" "$RED" "VLC was not found on this computer.\n"
+  print "Install VLC from https://www.videolan.org/ and run this script again.\n"
+  exit 1
+}
+
+function kill_existing_vlc {
+  $procs = Get-Process -Name vlc -ErrorAction SilentlyContinue
+  if ($procs) {
+    print "$BOLD" "$YELLOW" "WARNING: VLC is already running. Closing it so the playlist starts from a clean slate...\n"
+    $procs | Stop-Process -Force
+    Start-Sleep -Seconds 2
+  }
+}
+
 function ensure_vlc_running {
   $ensureArgs = @($VLC_BASE_ARGS + @("--playlist-enqueue", "--no-playlist-autostart"))
   log_vlc_line "CMD(BG): vlc $($ensureArgs -join ' ')"
@@ -96,7 +128,8 @@ function play {
 
   $file = if ($index -lt $ArgsIn.Length) { $ArgsIn[$index] } else { "" }
   if (-not $silent) {
-    print "Playing $file...\n"
+    print "$GREEN" "> Now playing: "
+    print "$file\n"
   }
 
   run_vlc @VLC_BASE_ARGS $file | Out-Null
@@ -118,7 +151,7 @@ function enqueue {
 
   $file = if ($index -lt $ArgsIn.Length) { $ArgsIn[$index] } else { "" }
   if (-not $silent) {
-    print "Enqueuing $file...\n"
+    print "$GRAY" "  + Queued: $file\n"
   }
 
   run_vlc @VLC_BASE_ARGS "--playlist-enqueue" $file | Out-Null
@@ -138,7 +171,7 @@ function long_pause {
     }
   }
 
-  print "$GRAY" "Adding long pause block (8 x 30 min)\n"
+  print "$GRAY" "Queueing pause filler (8 x 30 min = 4 h)\n"
   if ($playNow) {
     play silent=true "clips/30_min_pause.mp4"
   }
@@ -156,27 +189,41 @@ function long_pause {
 }
 
 function wait_until {
-  param([string]$time_string)
+  param(
+    [string]$time_string, # Examples: "10:10", "10:10:30", or "10:10.30"
+    [string]$label = "Playback"
+  )
 
-  # Examples: "10:10", "10:10:30", or "10:10.30"
   if ($time_string -match '^([0-9]{1,2}):([0-9]{2})([:.]([0-9]{2}))?$') {
     $hour = [int]$Matches[1]
     $minute = [int]$Matches[2]
     $second = if ($Matches[4]) { [int]$Matches[4] } else { 0 }
 
     if ($hour -gt 23 -or $minute -gt 59 -or $second -gt 59) {
-      print "$YELLOW" "Warning: Invalid time value '$time_string'. Expected HH:MM, HH:MM:SS, or HH:MM.SS. Continuing without waiting.\n"
+      print "$BOLD" "$YELLOW" "WARNING: Invalid time value '$time_string'. Expected HH:MM, HH:MM:SS, or HH:MM.SS. Continuing without waiting.\n"
       return
     }
 
     $targetTime = (Get-Date).Date.AddHours($hour).AddMinutes($minute).AddSeconds($second)
+    if ((Get-Date) -ge $targetTime) {
+      print "$BOLD" "$YELLOW" "WARNING: $label was scheduled for $time_string, which has already passed. Continuing immediately.\n"
+      return
+    }
+
+    $ansiEsc = [char]27
     while ((Get-Date) -lt $targetTime) {
+      $remaining = $targetTime - (Get-Date)
+      $countdown = "{0:hh\:mm\:ss}" -f $remaining
+      $nowClock = Get-Date -Format "HH:mm:ss"
+      # Live countdown, redrawn in place on one line
+      Write-Host -NoNewline ("`r$ansiEsc[K$ansiEsc[36m$label starts at $time_string$ansiEsc[0m$ansiEsc[90m - in $countdown (clock: $nowClock)$ansiEsc[0m")
       Start-Sleep -Seconds 1
     }
-    print "$GRAY" "Reached target time $time_string, continuing...\n"
+    Write-Host -NoNewline ("`r$ansiEsc[K")
+    print "$GREEN" "Reached $time_string - starting $label.\n"
   }
   else {
-    print "$YELLOW" "Warning: Invalid time format '$time_string'. Expected HH:MM, HH:MM:SS, or HH:MM.SS. Continuing without waiting.\n"
+    print "$BOLD" "$YELLOW" "WARNING: Invalid time format '$time_string'. Expected HH:MM, HH:MM:SS, or HH:MM.SS. Continuing without waiting.\n"
   }
 }
 
@@ -204,7 +251,9 @@ print "$GRAY" "VLC logs will be written to $VLC_LOG_FILE\n"
 print "Waiting 3 seconds...\n"
 Start-Sleep -Seconds 3
 
-# Ensure VLC is installed, and is running, ready for control commands
+# Ensure VLC is installed, close stray instances, then start ours ready for control commands
+ensure_vlc_installed
+kill_existing_vlc
 ensure_vlc_running
 
 print "Embedded description:\n"
