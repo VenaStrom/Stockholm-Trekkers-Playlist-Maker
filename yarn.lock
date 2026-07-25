@@ -1591,12 +1591,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tauri-apps/plugin-process@npm:^2.3.1":
+  version: 2.3.1
+  resolution: "@tauri-apps/plugin-process@npm:2.3.1"
+  dependencies:
+    "@tauri-apps/api": "npm:^2.8.0"
+  checksum: 10c0/2e5086898f1c9f25f6426a752404c788727237142bbb7c8f418b97c76c5360874d06203150d136e51114df9e720022e4fa3681fd1d4cb6f777dc83c3553f8670
+  languageName: node
+  linkType: hard
+
 "@tauri-apps/plugin-shell@npm:^2.3.5":
   version: 2.3.5
   resolution: "@tauri-apps/plugin-shell@npm:2.3.5"
   dependencies:
     "@tauri-apps/api": "npm:^2.10.1"
   checksum: 10c0/555f33efb997a0e1b21c9540b0bb30dcda073009f55f7cdb89eb0587427fdec27b1e6a1df4ab5c08065b7f3f0a61cfefd059ec8be9eafb157c9b6344eb856df2
+  languageName: node
+  linkType: hard
+
+"@tauri-apps/plugin-updater@npm:^2.10.1":
+  version: 2.10.1
+  resolution: "@tauri-apps/plugin-updater@npm:2.10.1"
+  dependencies:
+    "@tauri-apps/api": "npm:^2.10.1"
+  checksum: 10c0/5d3813851ccbbf90253ad4647dbd97501c2bb75db864175693322fa6eb062b6e1bae03890810ad0bbe7f6da4e020af35e8c787e6999f8c7c645121164587dc29
   languageName: node
   linkType: hard
 
@@ -3239,7 +3257,9 @@ __metadata:
     "@tauri-apps/plugin-fs": "npm:~2.4.5"
     "@tauri-apps/plugin-log": "npm:~2.8.0"
     "@tauri-apps/plugin-opener": "npm:~2.5.4"
+    "@tauri-apps/plugin-process": "npm:^2.3.1"
     "@tauri-apps/plugin-shell": "npm:^2.3.5"
+    "@tauri-apps/plugin-updater": "npm:^2.10.1"
     "@types/ffprobe-static": "npm:^2.0.3"
     "@types/node": "npm:^25.9.5"
     "@types/react": "npm:^19.2.17"

@@ -11,6 +11,7 @@ import BlockOptionsEditor from "@/components/editor/block-options-editor";
 import Dialog from "@/components/dialog";
 import Editor from "@/pages/editor";
 import Projects from "@/pages/projects";
+import UpdateChecker from "@/components/update-checker";
 
 export default function App() {
   const [lightMode, setLightMode] = useState(() => {
@@ -228,6 +229,8 @@ export default function App() {
         </button>,
       ]}
     />
+
+    <UpdateChecker />
 
     <Toaster />
   </>);

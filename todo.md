@@ -10,8 +10,9 @@
 - [x] Editor validation warnings: duplicate and overlapping block times, invalid/very early/very late/non-5-min times, past/weekday/far-future dates (+ easter eggs: 47, 17:01, 2063-04-05 🖖)
 - [x] Flush save on close/quit — Ctrl+Q is an immediate exit and can lose the 500 ms debounce window
 - [x] Ctrl+S manual save
-- [ ] CI: build + draft-release workflows (no `.github/` on this branch)
-- [ ] Installer: keep-save-files prompt on uninstall, preserve user data on update (v3 `installer.nsh` behavior)
+- [x] CI: build + draft-release workflows (no `.github/` on this branch)
+- [x] Installer: keep-save-files prompt on uninstall, preserve user data on update (v3 `installer.nsh` behavior)
+  - Tauri's NSIS keeps appdata by default (`deleteAppDataOnUninstall: false`), so v4 needs no custom installer script
 - [ ] Play scripts: kill pre-existing VLC instances and show a "VLC not found, install it" message like v3's ps1
 
 # Bugs
@@ -33,9 +34,9 @@
 
 # Features
 
-- [ ] Over-the-air in-place updates so people don't have to re-download from GitHub (`tauri-plugin-updater`)
-  - Needs a signing keypair and a `latest.json` manifest — GitHub Releases can host both, but the release must be published (not draft) for the updater to see it
-  - Updater supports NSIS on Windows but **not** `.deb` on Linux — add an AppImage bundle target if Linux should self-update too
+- [x] Over-the-air in-place updates so people don't have to re-download from GitHub (`tauri-plugin-updater`)
+  - Keypair at `~/.tauri/stplay-updater.key` (no password) — add `TAURI_SIGNING_PRIVATE_KEY` (+ empty `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`) as GitHub Actions secrets before running the Release workflow
+  - Release workflow publishes (non-draft) with `latest.json`; AppImage target added for Linux self-update (deb stays for apt-style installs)
 - [ ] On home screen, index folder for episodes with fuzzy search to prefill when given a schedule
 - [ ] Re-encode to h264 by default but allow for other strategies like "preserve", "h264", "h265" ...
 - [ ] Run ffmpeg to grab previews throughout all the episodes to visually validate the project

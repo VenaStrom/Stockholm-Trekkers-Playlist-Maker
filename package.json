@@ -15,7 +15,7 @@
   "scripts": {
     "tauri": "tauri",
     "dev": "yarn prepare-ffmpeg-sidecar && yarn tauri dev",
-    "build": "yarn download-assets && yarn prepare-ffmpeg-sidecar && yarn tauri build && yarn rename-bundles",
+    "build": "yarn download-assets && yarn prepare-ffmpeg-sidecar && APPIMAGE_EXTRACT_AND_RUN=1 yarn tauri build && yarn rename-bundles",
     "vite:dev": "vite",
     "vite:build": "yarn lint && vite build",
     "lint": "tsc --noEmit -p ./tsconfig.json && eslint -c ./eslint.config.ts --cache --concurrency auto",
@@ -31,7 +31,9 @@
     "@tauri-apps/plugin-fs": "~2.4.5",
     "@tauri-apps/plugin-log": "~2.8.0",
     "@tauri-apps/plugin-opener": "~2.5.4",
+    "@tauri-apps/plugin-process": "^2.3.1",
     "@tauri-apps/plugin-shell": "^2.3.5",
+    "@tauri-apps/plugin-updater": "^2.10.1",
     "js-sha256": "^0.11.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",

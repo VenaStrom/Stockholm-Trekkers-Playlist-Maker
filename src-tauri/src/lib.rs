@@ -150,7 +150,9 @@ pub fn run() {
     .plugin(tauri_plugin_dialog::init())
     .plugin(tauri_plugin_fs::init())
     .plugin(tauri_plugin_opener::init())
+    .plugin(tauri_plugin_process::init())
     .plugin(tauri_plugin_shell::init())
+    .plugin(tauri_plugin_updater::Builder::new().build())
     .invoke_handler(tauri::generate_handler![close, get_cli_args, mkdir,])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
