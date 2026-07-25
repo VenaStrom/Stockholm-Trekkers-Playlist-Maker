@@ -53,6 +53,17 @@
         },
         {
           "path": "$RESOURCE/video-assets/**"
+        },
+        {
+          "path": "$HOME/stockholm-trekkers-playlist-maker/user-data/save-files"
+        }
+      ]
+    },
+    {
+      "identifier": "fs:allow-read-text-file",
+      "allow": [
+        {
+          "path": "**"
         }
       ]
     },
