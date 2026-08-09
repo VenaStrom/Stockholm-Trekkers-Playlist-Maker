@@ -49,6 +49,20 @@ run_vlc() {
   return "$exit_code"
 }
 
+ensure_vlc_installed() {
+  if ! command -v vlc >/dev/null 2>&1; then
+    print "$BOLD" "$RED" "VLC was not found on this computer.\n"
+    print "Install VLC from https://www.videolan.org/ and run this script again.\n"
+    exit 1
+  fi
+}
+kill_existing_vlc() {
+  if pgrep -x vlc >/dev/null 2>&1; then
+    print "$BOLD" "$YELLOW" "WARNING: VLC is already running. Closing it so the playlist starts from a clean slate...\n"
+    pkill -x vlc
+    sleep 2
+  fi
+}
 ensure_vlc_running() {
   run_vlc "${VLC_BASE_ARGS[@]}" --playlist-enqueue --no-playlist-autostart &
   sleep 1
@@ -61,7 +75,8 @@ play() {
   done
   local file="$1"
   if [[ "$silent" != true ]]; then
-    print "Playing $file...\n"
+    print "$GREEN" "> Now playing: "
+    print "$file\n"
   fi
   run_vlc "${VLC_BASE_ARGS[@]}" "$file"
   sleep 1
@@ -74,7 +89,7 @@ enqueue() {
   done
   local file="$1"
   if [[ "$silent" != true ]]; then
-    print "Enqueuing $file...\n"
+    print "$GRAY" "  + Queued: $file\n"
   fi
   run_vlc "${VLC_BASE_ARGS[@]}" --playlist-enqueue "$file"
   sleep 1
@@ -85,7 +100,7 @@ long_pause() {
     play=true
     shift
   done
-  print "$GRAY" "Adding long pause block (8 x 30 min)\n"
+  print "$GRAY" "Queueing pause filler (8 x 30 min = 4 h)\n"
   if [[ "$play" == true ]]; then
     play silent=true "clips/30_min_pause.mp4"
   else
@@ -101,6 +116,7 @@ long_pause() {
 }
 wait_until() {
   local time_string="$1" # e.g. "10:10", "10:10:30", or "10:10.30"
+  local label="${2:-Playback}"
   local target_time
   if [[ "$time_string" =~ ^([0-9]{1,2}):([0-9]{2})([:.]([0-9]{2}))?$ ]]; then
     local hour="${BASH_REMATCH[1]}"
@@ -111,22 +127,33 @@ wait_until() {
     local second_num=$((10#$second))
 
     if ((hour_num > 23 || minute_num > 59 || second_num > 59)); then
-      print "$YELLOW" "Warning: Invalid time value '$time_string'. Expected HH:MM, HH:MM:SS, or HH:MM.SS. Continuing without waiting.\n"
+      print "$BOLD" "$YELLOW" "WARNING: Invalid time value '$time_string'. Expected HH:MM, HH:MM:SS, or HH:MM.SS. Continuing without waiting.\n"
       return
     fi
 
     target_time=$(date -d "today $hour_num:$minute_num:$second_num" +%s)
-    local now
+    local now remaining
+    now=$(date +%s)
+    if ((now >= target_time)); then
+      print "$BOLD" "$YELLOW" "WARNING: $label was scheduled for $time_string, which has already passed. Continuing immediately.\n"
+      return
+    fi
     while true; do
       now=$(date +%s)
       if ((now >= target_time)); then
-        print "$GRAY" "Reached target time $time_string, continuing...\n"
         break
       fi
+      remaining=$((target_time - now))
+      # Live countdown, redrawn in place on one line
+      printf '\r\033[K'
+      print "$CYAN" "$label starts at $time_string"
+      print "$GRAY" " - in $(printf '%02d:%02d:%02d' $((remaining / 3600)) $((remaining % 3600 / 60)) $((remaining % 60))) (clock: $(date '+%H:%M:%S'))"
       sleep 1
     done
+    printf '\r\033[K'
+    print "$GREEN" "Reached $time_string - starting $label.\n"
   else
-    print "$YELLOW" "Warning: Invalid time format '$time_string'. Expected HH:MM, HH:MM:SS, or HH:MM.SS. Continuing without waiting.\n"
+    print "$BOLD" "$YELLOW" "WARNING: Invalid time format '$time_string'. Expected HH:MM, HH:MM:SS, or HH:MM.SS. Continuing without waiting.\n"
   fi
 }
 
@@ -154,7 +181,9 @@ print "$GRAY" "VLC logs will be written to $VLC_LOG_FILE\n"
 print "Waiting 3 seconds...\n"
 sleep 3
 
-# Ensure VLC is installed, and is running, ready for control commands
+# Ensure VLC is installed, close stray instances, then start ours ready for control commands
+ensure_vlc_installed
+kill_existing_vlc
 ensure_vlc_running
 
 print "Embedded description:\n"

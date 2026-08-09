@@ -6,6 +6,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
 jobs:
   release:
     strategy:
@@ -25,13 +29,25 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev patchelf libfuse2 file
 
-      - name: Enable corepack (yarn 4)
-        run: corepack enable
-
       - uses: actions/setup-node@v7
         with:
           node-version: 24
-          cache: yarn
+
+      # After setup-node so the shim lands on the final Node's PATH (Windows needs this order)
+      - name: Enable corepack (yarn 4)
+        run: corepack enable
+
+      - name: Find yarn cache folder
+        id: yarn-cache
+        shell: bash
+        run: echo "dir=$(yarn config get cacheFolder)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache yarn packages
+        uses: actions/cache@v6
+        with:
+          path: ${{ steps.yarn-cache.outputs.dir }}
+          key: yarn-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+          restore-keys: yarn-${{ runner.os }}-
 
       - uses: dtolnay/rust-toolchain@stable
 
