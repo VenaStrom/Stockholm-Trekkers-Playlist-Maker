@@ -70,6 +70,11 @@
 
   body {
     @apply bg-abyss-800 text-flare-500 max-h-screen h-screen *:w-full flex flex-col items-center justify-start;
+    /* Native form controls (select dropdowns, scrollbars) follow the app theme */
+    color-scheme: dark;
+    &.light {
+      color-scheme: light;
+    }
     /* TODO: why is this needed? it didn't push the footer all the way down */
     /* max-height: var(--body-max-h); */
 
@@ -99,6 +104,10 @@
 
   input[type="text"] {
     @apply bg-abyss-900 text-flare-500 rounded-sm px-2 py-1;
+  }
+
+  select {
+    @apply bg-abyss-900 text-flare-500 rounded-sm px-2 py-1 cursor-pointer;
   }
 
   /* One checkbox look everywhere: a dim box that fills with --checkbox-color

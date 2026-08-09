@@ -190,7 +190,6 @@ export default function ExportButton({
           >
             <span>Encoding</span>
             <select
-              className="bg-abyss-900 rounded-sm px-2 py-1 cursor-pointer"
               value={encoding}
               onChange={(e) => setEncoding(e.target.value as EncodingStrategy)}
             >
