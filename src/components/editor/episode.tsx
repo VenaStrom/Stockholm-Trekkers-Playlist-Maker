@@ -25,7 +25,9 @@ export default function EpisodeLi({
   project: Project | null;
   projectSetter: React.Dispatch<React.SetStateAction<Project | null>>;
 }) {
-  const { warnOnNonH264 } = usePageContext();
+  // The codec warning is moot when export will re-encode to H.264 anyway
+  const { warnOnNonH264, exportEncoding } = usePageContext();
+  const showCodecWarnings = warnOnNonH264 && exportEncoding !== "h264";
   const ffprobeRequestRef = useRef(0);
   const selectedFile = episode.filePath ?? null;
   const previousEpisode = useMemo(() => {
@@ -380,7 +382,7 @@ export default function EpisodeLi({
 
         {/* Encoding */}
         {(() => {
-          const encodingWarning = warnOnNonH264 && episode.cachedEncoding && episode.cachedEncoding !== Encoding.h264
+          const encodingWarning = showCodecWarnings && episode.cachedEncoding && episode.cachedEncoding !== Encoding.h264
             ? `${episode.cachedEncoding} is not H.264 and may stutter on the event computer.`
             : null;
           return (

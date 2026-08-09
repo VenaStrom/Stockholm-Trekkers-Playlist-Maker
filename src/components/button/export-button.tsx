@@ -9,10 +9,12 @@ import {
   exportProject,
   openProject,
   validateProjectForExport,
+  type EncodingStrategy,
   type ExportProgress,
 } from "@/functions/project";
 import { IconFileExportOutline } from "@/components/icons";
 import { useToast } from "@/components/toast";
+import { usePageContext } from "@/components/page-context";
 import type { Project } from "@/types";
 import Dialog from "@/components/dialog";
 import ProjectSummary from "@/components/project-summary";
@@ -41,6 +43,7 @@ export default function ExportButton({
   const [phase, setPhase] = useState<ExportPhase>({ kind: "idle" });
   const [estimatedBytes, setEstimatedBytes] = useState<number | null>(null);
   const [zipOutput, setZipOutput] = useState(true);
+  const { exportEncoding: encoding, setExportEncoding: setEncoding } = usePageContext();
   const abortRef = useRef<AbortController | null>(null);
 
   const runExport = (saveLocation: string, overwrite: boolean) => {
@@ -57,6 +60,7 @@ export default function ExportButton({
     exportProject(projectID, saveLocation, {
       overwrite,
       zip: zipOutput,
+      encoding,
       signal: abortController.signal,
       onProgress: (progress) => {
         setPhase(prev => prev.kind === "running" ? { ...prev, progress } : prev);
@@ -179,6 +183,33 @@ export default function ExportButton({
           <p className="pt-2">
             Estimated size: {estimatedBytes !== null ? formatBytes(estimatedBytes) : "calculating..."}
           </p>
+
+          <label
+            className="flex flex-row items-center gap-x-2 pt-3 w-fit select-none"
+            title="Episodes not already in the chosen codec are re-encoded on export. The event computer only hardware-decodes H.264."
+          >
+            <span>Encoding</span>
+            <select
+              className="bg-abyss-900 rounded-sm px-2 py-1 cursor-pointer"
+              value={encoding}
+              onChange={(e) => setEncoding(e.target.value as EncodingStrategy)}
+            >
+              <option value="h264">Re-encode to H.264 (recommended)</option>
+              <option value="preserve">Keep original encodings</option>
+              <option value="hevc">Re-encode to H.265</option>
+            </select>
+          </label>
+          {(() => {
+            if (encoding === "preserve") return null;
+            const transcodeCount = phase.project.episodes
+              .filter(e => e.filePath && e.cachedEncoding !== encoding).length;
+            if (transcodeCount === 0) {
+              return <p className="text-sm text-flare-700 pt-1">All episodes are already {encoding === "h264" ? "H.264" : "H.265"} - nothing to re-encode.</p>;
+            }
+            return <p className="text-sm text-flare-700 pt-1">
+              {transcodeCount === 1 ? "1 episode" : `${transcodeCount} episodes`} will be re-encoded - this can take a long time.
+            </p>;
+          })()}
 
           <label
             className="flex flex-row items-center gap-x-2 pt-2 cursor-pointer select-none w-fit"

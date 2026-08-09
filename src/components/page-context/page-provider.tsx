@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { PageContext, PageContextDefaultValue } from "@/components/page-context";
-import { getAllProjectMetas } from "@/functions/project";
+import { getAllProjectMetas, type EncodingStrategy } from "@/functions/project";
 import { PowerKey } from "@/global";
 
 export function PageProvider({ children }: { children: React.ReactNode }) {
@@ -68,6 +68,17 @@ export function PageProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
+  // Chosen on the export confirmation; remembered so the editor can skip
+  // codec warnings that the export would fix anyway
+  const [exportEncoding, setExportEncoding] = useState<EncodingStrategy>(() => {
+    const stored = localStorage.getItem("exportEncoding");
+    if (stored === "preserve" || stored === "h264" || stored === "hevc") return stored;
+    return PageContextDefaultValue.exportEncoding;
+  });
+  useEffect(() => {
+    localStorage.setItem("exportEncoding", exportEncoding);
+  }, [exportEncoding]);
+
   const value: PageContext = {
     route,
     setRoute,
@@ -85,6 +96,9 @@ export function PageProvider({ children }: { children: React.ReactNode }) {
 
     warnOnNonH264,
     setWarnOnNonH264,
+
+    exportEncoding,
+    setExportEncoding,
 
     reloadProjectMetaData,
   };

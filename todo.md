@@ -50,7 +50,8 @@
   - Keypair at `~/.tauri/stplay-updater.key` (no password) — add `TAURI_SIGNING_PRIVATE_KEY` (+ empty `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`) as GitHub Actions secrets before running the Release workflow
   - Release workflow publishes (non-draft) with `latest.json`; AppImage target added for Linux self-update (deb stays for apt-style installs)
 - [ ] On home screen, index folder for episodes with fuzzy search to prefill when given a schedule
-- [ ] Re-encode to h264 by default but allow for other strategies like "preserve", "h264", "h265" ...
+- [x] Re-encode to h264 by default but allow for other strategies like "preserve", "h264", "h265" ...
+  - Strategy select on the export confirmation (H.264 default); episodes already in the target codec are copied as-is; zip mode transcodes to temp first; CLI exports default to preserve
 - [ ] Run ffmpeg to grab previews throughout all the episodes to visually validate the project
 - [ ] On export, show a summery view of the project
 - [x] Compile `.sh` and `.ps1` simultaneously

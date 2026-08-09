@@ -2,6 +2,7 @@ import { deepCopy } from "@/functions/deep-copy";
 import { openProject } from "@/functions/project";
 import { makePlayFiles } from "@/functions/project/export/play-file";
 import { hhmmToSeconds } from "@/functions/project/time-format";
+import { transcodeFile, type TranscodeTarget } from "@/functions/ffmpeg";
 import { basicPauseClipFileName, blockClips, ExportNames, PathName } from "@/global";
 import type { Episode, Project } from "@/types";
 import { path } from "@tauri-apps/api";
@@ -14,11 +15,15 @@ export type ExportProgress = {
   fraction: number | null;
 };
 
+export type EncodingStrategy = "preserve" | TranscodeTarget;
+
 export type ExportOptions = {
   /** Replace an existing export folder instead of throwing ExportOverwriteRequiredError */
   overwrite?: boolean;
   /** Pack the whole bundle into a single .zip archive instead of a folder */
   zip?: boolean;
+  /** Re-encode episodes to this codec on the way into the bundle; "preserve" copies them as-is */
+  encoding?: EncodingStrategy;
   onProgress?: (progress: ExportProgress) => void;
   signal?: AbortSignal;
 };
@@ -99,7 +104,7 @@ export async function validateProjectForExport(project: Project): Promise<string
 
 export async function exportProject(projectID: string, saveLocation: string, options: ExportOptions = {}): Promise<{ saveDir: string; exportedBytes: number; }> {
   if (!projectID || !saveLocation) throw new Error("Project ID and save location must be provided for export.");
-  const { overwrite = false, zip = false, onProgress, signal } = options;
+  const { overwrite = false, zip = false, encoding = "preserve", onProgress, signal } = options;
   const throwIfCancelled = () => {
     if (signal?.aborted) throw new ExportCancelledError();
   };
@@ -115,7 +120,7 @@ export async function exportProject(projectID: string, saveLocation: string, opt
   throwIfCancelled();
 
   if (zip) {
-    return await zipExport(project, saveLocation, { overwrite, onProgress, signal });
+    return await zipExport(project, saveLocation, { overwrite, encoding, onProgress, signal });
   }
 
   const saveDir = await path.join(saveLocation, project.date);
@@ -145,21 +150,47 @@ export async function exportProject(projectID: string, saveLocation: string, opt
 
     // Copy files one at a time so progress is reportable and cancellation has clean seams
     const destDirByKind = { episode: episodesDir, clip: clipsDir } as const;
-    const copySources = await planCopySources(project);
+    const copySources = await planCopySources(project, encoding);
     const totalSteps = copySources.length + 2; // +2 for the save file and play files
     let doneSteps = 0;
     let exportedBytes = 0;
 
     for (const copySource of copySources) {
       throwIfCancelled();
-      onProgress?.({
-        message: `Copying file ${doneSteps + 1} of ${copySources.length}: ${copySource.fileName}`,
-        fraction: doneSteps / totalSteps,
-      });
       const dest = await path.join(destDirByKind[copySource.kind], copySource.fileName);
-      await fs.copyFile(copySource.source, dest);
-      exportedBytes += await fileSize(copySource.source);
-      console.info(`Copied file from ${copySource.source} to ${dest}.`);
+
+      if (copySource.transcodeTo) {
+        const stepBase = doneSteps;
+        const transcodeTo = copySource.transcodeTo;
+        onProgress?.({
+          message: `Encoding file ${stepBase + 1} of ${copySources.length}: ${copySource.fileName}`,
+          fraction: stepBase / totalSteps,
+        });
+        await transcodeFile({
+          source: copySource.source,
+          dest,
+          target: transcodeTo,
+          durationSeconds: copySource.durationSeconds,
+          signal,
+          onProgress: (fraction) => {
+            onProgress?.({
+              message: `Encoding file ${stepBase + 1} of ${copySources.length}: ${copySource.fileName} (${Math.round(fraction * 100)}%)`,
+              fraction: (stepBase + fraction) / totalSteps,
+            });
+          },
+        });
+        exportedBytes += await fileSize(dest);
+        console.info(`Encoded ${copySource.source} to ${dest} (${transcodeTo}).`);
+      }
+      else {
+        onProgress?.({
+          message: `Copying file ${doneSteps + 1} of ${copySources.length}: ${copySource.fileName}`,
+          fraction: doneSteps / totalSteps,
+        });
+        await fs.copyFile(copySource.source, dest);
+        exportedBytes += await fileSize(copySource.source);
+        console.info(`Copied file from ${copySource.source} to ${dest}.`);
+      }
       doneSteps++;
     }
 
@@ -183,7 +214,8 @@ export async function exportProject(projectID: string, saveLocation: string, opt
       .catch((cleanupErr: unknown) => {
         console.error(`Failed to clean up partial export at ${saveDir}:`, cleanupErr);
       });
-    throw err;
+    // A killed ffmpeg surfaces as a generic error; report aborts as cancellations
+    throw signal?.aborted ? new ExportCancelledError() : err;
   }
 }
 
@@ -201,7 +233,7 @@ type ZipProgress = {
 async function zipExport(
   project: Project,
   saveLocation: string,
-  { overwrite, onProgress, signal }: Pick<ExportOptions, "overwrite" | "onProgress" | "signal">,
+  { overwrite, encoding = "preserve", onProgress, signal }: Pick<ExportOptions, "overwrite" | "encoding" | "onProgress" | "signal">,
 ): Promise<{ saveDir: string; exportedBytes: number; }> {
   const zipPath = await path.join(saveLocation, `${project.date}.zip`);
   if (await fs.exists(zipPath)) {
@@ -213,7 +245,52 @@ async function zipExport(
 
   onProgress?.({ message: "Preparing archive...", fraction: 0 });
   const archiveDirByKind = { episode: ExportNames.EpisodeDir, clip: ExportNames.ClipsDir } as const;
-  const copySources = await planCopySources(project);
+  const copySources = await planCopySources(project, encoding);
+
+  // Re-encodes land in a temp folder first; the archive then streams from there.
+  // Encoding dominates wall-clock time, so it gets the bulk of the progress bar.
+  const transcodes = copySources.filter((s): s is CopySource & { transcodeTo: TranscodeTarget; } => !!s.transcodeTo);
+  const encodeShare = transcodes.length > 0 ? 0.7 : 0;
+  let tempDir: string | null = null;
+  const cleanupTempDir = async () => {
+    if (!tempDir) return;
+    await fs.remove(tempDir, { recursive: true })
+      .catch((err: unknown) => {
+        console.error(`Failed to clean up transcode temp dir ${tempDir}:`, err);
+      });
+  };
+
+  try {
+    if (transcodes.length > 0) {
+      tempDir = await path.join(await path.tempDir(), `stplay-transcode-${project.id}`);
+      await fs.mkdir(tempDir, { recursive: true });
+
+      for (const [index, transcode] of transcodes.entries()) {
+        if (signal?.aborted) throw new ExportCancelledError();
+        const dest = await path.join(tempDir, transcode.fileName);
+        await transcodeFile({
+          source: transcode.source,
+          dest,
+          target: transcode.transcodeTo,
+          durationSeconds: transcode.durationSeconds,
+          signal,
+          onProgress: (fraction) => {
+            onProgress?.({
+              message: `Encoding file ${index + 1} of ${transcodes.length}: ${transcode.fileName} (${Math.round(fraction * 100)}%)`,
+              fraction: ((index + fraction) / transcodes.length) * encodeShare,
+            });
+          },
+        });
+        console.info(`Encoded ${transcode.source} to ${dest} (${transcode.transcodeTo}).`);
+        transcode.source = dest; // The archive reads the encoded copy
+      }
+    }
+  }
+  catch (err) {
+    await cleanupTempDir();
+    throw signal?.aborted ? new ExportCancelledError() : err;
+  }
+
   let totalBytes = 0;
   for (const copySource of copySources) {
     totalBytes += await fileSize(copySource.source);
@@ -234,7 +311,9 @@ async function zipExport(
   progressChannel.onmessage = (progress) => {
     onProgress?.({
       message: `Zipping file ${Math.min(progress.doneFiles + 1, progress.totalFiles)} of ${progress.totalFiles}: ${progress.currentFile}`,
-      fraction: totalBytes > 0 ? Math.min(progress.writtenBytes / totalBytes, 1) : null,
+      fraction: totalBytes > 0
+        ? encodeShare + Math.min(progress.writtenBytes / totalBytes, 1) * (1 - encodeShare)
+        : null,
     });
   };
 
@@ -265,13 +344,21 @@ async function zipExport(
   }
   finally {
     signal?.removeEventListener("abort", requestCancel);
+    await cleanupTempDir();
   }
 }
 
-type CopySource = { source: string; fileName: string; kind: "episode" | "clip"; };
+type CopySource = {
+  source: string;
+  fileName: string;
+  kind: "episode" | "clip";
+  /** Set when the episode should be re-encoded on the way into the bundle */
+  transcodeTo?: TranscodeTarget;
+  durationSeconds?: number;
+};
 
 /** Every media file that goes into the bundle, deduped; shared by export and size estimation */
-async function planCopySources(project: Project): Promise<CopySource[]> {
+async function planCopySources(project: Project, encoding: EncodingStrategy = "preserve"): Promise<CopySource[]> {
   // Keyed by file name: the same file used twice is only copied once,
   // and validation guarantees distinct files never share a name
   const episodeSources = new Map<string, CopySource>();
@@ -281,7 +368,14 @@ async function planCopySources(project: Project): Promise<CopySource[]> {
     const fileName = await path.basename(episode.filePath);
     if (episodeSources.has(fileName)) continue;
 
-    episodeSources.set(fileName, { source: episode.filePath, fileName, kind: "episode" });
+    // Episodes with an unknown encoding are transcoded too, so the bundle is deterministic
+    const needsTranscode = encoding !== "preserve" && episode.cachedEncoding !== encoding;
+    episodeSources.set(fileName, {
+      source: episode.filePath,
+      fileName,
+      kind: "episode",
+      ...(needsTranscode ? { transcodeTo: encoding, durationSeconds: episode.cachedDuration } : {}),
+    });
   }
 
   const usedIDs = [...new Set<string>(project.blocks.flatMap(b => Object.entries(b.options).filter(([_, enabled]) => enabled).map(([id]) => id.split("__")[1])).filter((id): id is string => typeof id === "string"))];

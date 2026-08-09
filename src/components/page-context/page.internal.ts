@@ -1,6 +1,7 @@
 import type React from "react";
 import { createContext } from "react";
 import type { ProjectMeta } from "@/types";
+import type { EncodingStrategy } from "@/functions/project";
 
 export const PageRoute = {
   Projects: "projects",
@@ -28,6 +29,10 @@ export type PageContext = {
   warnOnNonH264: boolean;
   setWarnOnNonH264: React.Dispatch<React.SetStateAction<boolean>>;
 
+  /** The export re-encode strategy, chosen on the export confirmation and remembered */
+  exportEncoding: EncodingStrategy;
+  setExportEncoding: React.Dispatch<React.SetStateAction<EncodingStrategy>>;
+
   reloadProjectMetaData: () => void;
 };
 export const PageContextDefaultValue: PageContext = {
@@ -47,6 +52,9 @@ export const PageContextDefaultValue: PageContext = {
 
   warnOnNonH264: true,
   setWarnOnNonH264: () => { /* will be defined */ },
+
+  exportEncoding: "h264",
+  setExportEncoding: () => { /* will be defined */ },
 
   reloadProjectMetaData: () => { /* will be defined */ },
 };
