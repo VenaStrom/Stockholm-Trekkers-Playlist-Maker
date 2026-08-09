@@ -37,6 +37,7 @@
   - [ ] show estimated export size in GB before starting the export
   - [ ] show which disks have enough space to export to (maybe? not sure if this it too handholdy without real benefit)
   - [ ] show exported size in GB
+- [x] confirm leave when unsaved changes exist (autosave off): Back / Alt+left / close ask Save-and-leave / Leave-without-saving / Cancel
 
 # Features
 

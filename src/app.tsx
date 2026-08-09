@@ -54,16 +54,9 @@ export default function App() {
       }
     };
 
-    // Back from editor to projects
+    // Forward navigation; Alt+ArrowLeft (back) is handled by the editor itself
+    // so its save/confirm-leave logic always runs
     const backListener = (e: KeyboardEvent) => {
-      // Back to projects
-      if (e.altKey && e.key === "ArrowLeft") {
-        e.preventDefault();
-        if (route === PageRoute.Editor) {
-          setRoute(PageRoute.Projects);
-        }
-      }
-
       // Forward to editor if project id is set
       if (e.altKey && e.key === "ArrowRight") {
         e.preventDefault();
