@@ -196,7 +196,7 @@ export default function ExportButton({
             >
               <option value="h264">Re-encode to H.264 (recommended)</option>
               <option value="preserve">Keep original encodings</option>
-              <option value="hevc">Re-encode to H.265</option>
+              <option value="hevc">Re-encode to HEVC (H.265)</option>
             </select>
           </label>
           {(() => {
