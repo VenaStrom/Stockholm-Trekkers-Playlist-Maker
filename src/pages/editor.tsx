@@ -17,10 +17,12 @@ import { probeEpisode } from "@/functions/project/episode-probe";
 import { compileTimeline } from "@/functions/compile-timeline";
 
 export default function Editor() {
-  const { setHeaderText, projectID, setRoute } = usePageContext();
+  const { setHeaderText, projectID, setRoute, autosave } = usePageContext();
   useEffect(() => setHeaderText("Editor"), [setHeaderText]);
 
   const [volatileProject, setVolatileProjectInner] = useState<Project | null>(null);
+  // Snapshot of the project as of the last completed save, for the unsaved indicator when autosave is off
+  const [lastSavedJSON, setLastSavedJSON] = useState<string | null>(null);
   const setVolatileProject: typeof setVolatileProjectInner = (value) => {
     setVolatileProjectInner(prev => {
       const newValue = typeof value === "function" ? value(prev) : value;
@@ -35,6 +37,7 @@ export default function Editor() {
     openProject(projectID)
       .then((project) => {
         setVolatileProject(project);
+        setLastSavedJSON(JSON.stringify(compileTimeline(project)));
 
         const episodesToBeProbed = project.episodes
           .filter((e): e is Episode & { filePath: string; } => !!e.filePath);
@@ -72,6 +75,7 @@ export default function Editor() {
   const [debouncedProject] = useDebounce(volatileProject, 500);
   useEffect(() => {
     if (!debouncedProject) return;
+    if (!autosave) return; // Manual saving only: Ctrl+S, Back, or app close
     const start = performance.now();
     console.info("[Editor] Saving project...");
 
@@ -83,11 +87,12 @@ export default function Editor() {
         else {
           console.info(`[Editor] Project saved. (${(performance.now() - start).toFixed(2)} ms)`);
         }
+        setLastSavedJSON(JSON.stringify(debouncedProject));
       })
       .catch((err: unknown) => {
         console.error("Error in debounced save:", err);
       });
-  }, [debouncedProject]);
+  }, [debouncedProject, autosave]);
 
   // Keep a ref to the latest project so the close listener and Ctrl+S always save current state
   const volatileProjectRef = useRef(volatileProject);
@@ -105,6 +110,7 @@ export default function Editor() {
         saveProject(project)
           .then(() => {
             console.info("[Editor] Project saved via Ctrl+S.");
+            setLastSavedJSON(JSON.stringify(project));
           })
           .catch((err: unknown) => {
             console.error("Error saving via Ctrl+S:", err);
@@ -228,12 +234,24 @@ export default function Editor() {
           </button>
 
           {/* Save status */}
-          <span className="text-flare-700">
-            {JSON.stringify(debouncedProject) === JSON.stringify(volatileProject)
-              ? "Saved"
-              : "Saving..."
-            }
-          </span>
+          {autosave ?
+            <span className="text-flare-700">
+              {JSON.stringify(debouncedProject) === JSON.stringify(volatileProject)
+                ? "Saved"
+                : "Saving..."
+              }
+            </span>
+            :
+            <span
+              className={lastSavedJSON === JSON.stringify(volatileProject) ? "text-flare-700" : "text-command-300"}
+              title="Autosave is off. Save with Ctrl+S."
+            >
+              {lastSavedJSON === JSON.stringify(volatileProject)
+                ? "Saved"
+                : "Unsaved changes*"
+              }
+            </span>
+          }
         </div>
 
         {/* Date */}

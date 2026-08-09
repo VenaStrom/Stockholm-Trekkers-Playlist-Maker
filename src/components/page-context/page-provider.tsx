@@ -10,6 +10,14 @@ export function PageProvider({ children }: { children: React.ReactNode }) {
   const [projectMetas, setProjectMetas] = useState<PageContext["projectMetas"]>([]);
   const [isPowerMode, setIsPowerMode] = useState(PageContextDefaultValue.isPowerMode);
 
+  const [autosave, setAutosave] = useState(() => {
+    const stored = localStorage.getItem("autosave");
+    return stored === null ? PageContextDefaultValue.autosave : stored === "true";
+  });
+  useEffect(() => {
+    localStorage.setItem("autosave", String(autosave));
+  }, [autosave]);
+
   // Default ON: the current playback computer only hardware-decodes H.264.
   // Kept as a setting so it's easy to switch off after a hardware upgrade.
   const [warnOnNonH264, setWarnOnNonH264] = useState(() => {
@@ -71,6 +79,9 @@ export function PageProvider({ children }: { children: React.ReactNode }) {
     setProjectMetas,
 
     isPowerMode,
+
+    autosave,
+    setAutosave,
 
     warnOnNonH264,
     setWarnOnNonH264,

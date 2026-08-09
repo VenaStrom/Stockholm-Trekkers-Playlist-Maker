@@ -20,6 +20,10 @@ export type PageContext = {
 
   isPowerMode: boolean;
 
+  /** Save the open project automatically shortly after every change */
+  autosave: boolean;
+  setAutosave: React.Dispatch<React.SetStateAction<boolean>>;
+
   /** Warn in the editor when an episode is not H.264 — the only codec the playback computer hardware-decodes */
   warnOnNonH264: boolean;
   setWarnOnNonH264: React.Dispatch<React.SetStateAction<boolean>>;
@@ -37,6 +41,9 @@ export const PageContextDefaultValue: PageContext = {
   setProjectMetas: () => { /* will be defined */ },
 
   isPowerMode: false,
+
+  autosave: true,
+  setAutosave: () => { /* will be defined */ },
 
   warnOnNonH264: true,
   setWarnOnNonH264: () => { /* will be defined */ },

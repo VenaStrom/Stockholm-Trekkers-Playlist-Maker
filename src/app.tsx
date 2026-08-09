@@ -25,7 +25,7 @@ export default function App() {
     return window.matchMedia("(prefers-color-scheme: light)").matches;
   });
 
-  const { headerText, route, setRoute, projectID, isPowerMode, warnOnNonH264, setWarnOnNonH264 } = usePageContext();
+  const { headerText, route, setRoute, projectID, isPowerMode, autosave, setAutosave, warnOnNonH264, setWarnOnNonH264 } = usePageContext();
 
   // Settings panel
   const [settingsVisible, setSettingsVisible] = useState(false);
@@ -212,6 +212,30 @@ export default function App() {
         <p className="text-sm text-flare-500/60 pt-2">
           Applies to blocks you create from now on. Existing blocks keep their own options.
         </p>
+
+        <p className="pb-2 pt-4">Editor</p>
+        <label
+          className="flex flex-row items-center gap-x-2 text-sm font-thin cursor-pointer select-none ps-2"
+          title="Saves the open project shortly after every change. When off, save with Ctrl+S — the project is also saved when leaving the editor or closing the app."
+        >
+          <span>Autosave while editing</span>
+          <span className="flex-1 min-w-4"></span>
+          <input
+            type="checkbox"
+            className="peer sr-only"
+            checked={autosave}
+            onChange={(e) => setAutosave(e.target.checked)}
+          />
+          <span
+            aria-hidden="true"
+            className={`
+              size-4.5 rounded-sm border-2 border-abyss-800 bg-abyss-800
+              transition-colors
+              peer-focus-visible:ring-2 peer-focus-visible:ring-science-500/60
+              peer-checked:bg-science-500
+            `}
+          ></span>
+        </label>
 
         <p className="pb-2 pt-4">Warnings</p>
         <label
