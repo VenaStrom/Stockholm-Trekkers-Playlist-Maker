@@ -72,6 +72,147 @@ fn format_log_record(out: FormatCallback, message: &Arguments, record: &Record, 
   out.finish(format_args!("[{level}][{timestamp}][{target}] {message}"));
 }
 
+/// One zip export runs at a time; the flag lets the frontend cancel it mid-write
+#[derive(Default)]
+struct ZipCancelFlag(std::sync::atomic::AtomicBool);
+
+#[derive(serde::Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct ZipEntry {
+  archive_path: String,
+  /// A file on disk to stream into the archive (stored uncompressed: media is already compressed)
+  source_path: Option<String>,
+  /// Inline text written as a deflated entry (play scripts, save file)
+  contents: Option<String>,
+}
+
+#[derive(Clone, serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+struct ZipProgress {
+  done_files: usize,
+  total_files: usize,
+  current_file: String,
+  written_bytes: u64,
+}
+
+#[tauri::command]
+async fn zip_export(
+  output_path: String,
+  entries: Vec<ZipEntry>,
+  on_progress: tauri::ipc::Channel<ZipProgress>,
+  cancel: tauri::State<'_, std::sync::Arc<ZipCancelFlag>>,
+) -> Result<u64, String> {
+  let cancel = cancel.inner().clone();
+  cancel.0.store(false, std::sync::atomic::Ordering::SeqCst);
+
+  tauri::async_runtime::spawn_blocking(move || {
+    zip_export_blocking(&output_path, &entries, &on_progress, &cancel).map_err(|e| {
+      // Don't leave a half-written archive behind
+      let _ = std::fs::remove_file(&output_path);
+      e
+    })
+  })
+  .await
+  .map_err(|e| format!("Zip task failed: {e}"))?
+}
+
+#[tauri::command]
+fn zip_export_cancel(cancel: tauri::State<'_, std::sync::Arc<ZipCancelFlag>>) {
+  log::info!("Cancelling zip export");
+  cancel.0.store(true, std::sync::atomic::Ordering::SeqCst);
+}
+
+fn zip_export_blocking(
+  output_path: &str,
+  entries: &[ZipEntry],
+  on_progress: &tauri::ipc::Channel<ZipProgress>,
+  cancel: &ZipCancelFlag,
+) -> Result<u64, String> {
+  use std::io::{Read, Write};
+  use std::sync::atomic::Ordering;
+
+  log::info!("Zipping {} entries into {}", entries.len(), output_path);
+  let file = std::fs::File::create(output_path)
+    .map_err(|e| format!("Failed to create {output_path}: {e}"))?;
+  let mut writer = zip::ZipWriter::new(std::io::BufWriter::new(file));
+
+  let total_files = entries.len();
+  let mut written_bytes: u64 = 0;
+  let mut buffer = vec![0u8; 4 * 1024 * 1024];
+
+  for (index, entry) in entries.iter().enumerate() {
+    if cancel.0.load(Ordering::SeqCst) {
+      return Err("cancelled".into());
+    }
+    let _ = on_progress.send(ZipProgress {
+      done_files: index,
+      total_files,
+      current_file: entry.archive_path.clone(),
+      written_bytes,
+    });
+
+    if let Some(source) = &entry.source_path {
+      // Media is already compressed, so store it as-is: near copy speed,
+      // and the archive size stays predictable. Zip64 for the >4 GB entries.
+      let options = zip::write::SimpleFileOptions::default()
+        .compression_method(zip::CompressionMethod::Stored)
+        .large_file(true);
+      writer
+        .start_file(&entry.archive_path, options)
+        .map_err(|e| format!("Failed to start entry {}: {e}", entry.archive_path))?;
+
+      let mut source_file =
+        std::fs::File::open(source).map_err(|e| format!("Failed to open {source}: {e}"))?;
+      loop {
+        if cancel.0.load(Ordering::SeqCst) {
+          return Err("cancelled".into());
+        }
+        let read = source_file
+          .read(&mut buffer)
+          .map_err(|e| format!("Failed to read {source}: {e}"))?;
+        if read == 0 {
+          break;
+        }
+        writer
+          .write_all(&buffer[..read])
+          .map_err(|e| format!("Failed to write {}: {e}", entry.archive_path))?;
+        written_bytes += read as u64;
+        let _ = on_progress.send(ZipProgress {
+          done_files: index,
+          total_files,
+          current_file: entry.archive_path.clone(),
+          written_bytes,
+        });
+      }
+    } else if let Some(contents) = &entry.contents {
+      let options =
+        zip::write::SimpleFileOptions::default().compression_method(zip::CompressionMethod::Deflated);
+      writer
+        .start_file(&entry.archive_path, options)
+        .map_err(|e| format!("Failed to start entry {}: {e}", entry.archive_path))?;
+      writer
+        .write_all(contents.as_bytes())
+        .map_err(|e| format!("Failed to write {}: {e}", entry.archive_path))?;
+      written_bytes += contents.len() as u64;
+    } else {
+      return Err(format!(
+        "Entry {} has neither sourcePath nor contents",
+        entry.archive_path
+      ));
+    }
+  }
+
+  writer
+    .finish()
+    .map_err(|e| format!("Failed to finalize {output_path}: {e}"))?;
+
+  let archive_size = std::fs::metadata(output_path)
+    .map(|m| m.len())
+    .unwrap_or(written_bytes);
+  log::info!("Finished zipping {output_path} ({archive_size} bytes)");
+  Ok(archive_size)
+}
+
 #[tauri::command]
 fn close() {
   log::info!("Closing application");
@@ -153,7 +294,14 @@ pub fn run() {
     .plugin(tauri_plugin_process::init())
     .plugin(tauri_plugin_shell::init())
     .plugin(tauri_plugin_updater::Builder::new().build())
-    .invoke_handler(tauri::generate_handler![close, get_cli_args, mkdir,])
+    .manage(std::sync::Arc::new(ZipCancelFlag::default()))
+    .invoke_handler(tauri::generate_handler![
+      close,
+      get_cli_args,
+      mkdir,
+      zip_export,
+      zip_export_cancel,
+    ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }

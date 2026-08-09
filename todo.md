@@ -39,7 +39,9 @@
   - [ ] show which disks have enough space to export to (maybe? not sure if this it too handholdy without real benefit)
   - [x] show exported size in GB (kept separate from the estimate so zipped output can diverge)
 - [x] confirm leave when unsaved changes exist (autosave off): Back / Alt+left / close ask Save-and-leave / Leave-without-saving / Cancel
-- [ ] setting to zip output
+- [x] setting to zip output
+  - Checkbox on the export confirmation (default on); Rust `zip_export` streams sources straight into `<date>.zip` (stored media entries + zip64, deflated scripts), no staging folder
+- [ ] make all checkboxes consistent and clearly a checkbox. Either a check mark, or maybe a star fleet delta as the check.
 
 # Features
 

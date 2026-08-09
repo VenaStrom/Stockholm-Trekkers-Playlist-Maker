@@ -5,6 +5,7 @@ import { hhmmToSeconds } from "@/functions/project/time-format";
 import { basicPauseClipFileName, blockClips, ExportNames, PathName } from "@/global";
 import type { Episode, Project } from "@/types";
 import { path } from "@tauri-apps/api";
+import { Channel, invoke } from "@tauri-apps/api/core";
 import * as fs from "@tauri-apps/plugin-fs";
 
 export type ExportProgress = {
@@ -16,6 +17,8 @@ export type ExportProgress = {
 export type ExportOptions = {
   /** Replace an existing export folder instead of throwing ExportOverwriteRequiredError */
   overwrite?: boolean;
+  /** Pack the whole bundle into a single .zip archive instead of a folder */
+  zip?: boolean;
   onProgress?: (progress: ExportProgress) => void;
   signal?: AbortSignal;
 };
@@ -96,7 +99,7 @@ export async function validateProjectForExport(project: Project): Promise<string
 
 export async function exportProject(projectID: string, saveLocation: string, options: ExportOptions = {}): Promise<{ saveDir: string; exportedBytes: number; }> {
   if (!projectID || !saveLocation) throw new Error("Project ID and save location must be provided for export.");
-  const { overwrite = false, onProgress, signal } = options;
+  const { overwrite = false, zip = false, onProgress, signal } = options;
   const throwIfCancelled = () => {
     if (signal?.aborted) throw new ExportCancelledError();
   };
@@ -110,6 +113,10 @@ export async function exportProject(projectID: string, saveLocation: string, opt
   const problems = await validateProjectForExport(project);
   if (problems.length > 0) throw new ExportValidationError(problems);
   throwIfCancelled();
+
+  if (zip) {
+    return await zipExport(project, saveLocation, { overwrite, onProgress, signal });
+  }
 
   const saveDir = await path.join(saveLocation, project.date);
   if (await fs.exists(saveDir)) {
@@ -180,6 +187,87 @@ export async function exportProject(projectID: string, saveLocation: string, opt
   }
 }
 
+type ZipProgress = {
+  doneFiles: number;
+  totalFiles: number;
+  currentFile: string;
+  writtenBytes: number;
+};
+
+/**
+ * Streams the bundle straight from the source files into a single
+ * `<date>.zip` via the Rust `zip_export` command - no staging folder.
+ */
+async function zipExport(
+  project: Project,
+  saveLocation: string,
+  { overwrite, onProgress, signal }: Pick<ExportOptions, "overwrite" | "onProgress" | "signal">,
+): Promise<{ saveDir: string; exportedBytes: number; }> {
+  const zipPath = await path.join(saveLocation, `${project.date}.zip`);
+  if (await fs.exists(zipPath)) {
+    if (!overwrite) throw new ExportOverwriteRequiredError(zipPath);
+    onProgress?.({ message: "Removing existing export archive...", fraction: null });
+    await fs.remove(zipPath);
+    console.info(`Removed existing export archive at ${zipPath}.`);
+  }
+
+  onProgress?.({ message: "Preparing archive...", fraction: 0 });
+  const archiveDirByKind = { episode: ExportNames.EpisodeDir, clip: ExportNames.ClipsDir } as const;
+  const copySources = await planCopySources(project);
+  let totalBytes = 0;
+  for (const copySource of copySources) {
+    totalBytes += await fileSize(copySource.source);
+  }
+
+  const playFiles = makePlayFiles(project);
+  const entries = [
+    ...copySources.map(copySource => ({
+      archivePath: `${archiveDirByKind[copySource.kind]}/${copySource.fileName}`,
+      sourcePath: copySource.source,
+    })),
+    { archivePath: `${ExportNames.SaveDir}/${ExportNames.SaveFile}`, contents: await makePortableProjectJSON(project) },
+    { archivePath: ExportNames.PlayFileSh, contents: playFiles.sh },
+    { archivePath: ExportNames.PlayFilePs1, contents: playFiles.ps1 },
+  ];
+
+  const progressChannel = new Channel<ZipProgress>();
+  progressChannel.onmessage = (progress) => {
+    onProgress?.({
+      message: `Zipping file ${Math.min(progress.doneFiles + 1, progress.totalFiles)} of ${progress.totalFiles}: ${progress.currentFile}`,
+      fraction: totalBytes > 0 ? Math.min(progress.writtenBytes / totalBytes, 1) : null,
+    });
+  };
+
+  // The Rust side polls a cancel flag between chunks and removes the partial archive itself
+  const requestCancel = () => {
+    invoke("zip_export_cancel")
+      .catch((err: unknown) => {
+        console.error("Failed to cancel zip export:", err);
+      });
+  };
+  signal?.addEventListener("abort", requestCancel);
+
+  try {
+    if (signal?.aborted) throw new ExportCancelledError();
+    const exportedBytes = await invoke<number>("zip_export", {
+      outputPath: zipPath,
+      entries,
+      onProgress: progressChannel,
+    });
+
+    onProgress?.({ message: "Export complete.", fraction: 1 });
+    console.info(`Finished exporting project ${project.id} to ${zipPath} (${exportedBytes} bytes).`);
+    return { saveDir: zipPath, exportedBytes };
+  }
+  catch (err) {
+    if (signal?.aborted) throw new ExportCancelledError();
+    throw err instanceof Error ? err : new Error(String(err));
+  }
+  finally {
+    signal?.removeEventListener("abort", requestCancel);
+  }
+}
+
 type CopySource = { source: string; fileName: string; kind: "episode" | "clip"; };
 
 /** Every media file that goes into the bundle, deduped; shared by export and size estimation */
@@ -245,10 +333,18 @@ async function makeDirRecursive(baseDir: string, dir: string): Promise<string> {
 }
 
 async function copyProjectFile(project: Project, exportDir: string): Promise<void> {
-  // Episode paths are rewritten relative to the bundle root so the save file is
-  // self-contained: importing it on another computer recomputes absolute paths
-  // from wherever the bundle sits. Probe caches are dropped so the importing
-  // machine probes the copied files fresh instead of trusting stale metadata.
+  const projectDataPath = await path.join(exportDir, ExportNames.SaveFile);
+  await fs.writeTextFile(projectDataPath, await makePortableProjectJSON(project));
+  console.info(`Saved project data to ${projectDataPath}.`);
+}
+
+/**
+ * Episode paths are rewritten relative to the bundle root so the save file is
+ * self-contained: importing it on another computer recomputes absolute paths
+ * from wherever the bundle sits. Probe caches are dropped so the importing
+ * machine probes the copied files fresh instead of trusting stale metadata.
+ */
+async function makePortableProjectJSON(project: Project): Promise<string> {
   const portableEpisodes: Episode[] = [];
   for (const episode of project.episodes) {
     if (!episode.filePath) {
@@ -263,10 +359,7 @@ async function copyProjectFile(project: Project, exportDir: string): Promise<voi
     });
   }
   const portableProject: Project = { ...project, episodes: portableEpisodes };
-
-  const projectDataPath = await path.join(exportDir, ExportNames.SaveFile);
-  await fs.writeTextFile(projectDataPath, JSON.stringify(portableProject));
-  console.info(`Saved project data to ${projectDataPath}.`);
+  return JSON.stringify(portableProject);
 }
 
 async function copyPlayFiles(project: Project, exportDir: string): Promise<void[]> {

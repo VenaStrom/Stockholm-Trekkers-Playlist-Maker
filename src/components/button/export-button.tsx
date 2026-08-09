@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
-import { openPath } from "@tauri-apps/plugin-opener";
+import { openPath, revealItemInDir } from "@tauri-apps/plugin-opener";
 import {
   estimateExportSize,
   ExportCancelledError,
@@ -40,6 +40,7 @@ export default function ExportButton({
 
   const [phase, setPhase] = useState<ExportPhase>({ kind: "idle" });
   const [estimatedBytes, setEstimatedBytes] = useState<number | null>(null);
+  const [zipOutput, setZipOutput] = useState(true);
   const abortRef = useRef<AbortController | null>(null);
 
   const runExport = (saveLocation: string, overwrite: boolean) => {
@@ -55,6 +56,7 @@ export default function ExportButton({
 
     exportProject(projectID, saveLocation, {
       overwrite,
+      zip: zipOutput,
       signal: abortController.signal,
       onProgress: (progress) => {
         setPhase(prev => prev.kind === "running" ? { ...prev, progress } : prev);
@@ -177,12 +179,34 @@ export default function ExportButton({
           <p className="pt-2">
             Estimated size: {estimatedBytes !== null ? formatBytes(estimatedBytes) : "calculating..."}
           </p>
+
+          <label
+            className="flex flex-row items-center gap-x-2 pt-2 cursor-pointer select-none w-fit"
+            title="Packs the whole bundle into a single .zip file for easier transport. Extract it on the playback computer before playing."
+          >
+            <input
+              type="checkbox"
+              className="peer sr-only"
+              checked={zipOutput}
+              onChange={(e) => setZipOutput(e.target.checked)}
+            />
+            <span
+              aria-hidden="true"
+              className={`
+                size-4.5 rounded-sm border-2 border-abyss-500 bg-abyss-500
+                transition-colors
+                peer-focus-visible:ring-2 peer-focus-visible:ring-spore-500/60
+                peer-checked:bg-spore-500
+              `}
+            ></span>
+            <span>Zip the output into a single file</span>
+          </label>
         </div>;
       case "confirm-overwrite":
         return <p>
           There is already an export at <span className="italic break-all">{phase.saveDir}</span>.
           <br />
-          Replacing it deletes that folder and everything in it.
+          Replacing it deletes the existing export.
         </p>;
       case "running":
         return <div>
@@ -200,6 +224,11 @@ export default function ExportButton({
       case "success":
         return <p>
           The playlist ({formatBytes(phase.exportedBytes)}) was exported to <span className="italic break-all">{phase.saveDir}</span>.
+          {phase.saveDir.endsWith(".zip") && (
+            <span className="block text-sm text-flare-700 pt-2">
+              Extract the archive on the playback computer before playing.
+            </span>
+          )}
         </p>;
       case "error":
         return <div>
@@ -255,14 +284,15 @@ export default function ExportButton({
           <button
             key="open-folder-button"
             onClick={() => {
-              openPath(phase.saveDir)
+              // For a zip, show the file in its folder instead of opening the archive
+              (phase.saveDir.endsWith(".zip") ? revealItemInDir(phase.saveDir) : openPath(phase.saveDir))
                 .catch((err: unknown) => {
-                  console.error("Failed to open export folder:", err);
-                  toast("Failed to open the export folder.");
+                  console.error("Failed to open export location:", err);
+                  toast("Failed to open the export location.");
                 });
             }}
           >
-            Open Folder
+            {phase.saveDir.endsWith(".zip") ? "Show File" : "Open Folder"}
           </button>,
           <button data-focus="true" key="close-button" onClick={() => setDialogVisible(false)}>
             Close
