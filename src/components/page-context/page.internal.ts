@@ -20,6 +20,10 @@ export type PageContext = {
 
   isPowerMode: boolean;
 
+  /** Warn in the editor when an episode is not H.264 — the only codec the playback computer hardware-decodes */
+  warnOnNonH264: boolean;
+  setWarnOnNonH264: React.Dispatch<React.SetStateAction<boolean>>;
+
   reloadProjectMetaData: () => void;
 };
 export const PageContextDefaultValue: PageContext = {
@@ -33,6 +37,9 @@ export const PageContextDefaultValue: PageContext = {
   setProjectMetas: () => { /* will be defined */ },
 
   isPowerMode: false,
+
+  warnOnNonH264: true,
+  setWarnOnNonH264: () => { /* will be defined */ },
 
   reloadProjectMetaData: () => { /* will be defined */ },
 };

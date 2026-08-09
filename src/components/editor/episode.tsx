@@ -1,6 +1,8 @@
 import { useMemo, useRef, useState } from "react";
-import type { Episode, Project } from "@/types";
+import { Encoding, type Episode, type Project } from "@/types";
+import { usePageContext } from "@/components/page-context";
 import { IconDeleteOutline, IconDragIndicator, IconFolderOutline } from "@/components/icons";
+import ValidationWarning from "@/components/editor/validation-warning";
 import { open } from "@tauri-apps/plugin-dialog";
 import { secondsToHHMMSS } from "@/functions/project/time-format";
 import { generateID } from "@/functions/sha256";
@@ -23,6 +25,7 @@ export default function EpisodeLi({
   project: Project | null;
   projectSetter: React.Dispatch<React.SetStateAction<Project | null>>;
 }) {
+  const { warnOnNonH264 } = usePageContext();
   const ffprobeRequestRef = useRef(0);
   const selectedFile = episode.filePath ?? null;
   const previousEpisode = useMemo(() => {
@@ -376,7 +379,17 @@ export default function EpisodeLi({
         <span className={`w-[7ch] ps-0.5 text-flare-700`}>{episode.cachedDuration ? secondsToHHMMSS(episode.cachedDuration) : "-"}</span>
 
         {/* Encoding */}
-        <span className={`w-[4ch] text-flare-700`}>{episode.cachedEncoding ? episode.cachedEncoding : "-"}</span>
+        {(() => {
+          const encodingWarning = warnOnNonH264 && episode.cachedEncoding && episode.cachedEncoding !== Encoding.h264
+            ? `${episode.cachedEncoding} is not H.264 and may stutter on the event computer.`
+            : null;
+          return (
+            <span className={`relative w-[4ch] ${encodingWarning ? "text-command-300" : "text-flare-700"}`}>
+              {episode.cachedEncoding ? episode.cachedEncoding : "-"}
+              <ValidationWarning warning={encodingWarning} anchor="right" />
+            </span>
+          );
+        })()}
 
         {/* Delete button */}
         <button

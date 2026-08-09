@@ -10,6 +10,16 @@ export function PageProvider({ children }: { children: React.ReactNode }) {
   const [projectMetas, setProjectMetas] = useState<PageContext["projectMetas"]>([]);
   const [isPowerMode, setIsPowerMode] = useState(PageContextDefaultValue.isPowerMode);
 
+  // Default ON: the current playback computer only hardware-decodes H.264.
+  // Kept as a setting so it's easy to switch off after a hardware upgrade.
+  const [warnOnNonH264, setWarnOnNonH264] = useState(() => {
+    const stored = localStorage.getItem("warnOnNonH264");
+    return stored === null ? PageContextDefaultValue.warnOnNonH264 : stored === "true";
+  });
+  useEffect(() => {
+    localStorage.setItem("warnOnNonH264", String(warnOnNonH264));
+  }, [warnOnNonH264]);
+
   const [forceReload, setForceReload] = useState(0);
   const reloadProjectMetaData = useCallback(() => setForceReload((prev) => prev + 1 % 9999), []);
 
@@ -61,6 +71,9 @@ export function PageProvider({ children }: { children: React.ReactNode }) {
     setProjectMetas,
 
     isPowerMode,
+
+    warnOnNonH264,
+    setWarnOnNonH264,
 
     reloadProjectMetaData,
   };
