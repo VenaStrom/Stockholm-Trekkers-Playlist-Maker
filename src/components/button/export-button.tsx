@@ -220,7 +220,7 @@ export default function ExportButton({
               checked={zipOutput}
               onChange={(e) => setZipOutput(e.target.checked)}
             />
-            <span>Zip the output into a single file</span>
+            <span>Zip output</span>
           </label>
         </div>;
       case "confirm-overwrite":
