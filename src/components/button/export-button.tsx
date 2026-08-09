@@ -186,19 +186,10 @@ export default function ExportButton({
           >
             <input
               type="checkbox"
-              className="peer sr-only"
+              className="[--checkbox-color:var(--color-spore-500)]"
               checked={zipOutput}
               onChange={(e) => setZipOutput(e.target.checked)}
             />
-            <span
-              aria-hidden="true"
-              className={`
-                size-4.5 rounded-sm border-2 border-abyss-500 bg-abyss-500
-                transition-colors
-                peer-focus-visible:ring-2 peer-focus-visible:ring-spore-500/60
-                peer-checked:bg-spore-500
-              `}
-            ></span>
             <span>Zip the output into a single file</span>
           </label>
         </div>;

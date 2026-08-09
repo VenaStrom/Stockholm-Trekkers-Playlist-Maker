@@ -31,9 +31,6 @@ export default function BlockOptionsEditor({
             <div className="flex flex-row flex-wrap gap-x-10 gap-y-2 ps-2">
               {clipsForPlacement(placement).map((clip) => {
                 const key = optionKey(placement, clip.id);
-                const checkedColor = placement === "leading"
-                  ? "peer-checked:bg-science-500 peer-focus-visible:ring-science-500/60"
-                  : "peer-checked:bg-spore-500 peer-focus-visible:ring-spore-500/60";
                 return (
                   <label
                     key={key}
@@ -43,20 +40,10 @@ export default function BlockOptionsEditor({
                     <span>{clip.name}</span>
                     <input
                       type="checkbox"
-                      className="peer sr-only"
+                      className={placement === "leading" ? "" : "[--checkbox-color:var(--color-spore-500)]"}
                       checked={options[key] ?? false}
                       onChange={(e) => onToggle(key, e.target.checked)}
                     />
-                    {/* Styled stand-in for the checkbox, matching the header option dots */}
-                    <span
-                      aria-hidden="true"
-                      className={`
-                        size-4.5 rounded-sm border-2 border-abyss-800 bg-abyss-800
-                        transition-colors
-                        peer-focus-visible:ring-2
-                        ${checkedColor}
-                      `}
-                    ></span>
                   </label>
                 );
               })}

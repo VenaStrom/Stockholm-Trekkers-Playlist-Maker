@@ -101,6 +101,29 @@
     @apply bg-abyss-900 text-flare-500 rounded-sm px-2 py-1;
   }
 
+  /* One checkbox look everywhere: a dim box that fills with --checkbox-color
+     when checked, with the delta from the org icon as the check mark.
+     Override the accent per context with e.g. [--checkbox-color:var(--color-spore-500)] */
+  input[type="checkbox"] {
+    --checkbox-color: var(--color-science-500);
+    @apply appearance-none shrink-0 size-5 rounded-sm cursor-pointer transition-colors bg-abyss-900 border-2 border-abyss-200;
+
+    &:checked {
+      border-color: var(--checkbox-color);
+      background-color: var(--checkbox-color);
+      /* public/icon/org/delta.svg in black */
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 85.039 138.041'%3E%3Cpath fill='black' d='M69.08,49.512C57.006,14.246,45.786,0,45.786,0S33.364,13.325,20.25,46.063C1.66,92.496,0,138.041,0,138.041s13.097-17.32,29.13-33.018C42.46,91.97,54.458,87.097,57.912,87.917c8.881,2.113,27.127,38.371,27.127,38.371S81.164,84.775,69.08,49.512z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: auto 82%;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--checkbox-color);
+      outline-offset: 2px;
+    }
+  }
+
   label {
     @apply cursor-pointer;
   }

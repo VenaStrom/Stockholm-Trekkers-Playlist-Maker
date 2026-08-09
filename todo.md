@@ -41,7 +41,8 @@
 - [x] confirm leave when unsaved changes exist (autosave off): Back / Alt+left / close ask Save-and-leave / Leave-without-saving / Cancel
 - [x] setting to zip output
   - Checkbox on the export confirmation (default on); Rust `zip_export` streams sources straight into `<date>.zip` (stored media entries + zip64, deflated scripts), no staging folder
-- [ ] make all checkboxes consistent and clearly a checkbox. Either a check mark, or maybe a star fleet delta as the check.
+- [x] make all checkboxes consistent and clearly a checkbox. Either a check mark, or maybe a star fleet delta as the check.
+  - Global `input[type="checkbox"]` style in global.tw.css; the delta from the org icon (in black) is the check; accent via `--checkbox-color`
 
 # Features
 

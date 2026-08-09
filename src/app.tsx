@@ -215,19 +215,9 @@ export default function App() {
           <span className="flex-1 min-w-4"></span>
           <input
             type="checkbox"
-            className="peer sr-only"
             checked={autosave}
             onChange={(e) => setAutosave(e.target.checked)}
           />
-          <span
-            aria-hidden="true"
-            className={`
-              size-4.5 rounded-sm border-2 border-abyss-800 bg-abyss-800
-              transition-colors
-              peer-focus-visible:ring-2 peer-focus-visible:ring-science-500/60
-              peer-checked:bg-science-500
-            `}
-          ></span>
         </label>
 
         <p className="pb-2 pt-4">Warnings</p>
@@ -239,19 +229,10 @@ export default function App() {
           <span className="flex-1 min-w-4"></span>
           <input
             type="checkbox"
-            className="peer sr-only"
+            className="[--checkbox-color:var(--color-command-300)]"
             checked={warnOnNonH264}
             onChange={(e) => setWarnOnNonH264(e.target.checked)}
           />
-          <span
-            aria-hidden="true"
-            className={`
-              size-4.5 rounded-sm border-2 border-abyss-800 bg-abyss-800
-              transition-colors
-              peer-focus-visible:ring-2 peer-focus-visible:ring-command-300/60
-              peer-checked:bg-command-300
-            `}
-          ></span>
         </label>
       </div>}
       buttons={[
