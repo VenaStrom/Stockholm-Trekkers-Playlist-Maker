@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { openPath } from "@tauri-apps/plugin-opener";
 import {
+  estimateExportSize,
   ExportCancelledError,
   ExportOverwriteRequiredError,
   ExportValidationError,
@@ -12,14 +13,23 @@ import {
 } from "@/functions/project";
 import { IconFileExportOutline } from "@/components/icons";
 import { useToast } from "@/components/toast";
+import type { Project } from "@/types";
 import Dialog from "@/components/dialog";
+import ProjectSummary from "@/components/project-summary";
 
 type ExportPhase =
   | { kind: "idle"; }
+  | { kind: "confirm"; project: Project; }
   | { kind: "confirm-overwrite"; saveLocation: string; saveDir: string; }
   | { kind: "running"; progress: ExportProgress; cancelRequested: boolean; }
-  | { kind: "success"; saveDir: string; }
+  | { kind: "success"; saveDir: string; exportedBytes: number; }
   | { kind: "error"; problems: string[]; };
+
+function formatBytes(bytes: number): string {
+  const gb = bytes / 1024 ** 3;
+  if (gb >= 1) return `${gb.toFixed(2)} GB`;
+  return `${Math.max(1, Math.round(bytes / 1024 ** 2))} MB`;
+}
 
 export default function ExportButton({
   projectID,
@@ -29,6 +39,7 @@ export default function ExportButton({
   const { toast } = useToast();
 
   const [phase, setPhase] = useState<ExportPhase>({ kind: "idle" });
+  const [estimatedBytes, setEstimatedBytes] = useState<number | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
   const runExport = (saveLocation: string, overwrite: boolean) => {
@@ -49,8 +60,8 @@ export default function ExportButton({
         setPhase(prev => prev.kind === "running" ? { ...prev, progress } : prev);
       },
     })
-      .then((saveDir) => {
-        setPhase({ kind: "success", saveDir });
+      .then(({ saveDir, exportedBytes }) => {
+        setPhase({ kind: "success", saveDir, exportedBytes });
       })
       .catch((err: unknown) => {
         if (err instanceof ExportOverwriteRequiredError) {
@@ -77,31 +88,51 @@ export default function ExportButton({
       return;
     }
 
-    // Validate before asking where to export, so problems surface immediately
+    // Validate before anything else, so problems surface immediately
     openProject(projectID)
-      .then(validateProjectForExport)
-      .then((problems) => {
+      .then(async (project) => {
+        const problems = await validateProjectForExport(project);
         if (problems.length > 0) {
           setPhase({ kind: "error", problems });
           return;
         }
 
-        return open({
-          directory: true,
-          title: "Select export location. A folder with the project's name will be created here.",
-          canCreateDirectories: true,
-          recursive: true, // Needed to mkdir and copy things here
-        }).then((path) => {
-          if (!path) {
-            toast("Export cancelled.");
-            return;
-          }
-          runExport(path, false);
-        });
+        // Size estimate resolves in the background while the confirmation shows
+        setEstimatedBytes(null);
+        estimateExportSize(project)
+          .then(setEstimatedBytes)
+          .catch((err: unknown) => {
+            console.warn("Failed to estimate export size:", err);
+          });
+
+        // Last confirmation with the playlist rundown before picking a destination
+        setPhase({ kind: "confirm", project });
       })
       .catch((err: unknown) => {
         console.error("Error starting export:", err);
         toast("Failed to start export. Please try again.");
+      });
+  };
+
+  const pickLocationAndExport = () => {
+    open({
+      directory: true,
+      title: "Select export location. A folder with the project's name will be created here.",
+      canCreateDirectories: true,
+      recursive: true, // Needed to mkdir and copy things here
+    })
+      .then((path) => {
+        if (!path) {
+          toast("Export cancelled.");
+          setPhase({ kind: "idle" });
+          return;
+        }
+        runExport(path, false);
+      })
+      .catch((err: unknown) => {
+        console.error("Error opening save dialog:", err);
+        toast("Failed to open save dialog. Please try again.");
+        setPhase({ kind: "idle" });
       });
   };
 
@@ -127,6 +158,7 @@ export default function ExportButton({
 
   const dialogHeader = (() => {
     switch (phase.kind) {
+      case "confirm": return <p className="text-lg">Export {phase.project.date.trim() ? phase.project.date : "Playlist"}?</p>;
       case "confirm-overwrite": return <p className="text-lg">Replace Existing Export?</p>;
       case "running": return <p className="text-lg">Exporting Project</p>;
       case "success": return <p className="text-lg">Export Complete</p>;
@@ -137,6 +169,15 @@ export default function ExportButton({
 
   const dialogContent = (() => {
     switch (phase.kind) {
+      case "confirm":
+        return <div>
+          <div className="max-h-72 overflow-y-auto text-sm border-s-2 border-abyss-500 ps-2">
+            <ProjectSummary project={phase.project} />
+          </div>
+          <p className="pt-2">
+            Estimated size: {estimatedBytes !== null ? formatBytes(estimatedBytes) : "calculating..."}
+          </p>
+        </div>;
       case "confirm-overwrite":
         return <p>
           There is already an export at <span className="italic break-all">{phase.saveDir}</span>.
@@ -146,6 +187,9 @@ export default function ExportButton({
       case "running":
         return <div>
           <p>{phase.cancelRequested ? "Cancelling... The file being copied has to finish first." : phase.progress.message}</p>
+          {estimatedBytes !== null && (
+            <p className="text-sm text-flare-700 pt-1">Estimated size: {formatBytes(estimatedBytes)}</p>
+          )}
           <div className="w-full h-2 mt-3 rounded-full bg-abyss-500 overflow-hidden">
             {phase.progress.fraction === null
               ? <div className="h-full w-full bg-spore-500 animate-pulse" />
@@ -155,7 +199,7 @@ export default function ExportButton({
         </div>;
       case "success":
         return <p>
-          The playlist was exported to <span className="italic break-all">{phase.saveDir}</span>.
+          The playlist ({formatBytes(phase.exportedBytes)}) was exported to <span className="italic break-all">{phase.saveDir}</span>.
         </p>;
       case "error":
         return <div>
@@ -173,6 +217,20 @@ export default function ExportButton({
 
   const dialogButtons = (() => {
     switch (phase.kind) {
+      case "confirm":
+        return [
+          <button key="cancel-button" onClick={() => setDialogVisible(false)}>
+            Cancel
+          </button>,
+          <button
+            data-focus="true"
+            key="choose-location-button"
+            className="hover:bg-spore-500"
+            onClick={pickLocationAndExport}
+          >
+            Choose Location...
+          </button>,
+        ];
       case "confirm-overwrite":
         return [
           <button data-focus="true" key="cancel-button" onClick={() => setDialogVisible(false)}>

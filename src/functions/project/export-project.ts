@@ -94,7 +94,7 @@ export async function validateProjectForExport(project: Project): Promise<string
   return problems;
 }
 
-export async function exportProject(projectID: string, saveLocation: string, options: ExportOptions = {}): Promise<string> {
+export async function exportProject(projectID: string, saveLocation: string, options: ExportOptions = {}): Promise<{ saveDir: string; exportedBytes: number; }> {
   if (!projectID || !saveLocation) throw new Error("Project ID and save location must be provided for export.");
   const { overwrite = false, onProgress, signal } = options;
   const throwIfCancelled = () => {
@@ -137,21 +137,22 @@ export async function exportProject(projectID: string, saveLocation: string, opt
     console.info(`Made sub dirs at ${episodesDir}, ${saveFilesDir}, and ${clipsDir}.`);
 
     // Copy files one at a time so progress is reportable and cancellation has clean seams
-    const copyJobs = [
-      ...await planEpisodeCopies(project, episodesDir),
-      ...await planClipCopies(project, clipsDir),
-    ];
-    const totalSteps = copyJobs.length + 2; // +2 for the save file and play files
+    const destDirByKind = { episode: episodesDir, clip: clipsDir } as const;
+    const copySources = await planCopySources(project);
+    const totalSteps = copySources.length + 2; // +2 for the save file and play files
     let doneSteps = 0;
+    let exportedBytes = 0;
 
-    for (const job of copyJobs) {
+    for (const copySource of copySources) {
       throwIfCancelled();
       onProgress?.({
-        message: `Copying file ${doneSteps + 1} of ${copyJobs.length}: ${job.label}`,
+        message: `Copying file ${doneSteps + 1} of ${copySources.length}: ${copySource.fileName}`,
         fraction: doneSteps / totalSteps,
       });
-      await fs.copyFile(job.source, job.dest);
-      console.info(`Copied file from ${job.source} to ${job.dest}.`);
+      const dest = await path.join(destDirByKind[copySource.kind], copySource.fileName);
+      await fs.copyFile(copySource.source, dest);
+      exportedBytes += await fileSize(copySource.source);
+      console.info(`Copied file from ${copySource.source} to ${dest}.`);
       doneSteps++;
     }
 
@@ -165,8 +166,8 @@ export async function exportProject(projectID: string, saveLocation: string, opt
     await copyPlayFiles(project, saveDir);
 
     onProgress?.({ message: "Export complete.", fraction: 1 });
-    console.info(`Finished exporting project ${projectID} to ${saveDir}.`);
-    return saveDir;
+    console.info(`Finished exporting project ${projectID} to ${saveDir} (${exportedBytes} bytes of media).`);
+    return { saveDir, exportedBytes };
   }
   catch (err) {
     // Don't leave a half-written export behind
@@ -179,34 +180,26 @@ export async function exportProject(projectID: string, saveLocation: string, opt
   }
 }
 
-type CopyJob = { source: string; dest: string; label: string; };
+type CopySource = { source: string; fileName: string; kind: "episode" | "clip"; };
 
-async function planEpisodeCopies(project: Project, exportDir: string): Promise<CopyJob[]> {
+/** Every media file that goes into the bundle, deduped; shared by export and size estimation */
+async function planCopySources(project: Project): Promise<CopySource[]> {
   // Keyed by file name: the same file used twice is only copied once,
   // and validation guarantees distinct files never share a name
-  const jobs = new Map<string, CopyJob>();
-
+  const episodeSources = new Map<string, CopySource>();
   for (const episode of project.episodes) {
     if (!episode.filePath) continue;
 
     const fileName = await path.basename(episode.filePath);
-    if (jobs.has(fileName)) continue;
+    if (episodeSources.has(fileName)) continue;
 
-    jobs.set(fileName, {
-      source: episode.filePath,
-      dest: await path.join(exportDir, fileName),
-      label: fileName,
-    });
+    episodeSources.set(fileName, { source: episode.filePath, fileName, kind: "episode" });
   }
 
-  return [...jobs.values()];
-}
-
-async function planClipCopies(project: Project, exportDir: string): Promise<CopyJob[]> {
   const usedIDs = [...new Set<string>(project.blocks.flatMap(b => Object.entries(b.options).filter(([_, enabled]) => enabled).map(([id]) => id.split("__")[1])).filter((id): id is string => typeof id === "string"))];
   const usedClips = deepCopy(blockClips.filter(c => usedIDs.includes(c.id)));
 
-  const sourceFiles = (await fs.readDir(PathName.ClipsDir))
+  const clipFileNames = (await fs.readDir(PathName.ClipsDir))
     .map(f => f.isFile ? f.name : null)
     .filter(n => !!n && (
       n.endsWith(basicPauseClipFileName)
@@ -214,16 +207,35 @@ async function planClipCopies(project: Project, exportDir: string): Promise<Copy
     ))
     .filter((n): n is string => typeof n === "string");
 
-  const jobs: CopyJob[] = [];
-  for (const fileName of sourceFiles) {
-    jobs.push({
-      source: await path.join(PathName.ClipsDir, fileName),
-      dest: await path.join(exportDir, fileName),
-      label: fileName,
-    });
+  const clipSources: CopySource[] = [];
+  for (const fileName of clipFileNames) {
+    clipSources.push({ source: await path.join(PathName.ClipsDir, fileName), fileName, kind: "clip" });
   }
 
-  return jobs;
+  return [...episodeSources.values(), ...clipSources];
+}
+
+async function fileSize(filePath: string): Promise<number> {
+  try {
+    return (await fs.stat(filePath)).size;
+  }
+  catch (e: unknown) {
+    console.warn(`Could not read size of ${filePath}:`, e);
+    return 0;
+  }
+}
+
+/**
+ * Sum of the source files that would go into the bundle. "Estimated" because
+ * the written bundle may end up differing, e.g. once outputs can be zipped.
+ */
+export async function estimateExportSize(project: Project): Promise<number> {
+  const sources = await planCopySources(project);
+  let totalBytes = 0;
+  for (const copySource of sources) {
+    totalBytes += await fileSize(copySource.source);
+  }
+  return totalBytes;
 }
 
 async function makeDirRecursive(baseDir: string, dir: string): Promise<string> {

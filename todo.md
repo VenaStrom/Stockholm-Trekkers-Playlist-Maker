@@ -35,9 +35,9 @@
 - [x] Polish the command line output of the play files (`play.sh` / `play.ps1`) so it's as easy as possible to parse what is happening at a glance: clear now-playing/queued lines, which block is active and when the next one starts, visible countdown while waiting, and warnings that stand out from normal status
 - [x] the outputted project save file should be relative to bundle root, not the device dependant absolute paths of assets.
 - [ ] Size:
-  - [ ] show estimated export size in GB before starting the export
+  - [x] show estimated export size in GB before starting the export
   - [ ] show which disks have enough space to export to (maybe? not sure if this it too handholdy without real benefit)
-  - [ ] show exported size in GB
+  - [x] show exported size in GB (kept separate from the estimate so zipped output can diverge)
 - [x] confirm leave when unsaved changes exist (autosave off): Back / Alt+left / close ask Save-and-leave / Leave-without-saving / Cancel
 - [ ] setting to zip output
 

@@ -38,6 +38,14 @@
     "fs:allow-temp-read",
     "fs:allow-temp-write",
     {
+      "identifier": "fs:allow-stat",
+      "allow": [
+        {
+          "path": "**"
+        }
+      ]
+    },
+    {
       "identifier": "fs:allow-exists",
       "allow": [
         {
