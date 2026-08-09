@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { IconArrowDropDown, IconCloseSmall } from "@/components/icons";
 import { generateID } from "@/functions/sha256";
 
@@ -135,7 +136,8 @@ export function PopoverContent({ children }: { children?: React.ReactNode }) {
 
   if (!isOpen) return null;
 
-  return (
+  // Portaled to <body> so ancestor stacking contexts can't trap it under other content
+  return createPortal(
     <div
       ref={contentRef}
       style={{
@@ -152,6 +154,7 @@ export function PopoverContent({ children }: { children?: React.ReactNode }) {
       >
         <IconCloseSmall className="size-7" />
       </button>
-    </div>
+    </div>,
+    document.body,
   );
 }

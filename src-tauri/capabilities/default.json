@@ -13,6 +13,17 @@
     "core:app:allow-set-app-theme",
     "opener:default",
     {
+      "identifier": "opener:allow-open-url",
+      "allow": [
+        {
+          "url": "mailto:*"
+        },
+        {
+          "url": "https://*"
+        }
+      ]
+    },
+    {
       "identifier": "opener:allow-open-path",
       "allow": [
         {
@@ -37,6 +48,14 @@
     "fs:allow-app-write-recursive",
     "fs:allow-temp-read",
     "fs:allow-temp-write",
+    {
+      "identifier": "fs:allow-stat",
+      "allow": [
+        {
+          "path": "**"
+        }
+      ]
+    },
     {
       "identifier": "fs:allow-exists",
       "allow": [
@@ -128,6 +147,22 @@
           "args": true
         }
       ]
-    }
+    },
+    {
+      "identifier": "shell:allow-spawn",
+      "allow": [
+        {
+          "name": "binaries/stplay-ffmpeg",
+          "sidecar": true,
+          "args": true
+        },
+        {
+          "cmd": "ffmpeg",
+          "name": "ffmpeg",
+          "args": true
+        }
+      ]
+    },
+    "shell:allow-kill"
   ]
 }

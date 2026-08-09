@@ -64,6 +64,9 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
+      - name: Check version is unreleased
+        run: yarn check:version release
+
       - name: Prepare bundled assets and sidecars
         run: yarn download-assets && yarn prepare-ffmpeg-sidecar
 
@@ -77,7 +80,7 @@ jobs:
           APPIMAGE_EXTRACT_AND_RUN: 1
         with:
           tagName: v__VERSION__
-          releaseName: Stockholm Trekkers Playlist Maker v__VERSION__
+          releaseName: v__VERSION__ Stockholm Trekkers Playlist Maker
           releaseBody: See the assets below to download and install this version.
           releaseDraft: false
           prerelease: false

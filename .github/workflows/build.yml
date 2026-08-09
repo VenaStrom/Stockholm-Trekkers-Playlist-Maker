@@ -64,6 +64,10 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
+      - name: Check version bump
+        if: github.event_name == 'pull_request'
+        run: yarn check:version pr
+
       - name: Build bundles
         run: yarn build
 

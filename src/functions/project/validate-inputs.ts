@@ -47,7 +47,11 @@ export function validateDate(dateStr: string): string | null {
  */
 export function validateBlockTime(block: Block, project: Project): string | null {
   const time = block.startTime;
-  if (!time) return "Time is empty.";
+  if (!time) {
+    // A fresh block with no episodes shouldn't nag; warn once it has content
+    const hasEpisodes = project.episodes.some(e => e.blockID === block.id && e.filePath);
+    return hasEpisodes ? "Time is empty." : null;
+  }
   if (!/^\d{1,2}:\d{2}$/.test(time)) return "Must be in format HH:MM.";
 
   const [hoursStr, minutesStr] = time.split(":");

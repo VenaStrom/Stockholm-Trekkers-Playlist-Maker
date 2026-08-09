@@ -1,11 +1,12 @@
-import { useState } from "react";
-import type { ProjectMeta } from "@/types";
+import { useEffect, useState } from "react";
+import type { Project, ProjectMeta } from "@/types";
 import { IconDeleteForeverOutline, IconDeleteOutline, IconEditOutline } from "@/components/icons";
 import { usePageContext, PageRoute } from "@/components/page-context";
 import { useToast } from "@/components/toast";
-import { deleteProject } from "@/functions/project";
+import { deleteProject, openProject } from "@/functions/project";
 import Dialog from "@/components/dialog";
 import ExportButton from "@/components/button/export-button";
+import ProjectSummary from "@/components/project-summary";
 
 export default function ProjectCard({
   projectMeta,
@@ -15,6 +16,16 @@ export default function ProjectCard({
   const { toast } = useToast();
   const { setProjectID, setRoute, reloadProjectMetaData, isPowerMode } = usePageContext();
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
+
+  // Full project data for the block/episode summary, like the v3 card previews
+  const [projectData, setProjectData] = useState<Project | null>(null);
+  useEffect(() => {
+    openProject(projectMeta.id)
+      .then(setProjectData)
+      .catch((err: unknown) => {
+        console.error(`Failed to load project data for card ${projectMeta.id}:`, err);
+      });
+  }, [projectMeta.id, projectMeta.dateModified]);
 
   const handleDeleteProject = () => {
     deleteProject(projectMeta.id)
@@ -78,23 +89,25 @@ export default function ProjectCard({
     />
 
     <li className="w-full min-h-fit bg-abyss-900 rounded-sm p-4 ps-5 flex flex-row gap-x-4 *:h-full">
-      {/* Date and description */}
-      <div className="max-w-prose h-full overflow-hidden">
+      {/* Date, description, and block summary stacked */}
+      <div className="flex-1 min-w-0 h-full overflow-hidden">
         <p className="text-xl">{projectMeta.date.trim() ? projectMeta.date : <span className="text-flare-700">[ no date set ]</span>}</p>
-        <div
-          className="overflow-scroll"
-        >
-          <pre className="max-w-prose text-sm text-abyss-200 mt-1">
-            {projectMeta.description.trim() ?
-              projectMeta.description
-              :
-              <span className="text-flare-700">No description set</span>
-            }
-          </pre>
+        {/* Personal note, styled as an aside so it doesn't read as playlist data */}
+        {projectMeta.description.trim() !== "" && (
+          <div className="mt-2">
+            <p className="text-sm uppercase tracking-widest text-flare-700 select-none">Note</p>
+            <pre className="max-w-prose text-sm italic text-flare-700 whitespace-pre-wrap border-s-2 border-abyss-200/50 ps-2 mt-0.5">
+              {projectMeta.description}
+            </pre>
+          </div>
+        )}
+
+        {/* Block summary */}
+        <div className="text-sm mt-3 pe-3">
+          <p className="text-sm uppercase tracking-widest text-flare-700 select-none pb-0.5">Playlist</p>
+        {projectData && <ProjectSummary project={projectData} />}
         </div>
       </div>
-
-      <span className="flex-1"></span>
 
       {/* Stats */}
       <ul className="flex flex-col justify-start items-end">

@@ -27,11 +27,22 @@
 - [ ] When no projects exist, create and open a new project automatically without landing on the project
   - [ ] Is this even desirable?
 - [ ] Add date input to date input instead of just text input
-- [ ] Toggle auto save in menu bar (move light mode as well?)
-- [ ] Rework project card to be a button to edit project (+ mini preview of blocks/episodes like v3 cards)
+- [x] Toggle auto save in menu bar (move light mode as well?)
+  - Lives in the settings dialog (the app has no native menu bar); light mode stays as the header button
+- [x] Rework project card to be a button to edit project (+ mini preview of blocks/episodes like v3 cards)
+  - Card stays a plain card (decided against whole-card button); shows description + v3-style block/episode preview; export button sized like the other actions
 - [ ] Save indicator in editor (when saving, saved, error)
 - [x] Polish the command line output of the play files (`play.sh` / `play.ps1`) so it's as easy as possible to parse what is happening at a glance: clear now-playing/queued lines, which block is active and when the next one starts, visible countdown while waiting, and warnings that stand out from normal status
 - [x] the outputted project save file should be relative to bundle root, not the device dependant absolute paths of assets.
+- [ ] Size:
+  - [x] show estimated export size in GB before starting the export
+  - [ ] show which disks have enough space to export to (maybe? not sure if this it too handholdy without real benefit)
+  - [x] show exported size in GB (kept separate from the estimate so zipped output can diverge)
+- [x] confirm leave when unsaved changes exist (autosave off): Back / Alt+left / close ask Save-and-leave / Leave-without-saving / Cancel
+- [x] setting to zip output
+  - Checkbox on the export confirmation (default on); Rust `zip_export` streams sources straight into `<date>.zip` (stored media entries + zip64, deflated scripts), no staging folder
+- [x] make all checkboxes consistent and clearly a checkbox. Either a check mark, or maybe a star fleet delta as the check.
+  - Global `input[type="checkbox"]` style in global.tw.css; the delta from the org icon (in black) is the check; accent via `--checkbox-color`
 
 # Features
 
@@ -39,7 +50,8 @@
   - Keypair at `~/.tauri/stplay-updater.key` (no password) — add `TAURI_SIGNING_PRIVATE_KEY` (+ empty `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`) as GitHub Actions secrets before running the Release workflow
   - Release workflow publishes (non-draft) with `latest.json`; AppImage target added for Linux self-update (deb stays for apt-style installs)
 - [ ] On home screen, index folder for episodes with fuzzy search to prefill when given a schedule
-- [ ] Re-encode to h264 by default but allow for other strategies like "preserve", "h264", "h265" ...
+- [x] Re-encode to h264 by default but allow for other strategies like "preserve", "h264", "h265" ...
+  - Strategy select on the export confirmation (H.264 default); episodes already in the target codec are copied as-is; zip mode transcodes to temp first; CLI exports default to preserve
 - [ ] Run ffmpeg to grab previews throughout all the episodes to visually validate the project
 - [ ] On export, show a summery view of the project
 - [x] Compile `.sh` and `.ps1` simultaneously

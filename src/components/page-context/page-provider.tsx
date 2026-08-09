@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { PageContext, PageContextDefaultValue } from "@/components/page-context";
-import { getAllProjectMetas } from "@/functions/project";
+import { getAllProjectMetas, type EncodingStrategy } from "@/functions/project";
 import { PowerKey } from "@/global";
 
 export function PageProvider({ children }: { children: React.ReactNode }) {
@@ -9,6 +9,24 @@ export function PageProvider({ children }: { children: React.ReactNode }) {
   const [projectID, setProjectID] = useState(PageContextDefaultValue.projectID);
   const [projectMetas, setProjectMetas] = useState<PageContext["projectMetas"]>([]);
   const [isPowerMode, setIsPowerMode] = useState(PageContextDefaultValue.isPowerMode);
+
+  const [autosave, setAutosave] = useState(() => {
+    const stored = localStorage.getItem("autosave");
+    return stored === null ? PageContextDefaultValue.autosave : stored === "true";
+  });
+  useEffect(() => {
+    localStorage.setItem("autosave", String(autosave));
+  }, [autosave]);
+
+  // Default ON: the current playback computer only hardware-decodes H.264.
+  // Kept as a setting so it's easy to switch off after a hardware upgrade.
+  const [warnOnNonH264, setWarnOnNonH264] = useState(() => {
+    const stored = localStorage.getItem("warnOnNonH264");
+    return stored === null ? PageContextDefaultValue.warnOnNonH264 : stored === "true";
+  });
+  useEffect(() => {
+    localStorage.setItem("warnOnNonH264", String(warnOnNonH264));
+  }, [warnOnNonH264]);
 
   const [forceReload, setForceReload] = useState(0);
   const reloadProjectMetaData = useCallback(() => setForceReload((prev) => prev + 1 % 9999), []);
@@ -50,6 +68,17 @@ export function PageProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
+  // Chosen on the export confirmation; remembered so the editor can skip
+  // codec warnings that the export would fix anyway
+  const [exportEncoding, setExportEncoding] = useState<EncodingStrategy>(() => {
+    const stored = localStorage.getItem("exportEncoding");
+    if (stored === "preserve" || stored === "h264" || stored === "hevc") return stored;
+    return PageContextDefaultValue.exportEncoding;
+  });
+  useEffect(() => {
+    localStorage.setItem("exportEncoding", exportEncoding);
+  }, [exportEncoding]);
+
   const value: PageContext = {
     route,
     setRoute,
@@ -61,6 +90,15 @@ export function PageProvider({ children }: { children: React.ReactNode }) {
     setProjectMetas,
 
     isPowerMode,
+
+    autosave,
+    setAutosave,
+
+    warnOnNonH264,
+    setWarnOnNonH264,
+
+    exportEncoding,
+    setExportEncoding,
 
     reloadProjectMetaData,
   };

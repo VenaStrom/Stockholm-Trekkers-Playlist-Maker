@@ -1,6 +1,6 @@
 {
   "name": "stockholm-trekkers-playlist-maker",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "author": "Vena Ström <vena.strom+stplay@pm.me>",
   "description": "A playlist maker for the Stockholm Trekkers organization.",
   "license": "MIT",
@@ -23,6 +23,7 @@
     "generate-ffmpeg-arg-types": "tsx scripts/generate-ffmpeg-arg-types.ts",
     "prepare-ffmpeg-sidecar": "tsx scripts/prepare-ffmpeg-sidecar.ts",
     "rename-bundles": "tsx scripts/rename-bundles.ts",
+    "check:version": "tsx scripts/check-version-bump.ts",
     "logs:open": "tsx scripts/open-logs.ts"
   },
   "dependencies": {

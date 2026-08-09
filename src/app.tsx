@@ -25,7 +25,7 @@ export default function App() {
     return window.matchMedia("(prefers-color-scheme: light)").matches;
   });
 
-  const { headerText, route, setRoute, projectID, isPowerMode } = usePageContext();
+  const { headerText, route, setRoute, projectID, isPowerMode, autosave, setAutosave, warnOnNonH264, setWarnOnNonH264 } = usePageContext();
 
   // Settings panel
   const [settingsVisible, setSettingsVisible] = useState(false);
@@ -54,16 +54,9 @@ export default function App() {
       }
     };
 
-    // Back from editor to projects
+    // Forward navigation; Alt+ArrowLeft (back) is handled by the editor itself
+    // so its save/confirm-leave logic always runs
     const backListener = (e: KeyboardEvent) => {
-      // Back to projects
-      if (e.altKey && e.key === "ArrowLeft") {
-        e.preventDefault();
-        if (route === PageRoute.Editor) {
-          setRoute(PageRoute.Projects);
-        }
-      }
-
       // Forward to editor if project id is set
       if (e.altKey && e.key === "ArrowRight") {
         e.preventDefault();
@@ -212,6 +205,35 @@ export default function App() {
         <p className="text-sm text-flare-500/60 pt-2">
           Applies to blocks you create from now on. Existing blocks keep their own options.
         </p>
+
+        <p className="pb-2 pt-4">Editor</p>
+        <label
+          className="flex flex-row items-center gap-x-2 text-sm font-thin cursor-pointer select-none ps-2"
+          title="Saves the open project shortly after every change. When off, save with Ctrl+S — the project is also saved when leaving the editor or closing the app."
+        >
+          <span>Autosave while editing</span>
+          <span className="flex-1 min-w-4"></span>
+          <input
+            type="checkbox"
+            checked={autosave}
+            onChange={(e) => setAutosave(e.target.checked)}
+          />
+        </label>
+
+        <p className="pb-2 pt-4">Warnings</p>
+        <label
+          className="flex flex-row items-center gap-x-2 text-sm font-thin cursor-pointer select-none ps-2"
+          title="The current playback computer only has hardware acceleration for H.264, so episodes in any other codec may stutter. Disable this after upgrading the computer."
+        >
+          <span>Warn about episodes that are not H.264</span>
+          <span className="flex-1 min-w-4"></span>
+          <input
+            type="checkbox"
+            className="[--checkbox-color:var(--color-command-300)]"
+            checked={warnOnNonH264}
+            onChange={(e) => setWarnOnNonH264(e.target.checked)}
+          />
+        </label>
       </div>}
       buttons={[
         <button
@@ -221,6 +243,7 @@ export default function App() {
             setDefaultBlockOptions(getUserDefaultBlockOptions());
           }}
           title="Go back to the built-in defaults"
+          className="bg-red-alert-700 hover:bg-red-alert-500"
         >
           Reset
         </button>,

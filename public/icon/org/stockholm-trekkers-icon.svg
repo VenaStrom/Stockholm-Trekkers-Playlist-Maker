@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="512"
+   height="512"
+   viewBox="0 0 512 512"
+   version="1.1"
+   id="svg1"
+   xml:space="preserve"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+     id="defs1" /><g
+     id="layer1"
+     style="display:inline"><image
+       width="409.73459"
+       height="512"
+       preserveAspectRatio="none"
+       xlink:href="Skold.png"
+       id="image1-8"
+       x="51.132706"
+       y="0"
+       style="display:inline;fill:#000000;fill-opacity:0" /></g><g
+     id="layer3"
+     style="display:inline"><circle
+       style="display:inline;fill:#554e84;fill-opacity:1;stroke:#4e487a;stroke-width:10;stroke-linecap:square;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       id="circle3"
+       cx="256"
+       cy="-272"
+       r="185.88887"
+       transform="scale(1,-1)" /><path
+       style="display:inline;fill:#c4982f;fill-opacity:1;stroke:#a48334;stroke-width:10.9685;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       id="path4"
+       d="m 383.5208,410.37919 -246.45943,0.213 L 60.698649,176.26117 259.96331,31.223635 459.47837,175.91653 Z"
+       transform="matrix(0.88000773,0,0,0.88000773,26.055502,60.388151)" /></g><g
+     id="layer2"
+     style="display:inline"><path
+       style="fill:#bebcb4;fill-opacity:1;stroke:#888576;stroke-width:10;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:6;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       d="M 132.06445,495.20891 C 167.26966,346.81954 214.58402,173.28971 254.41906,25.551986 L 375.27311,483.31382 297.46208,373.22128 Z"
+       id="path2" /></g></svg>

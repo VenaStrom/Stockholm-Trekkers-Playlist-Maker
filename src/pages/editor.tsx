@@ -1,11 +1,12 @@
 import type { Episode, Project } from "@/types";
 import { getUserDefaultBlockOptions } from "@/functions/block-options";
-import { useEffect, useMemo, useState, useRef } from "react";
+import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { useDebounce } from "use-debounce";
 import { IconAdd, IconArrowBack2Outline, IconEditOutline, Spinner3DotsScaleMiddle } from "@/components/icons";
 import { openProject, saveProject } from "@/functions/project";
 import { usePageContext, PageRoute } from "@/components/page-context";
 import { generateID } from "@/functions/sha256";
+import Dialog from "@/components/dialog";
 import EpisodeLi from "@/components/editor/episode";
 import BlockLi from "@/components/editor/block";
 import ExportButton from "@/components/button/export-button";
@@ -17,10 +18,12 @@ import { probeEpisode } from "@/functions/project/episode-probe";
 import { compileTimeline } from "@/functions/compile-timeline";
 
 export default function Editor() {
-  const { setHeaderText, projectID, setRoute } = usePageContext();
+  const { setHeaderText, projectID, setRoute, autosave } = usePageContext();
   useEffect(() => setHeaderText("Editor"), [setHeaderText]);
 
   const [volatileProject, setVolatileProjectInner] = useState<Project | null>(null);
+  // Snapshot of the project as of the last completed save, for the unsaved indicator when autosave is off
+  const [lastSavedJSON, setLastSavedJSON] = useState<string | null>(null);
   const setVolatileProject: typeof setVolatileProjectInner = (value) => {
     setVolatileProjectInner(prev => {
       const newValue = typeof value === "function" ? value(prev) : value;
@@ -35,6 +38,7 @@ export default function Editor() {
     openProject(projectID)
       .then((project) => {
         setVolatileProject(project);
+        setLastSavedJSON(JSON.stringify(compileTimeline(project)));
 
         const episodesToBeProbed = project.episodes
           .filter((e): e is Episode & { filePath: string; } => !!e.filePath);
@@ -72,6 +76,7 @@ export default function Editor() {
   const [debouncedProject] = useDebounce(volatileProject, 500);
   useEffect(() => {
     if (!debouncedProject) return;
+    if (!autosave) return; // Manual saving only: Ctrl+S, Back, or app close
     const start = performance.now();
     console.info("[Editor] Saving project...");
 
@@ -83,17 +88,30 @@ export default function Editor() {
         else {
           console.info(`[Editor] Project saved. (${(performance.now() - start).toFixed(2)} ms)`);
         }
+        setLastSavedJSON(JSON.stringify(debouncedProject));
       })
       .catch((err: unknown) => {
         console.error("Error in debounced save:", err);
       });
-  }, [debouncedProject]);
+  }, [debouncedProject, autosave]);
 
-  // Keep a ref to the latest project so the close listener and Ctrl+S always save current state
+  // Keep refs to the latest state so the close listener and Ctrl+S always see current values
   const volatileProjectRef = useRef(volatileProject);
   useEffect(() => {
     volatileProjectRef.current = volatileProject;
   }, [volatileProject]);
+  const lastSavedJSONRef = useRef(lastSavedJSON);
+  useEffect(() => {
+    lastSavedJSONRef.current = lastSavedJSON;
+  }, [lastSavedJSON]);
+  const autosaveRef = useRef(autosave);
+  useEffect(() => {
+    autosaveRef.current = autosave;
+  }, [autosave]);
+
+  // Confirm-leave dialog for unsaved changes when autosave is off
+  const [leaveDialogVisible, setLeaveDialogVisible] = useState(false);
+  const [leaveIntent, setLeaveIntent] = useState<"back" | "close">("back");
 
   // Ctrl+S to force an immediate save, skipping the debounce
   useEffect(() => {
@@ -105,6 +123,7 @@ export default function Editor() {
         saveProject(project)
           .then(() => {
             console.info("[Editor] Project saved via Ctrl+S.");
+            setLastSavedJSON(JSON.stringify(project));
           })
           .catch((err: unknown) => {
             console.error("Error saving via Ctrl+S:", err);
@@ -115,12 +134,21 @@ export default function Editor() {
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
-  // Flush any pending save before the window closes (Ctrl+W/Q or the window close button)
+  // Before the window closes (Ctrl+W/Q or the window close button): flush the
+  // pending save, or with autosave off and unsaved changes, ask first
   useEffect(() => {
     const unlistenPromise = getCurrentWindow().onCloseRequested(async (event) => {
       const project = volatileProjectRef.current;
       if (!project) return;
       event.preventDefault();
+
+      const unsaved = JSON.stringify(project) !== lastSavedJSONRef.current;
+      if (!autosaveRef.current && unsaved) {
+        setLeaveIntent("close");
+        setLeaveDialogVisible(true);
+        return;
+      }
+
       try {
         await saveProject(project);
       } catch (err: unknown) {
@@ -138,17 +166,79 @@ export default function Editor() {
   }, []);
 
   // Handlers
-  const navigateBack = () => {
+  const navigateBack = useCallback(() => {
     if (!volatileProject) {
       setRoute(PageRoute.Projects);
       return;
     };
+
+    // With autosave off, leaving must not silently persist experimental changes — ask instead
+    const unsaved = JSON.stringify(volatileProject) !== lastSavedJSON;
+    if (!autosave && unsaved) {
+      setLeaveIntent("back");
+      setLeaveDialogVisible(true);
+      return;
+    }
+    if (!autosave) {
+      setRoute(PageRoute.Projects);
+      return;
+    }
+
     saveProject(volatileProject)
       .then(() => {
         setRoute(PageRoute.Projects);
       })
       .catch((err: unknown) => {
         console.error("Error saving on navigation back:", err);
+      });
+  }, [volatileProject, autosave, lastSavedJSON, setRoute]);
+
+  // Alt+ArrowLeft goes back through navigateBack so the save/confirm logic runs
+  const navigateBackRef = useRef(navigateBack);
+  useEffect(() => {
+    navigateBackRef.current = navigateBack;
+  }, [navigateBack]);
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.altKey && e.key === "ArrowLeft") {
+        e.preventDefault();
+        navigateBackRef.current();
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
+
+  const completeLeave = () => {
+    if (leaveIntent === "back") {
+      setRoute(PageRoute.Projects);
+      return;
+    }
+    getCurrentWindow().destroy()
+      .catch((err: unknown) => {
+        console.error("Failed to close window:", err);
+      });
+  };
+  const leaveWithoutSaving = () => {
+    setLeaveDialogVisible(false);
+    completeLeave();
+  };
+  const saveAndLeave = () => {
+    const project = volatileProjectRef.current;
+    if (!project) {
+      setLeaveDialogVisible(false);
+      completeLeave();
+      return;
+    }
+    saveProject(project)
+      .then(() => {
+        setLastSavedJSON(JSON.stringify(project));
+        setLeaveDialogVisible(false);
+        completeLeave();
+      })
+      .catch((err: unknown) => {
+        // Keep the dialog open so the user can still choose to leave without saving
+        console.error("Error saving before leaving:", err);
       });
   };
 
@@ -212,7 +302,39 @@ export default function Editor() {
     return () => window.removeEventListener("keydown", handler);
   }, [debouncedProject, volatileProject]);
 
-  return (
+  return (<>
+    {/* Confirm-leave dialog (autosave off + unsaved changes) */}
+    <Dialog
+      visible={leaveDialogVisible}
+      setVisible={setLeaveDialogVisible}
+      dialogHeader={<p className="text-lg">Unsaved Changes</p>}
+      dialogContent={<p>
+        You have unsaved changes.
+        <br />
+        {leaveIntent === "back" ? "Leave the editor" : "Close the app"} without saving them?
+      </p>}
+      buttons={[
+        <button key="cancel-button" onClick={() => setLeaveDialogVisible(false)}>
+          Cancel
+        </button>,
+        <button
+          key="discard-button"
+          className="hover:bg-red-alert-500"
+          onClick={leaveWithoutSaving}
+        >
+          {leaveIntent === "back" ? "Leave" : "Close"} Without Saving
+        </button>,
+        <button
+          data-focus="true"
+          key="save-button"
+          className="hover:bg-science-500"
+          onClick={saveAndLeave}
+        >
+          Save and {leaveIntent === "back" ? "Leave" : "Close"}
+        </button>,
+      ]}
+    />
+
     <main className="flex flex-col lg:flex-row gap-x-8 gap-y-12 justify-center items-start pt-4 px-12 pb-10">
       {/* Side bar */}
       <aside className="min-w-1/4 not-lg:w-full flex flex-col gap-y-4 lg:sticky lg:top-6">
@@ -228,12 +350,24 @@ export default function Editor() {
           </button>
 
           {/* Save status */}
-          <span className="text-flare-700">
-            {JSON.stringify(debouncedProject) === JSON.stringify(volatileProject)
-              ? "Saved"
-              : "Saving..."
-            }
-          </span>
+          {autosave ?
+            <span className="text-flare-700">
+              {JSON.stringify(debouncedProject) === JSON.stringify(volatileProject)
+                ? "Saved"
+                : "Saving..."
+              }
+            </span>
+            :
+            <span
+              className={lastSavedJSON === JSON.stringify(volatileProject) ? "text-flare-700" : "text-command-300"}
+              title="Autosave is off. Save with Ctrl+S."
+            >
+              {lastSavedJSON === JSON.stringify(volatileProject)
+                ? "Saved"
+                : "Unsaved changes*"
+              }
+            </span>
+          }
         </div>
 
         {/* Date */}
@@ -361,5 +495,5 @@ export default function Editor() {
         </ul>
       </section>
     </main>
-  );
+  </>);
 }
