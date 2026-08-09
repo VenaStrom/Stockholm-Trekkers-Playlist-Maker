@@ -230,15 +230,13 @@ export default function ExportButton({
       buttons={dialogButtons}
     />
 
-    <div className="flex flex-row items-center justify-center">
-      <button
-        className="pe-1.5 ps-3 hover:bg-spore-500"
-        onClick={onExport}
-      >
-        Export
-        <span className="flex-1"></span>
-        <IconFileExportOutline className="inline size-6" />
-      </button>
-    </div>
+    <button
+      className="pe-1.5 ps-3 hover:bg-spore-500"
+      onClick={onExport}
+    >
+      Export
+      <span className="flex-1"></span>
+      <IconFileExportOutline className="inline size-6" />
+    </button>
   </>);
 }

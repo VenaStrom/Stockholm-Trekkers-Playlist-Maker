@@ -29,7 +29,8 @@
 - [ ] Add date input to date input instead of just text input
 - [x] Toggle auto save in menu bar (move light mode as well?)
   - Lives in the settings dialog (the app has no native menu bar); light mode stays as the header button
-- [ ] Rework project card to be a button to edit project (+ mini preview of blocks/episodes like v3 cards)
+- [x] Rework project card to be a button to edit project (+ mini preview of blocks/episodes like v3 cards)
+  - Card stays a plain card (decided against whole-card button); shows description + v3-style block/episode preview; export button sized like the other actions
 - [ ] Save indicator in editor (when saving, saved, error)
 - [x] Polish the command line output of the play files (`play.sh` / `play.ps1`) so it's as easy as possible to parse what is happening at a glance: clear now-playing/queued lines, which block is active and when the next one starts, visible countdown while waiting, and warnings that stand out from normal status
 - [x] the outputted project save file should be relative to bundle root, not the device dependant absolute paths of assets.
