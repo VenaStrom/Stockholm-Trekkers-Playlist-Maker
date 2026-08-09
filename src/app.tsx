@@ -269,6 +269,7 @@ export default function App() {
             setDefaultBlockOptions(getUserDefaultBlockOptions());
           }}
           title="Go back to the built-in defaults"
+          className="bg-red-alert-700 hover:bg-red-alert-500"
         >
           Reset
         </button>,
