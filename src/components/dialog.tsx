@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import { IconCloseSmall } from "@/components/icons";
 
 export type DialogProps = {
@@ -55,7 +56,9 @@ export default function Dialog({
 
   if (!visible) return null;
 
-  return (
+  // Portaled to <body> so ancestor stacking contexts (e.g. the editor's sticky
+  // sidebar) can't trap the overlay underneath later page content
+  return createPortal(
     // Modal background
     <div
       {...rest}
@@ -99,6 +102,7 @@ export default function Dialog({
         </div>
       </div>
 
-    </div>
+    </div>,
+    document.body,
   );
 }
