@@ -64,6 +64,9 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
+      - name: Check version is unreleased
+        run: yarn check:version release
+
       - name: Prepare bundled assets and sidecars
         run: yarn download-assets && yarn prepare-ffmpeg-sidecar
 

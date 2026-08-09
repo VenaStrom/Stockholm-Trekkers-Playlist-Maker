@@ -6,7 +6,7 @@ const bundles = fs.globSync(`src-tauri/target/release/bundle/*/${tauriConfig.pro
   .filter((path) => fs.statSync(path).isFile());
 
 for (const bundle of bundles) {
-  const newFileName = path.basename(bundle).replace(/\s+/g, "-");
+  const newFileName = path.basename(bundle).replace(/\s+/g, "_");
   const newFilePath = path.join(path.dirname(bundle), newFileName);
   fs.cpSync(bundle, newFilePath);
   fs.rmSync(bundle);
