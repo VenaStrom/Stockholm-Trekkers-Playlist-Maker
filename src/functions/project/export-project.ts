@@ -3,7 +3,7 @@ import { openProject } from "@/functions/project";
 import { makePlayFiles } from "@/functions/project/export/play-file";
 import { hhmmToSeconds } from "@/functions/project/time-format";
 import { basicPauseClipFileName, blockClips, ExportNames, PathName } from "@/global";
-import type { Project } from "@/types";
+import type { Episode, Project } from "@/types";
 import { path } from "@tauri-apps/api";
 import * as fs from "@tauri-apps/plugin-fs";
 
@@ -233,8 +233,27 @@ async function makeDirRecursive(baseDir: string, dir: string): Promise<string> {
 }
 
 async function copyProjectFile(project: Project, exportDir: string): Promise<void> {
+  // Episode paths are rewritten relative to the bundle root so the save file is
+  // self-contained: importing it on another computer recomputes absolute paths
+  // from wherever the bundle sits. Probe caches are dropped so the importing
+  // machine probes the copied files fresh instead of trusting stale metadata.
+  const portableEpisodes: Episode[] = [];
+  for (const episode of project.episodes) {
+    if (!episode.filePath) {
+      portableEpisodes.push(episode);
+      continue;
+    }
+    const fileName = await path.basename(episode.filePath);
+    portableEpisodes.push({
+      id: episode.id,
+      blockID: episode.blockID,
+      filePath: `./${ExportNames.EpisodeDir}/${fileName}`,
+    });
+  }
+  const portableProject: Project = { ...project, episodes: portableEpisodes };
+
   const projectDataPath = await path.join(exportDir, ExportNames.SaveFile);
-  await fs.writeTextFile(projectDataPath, JSON.stringify(project));
+  await fs.writeTextFile(projectDataPath, JSON.stringify(portableProject));
   console.info(`Saved project data to ${projectDataPath}.`);
 }
 
