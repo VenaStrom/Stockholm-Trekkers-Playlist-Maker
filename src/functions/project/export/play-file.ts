@@ -1,5 +1,6 @@
 import { deepCopy } from "@/functions/deep-copy";
-import { hhmmToSeconds, secondsToHHMM } from "@/functions/project/time-format";
+import { hhmmToSeconds, secondsToHHMMSS } from "@/functions/project/time-format";
+import { normalizeBundleFileName } from "@/functions/project/export/normalize-name";
 import { blockClips, ExportNames } from "@/global";
 import type { EpisodeDefinedPath, PlayFiles, Project } from "@/types";
 
@@ -86,14 +87,15 @@ function makeBlocks(project: Project): string {
     const leadingSumSeconds = leadingClips.reduce((sum, clip) => sum + clip.duration, 0);
 
     const episodes = project.episodes.filter((e): e is EpisodeDefinedPath => e.blockID === block.id && !!e.filePath);
-    const episodeNames = episodes.map(e => e.filePath.split(/[\\/]/).pop()).filter(Boolean) as string[];
+    const episodeNames = (episodes.map(e => e.filePath.split(/[\\/]/).pop()).filter(Boolean) as string[]).map(normalizeBundleFileName);
 
     return blockString({
       blockNumber: (index + 1).toString(),
       blockID: block.id,
       blockOptions: Object.entries(block.options).map(([optionID, enabled]) => `${optionID}:${enabled}`).join(", "),
       blockStartTime: block.startTime || "--:--",
-      adjustedBlockStartTime: secondsToHHMM(startInSeconds - leadingSumSeconds),
+      // Seconds precision matters here: leading clips are 119 s, not 120
+      adjustedBlockStartTime: secondsToHHMMSS(startInSeconds - leadingSumSeconds),
       playCode: playSeries([
         ...leadingClips.map(c => `${ExportNames.ClipsDir}/${c.file}`),
         ...episodeNames.map(e => `${ExportNames.EpisodeDir}/${e}`),
@@ -143,7 +145,7 @@ ${project.blocks.map((block, index) => {
     const episodes = project.episodes.filter(e => e.blockID === block.id && e.filePath);
     return `
 Block ${index + 1} - ${block.startTime || "No start time"}
-${episodes.map(e => `  ${(e.cachedStartTime || "--:--").padEnd(8, " ")} ${e.filePath?.split(/[\\/]/).pop()}`).join("\n")}
+${episodes.map(e => `  ${(e.cachedStartTime || "--:--").padEnd(8, " ")} ${normalizeBundleFileName(e.filePath?.split(/[\\/]/).pop() ?? "")}`).join("\n")}
       `.trim();
   }).join("\n")}
   `.trim();
