@@ -2,7 +2,7 @@ import type { Episode, Project } from "@/types";
 import { getUserDefaultBlockOptions } from "@/functions/block-options";
 import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { useDebounce } from "use-debounce";
-import { IconAdd, IconArrowBack2Outline, IconEditOutline, Spinner3DotsScaleMiddle } from "@/components/icons";
+import { IconAdd, IconArrowBack2Outline, IconEditOutline, IconSaveOutline, Spinner3DotsScaleMiddle } from "@/components/icons";
 import { openProject, saveProject } from "@/functions/project";
 import { usePageContext, PageRoute } from "@/components/page-context";
 import { generateID } from "@/functions/sha256";
@@ -113,26 +113,29 @@ export default function Editor() {
   const [leaveDialogVisible, setLeaveDialogVisible] = useState(false);
   const [leaveIntent, setLeaveIntent] = useState<"back" | "close">("back");
 
-  // Ctrl+S to force an immediate save, skipping the debounce
+  // Immediate save, skipping the debounce; used by the Save button and Ctrl+S
+  const saveNow = useCallback(() => {
+    const project = volatileProjectRef.current;
+    if (!project) return;
+    saveProject(project)
+      .then(() => {
+        console.info("[Editor] Project saved manually.");
+        setLastSavedJSON(JSON.stringify(project));
+      })
+      .catch((err: unknown) => {
+        console.error("Error saving manually:", err);
+      });
+  }, []);
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.ctrlKey && e.key === "s") {
         e.preventDefault();
-        const project = volatileProjectRef.current;
-        if (!project) return;
-        saveProject(project)
-          .then(() => {
-            console.info("[Editor] Project saved via Ctrl+S.");
-            setLastSavedJSON(JSON.stringify(project));
-          })
-          .catch((err: unknown) => {
-            console.error("Error saving via Ctrl+S:", err);
-          });
+        saveNow();
       }
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, []);
+  }, [saveNow]);
 
   // Before the window closes (Ctrl+W/Q or the window close button): flush the
   // pending save, or with autosave off and unsaved changes, ask first
@@ -358,15 +361,25 @@ export default function Editor() {
               }
             </span>
             :
-            <span
-              className={lastSavedJSON === JSON.stringify(volatileProject) ? "text-flare-700" : "text-command-300"}
-              title="Autosave is off. Save with Ctrl+S."
-            >
-              {lastSavedJSON === JSON.stringify(volatileProject)
-                ? "Saved"
-                : "Unsaved changes*"
-              }
-            </span>
+            <div className="flex flex-row items-center gap-x-3">
+              <span
+                className={lastSavedJSON === JSON.stringify(volatileProject) ? "text-flare-700" : "text-command-300"}
+                title="Autosave is off. Save with the button or Ctrl+S."
+              >
+                {lastSavedJSON === JSON.stringify(volatileProject)
+                  ? "Saved"
+                  : "Unsaved changes*"
+                }
+              </span>
+              <button
+                className="w-fit pe-3 ps-1.5 hover:bg-science-500"
+                onClick={saveNow}
+                title="Save the project (Ctrl+S)"
+              >
+                <IconSaveOutline className="inline size-6 me-1" />
+                Save
+              </button>
+            </div>
           }
         </div>
 
