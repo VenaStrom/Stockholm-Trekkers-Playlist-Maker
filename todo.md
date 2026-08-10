@@ -43,6 +43,7 @@
   - Checkbox on the export confirmation (default on); Rust `zip_export` streams sources straight into `<date>.zip` (stored media entries + zip64, deflated scripts), no staging folder
 - [x] make all checkboxes consistent and clearly a checkbox. Either a check mark, or maybe a star fleet delta as the check.
   - Global `input[type="checkbox"]` style in global.tw.css; the delta from the org icon (in black) is the check; accent via `--checkbox-color`
+- deleting empty block doesn't need confirm dialog
 
 # Features
 
@@ -58,3 +59,5 @@
 - [ ] In runtime save progress per episode to be able to resume playback after interruption
 - [ ] When playing a playlist "too late" in the day, do a more graceful skip to the correct block and episode (episode times manifest?)
 - [x] Put more than 3 hours of pauses before the playlist and after every block (both are 8 x 30 min = 4 h)
+- [ ] warn on duplicate media file. setting to disable, enable per block, enable per project. Either way, non blocking.
+- [ ] show summery of warnings on export confirm screen.
