@@ -36,8 +36,8 @@ export const blockClips: BlockClip[] = [
     default: false,
     duration: 20,
     file: "20_sec_sign_in_reminder.mp4",
-    description: "Adds a 20 second clip, reminding the audience to sign the attendance sheet, after the last episode of the block",
-    allowedPlacement: { trailing: true },
+    description: "Adds a 20 second clip reminding the audience to sign the attendance sheet",
+    allowedPlacement: { leading: true, trailing: true },
   },
   {
     id: "covid_disclaimer",
