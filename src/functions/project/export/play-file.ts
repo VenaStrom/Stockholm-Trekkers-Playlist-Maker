@@ -1,5 +1,5 @@
 import { deepCopy } from "@/functions/deep-copy";
-import { hhmmToSeconds, secondsToHHMM } from "@/functions/project/time-format";
+import { hhmmToSeconds, secondsToHHMMSS } from "@/functions/project/time-format";
 import { blockClips, ExportNames } from "@/global";
 import type { EpisodeDefinedPath, PlayFiles, Project } from "@/types";
 
@@ -93,7 +93,8 @@ function makeBlocks(project: Project): string {
       blockID: block.id,
       blockOptions: Object.entries(block.options).map(([optionID, enabled]) => `${optionID}:${enabled}`).join(", "),
       blockStartTime: block.startTime || "--:--",
-      adjustedBlockStartTime: secondsToHHMM(startInSeconds - leadingSumSeconds),
+      // Seconds precision matters here: leading clips are 119 s, not 120
+      adjustedBlockStartTime: secondsToHHMMSS(startInSeconds - leadingSumSeconds),
       playCode: playSeries([
         ...leadingClips.map(c => `${ExportNames.ClipsDir}/${c.file}`),
         ...episodeNames.map(e => `${ExportNames.EpisodeDir}/${e}`),
