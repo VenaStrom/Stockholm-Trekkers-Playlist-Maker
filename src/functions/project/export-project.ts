@@ -3,6 +3,7 @@ import { openProject } from "@/functions/project";
 import { makePlayFiles } from "@/functions/project/export/play-file";
 import { hhmmToSeconds } from "@/functions/project/time-format";
 import { transcodeFile, type TranscodeTarget } from "@/functions/ffmpeg";
+import { normalizeBundleFileName } from "@/functions/project/export/normalize-name";
 import { basicPauseClipFileName, blockClips, ExportNames, PathName } from "@/global";
 import type { Episode, Project } from "@/types";
 import { path } from "@tauri-apps/api";
@@ -77,10 +78,11 @@ export async function validateProjectForExport(project: Project): Promise<string
     }
   }
 
-  // Episodes are exported by file name, so two different files sharing a name would silently collide
+  // Episodes are exported by (normalized) file name, so two different files
+  // that end up with the same bundle name would silently collide
   const pathByFileName = new Map<string, string>();
   for (const episode of filledEpisodes) {
-    const fileName = await path.basename(episode.filePath);
+    const fileName = normalizeBundleFileName(await path.basename(episode.filePath));
     const existingPath = pathByFileName.get(fileName);
     if (existingPath && existingPath !== episode.filePath) {
       problems.push(`Two different files share the name "${fileName}". Rename one of them: ${existingPath} and ${episode.filePath}`);
@@ -365,7 +367,7 @@ async function planCopySources(project: Project, encoding: EncodingStrategy = "p
   for (const episode of project.episodes) {
     if (!episode.filePath) continue;
 
-    const fileName = await path.basename(episode.filePath);
+    const fileName = normalizeBundleFileName(await path.basename(episode.filePath));
     if (episodeSources.has(fileName)) continue;
 
     // Episodes with an unknown encoding are transcoded too, so the bundle is deterministic
@@ -445,7 +447,7 @@ async function makePortableProjectJSON(project: Project): Promise<string> {
       portableEpisodes.push(episode);
       continue;
     }
-    const fileName = await path.basename(episode.filePath);
+    const fileName = normalizeBundleFileName(await path.basename(episode.filePath));
     portableEpisodes.push({
       id: episode.id,
       blockID: episode.blockID,

@@ -1,5 +1,6 @@
 import { deepCopy } from "@/functions/deep-copy";
 import { hhmmToSeconds, secondsToHHMMSS } from "@/functions/project/time-format";
+import { normalizeBundleFileName } from "@/functions/project/export/normalize-name";
 import { blockClips, ExportNames } from "@/global";
 import type { EpisodeDefinedPath, PlayFiles, Project } from "@/types";
 
@@ -86,7 +87,7 @@ function makeBlocks(project: Project): string {
     const leadingSumSeconds = leadingClips.reduce((sum, clip) => sum + clip.duration, 0);
 
     const episodes = project.episodes.filter((e): e is EpisodeDefinedPath => e.blockID === block.id && !!e.filePath);
-    const episodeNames = episodes.map(e => e.filePath.split(/[\\/]/).pop()).filter(Boolean) as string[];
+    const episodeNames = (episodes.map(e => e.filePath.split(/[\\/]/).pop()).filter(Boolean) as string[]).map(normalizeBundleFileName);
 
     return blockString({
       blockNumber: (index + 1).toString(),
@@ -144,7 +145,7 @@ ${project.blocks.map((block, index) => {
     const episodes = project.episodes.filter(e => e.blockID === block.id && e.filePath);
     return `
 Block ${index + 1} - ${block.startTime || "No start time"}
-${episodes.map(e => `  ${(e.cachedStartTime || "--:--").padEnd(8, " ")} ${e.filePath?.split(/[\\/]/).pop()}`).join("\n")}
+${episodes.map(e => `  ${(e.cachedStartTime || "--:--").padEnd(8, " ")} ${normalizeBundleFileName(e.filePath?.split(/[\\/]/).pop() ?? "")}`).join("\n")}
       `.trim();
   }).join("\n")}
   `.trim();
