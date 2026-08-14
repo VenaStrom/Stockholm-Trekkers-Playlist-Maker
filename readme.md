@@ -59,6 +59,7 @@ You may get a warning about unmet dependencies or "asar" but you can ignore thos
 
 
 ## Documentation
+- [Headless CLI](docs/cli.md)
 - [Adding a New Leading or Trailing Clip](docs/add-leading-or-trailing-clip.md)
 - [Adding a New File Asset to be Downloaded](docs/adding-a-file-download.md)
 - [Renderer Styling](docs/renderer-styling.md)

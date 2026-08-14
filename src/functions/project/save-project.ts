@@ -92,6 +92,7 @@ export async function saveProject(project: Project): Promise<boolean> {
     date: projectCopy.date,
     description: projectCopy.description,
     dateCreated: projectCopy.dateCreated,
+    dateModified: Date.now(),
     optionsRev: projectCopy.optionsRev,
     blockCount: projectCopy.blocks.length,
     episodeCount: projectCopy.episodes.filter(e => e.filePath).length,

@@ -47,3 +47,5 @@ dev.db
 .eslintcache
 
 ignore/
+
+/.claude
