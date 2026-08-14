@@ -11,13 +11,12 @@
 ## Changelog
 
 ### Features
--
-
-### Changes
--
+- New command line interface: `list`, `show`, `create`, `apply`, `delete`, and `export` commands for making and modifying playlists without opening the app. See the [CLI docs](https://github.com/VenaStrom/Stockholm-Trekkers-Playlist-Maker/blob/main/docs/cli.md).
+- CLI export supports `--zip` and `--encoding`.
 
 ### Fixes
--
+- Project cards now show the correct "Modified" date.
+- Failed CLI exports now exit with an error code.
 
 ## Installation
 1. Download and run the `.exe` installer from the assets below (`.deb` or `.AppImage` on Linux).
