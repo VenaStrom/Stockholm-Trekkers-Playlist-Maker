@@ -214,9 +214,15 @@ fn zip_export_blocking(
 }
 
 #[tauri::command]
-fn close() {
+fn close(code: Option<i32>) {
   log::info!("Closing application");
-  std::process::exit(0);
+  std::process::exit(code.unwrap_or(0));
+}
+
+/// Raw stdout for CLI mode: machine-readable output without log formatting
+#[tauri::command]
+fn cli_print(message: String) {
+  println!("{message}");
 }
 
 #[tauri::command]
@@ -296,6 +302,7 @@ pub fn run() {
     .plugin(tauri_plugin_updater::Builder::new().build())
     .manage(std::sync::Arc::new(ZipCancelFlag::default()))
     .invoke_handler(tauri::generate_handler![
+      cli_print,
       close,
       get_cli_args,
       mkdir,
