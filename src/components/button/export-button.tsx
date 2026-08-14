@@ -177,71 +177,90 @@ export default function ExportButton({
   const dialogContent = (() => {
     switch (phase.kind) {
       case "confirm":
-        return <div>
-          <div className="max-h-72 overflow-y-auto text-sm border-s-2 border-abyss-500 ps-2">
-            <ProjectSummary project={phase.project} />
-          </div>
-          <p className="pt-2">
-            Estimated size: {estimatedBytes !== null ? formatBytes(estimatedBytes) : "calculating..."}
-          </p>
-
-          <label
-            className="flex flex-row items-center gap-x-2 pt-3 w-fit select-none"
-            title="Episodes not already in the chosen codec are re-encoded on export. The event computer only hardware-decodes H.264."
-          >
-            <span>Encoding</span>
-            <select
-              value={encoding}
-              onChange={(e) => setEncoding(e.target.value as EncodingStrategy)}
-            >
-              <option value="h264">Re-encode to H.264 (recommended)</option>
-              <option value="preserve">Keep original encodings</option>
-              <option value="hevc">Re-encode to HEVC (H.265)</option>
-            </select>
-          </label>
-          {(() => {
-            if (encoding === "preserve") return null;
-            const transcodeCount = phase.project.episodes
-              .filter(e => e.filePath && e.cachedEncoding !== encoding).length;
-            if (transcodeCount === 0) {
-              return <p className="text-sm text-flare-700 pt-1">All episodes are already {encoding === "h264" ? "H.264" : "H.265"} - nothing to re-encode.</p>;
-            }
-            return <p className="text-sm text-flare-700 pt-1">
-              {transcodeCount === 1 ? "1 episode" : `${transcodeCount} episodes`} will be re-encoded - this can take a long time.
-            </p>;
-          })()}
-
-          <label
-            className="flex flex-row items-center gap-x-2 pt-2 cursor-pointer select-none w-fit"
-            title="Packs the whole bundle into a single .zip file for easier transport. Extract it on the playback computer before playing."
-          >
-            <input
-              type="checkbox"
-              className="[--checkbox-color:var(--color-spore-500)]"
-              checked={zipOutput}
-              onChange={(e) => setZipOutput(e.target.checked)}
-            />
-            <span>Zip output</span>
-          </label>
-
-          {(() => {
-            const warnings = collectProjectWarnings(phase.project, {
-              duplicateScope: warnOnDuplicateFile,
-              includeCodecWarnings: warnOnNonH264 && encoding !== "h264",
-            });
-            if (warnings.length === 0) return null;
-            return <div className="pt-3">
-              <p className="flex flex-row items-center gap-x-2 text-command-300">
-                <IconWarning className="size-4 shrink-0" aria-hidden="true" />
-                <span>{warnings.length === 1 ? "1 warning" : `${warnings.length} warnings`} - export anyway if these are intentional</span>
+        return <div className="flex flex-col md:flex-row gap-x-6 gap-y-4">
+          {/* Left column: playlist rundown, with the size estimate as its header detail */}
+          <section className="flex-1 min-w-0">
+            <div className="flex flex-row items-baseline justify-between gap-x-4 pb-1">
+              <p>Playlist</p>
+              <p className="text-sm text-flare-700">
+                Estimated size: {estimatedBytes !== null ? formatBytes(estimatedBytes) : "calculating..."}
               </p>
-              <ul className="list-disc list-inside mt-1 text-sm text-flare-500/80 max-h-32 overflow-y-auto">
-                {warnings.map((warning) => (
-                  <li key={warning} className="break-all">{warning}</li>
-                ))}
-              </ul>
-            </div>;
-          })()}
+            </div>
+            <div className="max-h-80 overflow-y-auto text-sm border-s-2 border-abyss-500 ps-2">
+              <ProjectSummary project={phase.project} />
+            </div>
+          </section>
+
+          {/* Right column: warnings on top, options below */}
+          <div className="flex-1 min-w-0 flex flex-col gap-y-4">
+            {(() => {
+              const warnings = collectProjectWarnings(phase.project, {
+                duplicateScope: warnOnDuplicateFile,
+                includeCodecWarnings: warnOnNonH264 && encoding !== "h264",
+              });
+              if (warnings.length === 0) return null;
+              return <section className="text-sm">
+                <p className="flex flex-row items-center gap-x-2 pb-1 text-command-300">
+                  <IconWarning className="size-4 shrink-0" aria-hidden="true" />
+                  <span>{warnings.length === 1 ? "1 warning" : `${warnings.length} warnings`} - none block the export</span>
+                </p>
+                <ul className="max-h-40 overflow-y-auto border-s-2 border-command-500/40 ps-2 text-flare-500/80 space-y-1">
+                  {warnings.map((warning) => (
+                    <li key={`${warning.subject}\n${warning.message}`} className="break-all">
+                      <span className="bg-abyss-500 rounded-xs px-1 py-0.5 text-flare-500">{warning.subject}</span>
+                      {" "}{warning.message}
+                    </li>
+                  ))}
+                </ul>
+              </section>;
+            })()}
+
+            <section>
+              <p className="pb-1">Options</p>
+              <label
+                className="flex flex-row items-start gap-x-2 text-sm font-thin cursor-pointer select-none ps-2"
+                title="Episodes not already in the chosen codec are re-encoded on export. The event computer only hardware-decodes H.264."
+              >
+                <span className="pt-1">Encoding</span>
+                <span className="flex-1 min-w-4"></span>
+                {/* The re-encode note hangs directly under the select it comments on */}
+                <span className="flex flex-col items-end gap-y-1 min-w-0">
+                  <select
+                    value={encoding}
+                    onChange={(e) => setEncoding(e.target.value as EncodingStrategy)}
+                  >
+                    <option value="h264">Re-encode to H.264 (recommended)</option>
+                    <option value="preserve">Keep original encodings</option>
+                    <option value="hevc">Re-encode to HEVC (H.265)</option>
+                  </select>
+                  {(() => {
+                    if (encoding === "preserve") return null;
+                    const transcodeCount = phase.project.episodes
+                      .filter(e => e.filePath && e.cachedEncoding !== encoding).length;
+                    if (transcodeCount === 0) {
+                      return <span className="text-flare-700 text-end">All episodes are already {encoding === "h264" ? "H.264" : "H.265"} - nothing to re-encode.</span>;
+                    }
+                    return <span className="text-flare-700 text-end">
+                      {transcodeCount === 1 ? "1 episode" : `${transcodeCount} episodes`} will be re-encoded - this can take a long time.
+                    </span>;
+                  })()}
+                </span>
+              </label>
+              <label
+                className="flex flex-row items-center gap-x-2 text-sm font-thin cursor-pointer select-none ps-2 pt-2"
+                title="Packs the whole bundle into a single .zip file for easier transport. Extract it on the playback computer before playing."
+              >
+                <span>Zip output</span>
+                <span className="flex-1 min-w-4"></span>
+                <input
+                  type="checkbox"
+                  className="[--checkbox-color:var(--color-spore-500)]"
+                  checked={zipOutput}
+                  onChange={(e) => setZipOutput(e.target.checked)}
+                />
+              </label>
+            </section>
+          </div>
         </div>;
       case "confirm-overwrite":
         return <p>
@@ -357,6 +376,7 @@ export default function ExportButton({
       dialogHeader={dialogHeader}
       dialogContent={dialogContent}
       buttons={dialogButtons}
+      wide={phase.kind === "confirm"}
     />
 
     <button

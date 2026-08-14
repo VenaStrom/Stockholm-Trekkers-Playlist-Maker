@@ -120,6 +120,9 @@ export function validateEpisodeFile(
   return null;
 }
 
+/** One line of the export-confirmation warning summary: what has the problem, and what it is */
+export type ProjectWarning = { subject: string; message: string; };
+
 /**
  * Every non-blocking warning the editor would show, labeled with where it comes from,
  * for the summary on the export confirmation. Deduplicated (twins of a duplicate file
@@ -132,15 +135,15 @@ export function collectProjectWarnings(
     /** Codec warnings are moot when the export re-encodes to H.264 anyway */
     includeCodecWarnings: boolean;
   },
-): string[] {
-  const warnings: string[] = [];
+): ProjectWarning[] {
+  const warnings: ProjectWarning[] = [];
 
   const dateWarning = validateDate(project.date);
-  if (dateWarning) warnings.push(`Date: ${dateWarning}`);
+  if (dateWarning) warnings.push({ subject: "Date", message: dateWarning });
 
   project.blocks.forEach((block, index) => {
     const timeWarning = validateBlockTime(block, project);
-    if (timeWarning) warnings.push(`Block ${index + 1}${block.startTime ? ` (${block.startTime})` : ""}: ${timeWarning}`);
+    if (timeWarning) warnings.push({ subject: `Block ${index + 1}${block.startTime ? ` (${block.startTime})` : ""}`, message: timeWarning });
   });
 
   for (const episode of project.episodes) {
@@ -150,14 +153,20 @@ export function collectProjectWarnings(
     const fileName = parts[parts.length - 1] || filePath;
 
     if (options.includeCodecWarnings && episode.cachedEncoding && episode.cachedEncoding !== Encoding.h264) {
-      warnings.push(`${fileName}: ${episode.cachedEncoding} is not H.264 and may stutter on the event computer.`);
+      warnings.push({ subject: fileName, message: `${episode.cachedEncoding} is not H.264 and may stutter on the event computer.` });
     }
 
     const duplicateWarning = validateEpisodeFile(episode, project, options.duplicateScope);
-    if (duplicateWarning) warnings.push(`${fileName}: ${duplicateWarning}`);
+    if (duplicateWarning) warnings.push({ subject: fileName, message: duplicateWarning });
   }
 
-  return [...new Set(warnings)];
+  const seen = new Set<string>();
+  return warnings.filter((warning) => {
+    const key = `${warning.subject}\n${warning.message}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 /** The computed end of a block's last timed episode, or null while times are unknown */
