@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { PageContext, PageContextDefaultValue } from "@/components/page-context";
+import { DuplicateWarningScope, PageContext, PageContextDefaultValue } from "@/components/page-context";
 import { getAllProjectMetas, type EncodingStrategy } from "@/functions/project";
 import { PowerKey } from "@/global";
 
@@ -27,6 +27,15 @@ export function PageProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     localStorage.setItem("warnOnNonH264", String(warnOnNonH264));
   }, [warnOnNonH264]);
+
+  const [warnOnDuplicateFile, setWarnOnDuplicateFile] = useState<DuplicateWarningScope>(() => {
+    const stored = localStorage.getItem("warnOnDuplicateFile");
+    if (stored === DuplicateWarningScope.Off || stored === DuplicateWarningScope.Block || stored === DuplicateWarningScope.Project) return stored;
+    return PageContextDefaultValue.warnOnDuplicateFile;
+  });
+  useEffect(() => {
+    localStorage.setItem("warnOnDuplicateFile", warnOnDuplicateFile);
+  }, [warnOnDuplicateFile]);
 
   const [forceReload, setForceReload] = useState(0);
   const reloadProjectMetaData = useCallback(() => setForceReload((prev) => prev + 1 % 9999), []);
@@ -96,6 +105,9 @@ export function PageProvider({ children }: { children: React.ReactNode }) {
 
     warnOnNonH264,
     setWarnOnNonH264,
+
+    warnOnDuplicateFile,
+    setWarnOnDuplicateFile,
 
     exportEncoding,
     setExportEncoding,

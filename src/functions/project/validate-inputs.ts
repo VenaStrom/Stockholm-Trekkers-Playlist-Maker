@@ -1,5 +1,6 @@
 import { hhmmToSeconds } from "@/functions/project/time-format";
-import type { Block, Project } from "@/types";
+import { DuplicateWarningScope } from "@/components/page-context";
+import type { Block, Episode, Project } from "@/types";
 
 /**
  * Non-blocking sanity warnings for the project date input, in the spirit of v3.
@@ -93,6 +94,29 @@ export function validateBlockTime(block: Block, project: Project): string | null
   if (time === "17:01") return "NCC-1701";
   if (minutes % 5 !== 0) return "Odd time. Are you sure?";
 
+  return null;
+}
+
+/**
+ * Non-blocking warning when the same media file is picked more than once,
+ * scoped by the user's duplicate-warning setting.
+ * Returns a warning to show the user, or null if the file is unique (or the setting is off).
+ */
+export function validateEpisodeFile(
+  episode: Episode,
+  project: Project,
+  scope: DuplicateWarningScope,
+): string | null {
+  if (scope === DuplicateWarningScope.Off) return null;
+  const filePath = episode.filePath?.trim();
+  if (!filePath) return null;
+
+  const twins = project.episodes.filter(e => e.id !== episode.id && e.filePath?.trim() === filePath);
+  if (twins.length === 0) return null;
+
+  const inSameBlock = twins.some(e => e.blockID === episode.blockID);
+  if (inSameBlock) return "Same file twice in this block.";
+  if (scope === DuplicateWarningScope.Project) return "Same file also in another block.";
   return null;
 }
 

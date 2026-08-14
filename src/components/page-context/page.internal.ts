@@ -3,6 +3,13 @@ import { createContext } from "react";
 import type { ProjectMeta } from "@/types";
 import type { EncodingStrategy } from "@/functions/project";
 
+export const DuplicateWarningScope = {
+  Off: "off",
+  Block: "block",
+  Project: "project",
+} as const;
+export type DuplicateWarningScope = (typeof DuplicateWarningScope)[keyof typeof DuplicateWarningScope];
+
 export const PageRoute = {
   Projects: "projects",
   Editor: "editor",
@@ -29,6 +36,10 @@ export type PageContext = {
   warnOnNonH264: boolean;
   setWarnOnNonH264: React.Dispatch<React.SetStateAction<boolean>>;
 
+  /** Warn in the editor when the same media file is used twice — within a block, anywhere in the project, or not at all */
+  warnOnDuplicateFile: DuplicateWarningScope;
+  setWarnOnDuplicateFile: React.Dispatch<React.SetStateAction<DuplicateWarningScope>>;
+
   /** The export re-encode strategy, chosen on the export confirmation and remembered */
   exportEncoding: EncodingStrategy;
   setExportEncoding: React.Dispatch<React.SetStateAction<EncodingStrategy>>;
@@ -52,6 +63,9 @@ export const PageContextDefaultValue: PageContext = {
 
   warnOnNonH264: true,
   setWarnOnNonH264: () => { /* will be defined */ },
+
+  warnOnDuplicateFile: DuplicateWarningScope.Project,
+  setWarnOnDuplicateFile: () => { /* will be defined */ },
 
   exportEncoding: "h264",
   setExportEncoding: () => { /* will be defined */ },
