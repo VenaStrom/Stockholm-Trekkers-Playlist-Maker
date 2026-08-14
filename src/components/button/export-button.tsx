@@ -177,7 +177,7 @@ export default function ExportButton({
   const dialogContent = (() => {
     switch (phase.kind) {
       case "confirm":
-        return <div className="flex flex-col md:flex-row gap-x-6 gap-y-4">
+        return <div className="flex flex-col lg:flex-row gap-x-6 gap-y-4">
           {/* Left column: playlist rundown, with the size estimate as its header detail */}
           <section className="flex-1 min-w-0">
             <div className="flex flex-row items-baseline justify-between gap-x-4 pb-1">
@@ -226,11 +226,11 @@ export default function ExportButton({
                 className="flex flex-row items-start gap-x-2 text-sm font-thin cursor-pointer select-none ps-2"
                 title="Episodes not already in the chosen codec are re-encoded on export. The event computer only hardware-decodes H.264."
               >
-                <span className="pt-1">Encoding</span>
-                <span className="flex-1 min-w-4"></span>
+                <span className="w-24 shrink-0 pt-1">Encoding</span>
                 {/* The re-encode note hangs directly under the select it comments on */}
-                <span className="flex flex-col items-end gap-y-1 min-w-0">
+                <span className="flex flex-col items-start gap-y-1 min-w-0">
                   <select
+                    className="max-w-full"
                     value={encoding}
                     onChange={(e) => setEncoding(e.target.value as EncodingStrategy)}
                   >
@@ -243,9 +243,9 @@ export default function ExportButton({
                     const transcodeCount = phase.project.episodes
                       .filter(e => e.filePath && e.cachedEncoding !== encoding).length;
                     if (transcodeCount === 0) {
-                      return <span className="text-flare-700 text-end">All episodes are already {encoding === "h264" ? "H.264" : "H.265"} - nothing to re-encode.</span>;
+                      return <span className="text-flare-700">All episodes are already {encoding === "h264" ? "H.264" : "H.265"} - nothing to re-encode.</span>;
                     }
-                    return <span className="text-flare-700 text-end">
+                    return <span className="text-flare-700">
                       {transcodeCount === 1 ? "1 episode" : `${transcodeCount} episodes`} will be re-encoded - this can take a long time.
                     </span>;
                   })()}
@@ -255,8 +255,7 @@ export default function ExportButton({
                 className="flex flex-row items-center gap-x-2 text-sm font-thin cursor-pointer select-none ps-2 pt-2"
                 title="Packs the whole bundle into a single .zip file for easier transport. Extract it on the playback computer before playing."
               >
-                <span>Zip output</span>
-                <span className="flex-1 min-w-4"></span>
+                <span className="w-24 shrink-0">Zip output</span>
                 <input
                   type="checkbox"
                   className="[--checkbox-color:var(--color-spore-500)]"

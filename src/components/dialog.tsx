@@ -74,7 +74,7 @@ export default function Dialog({
     >
 
       {/* Box */}
-      <div className={`flex flex-col gap-y-3 bg-abyss-800 rounded-sm ${wide ? "w-11/12 md:w-8/12 xl:w-6/12" : "w-10/12 md:w-4/12"} min-h-48 mb-[5%]`}>
+      <div className={`flex flex-col gap-y-3 bg-abyss-800 rounded-sm ${wide ? "w-11/12 md:w-10/12 xl:w-8/12 max-w-5xl" : "w-10/12 sm:w-8/12 max-w-2xl"} min-h-48 mb-[5%]`}>
         {/* Header */}
         <div className="flex flex-row justify-start items-center w-full bg-abyss-500 p-4 pb-3 pe-3 rounded-t-sm">
           {dialogHeader}

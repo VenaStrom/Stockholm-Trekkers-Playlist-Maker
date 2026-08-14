@@ -389,7 +389,8 @@ export default function EpisodeLi({
           return (
             <span className={`relative w-[4ch] ${encodingWarning ? "text-command-300" : "text-flare-700"}`}>
               {episode.cachedEncoding ? episode.cachedEncoding : "-"}
-              <ValidationWarning warning={encodingWarning} anchor="right" />
+              {/* Anchored left: the long message extends over the file input, which fits at any window width */}
+              <ValidationWarning warning={encodingWarning} anchor="left" />
             </span>
           );
         })()}

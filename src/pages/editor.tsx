@@ -338,7 +338,7 @@ export default function Editor() {
       ]}
     />
 
-    <main className="flex flex-col lg:flex-row gap-x-8 gap-y-12 justify-center items-start pt-4 px-12 pb-10">
+    <main className="flex flex-col lg:flex-row gap-x-8 gap-y-12 justify-center items-start pt-4 px-6 lg:px-12 pb-10">
       {/* Side bar */}
       <aside className="min-w-1/4 not-lg:w-full flex flex-col gap-y-4 lg:sticky lg:top-6">
         {/* Header */}

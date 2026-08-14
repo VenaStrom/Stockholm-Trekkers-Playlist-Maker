@@ -156,8 +156,8 @@ export default function App() {
         }
       </button>
 
-      {/* Credit */}
-      <div className="flex flex-row gap-x-4 leading-5 text-sm">
+      {/* Credit; dropped on narrow windows (e.g. split screen) where it doesn't fit */}
+      <div className="hidden xl:flex flex-row gap-x-4 leading-5 text-sm">
         <p className="flex flex-col items-end gap-x-6 text-flare-500/60 italic">
           {__VERSION__ && <span>{`Version ${__VERSION__}`}</span>}
           <span>Built {new Date(__BUILD_DATE__).toLocaleDateString("en-SE", { year: "numeric", month: "2-digit", day: "2-digit" })}</span>
