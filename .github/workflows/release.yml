@@ -67,6 +67,27 @@ jobs:
       - name: Check version is unreleased
         run: yarn check:version release
 
+      # The stripped file body becomes the GitHub release body and, via
+      # tauri-action's latest.json, the notes in the in-app update dialog
+      - name: Read release notes
+        id: notes
+        shell: bash
+        run: |
+          body="$(sed '/<!--/,/-->/d' RELEASE_NOTES.md)"
+          if [ -z "$(printf '%s' "$body" | tr -d '[:space:]')" ]; then
+            echo "::error file=RELEASE_NOTES.md::RELEASE_NOTES.md is empty - write the release notes before dispatching a release."
+            exit 1
+          fi
+          if printf '%s\n' "$body" | grep -qE '^[[:space:]]*-[[:space:]]*$'; then
+            echo "::error file=RELEASE_NOTES.md::RELEASE_NOTES.md still has empty placeholder bullets - fill them in or delete them."
+            exit 1
+          fi
+          {
+            echo 'body<<NOTES_EOF'
+            printf '%s\n' "$body"
+            echo 'NOTES_EOF'
+          } >> "$GITHUB_OUTPUT"
+
       - name: Prepare bundled assets and sidecars
         run: yarn download-assets && yarn prepare-ffmpeg-sidecar
 
@@ -81,7 +102,7 @@ jobs:
         with:
           tagName: v__VERSION__
           releaseName: v__VERSION__ Stockholm Trekkers Playlist Maker
-          releaseBody: See the assets below to download and install this version.
+          releaseBody: ${{ steps.notes.outputs.body }}
           releaseDraft: false
           prerelease: false
           args: --config src-tauri/tauri.release.conf.json
