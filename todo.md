@@ -60,4 +60,4 @@
 - [ ] When playing a playlist "too late" in the day, do a more graceful skip to the correct block and episode (episode times manifest?)
 - [x] Put more than 3 hours of pauses before the playlist and after every block (both are 8 x 30 min = 4 h)
 - [x] warn on duplicate media file. setting to disable, enable per block, enable per project. Either way, non blocking.
-- [ ] show summery of warnings on export confirm screen.
+- [x] show summery of warnings on export confirm screen.

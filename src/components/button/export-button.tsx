@@ -12,7 +12,8 @@ import {
   type EncodingStrategy,
   type ExportProgress,
 } from "@/functions/project";
-import { IconFileExportOutline } from "@/components/icons";
+import { IconFileExportOutline, IconWarning } from "@/components/icons";
+import { collectProjectWarnings } from "@/functions/project/validate-inputs";
 import { useToast } from "@/components/toast";
 import { usePageContext } from "@/components/page-context";
 import type { Project } from "@/types";
@@ -43,7 +44,7 @@ export default function ExportButton({
   const [phase, setPhase] = useState<ExportPhase>({ kind: "idle" });
   const [estimatedBytes, setEstimatedBytes] = useState<number | null>(null);
   const [zipOutput, setZipOutput] = useState(true);
-  const { exportEncoding: encoding, setExportEncoding: setEncoding } = usePageContext();
+  const { exportEncoding: encoding, setExportEncoding: setEncoding, warnOnNonH264, warnOnDuplicateFile } = usePageContext();
   const abortRef = useRef<AbortController | null>(null);
 
   const runExport = (saveLocation: string, overwrite: boolean) => {
@@ -222,6 +223,25 @@ export default function ExportButton({
             />
             <span>Zip output</span>
           </label>
+
+          {(() => {
+            const warnings = collectProjectWarnings(phase.project, {
+              duplicateScope: warnOnDuplicateFile,
+              includeCodecWarnings: warnOnNonH264 && encoding !== "h264",
+            });
+            if (warnings.length === 0) return null;
+            return <div className="pt-3">
+              <p className="flex flex-row items-center gap-x-2 text-command-300">
+                <IconWarning className="size-4 shrink-0" aria-hidden="true" />
+                <span>{warnings.length === 1 ? "1 warning" : `${warnings.length} warnings`} - export anyway if these are intentional</span>
+              </p>
+              <ul className="list-disc list-inside mt-1 text-sm text-flare-500/80 max-h-32 overflow-y-auto">
+                {warnings.map((warning) => (
+                  <li key={warning} className="break-all">{warning}</li>
+                ))}
+              </ul>
+            </div>;
+          })()}
         </div>;
       case "confirm-overwrite":
         return <p>

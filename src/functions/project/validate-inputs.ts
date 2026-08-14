@@ -1,6 +1,6 @@
 import { hhmmToSeconds } from "@/functions/project/time-format";
 import { DuplicateWarningScope } from "@/components/page-context";
-import type { Block, Episode, Project } from "@/types";
+import { Encoding, type Block, type Episode, type Project } from "@/types";
 
 /**
  * Non-blocking sanity warnings for the project date input, in the spirit of v3.
@@ -118,6 +118,46 @@ export function validateEpisodeFile(
   if (inSameBlock) return "Same file twice in this block.";
   if (scope === DuplicateWarningScope.Project) return "Same file also in another block.";
   return null;
+}
+
+/**
+ * Every non-blocking warning the editor would show, labeled with where it comes from,
+ * for the summary on the export confirmation. Deduplicated (twins of a duplicate file
+ * produce the same line).
+ */
+export function collectProjectWarnings(
+  project: Project,
+  options: {
+    duplicateScope: DuplicateWarningScope;
+    /** Codec warnings are moot when the export re-encodes to H.264 anyway */
+    includeCodecWarnings: boolean;
+  },
+): string[] {
+  const warnings: string[] = [];
+
+  const dateWarning = validateDate(project.date);
+  if (dateWarning) warnings.push(`Date: ${dateWarning}`);
+
+  project.blocks.forEach((block, index) => {
+    const timeWarning = validateBlockTime(block, project);
+    if (timeWarning) warnings.push(`Block ${index + 1}${block.startTime ? ` (${block.startTime})` : ""}: ${timeWarning}`);
+  });
+
+  for (const episode of project.episodes) {
+    const filePath = episode.filePath?.trim();
+    if (!filePath) continue;
+    const parts = filePath.split(/[/\\]/);
+    const fileName = parts[parts.length - 1] || filePath;
+
+    if (options.includeCodecWarnings && episode.cachedEncoding && episode.cachedEncoding !== Encoding.h264) {
+      warnings.push(`${fileName}: ${episode.cachedEncoding} is not H.264 and may stutter on the event computer.`);
+    }
+
+    const duplicateWarning = validateEpisodeFile(episode, project, options.duplicateScope);
+    if (duplicateWarning) warnings.push(`${fileName}: ${duplicateWarning}`);
+  }
+
+  return [...new Set(warnings)];
 }
 
 /** The computed end of a block's last timed episode, or null while times are unknown */
