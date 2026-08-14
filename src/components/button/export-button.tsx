@@ -199,16 +199,21 @@ export default function ExportButton({
                 includeCodecWarnings: warnOnNonH264 && encoding !== "h264",
               });
               if (warnings.length === 0) return null;
+              const warningCount = warnings.reduce((count, warning) => count + warning.messages.length, 0);
               return <section className="text-sm">
                 <p className="flex flex-row items-center gap-x-2 pb-1 text-command-300">
                   <IconWarning className="size-4 shrink-0" aria-hidden="true" />
-                  <span>{warnings.length === 1 ? "1 warning" : `${warnings.length} warnings`} - none block the export</span>
+                  <span>{warningCount === 1 ? "1 warning" : `${warningCount} warnings`} - none block the export</span>
                 </p>
-                <ul className="max-h-40 overflow-y-auto border-s-2 border-command-500/40 ps-2 text-flare-500/80 space-y-1">
-                  {warnings.map((warning) => (
-                    <li key={`${warning.subject}\n${warning.message}`} className="break-all">
-                      <span className="bg-abyss-500 rounded-xs px-1 py-0.5 text-flare-500">{warning.subject}</span>
-                      {" "}{warning.message}
+                <ul className="max-h-40 overflow-y-auto border-s-2 border-command-500/40 ps-2 text-flare-500/80 space-y-1.5">
+                  {warnings.map(({ subject, messages }) => (
+                    <li key={subject}>
+                      <span className="bg-abyss-500 rounded-xs px-1 py-0.5 text-flare-500 break-all">{subject}</span>
+                      <ul className="ps-4 pt-0.5">
+                        {messages.map((message) => (
+                          <li key={message} className="break-all">{message}</li>
+                        ))}
+                      </ul>
                     </li>
                   ))}
                 </ul>

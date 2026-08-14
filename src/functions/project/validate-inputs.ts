@@ -1,6 +1,16 @@
 import { hhmmToSeconds } from "@/functions/project/time-format";
-import { DuplicateWarningScope } from "@/components/page-context";
 import { Encoding, type Block, type Episode, type Project } from "@/types";
+
+/**
+ * How far the duplicate-file check looks. Lives here (not in the page context)
+ * so this module stays free of UI imports and runnable outside the app.
+ */
+export const DuplicateWarningScope = {
+  Off: "off",
+  Block: "block",
+  Project: "project",
+} as const;
+export type DuplicateWarningScope = (typeof DuplicateWarningScope)[keyof typeof DuplicateWarningScope];
 
 /**
  * Non-blocking sanity warnings for the project date input, in the spirit of v3.
@@ -120,13 +130,13 @@ export function validateEpisodeFile(
   return null;
 }
 
-/** One line of the export-confirmation warning summary: what has the problem, and what it is */
-export type ProjectWarning = { subject: string; message: string; };
+/** One subject of the export-confirmation warning summary and everything wrong with it */
+export type ProjectWarning = { subject: string; messages: string[]; };
 
 /**
- * Every non-blocking warning the editor would show, labeled with where it comes from,
- * for the summary on the export confirmation. Deduplicated (twins of a duplicate file
- * produce the same line).
+ * Every non-blocking warning the editor would show, grouped by what it comes from
+ * (the date, a block, an episode file), for the summary on the export confirmation.
+ * Deduplicated: twins of a duplicate file produce one entry.
  */
 export function collectProjectWarnings(
   project: Project,
@@ -136,14 +146,20 @@ export function collectProjectWarnings(
     includeCodecWarnings: boolean;
   },
 ): ProjectWarning[] {
-  const warnings: ProjectWarning[] = [];
+  // Insertion-ordered: subjects appear in playlist order
+  const grouped = new Map<string, string[]>();
+  const add = (subject: string, message: string) => {
+    const messages = grouped.get(subject) ?? [];
+    if (!messages.includes(message)) messages.push(message);
+    grouped.set(subject, messages);
+  };
 
   const dateWarning = validateDate(project.date);
-  if (dateWarning) warnings.push({ subject: "Date", message: dateWarning });
+  if (dateWarning) add("Date", dateWarning);
 
   project.blocks.forEach((block, index) => {
     const timeWarning = validateBlockTime(block, project);
-    if (timeWarning) warnings.push({ subject: `Block ${index + 1}${block.startTime ? ` (${block.startTime})` : ""}`, message: timeWarning });
+    if (timeWarning) add(`Block ${index + 1}${block.startTime ? ` (${block.startTime})` : ""}`, timeWarning);
   });
 
   for (const episode of project.episodes) {
@@ -153,20 +169,14 @@ export function collectProjectWarnings(
     const fileName = parts[parts.length - 1] || filePath;
 
     if (options.includeCodecWarnings && episode.cachedEncoding && episode.cachedEncoding !== Encoding.h264) {
-      warnings.push({ subject: fileName, message: `${episode.cachedEncoding} is not H.264 and may stutter on the event computer.` });
+      add(fileName, `${episode.cachedEncoding} is not H.264 and may stutter on the event computer.`);
     }
 
     const duplicateWarning = validateEpisodeFile(episode, project, options.duplicateScope);
-    if (duplicateWarning) warnings.push({ subject: fileName, message: duplicateWarning });
+    if (duplicateWarning) add(fileName, duplicateWarning);
   }
 
-  const seen = new Set<string>();
-  return warnings.filter((warning) => {
-    const key = `${warning.subject}\n${warning.message}`;
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
+  return [...grouped.entries()].map(([subject, messages]) => ({ subject, messages }));
 }
 
 /** The computed end of a block's last timed episode, or null while times are unknown */

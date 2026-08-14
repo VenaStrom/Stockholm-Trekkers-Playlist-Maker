@@ -3,12 +3,8 @@ import { createContext } from "react";
 import type { ProjectMeta } from "@/types";
 import type { EncodingStrategy } from "@/functions/project";
 
-export const DuplicateWarningScope = {
-  Off: "off",
-  Block: "block",
-  Project: "project",
-} as const;
-export type DuplicateWarningScope = (typeof DuplicateWarningScope)[keyof typeof DuplicateWarningScope];
+export { DuplicateWarningScope } from "@/functions/project/validate-inputs";
+import { DuplicateWarningScope } from "@/functions/project/validate-inputs";
 
 export const PageRoute = {
   Projects: "projects",
