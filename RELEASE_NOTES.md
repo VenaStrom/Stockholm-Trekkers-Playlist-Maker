@@ -9,10 +9,10 @@
 -->
 
 ## Changelog
+-
 
 ### Features
-- The editor warns when the same media file is used more than once. Scope is set in settings: whole project (default), within a block, or off.
-- The export confirmation now lists all of the project's warnings.
+-
 
 ## Installation
 1. Download and run the `.exe` installer from the assets below (`.deb` or `.AppImage` on Linux).
