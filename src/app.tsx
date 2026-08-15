@@ -5,7 +5,7 @@ import { getCurrentWindow } from "@tauri-apps/api/window";
 import { setTheme } from "@tauri-apps/api/app";
 import { Toaster } from "@/components/toast/toast";
 import { useEffect, useState } from "react";
-import { usePageContext, PageRoute } from "@/components/page-context";
+import { usePageContext, PageRoute, DuplicateWarningScope } from "@/components/page-context";
 import { getUserDefaultBlockOptions, resetUserDefaultBlockOptions, setUserDefaultBlockOptions } from "@/functions/block-options";
 import BlockOptionsEditor from "@/components/editor/block-options-editor";
 import Dialog from "@/components/dialog";
@@ -25,7 +25,7 @@ export default function App() {
     return window.matchMedia("(prefers-color-scheme: light)").matches;
   });
 
-  const { headerText, route, setRoute, projectID, isPowerMode, autosave, setAutosave, warnOnNonH264, setWarnOnNonH264 } = usePageContext();
+  const { headerText, route, setRoute, projectID, isPowerMode, autosave, setAutosave, warnOnNonH264, setWarnOnNonH264, warnOnDuplicateFile, setWarnOnDuplicateFile } = usePageContext();
 
   // Settings panel
   const [settingsVisible, setSettingsVisible] = useState(false);
@@ -156,8 +156,8 @@ export default function App() {
         }
       </button>
 
-      {/* Credit */}
-      <div className="flex flex-row gap-x-4 leading-5 text-sm">
+      {/* Credit; dropped on narrow windows (e.g. split screen) where it doesn't fit */}
+      <div className="hidden xl:flex flex-row gap-x-4 leading-5 text-sm">
         <p className="flex flex-col items-end gap-x-6 text-flare-500/60 italic">
           {__VERSION__ && <span>{`Version ${__VERSION__}`}</span>}
           <span>Built {new Date(__BUILD_DATE__).toLocaleDateString("en-SE", { year: "numeric", month: "2-digit", day: "2-digit" })}</span>
@@ -233,6 +233,21 @@ export default function App() {
             checked={warnOnNonH264}
             onChange={(e) => setWarnOnNonH264(e.target.checked)}
           />
+        </label>
+        <label
+          className="flex flex-row items-center gap-x-2 text-sm font-thin cursor-pointer select-none ps-2 pt-2"
+          title="Warns when the same media file is picked more than once, either within one block or across the whole project. The warning never blocks anything."
+        >
+          <span>Warn about duplicate episode files</span>
+          <span className="flex-1 min-w-4"></span>
+          <select
+            value={warnOnDuplicateFile}
+            onChange={(e) => setWarnOnDuplicateFile(e.target.value as DuplicateWarningScope)}
+          >
+            <option value={DuplicateWarningScope.Project}>In the whole project</option>
+            <option value={DuplicateWarningScope.Block}>Within a block</option>
+            <option value={DuplicateWarningScope.Off}>Never</option>
+          </select>
         </label>
       </div>}
       buttons={[

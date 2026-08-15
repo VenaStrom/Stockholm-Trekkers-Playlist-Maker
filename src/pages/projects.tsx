@@ -83,7 +83,7 @@ export default function Projects() {
     <main className="w-full flex flex-col items-center overflow-y-auto">
       <p className="p-4 pt-5">Load, export or import previous projects or create entirely new ones.</p>
 
-      <ul className="w-11/12 md:w-7/12 flex flex-col gap-y-4 min-h-full overflow-y-auto pe-4 pt-1.5 mb-10">
+      <ul className="w-11/12 lg:w-9/12 2xl:w-7/12 flex flex-col gap-y-4 min-h-full overflow-y-auto pe-4 pt-1.5 mb-10">
         <li className="w-full flex flex-row justify-end gap-x-3">
           <button className="bg-abyss-200 hover:bg-spore-500" onClick={importFromFile} title="Import a v4 or v3 project save file">
             <IconDownload className="inline size-6 me-1" />

@@ -72,6 +72,8 @@ jobs:
       - name: Read release notes
         id: notes
         shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           body="$(sed '/<!--/,/-->/d' RELEASE_NOTES.md)"
           if [ -z "$(printf '%s' "$body" | tr -d '[:space:]')" ]; then
@@ -80,6 +82,14 @@ jobs:
           fi
           if printf '%s\n' "$body" | grep -qE '^[[:space:]]*-[[:space:]]*$'; then
             echo "::error file=RELEASE_NOTES.md::RELEASE_NOTES.md still has empty placeholder bullets - fill them in or delete them."
+            exit 1
+          fi
+          # Guard against forgetting to update the notes between releases. The
+          # version-unreleased check above guarantees the latest release here is
+          # always the previous one, not the one being published.
+          previous="$(gh release view --json body --jq .body 2>/dev/null || true)"
+          if [ -n "$previous" ] && [ "$(printf '%s' "$body" | tr -d '\r')" = "$(printf '%s' "$previous" | tr -d '\r')" ]; then
+            echo "::error file=RELEASE_NOTES.md::RELEASE_NOTES.md is identical to the last published release's notes - update it for this version."
             exit 1
           fi
           {

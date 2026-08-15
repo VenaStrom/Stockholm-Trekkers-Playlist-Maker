@@ -1,5 +1,16 @@
 import { hhmmToSeconds } from "@/functions/project/time-format";
-import type { Block, Project } from "@/types";
+import { Encoding, type Block, type Episode, type Project } from "@/types";
+
+/**
+ * How far the duplicate-file check looks. Lives here (not in the page context)
+ * so this module stays free of UI imports and runnable outside the app.
+ */
+export const DuplicateWarningScope = {
+  Off: "off",
+  Block: "block",
+  Project: "project",
+} as const;
+export type DuplicateWarningScope = (typeof DuplicateWarningScope)[keyof typeof DuplicateWarningScope];
 
 /**
  * Non-blocking sanity warnings for the project date input, in the spirit of v3.
@@ -94,6 +105,78 @@ export function validateBlockTime(block: Block, project: Project): string | null
   if (minutes % 5 !== 0) return "Odd time. Are you sure?";
 
   return null;
+}
+
+/**
+ * Non-blocking warning when the same media file is picked more than once,
+ * scoped by the user's duplicate-warning setting.
+ * Returns a warning to show the user, or null if the file is unique (or the setting is off).
+ */
+export function validateEpisodeFile(
+  episode: Episode,
+  project: Project,
+  scope: DuplicateWarningScope,
+): string | null {
+  if (scope === DuplicateWarningScope.Off) return null;
+  const filePath = episode.filePath?.trim();
+  if (!filePath) return null;
+
+  const twins = project.episodes.filter(e => e.id !== episode.id && e.filePath?.trim() === filePath);
+  if (twins.length === 0) return null;
+
+  const inSameBlock = twins.some(e => e.blockID === episode.blockID);
+  if (inSameBlock) return "Same file twice in this block.";
+  if (scope === DuplicateWarningScope.Project) return "Same file also in another block.";
+  return null;
+}
+
+/** One subject of the export-confirmation warning summary and everything wrong with it */
+export type ProjectWarning = { subject: string; messages: string[]; };
+
+/**
+ * Every non-blocking warning the editor would show, grouped by what it comes from
+ * (the date, a block, an episode file), for the summary on the export confirmation.
+ * Deduplicated: twins of a duplicate file produce one entry.
+ */
+export function collectProjectWarnings(
+  project: Project,
+  options: {
+    duplicateScope: DuplicateWarningScope;
+    /** Codec warnings are moot when the export re-encodes to H.264 anyway */
+    includeCodecWarnings: boolean;
+  },
+): ProjectWarning[] {
+  // Insertion-ordered: subjects appear in playlist order
+  const grouped = new Map<string, string[]>();
+  const add = (subject: string, message: string) => {
+    const messages = grouped.get(subject) ?? [];
+    if (!messages.includes(message)) messages.push(message);
+    grouped.set(subject, messages);
+  };
+
+  const dateWarning = validateDate(project.date);
+  if (dateWarning) add("Date", dateWarning);
+
+  project.blocks.forEach((block, index) => {
+    const timeWarning = validateBlockTime(block, project);
+    if (timeWarning) add(`Block ${index + 1}${block.startTime ? ` (${block.startTime})` : ""}`, timeWarning);
+  });
+
+  for (const episode of project.episodes) {
+    const filePath = episode.filePath?.trim();
+    if (!filePath) continue;
+    const parts = filePath.split(/[/\\]/);
+    const fileName = parts[parts.length - 1] || filePath;
+
+    if (options.includeCodecWarnings && episode.cachedEncoding && episode.cachedEncoding !== Encoding.h264) {
+      add(fileName, `${episode.cachedEncoding} is not H.264 and may stutter on the event computer.`);
+    }
+
+    const duplicateWarning = validateEpisodeFile(episode, project, options.duplicateScope);
+    if (duplicateWarning) add(fileName, duplicateWarning);
+  }
+
+  return [...grouped.entries()].map(([subject, messages]) => ({ subject, messages }));
 }
 
 /** The computed end of a block's last timed episode, or null while times are unknown */

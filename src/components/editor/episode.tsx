@@ -7,6 +7,7 @@ import { open } from "@tauri-apps/plugin-dialog";
 import { secondsToHHMMSS } from "@/functions/project/time-format";
 import { generateID } from "@/functions/sha256";
 import { probeEpisode } from "@/functions/project/episode-probe";
+import { validateEpisodeFile } from "@/functions/project/validate-inputs";
 
 /** 
  * I don't like this, but this is very convenient to keep the UI prettier during drag-and-drop
@@ -26,7 +27,7 @@ export default function EpisodeLi({
   projectSetter: React.Dispatch<React.SetStateAction<Project | null>>;
 }) {
   // The codec warning is moot when export will re-encode to H.264 anyway
-  const { warnOnNonH264, exportEncoding } = usePageContext();
+  const { warnOnNonH264, exportEncoding, warnOnDuplicateFile } = usePageContext();
   const showCodecWarnings = warnOnNonH264 && exportEncoding !== "h264";
   const ffprobeRequestRef = useRef(0);
   const selectedFile = episode.filePath ?? null;
@@ -388,7 +389,8 @@ export default function EpisodeLi({
           return (
             <span className={`relative w-[4ch] ${encodingWarning ? "text-command-300" : "text-flare-700"}`}>
               {episode.cachedEncoding ? episode.cachedEncoding : "-"}
-              <ValidationWarning warning={encodingWarning} anchor="right" />
+              {/* Anchored left: the long message extends over the file input, which fits at any window width */}
+              <ValidationWarning warning={encodingWarning} anchor="left" />
             </span>
           );
         })()}
@@ -404,7 +406,7 @@ export default function EpisodeLi({
       </div>
 
       {/* Custom file input */}
-      <label className="bg-abyss-500 rounded-sm flex flow-row items-center justify-between gap-x-4 ps-3 flex-1 min-w-0">
+      <label className="relative bg-abyss-500 rounded-sm flex flow-row items-center justify-between gap-x-4 ps-3 flex-1 min-w-0">
         <div className="flex-1 min-w-0">
           <span style={{ direction: "rtl" }} className="block overflow-hidden text-start min-w-0">
             <span style={{ direction: "ltr" }} className={`truncate inline-block align-middle ${selectedFile ? "" : "text-flare-700"}`}>
@@ -416,6 +418,8 @@ export default function EpisodeLi({
             </span>
           </span>
         </div>
+
+        {volatileProject && <ValidationWarning warning={validateEpisodeFile(episode, volatileProject, warnOnDuplicateFile)} />}
 
         <button
           className="bg-abyss-200 hover:bg-spore-500 ps-3"
