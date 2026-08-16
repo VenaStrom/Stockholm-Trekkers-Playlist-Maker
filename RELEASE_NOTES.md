@@ -9,10 +9,9 @@
 -->
 
 ## Changelog
--
 
-### Features
--
+### Fix
+- Generated play.ps1 no longer tries to unescape anything containing `\` which lead to cosmetic issues and stdout noise.
 
 ## Installation
 1. Download and run the `.exe` installer from the assets below (`.deb` or `.AppImage` on Linux).
