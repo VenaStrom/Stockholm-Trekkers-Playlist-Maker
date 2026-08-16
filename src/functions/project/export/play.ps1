@@ -19,7 +19,8 @@ function print {
   }
 
   $text = if ($index -lt $ArgsIn.Length) { $ArgsIn[$index] } else { "" }
-  $text = [System.Text.RegularExpressions.Regex]::Unescape($text)
+  # Only \n is used as an escape; Regex.Unescape would throw on backslashes in paths like C:\Program Files
+  $text = $text.Replace('\n', "`n")
 
   $ansiEsc = [char]27
   if ($codes.Count -gt 0) {
