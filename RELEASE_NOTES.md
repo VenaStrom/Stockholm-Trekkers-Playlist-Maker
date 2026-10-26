@@ -12,6 +12,7 @@
 
 ### Fix
 - Generated play.ps1 no longer tries to unescape anything containing `\` which lead to cosmetic issues and stdout noise.
+- Quotes, `$`, backticks and backslashes in the project description no longer break the generated `play.ps1` and `play.sh`. Previously a `"` in the description made PowerShell refuse to parse the whole script.
 
 ## Installation
 1. Download and run the `.exe` installer from the assets below (`.deb` or `.AppImage` on Linux).

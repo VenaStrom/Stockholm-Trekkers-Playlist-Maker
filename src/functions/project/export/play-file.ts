@@ -1,6 +1,7 @@
 import { deepCopy } from "@/functions/deep-copy";
 import { hhmmToSeconds, secondsToHHMMSS } from "@/functions/project/time-format";
 import { normalizeBundleFileName } from "@/functions/project/export/normalize-name";
+import { psQuote, shQuote } from "@/functions/project/export/shell-quote";
 import { blockClips, ExportNames } from "@/global";
 import type { EpisodeDefinedPath, PlayFiles, Project } from "@/types";
 
@@ -13,6 +14,17 @@ export function makePlayFiles(project: Project): PlayFiles {
   }
 
   const f: PlayFiles = { ps1: __PLAY_PS1_TEMPLATE__.toString(), sh: __PLAY_SH_TEMPLATE__.toString() };
+
+  // Values that differ between the two scripts (user text needs shell-specific quoting)
+  const descriptionLines = project.description.trim().split(/\r?\n/);
+  const parsedPlaylistLines = projectToString(project).split("\n");
+  // The trailing newline escape sits outside the literal user text so quoting can't swallow it
+  const shLine = (line: string) => `print "$GRAY" ${shQuote(line)}"\\n"`;
+  const psLine = (line: string) => `print "$GRAY" ${psQuote(`${line}\\n`)}`;
+  const templateInfoPerShell: Record<string, { sh: string; ps1: string; }> = {
+    __DESCRIPTION_CODE__: { sh: descriptionLines.map(shLine).join("\n"), ps1: descriptionLines.map(psLine).join("\n") },
+    __PARSED_PLAYLIST_CODE__: { sh: parsedPlaylistLines.map(shLine).join("\n"), ps1: parsedPlaylistLines.map(psLine).join("\n") },
+  };
 
   const templateInfo: Record<string, string> = {
     __SIGN_OFF_NAME__: author.name.split(" ")[0] || author.name,
@@ -27,17 +39,20 @@ export function makePlayFiles(project: Project): PlayFiles {
     __PLAYLIST_ID__: project.id,
     __BLOCK_COUNT__: project.blockCount.toString(),
     __EPISODE_COUNT__: project.episodeCount.toString(),
-    __DESCRIPTION_CODE__: project.description.trim().split("\n").map(line => `print "$GRAY" "${line}\\n"`).join("\n"),
-    __PARSED_PLAYLIST_CODE__: projectToString(project).split("\n").map(line => `print "$GRAY" "${line}\\n"`).join("\n"),
     __BLOCKS_CODE__: makeBlocks(project),
   };
 
-  // Replace variables in the template
+  // Replace variables in the template. The replacer is a function so `$&`, `$'` etc. in values stay literal.
   for (const [varName, value] of Object.entries(templateInfo)) {
     if (!value) continue; // Skip falsy
     const regex = new RegExp(varName, "g");
-    f.sh = f.sh.replace(regex, value);
-    f.ps1 = f.ps1.replace(regex, value);
+    f.sh = f.sh.replace(regex, () => value);
+    f.ps1 = f.ps1.replace(regex, () => value);
+  }
+  for (const [varName, value] of Object.entries(templateInfoPerShell)) {
+    const regex = new RegExp(varName, "g");
+    f.sh = f.sh.replace(regex, () => value.sh);
+    f.ps1 = f.ps1.replace(regex, () => value.ps1);
   }
 
   // Warn if any template variables are not replaced
